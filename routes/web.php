@@ -15,7 +15,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return inertia::render('HelloWorld', [
-        'name' => 'Reynaldi',
-    ]);
+    return inertia::render('Home');
 });
