@@ -20,7 +20,7 @@
                 v-for="(menus, index) in menu"
                 class="text-lg font-medium cursor-pointer transition-all hover:text-primary-color"
             >
-                {{ menus }}
+                <inertia-link :href="`/${menus}`">{{ menus }}</inertia-link>
             </li>
         </ul>
         <div class="flex gap-5">
