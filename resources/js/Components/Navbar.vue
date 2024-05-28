@@ -4,7 +4,7 @@
             <div class="avatar">
                 <div class="w-24 lg:w-16 rounded-full">
                     <img
-                        src="/assets/image/logo-dreamdessert.jpg"
+                        src="/assets/image/logo-dreamdessert.webp"
                         alt="ini gambar"
                     />
                 </div>
@@ -232,11 +232,13 @@
                 </div>
             </div>
             <div class="flex gap-1">
-                <a href="#" class="btn btn-ghost">Login</a>
-                <a
-                    href="#"
+                <inertia-link href="/Login" class="btn btn-ghost"
+                    >Login</inertia-link
+                >
+                <inertia-link
+                    href="/Register"
                     class="btn btn-md bg-pink-200 bg-opacity-25 text-primary-color hover:text-white"
-                    >Create New Account</a
+                    >Create New Account</inertia-link
                 >
             </div>
         </div>

@@ -25,3 +25,11 @@ Route::get('/About', function () {
 Route::get('/Home', function () {
     return inertia::render('App');
 });
+
+Route::get('/Login', function () {
+    return inertia::render('Login');
+});
+
+Route::get('/Register', function () {
+    return inertia::render('Register');
+});
