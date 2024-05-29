@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import { resolve } from "path";
 import laravel from "laravel-vite-plugin";
 import vue from "@vitejs/plugin-vue";
+import path from "path";
 
 export default defineConfig({
     plugins: [
@@ -18,6 +19,7 @@ export default defineConfig({
     resolve: {
         alias: {
             "@": resolve("./resources/js/"),
+            "ziggy-js": path.resolve("vendor/tightenco/ziggy/dist/vue.es.js"),
         },
     },
 });

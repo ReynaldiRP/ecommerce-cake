@@ -7,8 +7,8 @@
             class="h-full w-full lg:w-[40%] flex flex-col items-center justify-center bg-base-100"
         >
             <div class="flex flex-col items-center justify-center gap-12">
-                <div class="avatar block lg:hidden">
-                    <div class="w-24 lg:w-16 rounded-full">
+                <div class="avatar">
+                    <div class="w-32 lg:w-24 rounded-full">
                         <img
                             src="/assets/image/logo-dreamdessert.webp"
                             alt="ini gambar"
@@ -16,12 +16,12 @@
                     </div>
                 </div>
                 <h1
-                    class="relative bottom-10 text-primary-color font-bold text-4xl"
+                    class="relative bottom-10 text-primary-color font-bold text-3xl"
                 >
                     Sign In
                 </h1>
             </div>
-            <div class="flex flex-col mt-[2.5%] gap-6">
+            <form action="" method="post" class="flex flex-col mt-[2.5%] gap-6">
                 <label
                     class="input input-bordered w-full input-lg lg:input-md xl:input-md lg:w-[450px] flex items-center gap-2"
                 >
@@ -32,10 +32,17 @@
                         class="w-4 h-4 opacity-70"
                     >
                         <path
-                            d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"
+                            d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z"
+                        />
+                        <path
+                            d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z"
                         />
                     </svg>
-                    <input type="text" placeholder="Email or Phone Number" />
+                    <input
+                        type="text"
+                        placeholder="Email or Phone Number"
+                        autocomplete="username"
+                    />
                 </label>
                 <label
                     class="input input-bordered w-full input-lg lg:input-md xl:input-md lg:w-[450px] flex items-center gap-2"
@@ -52,9 +59,13 @@
                             clip-rule="evenodd"
                         />
                     </svg>
-                    <input type="password" placeholder="Password" />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        autocomplete="current-password"
+                    />
                 </label>
-                <div class="flex items-center">
+                <div class="flex items-center justify-between">
                     <div class="form-control">
                         <label class="flex gap-3 label cursor-pointer">
                             <span class="label-text">Remember me</span>
@@ -65,17 +76,21 @@
                             />
                         </label>
                     </div>
+                    <inertia-link class="text-sm underline"
+                        >Forgot password?</inertia-link
+                    >
                 </div>
                 <button class="btn w-full bg-base-300 font-bold text-lg">
                     Log In
                 </button>
+
                 <p class="text-sm mx-auto">
                     Doesn't have an accont?
                     <inertia-link href="/Register" class="text-sm underline">
                         Register Now</inertia-link
                     >
                 </p>
-            </div>
+            </form>
         </div>
     </div>
 </template>

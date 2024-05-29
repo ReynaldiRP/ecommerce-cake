@@ -3,6 +3,7 @@ import { createApp, h } from "vue";
 import { createInertiaApp } from "@inertiajs/inertia-vue3";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { Link } from "@inertiajs/inertia-vue3";
+import { ZiggyVue } from "ziggy-js";
 
 createInertiaApp({
     resolve: (name) =>
@@ -14,6 +15,7 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .component("inertia-link", Link)
+            .use(ZiggyVue)
             .mount(el);
     },
 });

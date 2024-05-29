@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthentificationController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 
@@ -14,22 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return inertia::render('App');
-});
+Route::inertia('/', 'App');
+Route::inertia('/about', 'About');
+Route::inertia('/home', 'App');
 
-Route::get('/About', function () {
-    return inertia::render('About');
-});
-
-Route::get('/Home', function () {
-    return inertia::render('App');
-});
-
-Route::get('/Login', function () {
-    return inertia::render('Login');
-});
-
-Route::get('/Register', function () {
-    return inertia::render('Register');
-});
+Route::get('/login', [AuthentificationController::class, 'login'])->name('authentication.login');

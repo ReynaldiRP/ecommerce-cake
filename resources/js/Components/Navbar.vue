@@ -17,10 +17,12 @@
         </div>
         <ul class="navbar-center hidden lg:flex gap-8">
             <li
-                v-for="(menus, index) in menu"
+                v-for="(menu, index) in menu"
                 class="text-lg font-medium cursor-pointer transition-all hover:text-primary-color"
             >
-                <inertia-link :href="`/${menus}`">{{ menus }}</inertia-link>
+                <inertia-link :href="`/${menu.toLowerCase()}`">
+                    {{ menu }}
+                </inertia-link>
             </li>
         </ul>
         <div class="navbar-end flex flex-row-reverse justify-stretch lg:hidden">
@@ -232,11 +234,13 @@
                 </div>
             </div>
             <div class="flex gap-1">
-                <inertia-link href="/Login" class="btn btn-ghost"
+                <inertia-link
+                    :href="route('authentication.login')"
+                    class="btn btn-ghost"
                     >Login</inertia-link
                 >
                 <inertia-link
-                    href="/Register"
+                    href=""
                     class="btn btn-md bg-pink-200 bg-opacity-25 text-primary-color hover:text-white"
                     >Create New Account</inertia-link
                 >
