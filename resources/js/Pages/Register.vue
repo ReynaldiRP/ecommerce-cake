@@ -21,9 +21,9 @@
                     Register
                 </h1>
             </div>
-            <div class="flex flex-col mt-[2.5%] gap-6">
+            <form action="" method="post" class="flex flex-col mt-[2.5%] gap-6">
                 <label
-                    class="input input-bordered w-full input-lg lg:input-md xl:input-md lg:w-[450px] flex items-center gap-2"
+                    class="input input-bordered w-[450px] input-lg lg:input-md xl:input-md flex items-center gap-2"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -53,7 +53,11 @@
                             d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z"
                         />
                     </svg>
-                    <input type="text" placeholder="Email or Phone Number" />
+                    <input
+                        type="text"
+                        placeholder="Email or Phone Number"
+                        autocomplete="email"
+                    />
                 </label>
                 <label
                     class="input input-bordered w-full input-lg lg:input-md xl:input-md lg:w-[450px] flex items-center gap-2"
@@ -68,7 +72,11 @@
                             d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"
                         />
                     </svg>
-                    <input type="text" placeholder="Address" />
+                    <input
+                        type="text"
+                        placeholder="Address"
+                        autocomplete="address-level4"
+                    />
                 </label>
                 <label
                     class="input input-bordered w-full input-lg lg:input-md xl:input-md lg:w-[450px] flex items-center gap-2"
@@ -85,7 +93,11 @@
                             clip-rule="evenodd"
                         />
                     </svg>
-                    <input type="password" placeholder="Password" />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        autocomplete="new-password"
+                    />
                 </label>
                 <label
                     class="input input-bordered w-full input-lg lg:input-md xl:input-md lg:w-[450px] flex items-center gap-2"
@@ -102,18 +114,25 @@
                             clip-rule="evenodd"
                         />
                     </svg>
-                    <input type="password" placeholder="Confirm Password" />
+                    <input
+                        type="password"
+                        placeholder="Confirm Password"
+                        autocomplete="new-password"
+                    />
                 </label>
                 <button class="btn w-full bg-base-300 font-bold text-lg">
                     Register
                 </button>
                 <p class="text-sm mx-auto">
                     Already have an accont?
-                    <inertia-link href="/Login" class="text-sm underline">
+                    <inertia-link
+                        :href="route('login.index')"
+                        class="text-sm underline"
+                    >
                         Login Now</inertia-link
                     >
                 </p>
-            </div>
+            </form>
         </div>
     </div>
 </template>

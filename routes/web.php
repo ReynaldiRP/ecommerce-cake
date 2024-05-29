@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\AuthentificationController;
-use Inertia\Inertia;
+use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,5 +18,5 @@ use Illuminate\Support\Facades\Route;
 Route::inertia('/', 'App');
 Route::inertia('/about', 'About');
 Route::inertia('/home', 'App');
-
-Route::get('/login', [AuthentificationController::class, 'login'])->name('authentication.login');
+Route::resource('/login', LoginController::class);
+Route::resource('/register', RegisterController::class);

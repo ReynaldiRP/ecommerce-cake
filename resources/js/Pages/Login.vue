@@ -23,7 +23,7 @@
             </div>
             <form action="" method="post" class="flex flex-col mt-[2.5%] gap-6">
                 <label
-                    class="input input-bordered w-full input-lg lg:input-md xl:input-md lg:w-[450px] flex items-center gap-2"
+                    class="input input-bordered w-[450px] input-lg lg:input-md xl:input-md flex items-center gap-2"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -86,7 +86,10 @@
 
                 <p class="text-sm mx-auto">
                     Doesn't have an accont?
-                    <inertia-link href="/Register" class="text-sm underline">
+                    <inertia-link
+                        :href="route('register.index')"
+                        class="text-sm underline"
+                    >
                         Register Now</inertia-link
                     >
                 </p>
