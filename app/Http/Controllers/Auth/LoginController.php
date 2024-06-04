@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
+use Inertia\Inertia;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use Inertia\Inertia;
 
 class LoginController extends Controller
 {
@@ -19,50 +20,22 @@ class LoginController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Handle an authentication attempt.
      */
-    public function create()
+    public function authenticate(StoreUserRequest $request)
     {
-        //
-    }
+        $credential = $request->validated();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreUserRequest $request)
-    {
-        //
-    }
+        if (Auth::attempt($credential)) {
+            $request->session()->regenerate();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        //
-    }
+            return redirect('/home');
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateUserRequest $request, User $user)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $user)
-    {
-        //
+        return back()->withErrors([
+            'email' => 'Invalid email address',
+            'phone_number' => 'Invalid phone number',
+            'password' => 'Invalid password',
+        ]);
     }
 }

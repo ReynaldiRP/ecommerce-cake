@@ -1,6 +1,6 @@
 <template>
     <Navbar />
-    <Home />
+    <Home :user="user" />
 </template>
 
 <script setup>

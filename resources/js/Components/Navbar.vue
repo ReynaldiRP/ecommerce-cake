@@ -12,12 +12,13 @@
             <a
                 href="#"
                 class="text-xl font-bold text-primary-color cursor-pointer"
-                >Dream Dessert</a
-            >
+                >Dream Dessert
+            </a>
         </div>
         <ul class="navbar-center hidden lg:flex gap-8">
             <li
                 v-for="(menu, index) in menu"
+                :key="index"
                 class="text-lg font-medium cursor-pointer transition-all hover:text-primary-color"
             >
                 <inertia-link :href="`/${menu.toLowerCase()}`">
@@ -58,7 +59,7 @@
                             v-for="(menus, index) in menu"
                             class="text-lg font-medium cursor-pointer transition-all hover:text-primary-color"
                         >
-                            <inertia-link :href="`/${menus}`">{{
+                            <inertia-link :href="`/${menus.toLowerCase()}`">{{
                                 menus
                             }}</inertia-link>
                         </li>
@@ -152,6 +153,23 @@
                             <span class="badge badge-sm indicator-item">8</span>
                         </div>
                     </div>
+                    <div
+                        tabindex="0"
+                        class="mt-3 z-[1] card card-compact dropdown-content w-96 bg-base-100 shadow-xl"
+                    >
+                        <div
+                            class="card-body m-0 p-0"
+                            v-for="(notif, index) in notification"
+                            :key="index"
+                        >
+                            <p class="font-bold text-lg">
+                                {{ notif.name }}
+                            </p>
+                            <p class="text-info text-justify">
+                                {{ notif.message }}
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="hidden lg:flex gap-1">
@@ -170,4 +188,15 @@
 
 <script setup>
 const menu = ["Home", "About", "Catalog", "Contact"];
+
+const notification = [
+    {
+        name: "Budi",
+        message: `Hello Budi`,
+    },
+    {
+        name: "Angga",
+        message: `Hello Angga`,
+    },
+];
 </script>
