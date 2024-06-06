@@ -137,7 +137,13 @@
     </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref, reactive } from "vue";
+import BaseInput from "@/Components/BaseInput.vue";
+import { useForm } from "@inertiajs/inertia-vue3";
+
+
+</script>
 
 <style scoped>
 .first-section {

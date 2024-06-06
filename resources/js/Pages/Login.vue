@@ -47,23 +47,34 @@
                             : ""
                     }}</span>
                 </div>
-                <BaseInput
-                    v-model="form.email"
-                    style="width: 450px"
-                    placeholder="Email or Phone Number"
-                    inputType="email"
-                    :error="error.email"
-                    :error-message="errorMessage.email"
-                    @change="onChangeEmail"
-                />
+                <div class="flex flex-col gap-2">
+                    <label for="email" class="text-lg font-bold"
+                        >Email Address<span
+                            class="relative bottom-2 text-lg font-medium text-red-500"
+                            >*</span
+                        ></label
+                    >
+                    <BaseInput
+                        v-model="form.email"
+                        style="width: 450px"
+                        placeholder="user@gmail.com"
+                        inputType="email"
+                        id="email"
+                        :error="error.email"
+                        :error-message="errorMessage.email"
+                        @change="onChangeEmail"
+                    />
+                </div>
                 <BaseInput
                     v-model="form.password"
                     style="width: 450px"
-                    placeholder="Password"
-                    inputType="password"
+                    placeholder="Min. 8 Characters"
+                    :inputType="passwordInputType"
                     :error="error.password"
                     :error-message="errorMessage.password"
+                    :isPasswordShow="isPasswordShow"
                     @change="onChangePassword"
+                    :showPasswordToggle="showPasswordToggle"
                 />
                 <!-- <div class="flex flex-col gap-0">
                     <label
@@ -183,54 +194,59 @@ const form = useForm({
     password: "",
 });
 
+const validations = {
+    email: {
+        regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        minLength: 1,
+    },
+    password: {
+        minLength: 8,
+    },
+};
+
+const isPasswordShow = ref(false);
+const passwordInputType = ref("password");
+
+const showPasswordToggle = () => {
+    isPasswordShow.value = !isPasswordShow.value;
+    if (passwordInputType.value === "password") {
+        passwordInputType.value = "text";
+    } else {
+        passwordInputType.value = "password";
+    }
+};
 
 const validate = (value, type) => {
-    if (type === "email") {
-        return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
-    } else if (type === "password") {
-        return value.length > 1;
+    const validation = validations[type];
+    if (!validation) return;
+
+    error[type] = false;
+    errorMessage[type] = "";
+
+    if (value.length < validation.minLength) {
+        error[type] = true;
+        errorMessage[
+            type
+        ] = `${type} must be at least ${validation.minLength} characters`;
+
+        return;
     }
-    return false;
+
+    if (validation.regex && !validation.regex.test(value)) {
+        error[type] = true;
+        errorMessage[type] = `Please enter a valid ${type}`;
+    }
 };
 
 const onChangeEmail = () => {
-    if (!validate(form.email, "email")) {
-        error.email = true;
-        if (form.email.length >= 1) {
-            errorMessage.email = "Please enter a valid email";
-        } else {
-            errorMessage.email = "Email must be at least 1 character";
-        }
-    } else {
-        error.email = false;
-    }
+    validate(form.email, "email");
 };
 
 const onChangePassword = () => {
-    console.log(form.password.length);
-    if (!validate(form.password, "password")) {
-        error.password = true;
-        errorMessage.password = "Passwords must be at least 1 character";
-    } else {
-        error.password = false;
-    }
+    validate(form.password, "password");
 };
 
-const onSubmit = () => {
-    if (!validate(form.email, "email")) {
-        error.email = true;
-        errorMessage.email = "Please enter a valid email";
-    } else {
-        error.email = false;
-    }
-
-    if (!validate(form.password, "password")) {
-        error.password = true;
-        errorMessage.password = "Passwords must be at least 1 character";
-    } else {
-        error.password = false;
-    }
-};
+const onSubmit = () => {};
 </script>
 
 <style scoped>
