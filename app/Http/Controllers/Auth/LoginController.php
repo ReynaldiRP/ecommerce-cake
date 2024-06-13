@@ -22,20 +22,23 @@ class LoginController extends Controller
     /**
      * Handle an authentication attempt.
      */
-    public function authenticate(StoreUserRequest $request)
+    public function store(StoreUserRequest $request)
     {
         $credential = $request->validated();
 
         if (Auth::attempt($credential)) {
             $request->session()->regenerate();
-
             return redirect('/home');
         }
 
-        return back()->withErrors([
-            'email' => 'Invalid email address',
-            'phone_number' => 'Invalid phone number',
-            'password' => 'Invalid password',
-        ]);
+        $user = User::where('email', $credential['email'])->first();
+
+        if ($user) {
+            $errors = ['password' => 'Invalid Password'];
+        } else {
+            $errors = ['email' => 'Invalid Email Address'];
+        }
+
+        return back()->withErrors($errors);
     }
 }

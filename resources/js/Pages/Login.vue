@@ -21,8 +21,16 @@
                     Sign In
                 </h1>
             </div>
-            <form @submit.prevent="" class="flex flex-col gap-3">
-                <BaseAlert class="hidden" type="error" message="" />
+            <form
+                @submit.prevent="form.post('/login')"
+                class="flex flex-col gap-3"
+            >
+                <BaseAlert v-if="errors.email" type="error">{{
+                    errors.email
+                }}</BaseAlert>
+                <BaseAlert v-else-if="errors.password" type="error">{{
+                    errors.password
+                }}</BaseAlert>
                 <div class="flex flex-col gap-2">
                     <BaseLabel label="Email" :required="true" />
                     <BaseInput
@@ -90,6 +98,8 @@ import BaseInput from "@/Components/BaseInput.vue";
 import BaseLabel from "@/Components/BaseLabel.vue";
 import BaseAlert from "@/Components/BaseAlert.vue";
 
+defineProps({ errors: Object });
+
 const error = reactive({
     email: false,
     password: false,
@@ -154,8 +164,6 @@ const onChangeEmail = () => {
 const onChangePassword = () => {
     validate(form.password, "password");
 };
-
-const onSubmit = () => {};
 </script>
 
 <style scoped>
