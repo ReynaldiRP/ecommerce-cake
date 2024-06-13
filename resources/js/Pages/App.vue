@@ -1,9 +1,10 @@
 <template>
-    <Navbar />
-    <Home :user="user" />
+    <App>
+        <Home />
+    </App>
 </template>
 
 <script setup>
-import Navbar from "@/Components/Navbar.vue";
+import App from "@/Layouts/App.vue";
 import Home from "@/Pages/Home.vue";
 </script>
