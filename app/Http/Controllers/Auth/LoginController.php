@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
+
 
 class LoginController extends Controller
 {
@@ -22,7 +22,7 @@ class LoginController extends Controller
     /**
      * Handle an authentication attempt.
      */
-    public function store(StoreUserRequest $request)
+    public function store(LoginRequest $request)
     {
         $credential = $request->validated();
 
@@ -39,6 +39,6 @@ class LoginController extends Controller
             $errors = ['email' => 'Invalid Email Address'];
         }
 
-        return back()->withErrors($errors);
+        return to_route('login.index')->withErrors($errors);
     }
 }

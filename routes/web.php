@@ -16,8 +16,12 @@ use App\Models\User;
 |
 */
 
-Route::inertia('/', 'App');
-Route::inertia('/about', 'About');
-Route::inertia('/home', 'App');
+Route::middleware(['auth'])->group(function () {
+    Route::inertia('/', 'Home');
+    Route::inertia('/about', 'About');
+    Route::inertia('/home', 'Home');
+});
+
+
 Route::resource('/login', LoginController::class);
 Route::resource('/register', RegisterController::class);

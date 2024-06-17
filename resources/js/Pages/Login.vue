@@ -25,10 +25,10 @@
                 @submit.prevent="form.post('/login')"
                 class="flex flex-col gap-3"
             >
-                <BaseAlert v-if="errors.email" type="error">{{
+                <BaseAlert v-if="errors.email" type="alert-error">{{
                     errors.email
                 }}</BaseAlert>
-                <BaseAlert v-else-if="errors.password" type="error">{{
+                <BaseAlert v-else-if="errors.password" type="alert-error">{{
                     errors.password
                 }}</BaseAlert>
                 <div class="flex flex-col gap-2">
@@ -98,21 +98,28 @@ import BaseInput from "@/Components/BaseInput.vue";
 import BaseLabel from "@/Components/BaseLabel.vue";
 import BaseAlert from "@/Components/BaseAlert.vue";
 
+// Properties for error messages in server-side
 defineProps({ errors: Object });
 
+// State for error in client side
 const error = reactive({
     email: false,
     password: false,
 });
+
+// State for error message in client side
 const errorMessage = reactive({
     email: "",
     password: "",
 });
+
+// Form helper for input fields
 const form = useForm({
     email: "",
     password: "",
 });
 
+// Valdation for email and password in client side
 const validations = {
     email: {
         regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -123,9 +130,13 @@ const validations = {
     },
 };
 
+// State for current show password toggle
 const isPasswordShow = ref(false);
+
+// State for input type password
 const passwordInputType = ref("password");
 
+// Function for password toggle
 const showPasswordToggle = () => {
     isPasswordShow.value = !isPasswordShow.value;
     if (passwordInputType.value === "password") {
@@ -135,7 +146,8 @@ const showPasswordToggle = () => {
     }
 };
 
-const validate = (value, type) => {
+// Function for validation user input in client side
+const validate = (value, type, e) => {
     const validation = validations[type];
     if (!validation) return;
 
@@ -148,6 +160,8 @@ const validate = (value, type) => {
             1
         )} must be at least ${validation.minLength} characters`;
 
+        e.preventDefault();
+
         return;
     }
 
@@ -157,10 +171,12 @@ const validate = (value, type) => {
     }
 };
 
+// Function event on change input user email
 const onChangeEmail = () => {
     validate(form.email, "email");
 };
 
+// Function event on change input user password
 const onChangePassword = () => {
     validate(form.password, "password");
 };

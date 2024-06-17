@@ -1,9 +1,11 @@
 <template>
-    <div
-        class="min-h-screen flex flex-col items-center justify-center text-2xl font-bold"
-    >
-        <h1>Hello this is Home Page</h1>
-    </div>
+    <App>
+        <div class="h-full flex justify-center items-center">
+            <h1 class="">Home Page</h1>
+        </div>
+    </App>
 </template>
 
-<script setup></script>
+<script setup>
+import App from "@/Layouts/App.vue";
+</script>

@@ -17,7 +17,22 @@
                 </div>
                 <h1 class="text-primary-color font-bold text-3xl">Register</h1>
             </div>
-            <form action="" method="post" class="flex flex-col gap-3">
+            <form
+                @submit.prevent="form.post('register')"
+                class="flex flex-col gap-3"
+            >
+                <BaseAlert v-if="errors.email" type="error">{{
+                    errors.email
+                }}</BaseAlert>
+                <BaseAlert v-else-if="errors.password" type="error">{{
+                    errors.password
+                }}</BaseAlert>
+                <BaseAlert v-else-if="errors.username" type="error">{{
+                    errors.username
+                }}</BaseAlert>
+                <BaseAlert v-else-if="errors.address" type="error">{{
+                    errors.address
+                }}</BaseAlert>
                 <div class="flex flex-col gap-2">
                     <BaseLabel label="Username" :required="true" />
                     <BaseInput
@@ -73,7 +88,7 @@
                 <div class="flex flex-col gap-2">
                     <BaseLabel label="Confirm Password" :required="true" />
                     <BaseInput
-                        v-model="form.confirmPassword"
+                        v-model="form.password_confirmation"
                         style="width: 450px"
                         placeholder="Min. 8 Characters"
                         :input-type="passwordInputType.confirmPassword"
@@ -104,11 +119,14 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, defineProps } from "vue";
 import Auth from "@/Layouts/Auth.vue";
 import BaseInput from "@/Components/BaseInput.vue";
 import BaseLabel from "@/Components/BaseLabel.vue";
+import BaseAlert from "@/Components/BaseAlert.vue";
 import { useForm } from "@inertiajs/inertia-vue3";
+
+defineProps({ errors: Object });
 
 const error = reactive({
     username: false,
@@ -138,7 +156,7 @@ const form = useForm({
     email: "",
     address: "",
     password: "",
-    confirmPassword: "",
+    password_confirmation: "",
 });
 
 const validations = {
@@ -215,7 +233,7 @@ const onChangePassword = () => {
 };
 
 const onChangeConfirmPassword = () => {
-    validate(form.confirmPassword, "confirmPassword");
+    validate(form.password_confirmation, "confirmPassword");
 };
 </script>
 

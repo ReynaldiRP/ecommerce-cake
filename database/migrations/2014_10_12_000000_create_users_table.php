@@ -18,13 +18,13 @@ return new class extends Migration
                 column: 'id',
                 indexName: 'user_role_id'
             );
-            $table->string('name');
+            $table->string('username');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('phone_number');
+            $table->string('phone_number')->nullable();
             $table->string('address');
             $table->string('image_url')->nullable();
-            $table->char('gender');
+            $table->char('gender')->nullable();
             $table->timestamps();
         });
     }

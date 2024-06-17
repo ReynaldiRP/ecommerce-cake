@@ -1,5 +1,5 @@
 <template>
-    <div class="navbar px-5 py-4 bg-base-200">
+    <div class="navbar sticky px-5 py-4 bg-base-200">
         <div class="navbar-start gap-3">
             <div class="avatar">
                 <div class="w-24 lg:w-16 rounded-full">
