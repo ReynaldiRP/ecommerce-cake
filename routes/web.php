@@ -17,11 +17,15 @@ use App\Models\User;
 */
 
 Route::middleware(['auth'])->group(function () {
-    Route::inertia('/', 'Home');
-    Route::inertia('/about', 'About');
-    Route::inertia('/home', 'Home');
+    Route::withoutMiddleware(['auth'])->group(function () {
+        Route::inertia('/', 'Home');
+        Route::inertia('/about', 'About');
+        Route::inertia('/home', 'Home');
+    });
 });
 
 
-Route::resource('/login', LoginController::class);
-Route::resource('/register', RegisterController::class);
+Route::middleware(['guest'])->group(function () {
+    Route::resource('/login', LoginController::class);
+    Route::resource('/register', RegisterController::class);
+});

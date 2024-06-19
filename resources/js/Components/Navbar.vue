@@ -27,70 +27,7 @@
             </li>
         </ul>
         <div class="navbar-end flex gap-5">
-            <div
-                class="flex flex-row-reverse justify-center items-center gap-2"
-            >
-                <div class="lg:hidden flex-shrink dropdown dropdown-end">
-                    <div
-                        tabindex="0"
-                        role="button"
-                        class="btn btn-ghost btn-circle"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-5 w-5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h7"
-                            />
-                        </svg>
-                    </div>
-                    <ul
-                        tabindex="0"
-                        class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-                    >
-                        <li
-                            v-for="(menus, index) in menu"
-                            class="text-lg font-medium cursor-pointer transition-all hover:text-primary-color"
-                        >
-                            <inertia-link :href="`/${menus.toLowerCase()}`">{{
-                                menus
-                            }}</inertia-link>
-                        </li>
-                    </ul>
-                </div>
-                <div class="dropdown dropdown-end lg:hidden">
-                    <div
-                        tabindex="0"
-                        role="button"
-                        class="btn btn-ghost btn-circle avatar"
-                    >
-                        <div
-                            class="w-10 rounded-full ring ring-primary-color ring-offset-base-100 ring-offset-2"
-                        >
-                            <img
-                                alt="Tailwind CSS Navbar component"
-                                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-                            />
-                        </div>
-                    </div>
-                    <ul
-                        tabindex="0"
-                        class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-                    >
-                        <li>
-                            <a class="justify-between"> Profile </a>
-                        </li>
-                        <li><a>Settings</a></li>
-                        <li><a>Logout</a></li>
-                    </ul>
-                </div>
+            <div class="flex justify-center items-center gap-2">
                 <div class="dropdown dropdown-end">
                     <div
                         tabindex="0"
@@ -172,7 +109,36 @@
                     </div>
                 </div>
             </div>
-            <div class="hidden lg:flex gap-1">
+            <div
+                class="dropdown dropdown-end"
+                :class="user ? 'block' : 'hidden'"
+            >
+                <div
+                    tabindex="0"
+                    role="button"
+                    class="btn btn-ghost btn-circle avatar"
+                >
+                    <div
+                        class="w-10 rounded-full ring ring-primary-color ring-offset-base-100 ring-offset-2"
+                    >
+                        <img
+                            alt="Tailwind CSS Navbar component"
+                            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                        />
+                    </div>
+                </div>
+                <ul
+                    tabindex="0"
+                    class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+                >
+                    <li>
+                        <a class="justify-between"> Profile </a>
+                    </li>
+                    <li><a>Settings</a></li>
+                    <li><a>Logout</a></li>
+                </ul>
+            </div>
+            <div class="gap-1" :class="user ? 'hidden' : 'md:flex'">
                 <inertia-link :href="route('login.index')" class="btn btn-ghost"
                     >Login</inertia-link
                 >
@@ -182,11 +148,53 @@
                     >Create New Account</inertia-link
                 >
             </div>
+            <div class="lg:hidden flex-shrink dropdown dropdown-end">
+                <div
+                    tabindex="0"
+                    role="button"
+                    class="btn btn-ghost btn-circle"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h7"
+                        />
+                    </svg>
+                </div>
+                <ul
+                    tabindex="0"
+                    class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+                >
+                    <li
+                        v-for="(menus, index) in menu"
+                        class="text-lg font-medium cursor-pointer transition-all hover:text-primary-color"
+                    >
+                        <inertia-link :href="`/${menus.toLowerCase()}`">{{
+                            menus
+                        }}</inertia-link>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup>
+import { computed } from "vue";
+import { usePage } from "@inertiajs/inertia-vue3";
+
+const page = usePage();
+
+const user = computed(() => page.props.value.auth.user);
+
 const menu = ["Home", "About", "Catalog", "Contact"];
 
 const notification = [

@@ -18,6 +18,7 @@ class Admin
         if (auth()->user()->role_id == 1) {
             return $next($request);
         }
-        abort(404);
+
+        abort(403);
     }
 }
