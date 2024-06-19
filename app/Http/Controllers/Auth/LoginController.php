@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Support\Facades\Auth;
-
+use App\Http\Requests\Auth\LoginRequest;
 
 class LoginController extends Controller
 {
@@ -40,5 +40,16 @@ class LoginController extends Controller
         }
 
         return to_route('login.index')->withErrors($errors);
+    }
+
+    public function destroy(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return to_route('login.index');
     }
 }

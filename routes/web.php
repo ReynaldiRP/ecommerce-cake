@@ -22,6 +22,7 @@ Route::middleware(['auth'])->group(function () {
         Route::inertia('/about', 'About');
         Route::inertia('/home', 'Home');
     });
+    Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 });
 
 

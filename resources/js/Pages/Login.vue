@@ -1,5 +1,13 @@
 <template>
     <Auth>
+        <loading
+            v-model:active="isLoading"
+            :can-cancel="true"
+            :on-cancel="onCancel"
+            :is-full-page="fullPage"
+            color="#EBA9AE"
+            background-color="#B2BEB5"
+        />
         <div
             class="min-h-screen hidden lg:w-[60%] lg:block first-section rounded-e-2xl"
         ></div>
@@ -21,10 +29,7 @@
                     Sign In
                 </h1>
             </div>
-            <form
-                @submit.prevent="form.post('/login')"
-                class="flex flex-col gap-3"
-            >
+            <form @submit.prevent="submit" class="flex flex-col gap-3">
                 <BaseAlert v-if="errors.email" type="alert-error">{{
                     errors.email
                 }}</BaseAlert>
@@ -97,6 +102,8 @@ import Auth from "@/Layouts/Auth.vue";
 import BaseInput from "@/Components/BaseInput.vue";
 import BaseLabel from "@/Components/BaseLabel.vue";
 import BaseAlert from "@/Components/BaseAlert.vue";
+import Loading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/css/index.css";
 
 // Properties for error messages in server-side
 defineProps({ errors: Object });
@@ -136,6 +143,8 @@ const isPasswordShow = ref(false);
 // State for input type password
 const passwordInputType = ref("password");
 
+const isLoading = ref(false);
+
 // Function for password toggle
 const showPasswordToggle = () => {
     isPasswordShow.value = !isPasswordShow.value;
@@ -160,8 +169,6 @@ const validate = (value, type, e) => {
             1
         )} must be at least ${validation.minLength} characters`;
 
-        e.preventDefault();
-
         return;
     }
 
@@ -179,6 +186,14 @@ const onChangeEmail = () => {
 // Function event on change input user password
 const onChangePassword = () => {
     validate(form.password, "password");
+};
+
+const submit = () => {
+    isLoading.value = true;
+    setTimeout(() => {
+        isLoading.value = false;
+        form.post("/login");
+    }, 5000);
 };
 </script>
 
