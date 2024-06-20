@@ -18,9 +18,7 @@ use App\Models\User;
 
 Route::middleware(['auth'])->group(function () {
     Route::withoutMiddleware(['auth'])->group(function () {
-        Route::inertia('/', 'Home');
-        Route::inertia('/about', 'About');
-        Route::inertia('/home', 'Home');
+        Route::inertia('/', 'UserApp');
     });
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 });

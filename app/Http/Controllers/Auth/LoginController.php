@@ -28,7 +28,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($credential)) {
             $request->session()->regenerate();
-            return redirect('/home');
+            return redirect('/');
         }
 
         $user = User::where('email', $credential['email'])->first();

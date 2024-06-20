@@ -1,5 +1,13 @@
 <template>
     <Auth>
+        <loading
+            v-model:active="isLoading"
+            :can-cancel="true"
+            :on-cancel="onCancel"
+            :is-full-page="fullPage"
+            color="#EBA9AE"
+            background-color="#B2BEB5"
+        />
         <div
             class="first-section min-h-screen hidden lg:w-[60%] lg:block rounded-e-2xl"
         ></div>
@@ -17,10 +25,7 @@
                 </div>
                 <h1 class="text-primary-color font-bold text-3xl">Register</h1>
             </div>
-            <form
-                @submit.prevent="form.post('register')"
-                class="flex flex-col gap-3"
-            >
+            <form @submit.prevent="submit" class="flex flex-col gap-3">
                 <BaseAlert v-if="errors.email" type="error">{{
                     errors.email
                 }}</BaseAlert>
@@ -125,6 +130,8 @@ import BaseInput from "@/Components/BaseInput.vue";
 import BaseLabel from "@/Components/BaseLabel.vue";
 import BaseAlert from "@/Components/BaseAlert.vue";
 import { useForm } from "@inertiajs/inertia-vue3";
+import Loading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/css/index.css";
 
 defineProps({ errors: Object });
 
@@ -194,6 +201,8 @@ const showPasswordToggle = (field) => {
     passwordInputType[field] = isPasswordShow[field] ? "text" : "password";
 };
 
+const isLoading = ref(false);
+
 const validate = (value, type) => {
     const validation = validations[type];
     if (!validation) return;
@@ -234,6 +243,14 @@ const onChangePassword = () => {
 
 const onChangeConfirmPassword = () => {
     validate(form.password_confirmation, "confirmPassword");
+};
+
+const submit = () => {
+    isLoading.value = true;
+    setTimeout(() => {
+        isLoading.value = false;
+        form.post("/register");
+    }, 5000);
 };
 </script>
 
