@@ -1,63 +1,40 @@
 <template>
     <div class="h-screen flex flex-col">
-        <section
-            class="hero min-h-screen"
-            style="
-                background-image: url(/assets/image/register-background.webp);
-            "
+        <article
+            class="h-full flex justify-center items-center bg-[url('/assets/image/home-image-cake.png')] bg-no-repeat bg-center bg-contain lg:bg-none"
         >
-            <div class="hero-overlay bg-opacity-60"></div>
-            <div class="hero-content text-center text-neutral-content">
-                <div class="max-w-2xl p-10">
-                    <h1 class="mb-5 text-4xl font-bold text-primary-color">
-                        Create Your Perfect Cake Just for You!
+            <section
+                class="max-h-[50%] lg:h-full w-1/2 lg:px-28 bg-base-200 lg:bg-base-100 p-4 lg:p-0 rounded-lg flex flex-col justify-center gap-6"
+            >
+                <div class="flex flex-col text-xl lg:text-2xl gap-3">
+                    <h1 class="font-bold uppercase text-primary-color">
+                        Create your perfect cake just for you!
                     </h1>
-                    <p class="mb-5 text-justify">
+                    <p class="text-lg lg:text-xl text-justify">
                         Welcome to DreamDessert, where your dream cake becomes a
                         reality! From elegant wedding cakes to delicious
                         brownies and delightful pastries, we offer a wide range
-                        of options to satisfy your sweet tooth. Select from an
-                        array of flavors and mix-and-match your favorite
-                        toppings to design a cake that's uniquely yours. Whether
-                        it's for a birthday, wedding, or any special occasion,
-                        our customization options ensure every treat is made to
-                        suit your taste and style. Start crafting your perfect
-                        dessert today and make your celebration unforgettable!
+                        of options to satisfy your sweet tooth.
                     </p>
-                    <div class="flex justify-center gap-2">
-                        <button
-                            class="btn btn-outline btn-md text-white hover:bg-primary-color hover:opacity-65 hover:text-black border-primary-color"
-                        >
-                            Order Now
-                        </button>
-                        <button
-                            class="btn btn-md text-black bg-primary-color hover:bg-primary-color hover:opacity-65 hover:text-slate-500 border-none"
-                        >
-                            Discovery Our Catalogs
-                        </button>
-                    </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- <article class="h-full flex justify-center items-center">
-            <section class="h-full w-1/2 flex justify-center">
-                <p>test</p>
+                <div class="flex gap-2">
+                    <button
+                        class="btn btn-outline btn-md text-white hover:bg-primary-color hover:opacity-65 hover:text-black border-primary-color"
+                    >
+                        Order Now
+                    </button>
+                    <button
+                        class="btn btn-md text-black bg-primary-color hover:bg-primary-color hover:opacity-65 hover:text-slate-500 border-none"
+                    >
+                        Discovery Our Catalogs
+                    </button>
+                </div>
             </section>
             <section
-                class="hero-image h-full w-1/2 flex justify-center"
+                class="h-full w-1/2 hidden lg:flex lg:justify-center lg:bg-[url('/assets/image/home-image-cake.png')] bg-no-repeat bg-center bg-contain"
             ></section>
-        </article> -->
+        </article>
     </div>
 </template>
 
 <script setup></script>
-
-<style scoped>
-.hero-image {
-    background-image: url(/assets/image/hero-image.png);
-    background-position: 55% 15%;
-    background-repeat: no-repeat;
-    background-size: 400px;
-}
-</style>
