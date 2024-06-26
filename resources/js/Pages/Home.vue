@@ -1,7 +1,7 @@
 <template>
-    <div class="h-screen flex flex-col">
+    <div class="h-screen flex flex-col justify-center items-center">
         <article
-            class="h-full flex justify-center items-center bg-[url('/assets/image/home-image-cake.png')] bg-no-repeat bg-center bg-contain lg:bg-none"
+            class="h-1/2 lg:h-full flex justify-center items-center bg-[url('/assets/image/home-image-cake.png')] bg-no-repeat bg-center bg-contain lg:bg-none"
         >
             <section
                 class="max-h-[50%] lg:h-full w-1/2 lg:px-28 bg-base-200 lg:bg-base-100 p-4 lg:p-0 rounded-lg flex flex-col justify-center gap-6"

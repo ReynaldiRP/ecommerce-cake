@@ -1,62 +1,73 @@
 <template>
-    <Carousel :wrap-around="true">
-        <Slide v-for="slide in 10" :key="slide">
-            <!-- <img
-                class="carousel__item"
+    <Splide
+        :options="options"
+        @splide:moved="onMoved"
+        aria-label="My Favorite Images"
+        class="mt-4"
+    >
+        <SplideSlide
+            class="flex flex-col justify-start items-center gap-2"
+            v-for="(image, index) in imageUrl"
+            :key="index"
+        >
+            <img
+                class="bg-base-200 rounded-lg min-h-[400px]"
                 :src="image.link"
-                alt="carousel image"
-            /> -->
-            <div class="carousel__item">{{ slide }}</div>
-        </Slide>
-
-        <template #addons>
-            <Navigation />
-        </template>
-    </Carousel>
+                :class="{
+                    'bg-primary-color': activeSlideIndex === index,
+                }"
+                alt="image"
+            />
+            <p
+                class="text-xl text-white"
+                :class="{
+                    'font-bold': activeSlideIndex === index,
+                }"
+            >
+                {{ image.name }}
+            </p>
+        </SplideSlide>
+    </Splide>
 </template>
 
 <script setup>
-import { Carousel, Navigation, Slide } from "vue3-carousel";
+import { reactive, ref } from "vue";
+import { Splide, SplideSlide } from "@splidejs/vue-splide";
+import "@splidejs/vue-splide/css";
 
-import "vue3-carousel/dist/carousel.css";
+const options = reactive({
+    rewind: true,
+    fixedHeight: "450px",
+    autoWidth: true,
+    focus: "center",
+    trimSpace: false,
+    drag: true,
+    pagination: false,
+});
 
 const imageUrl = [
     {
         link: "assets/image/pastry.png",
+        name: "Pastry",
     },
     {
-        link: "assets/image/pastry.png",
+        link: "assets/image/hero-image.png",
+        name: "Wedding Cake",
     },
     {
-        link: "assets/image/pastry.png",
+        link: "assets/image/home-image-cake.png",
+        name: "Birthday Cake",
     },
     {
-        link: "assets/image/pastry.png",
+        link: "assets/image/pink-cake.png",
+        name: "Birthday Cake",
     },
 ];
+
+const activeSlideIndex = ref(0);
+const onMoved = (Splide, newIndex, prevIndex, destIndex) => {
+    activeSlideIndex.value = newIndex;
+    console.log(newIndex);
+};
 </script>
-
-<style scoped>
-.carousel__item {
-    min-height: 300px;
-    width: 100%;
-    background-color: black;
-    color: white;
-    font-size: 20px;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.carousel__slide {
-    padding: 10px;
-}
-
-.carousel__prev,
-.carousel__next {
-    box-sizing: content-box;
-    border: 5px solid white;
-    background-color: white;
-}
-</style>
+<style scoped></style>
