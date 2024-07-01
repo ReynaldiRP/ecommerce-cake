@@ -1,5 +1,5 @@
 <template>
-    <footer class="footer p-10 bg-base-200 text-base-content">
+    <footer class="footer p-6 mt-10 lg:mt-0 bg-base-200 text-base-content">
         <nav>
             <h6 class="footer-title">Products</h6>
             <a class="link link-hover">Catalog</a>
