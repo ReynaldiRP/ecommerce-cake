@@ -9,8 +9,7 @@
                 <h1 class="text-lg font-medium me-auto">Filter</h1>
                 <FilterLayout>
                     <FilterItem filtering-name="Personalization">
-                        <BaseCheckbox label="Customized" />
-                        <BaseCheckbox label="Non Customized" />
+                        <BaseRadio :flavour="flavour" />
                     </FilterItem>
                     <FilterItem filtering-name="Category">
                         <BaseCheckbox label="Tart" />
@@ -28,7 +27,7 @@
                         <CardItem
                             image-url="assets/image/pastry.png"
                             cake-name="Wedding Cake"
-                            cake-price="`Rp 15000`"
+                            cake-price="Rp 15000"
                             cake-flavour="Vanilla"
                             cake-toppings="Berry, Choco"
                         />
@@ -47,5 +46,18 @@ import CardItem from "@/Components/BaseCard/Item.vue";
 import FilterLayout from "@/Components/FilterProduct/Layout.vue";
 import FilterItem from "@/Components/FilterProduct/Item.vue";
 import BaseCheckbox from "@/Components/BaseCheckbox.vue";
+import BaseRadio from "@/Components/BaseRadio.vue";
 import Pagination from "@/Components/Pagination.vue";
+
+const flavour = [
+    {
+        name: "Vanilla",
+    },
+    {
+        name: "Red Velvet",
+    },
+    {
+        name: "Matcha",
+    },
+];
 </script>
