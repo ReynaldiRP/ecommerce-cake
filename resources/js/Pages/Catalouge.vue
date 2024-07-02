@@ -9,7 +9,7 @@
                 <h1 class="text-lg font-medium me-auto">Filter</h1>
                 <FilterLayout>
                     <FilterItem filtering-name="Personalization">
-                        <BaseRadio :flavour="flavour" />
+                        <BaseRadio :flavour="flavours" />
                     </FilterItem>
                     <FilterItem filtering-name="Category">
                         <BaseCheckbox label="Tart" />
@@ -23,7 +23,7 @@
                 class="col-span-4 flex flex-col items-center justify-center gap-8"
             >
                 <section class="grid lg:grid-cols-4 gap-4">
-                    <CardLayout :width="56" v-for="items in 6" :key="items">
+                    <CardLayout :width="56" v-for="items in 4" :key="items">
                         <CardItem
                             image-url="assets/image/pastry.png"
                             cake-name="Wedding Cake"
@@ -49,7 +49,7 @@ import BaseCheckbox from "@/Components/BaseCheckbox.vue";
 import BaseRadio from "@/Components/BaseRadio.vue";
 import Pagination from "@/Components/Pagination.vue";
 
-const flavour = [
+const flavours = [
     {
         name: "Vanilla",
     },

@@ -13,41 +13,19 @@
                 favorite toppings to design a cake that's uniquely yours.
             </p>
         </div>
-        <Splide
-            :options="options"
-            @splide:moved="onMoved"
-            @splide:click="onClick"
-            aria-label="My Favorite Images"
-        >
-            <SplideSlide
-                class="flex flex-col justify-start items-center gap-2"
-                v-for="(image, index) in imageUrl"
-                :key="index"
-            >
-                <img
-                    class="bg-base-200 rounded-lg min-h-[200px] md:min-h-[300px] lg:min-h-[400px]"
-                    :src="image.link"
-                    :class="{
-                        'bg-primary-color': activeSlideIndex === index,
-                    }"
-                    alt="image"
-                />
-                <p
-                    class="text-2xl text-white"
-                    :class="{
-                        'font-bold': activeSlideIndex === index,
-                    }"
-                >
-                    {{ image.name }}
-                </p>
-            </SplideSlide>
-        </Splide>
+        <LayoutCarousel :options="options" :on-moved="onMoved">
+            <ItemCarousel
+                :image-url="imageUrl"
+                :active-slide-index="activeSlideIndex"
+            />
+        </LayoutCarousel>
     </section>
 </template>
 
 <script setup>
 import { reactive, ref, defineComponent } from "vue";
-import { Splide, SplideSlide } from "@splidejs/vue-splide";
+import LayoutCarousel from "@/Components/BaseCarousel/Layout.vue";
+import ItemCarousel from "@/Components/BaseCarousel/Item.vue";
 import "@splidejs/vue-splide/css";
 
 const imageUrl = [
@@ -94,13 +72,8 @@ const options = reactive({
 });
 
 const activeSlideIndex = ref(0);
-const splideIndex = ref(null);
 
 const onMoved = (Splide, newIndex, prevIndex, destIndex) => {
     activeSlideIndex.value = newIndex;
-};
-
-const onClick = (Splide, Slide, e) => {
-    splideIndex.value = Slide;
 };
 </script>
