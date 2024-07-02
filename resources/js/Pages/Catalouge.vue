@@ -110,26 +110,15 @@
                 class="col-span-4 flex flex-col items-center justify-center gap-8"
             >
                 <section class="grid lg:grid-cols-4 gap-4">
-                    <inertia-link
-                        class="card card-compact h-full w-56 bg-base-300 shadow-xl"
-                        v-for="items in 8"
-                    >
-                        <figure>
-                            <img
-                                src="assets/image/default-img.jpg"
-                                alt="Shoes"
-                            />
-                        </figure>
-                        <div class="card-body">
-                            <h2 class="text-base font-light">Birthday Cake</h2>
-                            <p class="text-lg font-bold">Rp 15000</p>
-                            <div class="w-fit flex gap-2">
-                                <p class="text-sm font-light">Vanilla</p>
-                                <span>|</span>
-                                <p class="text-sm font-light">Berry, Choco</p>
-                            </div>
-                        </div>
-                    </inertia-link>
+                    <CardLayout :width="56" v-for="items in 6" :key="items">
+                        <CardItem
+                            image-url="assets/image/pastry.png"
+                            cake-name="Wedding Cake"
+                            :cake-price="`Rp ${price}`"
+                            cake-flavour="Vanilla"
+                            cake-toppings="Berry, Choco"
+                        />
+                    </CardLayout>
                 </section>
                 <div class="join">
                     <button class="join-item btn">«</button>
@@ -145,4 +134,8 @@
 
 <script setup>
 import App from "@/Layouts/App.vue";
+import CardLayout from "@/Components/BaseCard/Layout.vue";
+import CardItem from "@/Components/BaseCard/Item.vue";
+
+const price = 15000;
 </script>
