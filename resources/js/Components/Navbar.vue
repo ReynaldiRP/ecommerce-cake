@@ -152,57 +152,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="flex-shrink dropdown dropdown-end">
-                <div
-                    tabindex="0"
-                    role="button"
-                    class="btn btn-ghost btn-circle"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h7"
-                        />
-                    </svg>
-                </div>
-                <ul
-                    tabindex="0"
-                    class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-                >
-                    <li
-                        v-for="(menus, index) in menu"
-                        class="text-lg font-medium cursor-pointer transition-all hover:text-primary-color"
-                    >
-                        <inertia-link :href="`/${menus.toLowerCase()}`">{{
-                            menus
-                        }}</inertia-link>
-                    </li>
-                    <li
-                        class="text-lg font-medium cursor-pointer transition-all hover:text-primary-color"
-                        :class="user ? 'hidden' : 'block'"
-                    >
-                        <inertia-link :href="route('login.index')"
-                            >Login</inertia-link
-                        >
-                    </li>
-                    <li
-                        class="text-lg font-medium cursor-pointer transition-all hover:text-primary-color"
-                        :class="user ? 'hidden' : 'block'"
-                    >
-                        <inertia-link :href="route('register.index')"
-                            >Create New Account</inertia-link
-                        >
-                    </li>
-                </ul>
-            </div>
+            <Sidebar :menu="menu" :user="user" />
         </div>
     </div>
 
@@ -220,6 +170,7 @@ import { ref, reactive, computed, onMounted, onUnmounted } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 import Loading from "vue-loading-overlay";
+import Sidebar from "@/Components/Sidebar.vue";
 import "vue-loading-overlay/dist/css/index.css";
 
 const page = usePage();

@@ -4,7 +4,6 @@
             v-model:active="isLoading"
             :can-cancel="true"
             :on-cancel="onCancel"
-            :is-full-page="fullPage"
             color="#EBA9AE"
             background-color="#B2BEB5"
         />
