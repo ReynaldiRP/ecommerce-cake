@@ -5,7 +5,7 @@
                 type="checkbox"
                 class="checkbox btn-outline [--chkbg:theme(colors.pink.400)] [--chkfg:white] checked:border-pink-400"
             />
-            <span class="text-base text-base-200 font-medium">{{ label }}</span>
+            <span class="text-base text-color font-medium">{{ label }}</span>
         </label>
     </div>
 </template>
@@ -15,5 +15,14 @@ defineProps({
     label: {
         type: String,
     },
+    textColor: {
+        type: String,
+    },
 });
 </script>
+
+<style scoped>
+.text-color {
+    color: v-bind(textColor);
+}
+</style>

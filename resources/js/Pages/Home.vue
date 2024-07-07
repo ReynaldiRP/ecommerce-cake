@@ -1,16 +1,16 @@
 <template>
     <App>
         <HeroSection />
-        <Product />
-        <About />
-        <Testimony />
+        <CustomizeProductSection />
+        <AboutSection />
+        <TestimonySection />
     </App>
 </template>
 
 <script setup>
 import App from "@/Layouts/App.vue";
 import HeroSection from "@/Pages/HeroSection.vue";
-import Product from "@/Pages/Product.vue";
-import About from "@/Pages/About.vue";
-import Testimony from "@/Pages/Testimony.vue";
+import CustomizeProductSection from "@/Pages/CustomizeProductSection.vue";
+import AboutSection from "@/Pages/AboutSection.vue";
+import TestimonySection from "@/Pages/TestimonySection.vue";
 </script>

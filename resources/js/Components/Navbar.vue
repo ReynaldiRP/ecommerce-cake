@@ -187,6 +187,7 @@
                     </li>
                     <li
                         class="text-lg font-medium cursor-pointer transition-all hover:text-primary-color"
+                        :class="user ? 'hidden' : 'block'"
                     >
                         <inertia-link :href="route('login.index')"
                             >Login</inertia-link
@@ -194,6 +195,7 @@
                     </li>
                     <li
                         class="text-lg font-medium cursor-pointer transition-all hover:text-primary-color"
+                        :class="user ? 'hidden' : 'block'"
                     >
                         <inertia-link :href="route('register.index')"
                             >Create New Account</inertia-link

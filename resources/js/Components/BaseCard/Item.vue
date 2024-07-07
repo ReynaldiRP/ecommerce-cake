@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <inertia-link :href="url">
         <figure>
             <img :src="imageUrl" alt="Shoes" />
         </figure>
@@ -12,7 +12,7 @@
                 <p class="text-sm font-light">{{ cakeToppings }}</p>
             </div>
         </div>
-    </div>
+    </inertia-link>
 </template>
 
 <script setup>
@@ -30,6 +30,9 @@ defineProps({
         type: String,
     },
     cakeToppings: {
+        type: String,
+    },
+    url: {
         type: String,
     },
 });
