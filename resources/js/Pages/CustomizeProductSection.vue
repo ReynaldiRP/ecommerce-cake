@@ -14,7 +14,7 @@
             </p>
         </div>
         <LayoutCarousel :options="options" :on-moved="onMoved">
-            <ItemCarousel
+            <ImageCarousel
                 :image-url="imageUrl"
                 :active-slide-index="activeSlideIndex"
             />
@@ -25,7 +25,7 @@
 <script setup>
 import { reactive, ref, defineComponent } from "vue";
 import LayoutCarousel from "@/Components/BaseCarousel/Layout.vue";
-import ItemCarousel from "@/Components/BaseCarousel/Item.vue";
+import ImageCarousel from "@/Components/BaseCarousel/Image.vue";
 import "@splidejs/vue-splide/css";
 
 const imageUrl = [

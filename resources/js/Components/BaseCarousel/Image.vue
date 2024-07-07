@@ -34,6 +34,4 @@ const props = defineProps({
         type: Number,
     },
 });
-
-console.log(props.imageUrl);
 </script>

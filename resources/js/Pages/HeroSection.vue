@@ -39,11 +39,4 @@
     </div>
 </template>
 
-<script setup>
-const options = {};
-const obeserver = new IntersectionObserver(function (entries, obeserver) {
-    entries.forEach((entries) => {
-        log;
-    });
-}, options);
-</script>
+<script setup></script>

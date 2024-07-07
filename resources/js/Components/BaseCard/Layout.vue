@@ -1,5 +1,5 @@
 <template>
-    <section class="card card-compact h-full width bg-base-300 shadow-xl">
+    <section class="card card-compact h-full width bg-primary-color shadow-xl">
         <slot></slot>
     </section>
 </template>

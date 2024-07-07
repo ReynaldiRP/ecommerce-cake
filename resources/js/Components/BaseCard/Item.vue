@@ -3,13 +3,13 @@
         <figure>
             <img :src="imageUrl" alt="Shoes" />
         </figure>
-        <div class="card-body">
-            <h2 class="text-base font-light">{{ cakeName }}</h2>
+        <div class="card-body gap-0 text-base-300">
+            <h2 class="text-base font-medium">{{ cakeName }}</h2>
             <p class="text-lg font-bold">{{ cakePrice }}</p>
             <div class="w-fit flex gap-2">
-                <p class="text-sm font-light">{{ cakeFlavour }}</p>
+                <p class="text-sm font-medium">{{ cakeFlavour }}</p>
                 <span>|</span>
-                <p class="text-sm font-light">{{ cakeToppings }}</p>
+                <p class="text-sm font-medium">{{ cakeToppings }}</p>
             </div>
         </div>
     </inertia-link>
