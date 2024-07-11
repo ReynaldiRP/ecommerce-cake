@@ -1,9 +1,11 @@
 <template>
     <App>
-        <HeroSection />
-        <CustomizeProductSection />
-        <AboutSection />
-        <TestimonySection />
+        <section class=" pt-10 pb-36 lg:py-0">
+            <HeroSection />
+            <CustomizeProductSection />
+            <AboutSection />
+            <TestimonySection />
+        </section>
     </App>
 </template>
 

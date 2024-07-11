@@ -22,6 +22,14 @@
                 melakukan pemilihan terkait varian dan topping yang ingin di
                 pesan.
             </p>
+            <p class="textarea-lg font-light text-justify">
+                Kami mengundang Anda untuk mengunjungi kami di Kediri atau
+                menjelajahi penawaran kami secara online. Biarkan kami menjadi
+                bagian dari momen istimewa Anda, menciptakan kenangan manis di
+                setiap irisannya. Di Dream Dessert, kami percaya bahwa momen
+                terbaik dalam hidup layak dirayakan dengan hidangan penutup
+                terbaik.
+            </p>
         </section>
     </div>
 </template>

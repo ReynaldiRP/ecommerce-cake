@@ -40,7 +40,7 @@
         </ul>
         <div class="navbar-end flex gap-5">
             <section class="flex justify-center items-center gap-2">
-                <ShoppingChart />
+                <ShoppingChart link="#" :products="items" />
                 <div class="dropdown dropdown-end">
                     <div
                         tabindex="0"
@@ -182,6 +182,30 @@ const notification = [
     {
         name: "Angga",
         message: `Hello Angga`,
+    },
+];
+
+const items = [
+    {
+        name: `Wedding Cake`,
+        flavour: `Stroberry`,
+        toppings: `Choco, Bluberry`,
+        quantity: 2,
+        price: 44000,
+    },
+    {
+        name: `Birthday Cake`,
+        flavour: `Red Velvet`,
+        toppings: `Cherry`,
+        quantity: 1,
+        price: 55000,
+    },
+    {
+        name: `Pudding`,
+        flavour: ``,
+        toppings: ``,
+        quantity: 1,
+        price: 14000,
     },
 ];
 </script>

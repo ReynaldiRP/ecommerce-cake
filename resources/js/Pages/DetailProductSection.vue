@@ -1,9 +1,32 @@
 <template>
     <App>
         <section
-            class="min-h-screen w-full grid grid-cols-1 lg:grid-cols-2 gap-2 place-items-center py-10 lg:py-0"
+            class="min-h-screen w-full grid grid-cols-1 lg:grid-cols-2 gap-2 place-items-center pt-28 lg:py-0"
         >
-            <ProductImage url="assets/image/home-image-cake.png" />
+            <section class="flex flex-col gap-10">
+                <div
+                    class="breadcrumbs text-sm me-auto relative top-2 lg:right-28"
+                >
+                    <ul>
+                        <li>
+                            <inertia-link :href="route('/home')"
+                                >Home</inertia-link
+                            >
+                        </li>
+                        <li>
+                            <inertia-link :href="route('/products')"
+                                >Catalouge</inertia-link
+                            >
+                        </li>
+                        <li>
+                            <inertia-link :href="route('/detail-product')"
+                                >Detail Product</inertia-link
+                            >
+                        </li>
+                    </ul>
+                </div>
+                <ProductImage url="assets/image/home-image-cake.png" />
+            </section>
             <section
                 class="h-full w-full flex flex-col justify-center px-8 mt-10 gap-6"
             >
