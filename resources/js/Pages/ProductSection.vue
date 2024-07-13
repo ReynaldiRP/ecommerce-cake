@@ -19,7 +19,7 @@
                 class="min-h-screen w-full grid grid-cols-12 lg:grid-cols-6 place-items-center gap-8 px-8 py-40"
             >
                 <section
-                    class="col-span-4 lg:col-span-1 h-fit w-full flex flex-col mb-auto gap-2 relative bottom-9"
+                    class="h-fit w-[250px] col-span-4 lg:col-span-1 flex flex-col mb-auto gap-2 relative bottom-9"
                 >
                     <h1 class="text-lg font-medium me-auto">Filter</h1>
                     <FilterLayout>
@@ -37,15 +37,15 @@
                 <section
                     class="col-span-8 lg:col-span-5 flex flex-col items-center justify-center gap-8"
                 >
-                    <section class="grid grid-cols-3 lg:grid-cols-4 gap-4">
+                    <section class="w-full grid grid-cols-3 lg:grid-cols-4 gap-4">
                         <CardLayout :width="56" v-for="items in 6" :key="items">
                             <CardItem
                                 :url="route('/detail-product')"
                                 image-url="assets/image/pastry.png"
                                 cake-name="Wedding Cake"
                                 :cake-price="15000"
-                                cake-flavour="Vanilla"
-                                cake-toppings="Berry, Choco"
+                                cake-personalization-type="Customized"
+                                cake-category="Tart"
                             />
                         </CardLayout>
                     </section>
@@ -68,13 +68,10 @@ import Pagination from "@/Components/Pagination.vue";
 
 const data = [
     {
-        name: "Vanilla",
+        name: "Customized",
     },
     {
-        name: "Red Velvet",
-    },
-    {
-        name: "Matcha",
+        name: "Non Customized",
     },
 ];
 </script>

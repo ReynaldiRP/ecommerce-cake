@@ -6,10 +6,9 @@
         <div class="card-body gap-0 text-base-300">
             <h2 class="text-base font-medium">{{ cakeName }}</h2>
             <p class="text-lg font-bold">{{ cakePrice }}</p>
-            <div class="w-fit flex gap-2">
-                <p class="text-sm font-medium">{{ cakeFlavour }}</p>
-                <span>|</span>
-                <p class="text-sm font-medium">{{ cakeToppings }}</p>
+            <div class="w-fit flex gap-1">
+                <p class="badge">{{ cakePersonalizationType }}</p>
+                <p class="badge">{{ cakeCategory }}</p>
             </div>
         </div>
     </inertia-link>
@@ -26,10 +25,10 @@ defineProps({
     cakePrice: {
         type: Number,
     },
-    cakeFlavour: {
+    cakePersonalizationType: {
         type: String,
     },
-    cakeToppings: {
+    cakeCategory: {
         type: String,
     },
     url: {

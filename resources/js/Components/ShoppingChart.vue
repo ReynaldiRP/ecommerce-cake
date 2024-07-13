@@ -65,11 +65,12 @@
                     </div>
                 </inertia-link>
                 <div class="card-actions">
-                    <button
+                    <inertia-link
+                        :href="route('/detail-chart')"
                         class="btn btn-sm bg-primary-color text-slate-700 hover:text-white btn-block"
                     >
                         View cart ({{ products.length }})
-                    </button>
+                    </inertia-link>
                 </div>
             </div>
         </div>

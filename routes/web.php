@@ -21,6 +21,7 @@ Route::middleware(['auth'])->group(function () {
         Route::inertia('/', 'Home')->name('/home');
         Route::inertia('/products', 'ProductSection')->name('/products');
         Route::inertia('/detail-product', 'DetailProductSection')->name('/detail-product');
+        Route::inertia('/detail-chart', 'DetailShoppingChart')->name('/detail-chart');
     });
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 });
