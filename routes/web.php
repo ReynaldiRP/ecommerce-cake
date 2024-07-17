@@ -18,10 +18,11 @@ use App\Models\User;
 
 Route::middleware(['auth'])->group(function () {
     Route::withoutMiddleware(['auth'])->group(function () {
-        Route::inertia('/', 'Home')->name('/home');
+        Route::inertia('/', 'LandingPageSection')->name('/home');
         Route::inertia('/products', 'ProductSection')->name('/products');
         Route::inertia('/detail-product', 'DetailProductSection')->name('/detail-product');
         Route::inertia('/detail-chart', 'DetailShoppingChart')->name('/detail-chart');
+        Route::inertia('/checkout', 'CheckoutSection')->name('/checkout');
     });
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 });

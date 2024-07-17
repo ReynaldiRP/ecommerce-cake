@@ -6,19 +6,21 @@
             <h1 class="text-2xl font-bold">Shopping Chart</h1>
             <section class="grid grid-cols-12 gap-8">
                 <section class="min-w-[750px] col-span-8 flex flex-col gap-6">
-                    <div class="h-full px-3 py-5 bg-white rounded-t-lg">
-                        <BaseCheckbox label="Choose All" text-color="black" />
+                    <div class="h-full px-3 py-5 bg-neutral rounded-t-lg">
+                        <BaseCheckbox label="Choose All" text-color="white" />
                     </div>
                     <div class="flex flex-col gap-4">
                         <div
-                            class="flex justify-between items-center gap-2 px-3 py-4 bg-white rounded-md"
+                            class="flex justify-between items-center gap-2 px-3 py-4 bg-neutral rounded-md"
                             v-for="(items, index) in 5"
                             :key="index"
                         >
                             <div class="flex gap-2">
                                 <BaseCheckbox />
                                 <div class="flex gap-4">
-                                    <div class="avatar rounded-lg outline outline-neutral shadow-lg">
+                                    <div
+                                        class="avatar rounded-lg outline outline-neutral shadow-lg"
+                                    >
                                         <div class="w-20 rounded">
                                             <img
                                                 src="assets/image/default-img.jpg"
@@ -27,11 +29,11 @@
                                         </div>
                                     </div>
                                     <div class="flex flex-col">
-                                        <h1 class="text-xl text-base-200">
+                                        <h1 class="text-xl text-white">
                                             Product {{ items }}
                                         </h1>
                                         <p
-                                            class="text-base text-base-200 text-opacity-75"
+                                            class="text-base text-white text-opacity-75"
                                         >
                                             Product {{ items }}
                                         </p>
@@ -59,23 +61,24 @@
                 </section>
                 <section class="h-[28%] col-span-4 flex justify-center">
                     <section
-                        class="w-full flex flex-col gap-2 px-5 py-4 bg-white rounded-lg"
+                        class="w-full flex flex-col gap-2 px-5 py-4 bg-neutral rounded-lg"
                     >
-                        <h1 class="text-base-200 text-2xl font-bold">
+                        <h1 class="text-white text-2xl font-bold">
                             Shopping Summary
                         </h1>
                         <p></p>
                         <div
-                            class="flex justify-between text-base-200 font-bold text-lg"
+                            class="flex justify-between text-white font-bold text-lg"
                         >
                             <p>Total</p>
                             <p>Rp100000</p>
                         </div>
-                        <button
+                        <inertia-link
+                            :href="route('/checkout')"
                             class="btn btn-block mt-auto text-black bg-primary-color hover:bg-primary-color hover:opacity-65 hover:text-slate-500 border-none"
                         >
                             Checkout
-                        </button>
+                        </inertia-link>
                     </section>
                 </section>
             </section>
