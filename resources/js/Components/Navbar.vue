@@ -106,7 +106,7 @@ const state = reactive({
     backgroundColor: "bg-transparent",
 });
 
-const menu = ["Home", "About", "Catalog", "Contact"];
+const menu = ["Catalouge", "Order"];
 
 const isLoading = ref(false);
 
@@ -139,12 +139,14 @@ const logout = () => {
 
 const notification = [
     {
-        name: "Budi",
-        message: `Hello Budi`,
+        cakeImageUrl: "assets/image/pastry.png",
+        message: `Your Order Has Been Process.`,
+        timestamp: `1 minutes ago`,
     },
     {
-        name: "Angga",
-        message: `Hello Angga`,
+        cakeImageUrl: "assets/image/pastry.png",
+        message: `Your Order Has Been Packing.`,
+        timestamp: `1 minutes ago`,
     },
 ];
 

@@ -27,7 +27,7 @@
         >
             <div class="card-body gap-4">
                 <inertia-link
-                    class="flex justify-between items-center gap-2 bg-[#A6ADBB] rounded-lg shadow-xl"
+                    class="flex justify-between items-center gap-2 bg-neutral rounded-lg shadow-xl"
                     v-for="(items, index) in products"
                     :key="index"
                     :href="link"
@@ -41,12 +41,12 @@
                                 />
                             </div>
                         </div>
-                        <div class="flex flex-col text-base-200">
+                        <div class="flex flex-col">
                             <h1 class="font-bold text-lg m-0">
                                 {{ items.name }}
                             </h1>
                             <div
-                                class="flex text-base-200 text-sm font-medium text-opacity-70"
+                                class="flex text-sm font-medium text-opacity-70"
                                 :class="{
                                     hidden: !items.flavour && !items.toppings,
                                 }"
@@ -56,9 +56,7 @@
                             </div>
                         </div>
                     </div>
-                    <div
-                        class="flex items-center text-base-200 gap-1 me-2 font-bold"
-                    >
+                    <div class="flex items-center gap-1 me-2 font-bold">
                         <p>{{ items.quantity }}</p>
                         <p>x</p>
                         <p>Rp{{ items.price }}</p>
@@ -67,7 +65,7 @@
                 <div class="card-actions">
                     <inertia-link
                         :href="route('/detail-chart')"
-                        class="btn btn-sm bg-primary-color text-slate-700 hover:text-white btn-block"
+                        class="btn btn-sm bg-primary-color text-slate-700 hover: btn-block"
                     >
                         View cart ({{ products.length }})
                     </inertia-link>
