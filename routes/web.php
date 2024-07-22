@@ -24,6 +24,7 @@ Route::middleware(['auth'])->group(function () {
         Route::inertia('/detail-chart', 'DetailShoppingChart')->name('/detail-chart');
         Route::inertia('/checkout', 'CheckoutSection')->name('/checkout');
         Route::inertia('/order', 'OrderStatusSection')->name('/order');
+        Route::inertia('/dashboard-home', 'DashboardHomeSection')->name('/dashboard-home');
     });
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 });

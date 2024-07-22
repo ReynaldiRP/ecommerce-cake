@@ -1,9 +1,12 @@
-import "../css/app.css";
+import "../css/main.css";
 import { createApp, h } from "vue";
 import { createInertiaApp } from "@inertiajs/inertia-vue3";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { Link } from "@inertiajs/inertia-vue3";
 import { ZiggyVue } from "ziggy-js";
+import { createPinia } from "pinia";
+
+const pinia = createPinia();
 
 createInertiaApp({
     resolve: (name) =>
@@ -16,6 +19,10 @@ createInertiaApp({
             .use(plugin)
             .component("inertia-link", Link)
             .use(ZiggyVue)
+            .use(pinia)
             .mount(el);
+    },
+    progress: {
+        color: "#4B5563",
     },
 });
