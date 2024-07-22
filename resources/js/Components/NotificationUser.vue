@@ -24,12 +24,17 @@
                 class="flex justify-between items-center text-base font-medium border-b-2 pb-1"
             >
                 <p class="text-lg">Notification</p>
-                <inertia-link href="#" class="text-neutral-content/75 hover:text-neutral-content">Mark All Notification</inertia-link>
+                <inertia-link
+                    href="#"
+                    class="text-neutral-content/75 hover:text-neutral-content"
+                    >Mark All Notification</inertia-link
+                >
             </div>
-            <div
+            <inertia-link
                 class="card-body flex-row gap-4 my-2 rounded-lg bg-neutral"
                 v-for="(notif, index) in notification"
                 :key="index"
+                :href="link"
             >
                 <div class="avatar">
                     <div class="w-16 rounded-lg bg-primary-color">
@@ -44,7 +49,7 @@
                         {{ notif.timestamp }}
                     </span>
                 </div>
-            </div>
+            </inertia-link>
             <div class="card-actions my-2">
                 <inertia-link
                     class="btn btn-sm bg-primary-color text-slate-700 hover:text-white btn-block"
@@ -60,6 +65,9 @@
 defineProps({
     notification: {
         type: Array,
+    },
+    link: {
+        type: String,
     },
 });
 </script>

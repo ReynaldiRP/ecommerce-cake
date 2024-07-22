@@ -41,7 +41,10 @@
         <div class="navbar-end flex gap-5">
             <section class="flex justify-center items-center gap-2">
                 <ShoppingChart link="#" :products="items" />
-                <NotificationUser :notification="notification" />
+                <NotificationUser
+                    :notification="notification"
+                    :link="route('/order')"
+                />
             </section>
 
             <div
@@ -106,7 +109,16 @@ const state = reactive({
     backgroundColor: "bg-transparent",
 });
 
-const menu = ["Catalouge", "Order"];
+const menu = [
+    {
+        name: "Catalouge",
+        link: route("/products"),
+    },
+    {
+        name: "Order",
+        link: route("/order"),
+    },
+];
 
 const isLoading = ref(false);
 

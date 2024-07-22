@@ -14,7 +14,7 @@
                     <div
                         class="badge text-xl bg-neutral text-primary-color py-4 px-6 rounded-lg font-bold relative top-1"
                     >
-                        Confirmed
+                        Order Confirmed
                     </div>
                 </div>
 

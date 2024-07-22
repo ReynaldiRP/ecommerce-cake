@@ -33,9 +33,7 @@
                     v-for="(menus, index) in menu"
                     class="text-lg font-medium cursor-pointer hover:text-primary-color"
                 >
-                    <inertia-link :href="`/${menus.toLowerCase()}`">{{
-                        menus
-                    }}</inertia-link>
+                    <inertia-link :href="menus.link">{{ menus.name }}</inertia-link>
                 </li>
                 <li
                     class="text-lg font-medium cursor-pointer hover:text-primary-color"
