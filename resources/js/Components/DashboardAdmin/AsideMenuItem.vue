@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from "vue";
-import { Link } from "@inertiajs/inertia";
+import { Link } from "@inertiajs/inertia-vue3";
 import { mdiMinus, mdiPlus } from "@mdi/js";
 import { getButtonColor } from "@/colors.js";
 import { useDarkModeStore } from "../../Stores/darkMode";
@@ -62,7 +62,7 @@ const menuClick = (event) => {
             :href="itemHref"
             :target="item.target ?? null"
             class="flex cursor-pointer"
-            :class="activeInactiveStyle"
+            :class="componentClass"
             @click="menuClick"
         >
             <BaseIcon
