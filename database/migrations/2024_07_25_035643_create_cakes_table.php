@@ -21,7 +21,7 @@ return new class extends Migration
                 )->onDelete('cascade');
             $table->string('name', 255);
             $table->integer('size');
-            $table->integer('base_price');
+            $table->double('base_price', 8, 2);
             $table->string('image_url', 255)->nullable();
             $table->enum('personalization_type', ['customized', 'non-customized']);
             $table->timestamps();
