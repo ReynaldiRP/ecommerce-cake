@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from "vue";
-import { Link } from "@inertiajs/vue3";
+import { Link } from "@inertiajs/inertia-vue3";
 import { getButtonColor } from "@/colors.js";
 import BaseIcon from "@/Components/DashboardAdmin/BaseIcon.vue";
 
@@ -114,7 +114,7 @@ const componentClass = computed(() => {
 </script>
 
 <template>
-    <component
+    <inertia-link
         :is="is"
         :class="componentClass"
         :href="routeName ? route(routeName) : href"
@@ -124,5 +124,5 @@ const componentClass = computed(() => {
     >
         <BaseIcon v-if="icon" :path="icon" :size="iconSize" />
         <span v-if="label" :class="labelClass">{{ label }}</span>
-    </component>
+    </inertia-link>
 </template>

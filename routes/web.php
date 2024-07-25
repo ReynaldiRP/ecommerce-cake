@@ -3,7 +3,10 @@
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\ProductController;
+use App\Models\Product;
 use App\Models\User;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +27,8 @@ Route::middleware(['auth'])->group(function () {
         Route::inertia('/detail-chart', 'DetailShoppingChart')->name('/detail-chart');
         Route::inertia('/checkout', 'CheckoutSection')->name('/checkout');
         Route::inertia('/order', 'OrderStatusSection')->name('/order');
-        Route::inertia('/dashboard-home', 'DashboardHomeSection')->name('dashboard-home');
+        Route::inertia('/dashboard-home', 'AdminDashboard/HomeSection')->name('dashboard-home');
+        Route::resource('/dashboard-product', ProductController::class);
     });
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 });

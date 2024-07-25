@@ -3,9 +3,14 @@
         <figure>
             <img :src="imageUrl" alt="Shoes" />
         </figure>
-        <div class="card-body gap-0 text-base-300">
-            <h2 class="text-base font-medium">{{ cakeName }}</h2>
-            <p class="text-lg font-bold">{{ cakePrice }}</p>
+        <div class="card-body gap-1 text-base-300">
+            <h2 class="text-base font-medium">
+                {{ cakeName }}
+                <span v-show="cakeSize" class="font-bold"
+                    >({{ cakeSize }}cm)</span
+                >
+            </h2>
+            <p class="text-lg font-bold">Rp{{ cakePrice }}</p>
             <div class="w-fit flex gap-1">
                 <p class="badge">{{ cakePersonalizationType }}</p>
                 <p class="badge">{{ cakeCategory }}</p>
@@ -21,6 +26,10 @@ defineProps({
     },
     cakeName: {
         type: String,
+    },
+    cakeSize: {
+        type: Number,
+        default: null,
     },
     cakePrice: {
         type: Number,

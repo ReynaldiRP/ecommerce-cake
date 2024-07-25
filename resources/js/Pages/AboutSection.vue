@@ -12,23 +12,20 @@
         <section class="h-full px-10 flex flex-col items-center my-6">
             <h1 class="text-3xl font-semibold uppercase">our story</h1>
             <p class="textarea-lg font-light text-justify">
-                Dream Dessert merupakan sebuah Usaha Mikro Kecil Menengah (UMKM)
-                yang bergerak di industri makanan yang berfokus pada pembuatan
-                kue sudah beroperasi sejak tahun 2021. Berlokasi di Kecamatan
-                mojoroto , Jl. Kawi Gang 2, Kota Kediri, Jawa Timur 64112.
-                Terkait produk yang ditawarkan oleh Dream Dessert beberapa macam
-                kue seperti: kue tart, wedding cake, pudding dan brownis. Tidak
-                hanya itu untuk kue tart dan wedding cake customer juga bisa
-                melakukan pemilihan terkait varian dan topping yang ingin di
-                pesan.
+                Dream Dessert is a Micro, Small, and Medium Enterprise (MSME)
+                operating in the food industry, specializing in cake making
+                since 2021. Located in Mojoroto District, Jl. Kawi Gang 2,
+                Kediri City, East Java 64112. Dream Dessert offers a variety of
+                cakes such as tarts, wedding cakes, puddings, and brownies.
+                Additionally, for tarts and wedding cakes, customers can select
+                their desired variants and toppings.
             </p>
             <p class="textarea-lg font-light text-justify">
-                Kami mengundang Anda untuk mengunjungi kami di Kediri atau
-                menjelajahi penawaran kami secara online. Biarkan kami menjadi
-                bagian dari momen istimewa Anda, menciptakan kenangan manis di
-                setiap irisannya. Di Dream Dessert, kami percaya bahwa momen
-                terbaik dalam hidup layak dirayakan dengan hidangan penutup
-                terbaik.
+                We invite you to visit us in Kediri or explore our offerings
+                online. Let us be a part of your special moments, creating sweet
+                memories in every slice. At Dream Dessert, we believe that the
+                best moments in life deserve to be celebrated with the finest
+                desserts.
             </p>
         </section>
     </div>

@@ -1,39 +1,14 @@
-import {
-    mdiAccountCircle,
-    mdiMonitor,
-    mdiGithub,
-    mdiLock,
-    mdiAlertCircle,
-    mdiSquareEditOutline,
-    mdiTable,
-    mdiViewList,
-    mdiTelevisionGuide,
-    mdiResponsive,
-    mdiPalette,
-    mdiReact,
-} from "@mdi/js";
+import { mdiMonitor, mdiCake } from "@mdi/js";
 
 export default [
     {
-        to: "/dashboard",
+        route: "dashboard-home",
         icon: mdiMonitor,
         label: "Dashboard",
     },
     {
-        to: "/tables",
-        label: "Tables",
-        icon: mdiTable,
-    },
-    {
-        label: "Dropdown",
-        icon: mdiViewList,
-        menu: [
-            {
-                label: "Item One",
-            },
-            {
-                label: "Item Two",
-            },
-        ],
+        href: "dashboard-product",
+        icon: mdiCake,
+        label: "Product",
     },
 ];

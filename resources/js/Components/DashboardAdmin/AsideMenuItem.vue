@@ -7,15 +7,13 @@ import { useDarkModeStore } from "../../Stores/darkMode";
 import BaseIcon from "@/Components/DashboardAdmin/BaseIcon.vue";
 import AsideMenuList from "@/Components/DashboardAdmin/AsideMenuList.vue";
 
-const darkModeStore = useDarkModeStore();
-
 const itemHref = computed(() =>
     props.item.route ? route(props.item.route) : props.item.href
 );
 
 const activeInactiveStyle = computed(() =>
     props.item.route && route().current(props.item.route)
-        ? darkModeStore.asideMenuItemActiveStyle
+        ? useDarkModeStore.asideMenuItemActiveStyle
         : ""
 );
 
@@ -57,7 +55,7 @@ const menuClick = (event) => {
 
 <template>
     <li>
-        <component
+        <inertia-link
             :is="item.route ? Link : 'a'"
             :href="itemHref"
             :target="item.target ?? null"
@@ -85,7 +83,7 @@ const menuClick = (event) => {
                 :class="activeInactiveStyle"
                 w="w-12"
             />
-        </component>
+        </inertia-link>
         <AsideMenuList
             v-if="hasDropdown"
             :menu="item.menu"

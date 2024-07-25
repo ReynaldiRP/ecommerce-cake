@@ -14,8 +14,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $product = Product::all();
-        return Inertia::render('product.index', $product);
+        return Inertia::render('AdminDashboard/Product/Index');
     }
 
     /**
@@ -23,7 +22,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return Inertia::render('prouct.create');
+        return Inertia::render('AdminDashboard/Product/Create');
     }
 
     /**
@@ -32,7 +31,6 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         $validate = $request->validated();
-        
     }
 
     /**
@@ -49,6 +47,7 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         //
+        return Inertia::render('AdminDashboard/Product/Edit');
     }
 
     /**

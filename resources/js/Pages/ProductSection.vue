@@ -37,15 +37,22 @@
                 <section
                     class="col-span-8 lg:col-span-5 flex flex-col items-center justify-center gap-8"
                 >
-                    <section class="w-full grid grid-cols-3 lg:grid-cols-4 gap-4">
-                        <CardLayout :width="56" v-for="items in 6" :key="items">
+                    <section
+                        class="w-full grid grid-cols-3 lg:grid-cols-4 gap-4"
+                    >
+                        <CardLayout
+                            :width="56"
+                            v-for="items in product"
+                            :key="items.id"
+                        >
                             <CardItem
                                 :url="route('/detail-product')"
-                                image-url="assets/image/pastry.png"
-                                cake-name="Wedding Cake"
-                                :cake-price="15000"
-                                cake-personalization-type="Customized"
-                                cake-category="Tart"
+                                :image-url="items.imageUrl"
+                                :cake-name="items.cakeName"
+                                :cake-size="items.cakeSize"
+                                :cake-price="items.cakePrice"
+                                :cake-personalization-type="items.cakeType"
+                                :cake-category="items.cakeCategory"
                             />
                         </CardLayout>
                     </section>
@@ -72,6 +79,27 @@ const data = [
     },
     {
         name: "Non Customized",
+    },
+];
+
+const product = [
+    {
+        id: 1,
+        imageUrl: "assets/image/pastry.png",
+        cakeName: "Pastry",
+        cakeSize: "",
+        cakePrice: 25000,
+        cakeType: "Non-Customized",
+        cakeCategory: "Pudding",
+    },
+    {
+        id: 2,
+        imageUrl: "assets/image/login-background.webp",
+        cakeName: "Wedding Cake",
+        cakeSize: 15,
+        cakePrice: 45000,
+        cakeType: "Customized",
+        cakeCategory: "Wedding Cake",
     },
 ];
 </script>

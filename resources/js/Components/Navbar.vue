@@ -47,7 +47,7 @@
                 />
             </section>
 
-            <div
+            <!-- <div
                 class="dropdown dropdown-end"
                 :class="user ? 'block' : 'hidden'"
             >
@@ -77,8 +77,12 @@
                         <button @click="logout">Logout</button>
                     </li>
                 </ul>
-            </div>
-            <Sidebar :menu="menu" :user="user" />
+            </div> -->
+            <Sidebar
+                :menu="menu"
+                :menuAuthenticated="menuAuthenticated"
+                :user="user"
+            />
         </div>
     </div>
 
@@ -109,6 +113,16 @@ const state = reactive({
     backgroundColor: "bg-transparent",
 });
 
+const isLoading = ref(false);
+
+const logout = () => {
+    isLoading.value = true;
+    setTimeout(() => {
+        isLoading.value = false;
+        Inertia.post(route("logout"));
+    }, 5000);
+};
+
 const menu = [
     {
         name: "Catalouge",
@@ -120,7 +134,20 @@ const menu = [
     },
 ];
 
-const isLoading = ref(false);
+const menuAuthenticated = [
+    {
+        name: "Profile",
+        link: "#",
+    },
+    {
+        name: "Order History",
+        link: "#",
+    },
+    {
+        name: "Logout",
+        link: logout,
+    },
+];
 
 const handleScroll = () => {
     const scrollPositition = window.scrollY;
@@ -140,14 +167,6 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener("scroll", handleScroll);
 });
-
-const logout = () => {
-    isLoading.value = true;
-    setTimeout(() => {
-        isLoading.value = false;
-        Inertia.post(route("logout"));
-    }, 5000);
-};
 
 const notification = [
     {

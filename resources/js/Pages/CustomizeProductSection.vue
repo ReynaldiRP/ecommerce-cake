@@ -15,6 +15,7 @@
         </div>
         <LayoutCarousel :options="options" :on-moved="onMoved">
             <ImageCarousel
+                :link="route('/detail-product')"
                 :image-url="imageUrl"
                 :active-slide-index="activeSlideIndex"
             />
@@ -30,10 +31,6 @@ import "@splidejs/vue-splide/css";
 
 const imageUrl = [
     {
-        link: "assets/image/pastry.png",
-        name: "Pastry",
-    },
-    {
         link: "assets/image/hero-image.png",
         name: "Wedding Cake",
     },
@@ -43,7 +40,7 @@ const imageUrl = [
     },
     {
         link: "assets/image/pink-cake.png",
-        name: "Birthday Cake",
+        name: "Tart",
     },
 ];
 

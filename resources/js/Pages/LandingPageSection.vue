@@ -1,6 +1,6 @@
 <template>
     <App>
-        <section class=" pt-10 pb-36 lg:py-0">
+        <section class="pt-10 pb-96 md:pb-28 lg:py-0">
             <HeroSection />
             <CustomizeProductSection />
             <AboutSection />

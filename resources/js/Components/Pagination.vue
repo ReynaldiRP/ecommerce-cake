@@ -2,9 +2,9 @@
     <section class="join">
         <button class="join-item btn">«</button>
         <button
-            class="join-item btn"
             v-for="item in numberPagination"
             :key="item"
+            class="join-item btn btn-square"
         >
             {{ item }}
         </button>

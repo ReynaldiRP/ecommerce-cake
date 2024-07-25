@@ -29,11 +29,41 @@
                 tabindex="0"
                 class="menu z-[1] shadow bg-base-200 rounded-box min-h-full w-80 p-4"
             >
+                <li :class="user ? 'block border-b-2 pb-2' : 'hidden'">
+                    <div class="avatar flex gap-4">
+                        <div
+                            class="w-10 rounded-full ring ring-primary-color ring-offset-base-100 ring-offset-2"
+                        >
+                            <img
+                                alt="Tailwind CSS Navbar component"
+                                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                            />
+                        </div>
+                        <p class="text-lg font-medium">
+                            {{ user ? user.username : "" }}
+                        </p>
+                    </div>
+                </li>
                 <li
                     v-for="(menus, index) in menu"
+                    :key="index"
                     class="text-lg font-medium cursor-pointer hover:text-primary-color"
                 >
-                    <inertia-link :href="menus.link">{{ menus.name }}</inertia-link>
+                    <inertia-link :href="menus.link">{{
+                        menus.name
+                    }}</inertia-link>
+                </li>
+                <li
+                    v-for="(menus, index) in menuAuthenticated"
+                    :key="index"
+                    class="text-lg font-medium cursor-pointer hover:text-primary-color"
+                    :class="user ? 'block' : 'hidden'"
+                >
+                    <inertia-link
+                        :href="`#`"
+                        @click="handlerClick(menus.link)"
+                        >{{ menus.name }}</inertia-link
+                    >
                 </li>
                 <li
                     class="text-lg font-medium cursor-pointer hover:text-primary-color"
@@ -60,9 +90,22 @@
 defineProps({
     menu: {
         type: Array,
+        default: null,
+    },
+    menuAuthenticated: {
+        type: [Array, Function],
+        default: null,
     },
     user: {
         type: Object,
     },
 });
+
+const handlerClick = (link) => {
+    if (typeof link === "string") {
+        route(link);
+    } else if (typeof link === "function") {
+        link();
+    }
+};
 </script>

@@ -1,7 +1,10 @@
 <template>
-    <section class="card card-compact h-full width bg-primary-color shadow-xl">
+    <div
+        
+        class="card card-compact h-full width bg-primary-color shadow-xl"
+    >
         <slot></slot>
-    </section>
+    </div>
 </template>
 
 <script setup>
