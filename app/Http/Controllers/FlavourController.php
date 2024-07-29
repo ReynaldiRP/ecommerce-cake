@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use App\Models\Flavour;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,8 @@ class FlavourController extends Controller
      */
     public function index()
     {
-        //
+        $flavour = Flavour::all();
+        return Inertia::render('AdminDashboard/Flavour/Index', ['flavour' => $flavour]);
     }
 
     /**
@@ -20,7 +22,7 @@ class FlavourController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('AdminDashboard/Flavour/Create');
     }
 
     /**
@@ -28,7 +30,12 @@ class FlavourController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            Flavour::create($request->all());
+            return to_route('dashboard-flavour.index');
+        } catch (\Throwable $th) {
+            dd($th);
+        }
     }
 
     /**
@@ -42,9 +49,9 @@ class FlavourController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Flavour $flavour)
+    public function edit(Flavour $dashboard_flavour)
     {
-        //
+        return Inertia::render('AdminDashboard/Flavour/Edit', ['flavour' => $dashboard_flavour]);
     }
 
     /**

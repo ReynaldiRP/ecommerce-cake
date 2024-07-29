@@ -5,7 +5,7 @@
                 <h1 class="font-bold text-2xl">Product Table</h1>
                 <BaseButton
                     color="success"
-                    :href="route('dashboard-product.create')"
+                    :href="route('dashboard-cake.create')"
                     :icon="mdiPlus"
                     :icon-size="[16, 16]"
                     class="w-14"

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cake;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CakeController extends Controller
 {
@@ -12,7 +13,7 @@ class CakeController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('AdminDashboard/Product/Index');
     }
 
     /**
@@ -20,7 +21,7 @@ class CakeController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('AdminDashboard/Product/Create');
     }
 
     /**

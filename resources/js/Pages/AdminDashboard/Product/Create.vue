@@ -6,13 +6,13 @@
                     <ul>
                         <li>
                             <inertia-link
-                                :href="route('dashboard-product.index')"
-                                >Product</inertia-link
+                                :href="route('dashboard-cake.index')"
+                                >Cake</inertia-link
                             >
                         </li>
                         <li>
                             <inertia-link
-                                :href="route('dashboard-product.create')"
+                                :href="route('dashboard-cake.create')"
                                 >Create</inertia-link
                             >
                         </li>

@@ -114,7 +114,7 @@ const componentClass = computed(() => {
 </script>
 
 <template>
-    <inertia-link
+    <component
         :is="is"
         :class="componentClass"
         :href="routeName ? route(routeName) : href"
@@ -124,5 +124,5 @@ const componentClass = computed(() => {
     >
         <BaseIcon v-if="icon" :path="icon" :size="iconSize" />
         <span v-if="label" :class="labelClass">{{ label }}</span>
-    </inertia-link>
+    </component>
 </template>

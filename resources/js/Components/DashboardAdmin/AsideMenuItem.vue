@@ -55,7 +55,7 @@ const menuClick = (event) => {
 
 <template>
     <li>
-        <inertia-link
+        <component
             :is="item.route ? Link : 'a'"
             :href="itemHref"
             :target="item.target ?? null"
@@ -83,7 +83,7 @@ const menuClick = (event) => {
                 :class="activeInactiveStyle"
                 w="w-12"
             />
-        </inertia-link>
+        </component>
         <AsideMenuList
             v-if="hasDropdown"
             :menu="item.menu"
