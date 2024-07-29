@@ -37,6 +37,13 @@
                             :icon="mdiCakeVariant"
                         />
                     </FormField>
+                    <NotificationBar
+                        v-if="props.errors.name"
+                        color="danger"
+                        :icon="mdiAlertCircle"
+                    >
+                        {{ props.errors.name }}
+                    </NotificationBar>
                     <FormField label="Flavour Price">
                         <FormControl
                             v-model="form.price"
@@ -46,6 +53,13 @@
                             type="number"
                         />
                     </FormField>
+                    <NotificationBar
+                        v-if="props.errors.price"
+                        color="danger"
+                        :icon="mdiAlertCircle"
+                    >
+                        {{ props.errors.price }}
+                    </NotificationBar>
                     <template #footer>
                         <BaseButton
                             type="submit"
@@ -66,12 +80,15 @@ import FormControl from "@/Components/DashboardAdmin/FormControl.vue";
 import FormField from "@/Components/DashboardAdmin/FormField.vue";
 import CardBox from "@/Components/DashboardAdmin/CardBox.vue";
 import BaseButton from "@/Components/DashboardAdmin/BaseButton.vue";
+import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import { useForm } from "@inertiajs/inertia-vue3";
-import { mdiCakeVariant, mdiCash } from "@mdi/js";
+import { mdiCakeVariant, mdiCash, mdiAlertCircle } from "@mdi/js";
 import { ref } from "vue";
 
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
+
+const props = defineProps({ errors: Object });
 
 const isLoading = ref(false);
 

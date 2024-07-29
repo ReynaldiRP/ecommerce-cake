@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Flavour\StoreFlavourRequest;
+use App\Http\Requests\Flavour\UpdateFlavourRequest;
 use Inertia\Inertia;
 use App\Models\Flavour;
 use Illuminate\Http\Request;
@@ -28,14 +30,11 @@ class FlavourController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreFlavourRequest $request)
     {
-        try {
-            Flavour::create($request->all());
-            return to_route('dashboard-flavour.index');
-        } catch (\Throwable $th) {
-            dd($th);
-        }
+        $data = $request->validated();
+        Flavour::create($data);
+        return to_route('dashboard-flavour.index')->with('success', 'The Flavour has been success added');
     }
 
     /**
@@ -57,16 +56,19 @@ class FlavourController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Flavour $flavour)
+    public function update(UpdateFlavourRequest $request, Flavour $dashboard_flavour)
     {
-        //
+        $data = $request->validated();
+        $dashboard_flavour->update($data);
+        return to_route('dashboard-flavour.index')->with('success', 'The Flavour has been edited');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Flavour $flavour)
+    public function destroy(Flavour $dashboard_flavour)
     {
-        //
+        $dashboard_flavour->delete();
+        return to_route('dashboard-flavour.index')->with('success', 'The Flavour has been deleted');
     }
 }
