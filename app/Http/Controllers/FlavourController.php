@@ -6,14 +6,15 @@ use App\Http\Requests\Flavour\StoreFlavourRequest;
 use App\Http\Requests\Flavour\UpdateFlavourRequest;
 use Inertia\Inertia;
 use App\Models\Flavour;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Inertia\Response;
 
 class FlavourController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
         $flavour = Flavour::all();
         return Inertia::render('AdminDashboard/Flavour/Index', ['flavour' => $flavour]);
@@ -22,7 +23,7 @@ class FlavourController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): Response
     {
         return Inertia::render('AdminDashboard/Flavour/Create');
     }
@@ -30,10 +31,21 @@ class FlavourController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreFlavourRequest $request)
+    public function store(StoreFlavourRequest $request): RedirectResponse
     {
         $data = $request->validated();
+
+        if ($request->hasFile('image_url')) {
+
+            $filename =  time() . '.' . $request->file('image_url')->getClientOriginalExtension();
+
+            $path = $request->file('image_url')->storeAs('flavour', $filename, 'public');
+
+            $data['image_url'] = 'storage/' . $path;
+        }
+
         Flavour::create($data);
+
         return to_route('dashboard-flavour.index')->with('success', 'The Flavour has been success added');
     }
 
@@ -48,7 +60,7 @@ class FlavourController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Flavour $dashboard_flavour)
+    public function edit(Flavour $dashboard_flavour): Response
     {
         return Inertia::render('AdminDashboard/Flavour/Edit', ['flavour' => $dashboard_flavour]);
     }
@@ -56,7 +68,7 @@ class FlavourController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateFlavourRequest $request, Flavour $dashboard_flavour)
+    public function update(UpdateFlavourRequest $request, Flavour $dashboard_flavour): RedirectResponse
     {
         $data = $request->validated();
         $dashboard_flavour->update($data);
@@ -66,7 +78,7 @@ class FlavourController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Flavour $dashboard_flavour)
+    public function destroy(Flavour $dashboard_flavour): RedirectResponse
     {
         $dashboard_flavour->delete();
         return to_route('dashboard-flavour.index')->with('success', 'The Flavour has been deleted');

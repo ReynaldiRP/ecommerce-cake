@@ -20,6 +20,10 @@ const props = defineProps({
         type: String,
         default: "Done",
     },
+    clickHandler: {
+        type: Function,
+        default: null,
+    },
     hasCancel: Boolean,
     modelValue: {
         type: [String, Number, Boolean],
@@ -39,7 +43,10 @@ const confirmCancel = (mode) => {
     emit(mode);
 };
 
-const confirm = () => confirmCancel("confirm");
+const confirm = (clickHandler) => {
+    clickHandler();
+    confirmCancel("cancel");
+};
 
 const cancel = () => confirmCancel("cancel");
 
@@ -77,7 +84,7 @@ window.addEventListener("keydown", (e) => {
                     <BaseButton
                         :label="buttonLabel"
                         :color="button"
-                        @click="confirm"
+                        @click="() => confirm(clickHandler)"
                     />
                     <BaseButton
                         v-if="hasCancel"

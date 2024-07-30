@@ -7,11 +7,6 @@ export default [
         label: "Dashboard",
     },
     {
-        href: "dashboard-cake",
-        icon: mdiCakeLayered,
-        label: "Cake",
-    },
-    {
         label: "Products",
         icon: mdiViewList,
         menu: [
@@ -20,6 +15,7 @@ export default [
                 label: "Cake",
             },
             {
+                href: "dashboard-category",
                 label: "Cake Category",
             },
             {

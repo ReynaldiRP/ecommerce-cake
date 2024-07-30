@@ -13,7 +13,7 @@
                         <li>
                             <inertia-link
                                 :href="route('dashboard-flavour.index')"
-                                >Flavour</inertia-link
+                                >Category</inertia-link
                             >
                         </li>
                         <li>
@@ -25,7 +25,7 @@
                     </ul>
                 </div>
 
-                <h1 class="font-bold text-2xl">Add Flavour</h1>
+                <h1 class="font-bold text-2xl">Add Category</h1>
             </div>
             <form @submit.prevent="submit">
                 <CardBox>
@@ -60,14 +60,6 @@
                     >
                         {{ props.errors.price }}
                     </NotificationBar>
-                    <FormField label="Cake Image">
-                        <FormControl
-                            v-model="form.image_url"
-                            :icon="mdiImageArea"
-                            @input="form.image_url = $event.target.files[0]"
-                            type="file"
-                        />
-                    </FormField>
                     <template #footer>
                         <BaseButton
                             type="submit"
@@ -103,7 +95,6 @@ const isLoading = ref(false);
 const form = useForm({
     name: "",
     price: 0,
-    image_url: "",
 });
 
 const submit = () => {

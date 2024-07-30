@@ -23,7 +23,8 @@ class StoreFlavourRequest extends FormRequest
     {
         return [
             'name' => 'required|regex:/^[a-zA-Z\s\-]+$/|min:5|max:255|unique:flavours,name',
-            'price' => 'required|numeric|min:1|max:1000000'
+            'price' => 'required|numeric|min:1|max:1000000',
+            'image_url' => 'sometimes|mimes:png,jpg,jpeg'
         ];
     }
 

@@ -17,15 +17,12 @@
                             >
                         </li>
                         <li>
-                            <inertia-link
-                                :href="route('dashboard-flavour.create')"
-                                >Create</inertia-link
-                            >
+                            <inertia-link>Edit</inertia-link>
                         </li>
                     </ul>
                 </div>
 
-                <h1 class="font-bold text-2xl">Add Flavour</h1>
+                <h1 class="font-bold text-2xl">Edit Flavour</h1>
             </div>
             <form @submit.prevent="submit">
                 <CardBox>
@@ -60,14 +57,6 @@
                     >
                         {{ props.errors.price }}
                     </NotificationBar>
-                    <FormField label="Cake Image">
-                        <FormControl
-                            v-model="form.image_url"
-                            :icon="mdiImageArea"
-                            @input="form.image_url = $event.target.files[0]"
-                            type="file"
-                        />
-                    </FormField>
                     <template #footer>
                         <BaseButton
                             type="submit"
@@ -96,21 +85,30 @@ import { ref } from "vue";
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
 
-const props = defineProps({ errors: Object });
+const props = defineProps({
+    flavour: {
+        type: Object,
+    },
+    errors: {
+        type: Object,
+    },
+});
 
 const isLoading = ref(false);
 
 const form = useForm({
-    name: "",
-    price: 0,
-    image_url: "",
+    id: props.flavour.id,
+    name: props.flavour.name,
+    price: props.flavour.price,
 });
 
 const submit = () => {
     isLoading.value = true;
     setTimeout(() => {
         isLoading.value = false;
-        form.post("/dashboard-flavour");
+        form.put(
+            route("dashboard-flavour.update", { dashboard_flavour: form.id })
+        );
     }, 3000);
 };
 </script>

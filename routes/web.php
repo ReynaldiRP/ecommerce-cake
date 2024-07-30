@@ -4,9 +4,8 @@ use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CakeController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FlavourController;
-use App\Http\Controllers\ProductController;
-use App\Models\Product;
 use App\Models\User;
 use Inertia\Inertia;
 
@@ -31,7 +30,8 @@ Route::middleware(['auth'])->group(function () {
         Route::inertia('/order', 'OrderStatusSection')->name('/order');
         Route::inertia('/dashboard-home', 'AdminDashboard/HomeSection')->name('dashboard-home');
         Route::resource('/dashboard-cake', CakeController::class);
-        Route::resource('/dashboard-flavour', FlavourController::class);
+        Route::resource('/dashboard-flavour', FlavourController::class)->except('show');
+        Route::resource('/dashboard-category', CategoryController::class);
     });
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 });

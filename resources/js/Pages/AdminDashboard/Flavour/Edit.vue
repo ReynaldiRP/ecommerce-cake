@@ -57,6 +57,13 @@
                     >
                         {{ props.errors.price }}
                     </NotificationBar>
+                    <FormField label="Cake Image">
+                        <FormControl
+                            v-model="form.image_url"
+                            :icon="mdiImageArea"
+                            type="file"
+                        />
+                    </FormField>
                     <template #footer>
                         <BaseButton
                             type="submit"
@@ -100,6 +107,7 @@ const form = useForm({
     id: props.flavour.id,
     name: props.flavour.name,
     price: props.flavour.price,
+    image_url: "",
 });
 
 const submit = () => {

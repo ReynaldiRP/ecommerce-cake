@@ -13,7 +13,7 @@
             <p class="text-lg font-bold">Rp{{ cakePrice }}</p>
             <div class="w-fit flex gap-1">
                 <p class="badge">{{ cakePersonalizationType }}</p>
-                <p class="badge">{{ cakeCategory }}</p>
+                <!-- <p class="badge">{{ cakeCategory }}</p> -->
             </div>
         </div>
     </inertia-link>
@@ -23,9 +23,11 @@
 defineProps({
     imageUrl: {
         type: String,
+        default: null,
     },
     cakeName: {
         type: String,
+        default: null,
     },
     cakeSize: {
         type: Number,
@@ -33,15 +35,19 @@ defineProps({
     },
     cakePrice: {
         type: Number,
+        default: null,
     },
     cakePersonalizationType: {
         type: String,
+        default: null,
     },
     cakeCategory: {
         type: String,
+        default: null,
     },
     url: {
         type: String,
+        default: null,
     },
 });
 </script>

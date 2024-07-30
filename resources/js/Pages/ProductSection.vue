@@ -26,11 +26,11 @@
                         <FilterItem filtering-name="Personalization">
                             <BaseRadio :data="data" />
                         </FilterItem>
-                        <FilterItem filtering-name="Category">
-                            <BaseCheckbox label="Tart" />
-                            <BaseCheckbox label="Wedding Cake" />
-                            <BaseCheckbox label="Pastry" />
-                            <BaseCheckbox label="Pudding" />
+                        <FilterItem filtering-name="Cake Size">
+                            <BaseCheckbox label="5 Cm" />
+                            <BaseCheckbox label="10 Cm" />
+                            <BaseCheckbox label="15 Cm" />
+                            <BaseCheckbox label="20 Cm" />
                         </FilterItem>
                     </FilterLayout>
                 </section>
@@ -52,7 +52,6 @@
                                 :cake-size="items.cakeSize"
                                 :cake-price="items.cakePrice"
                                 :cake-personalization-type="items.cakeType"
-                                :cake-category="items.cakeCategory"
                             />
                         </CardLayout>
                     </section>
