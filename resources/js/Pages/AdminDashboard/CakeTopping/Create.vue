@@ -12,29 +12,29 @@
                     <ul>
                         <li>
                             <inertia-link
-                                :href="route('dashboard-flavour.index')"
-                                >Flavour</inertia-link
+                                :href="route('dashboard-topping.index')"
+                                >Topping</inertia-link
                             >
                         </li>
                         <li>
                             <inertia-link
-                                :href="route('dashboard-flavour.create')"
+                                :href="route('dashboard-topping.create')"
                                 >Create</inertia-link
                             >
                         </li>
                     </ul>
                 </div>
 
-                <h1 class="font-bold text-2xl">Add Flavour</h1>
+                <h1 class="font-bold text-2xl">Add Topping</h1>
             </div>
             <form @submit.prevent="submit">
                 <CardBox>
-                    <FormField label="Flavour Cake">
+                    <FormField label="Cake Topping">
                         <FormControl
                             v-model="form.name"
                             name="name"
-                            placeholder="Chocolate"
-                            :icon="mdiCakeVariant"
+                            placeholder="Cookies"
+                            :icon="mdiCookie"
                         />
                     </FormField>
                     <NotificationBar
@@ -44,7 +44,7 @@
                     >
                         {{ props.errors.name }}
                     </NotificationBar>
-                    <FormField label="Flavour Price">
+                    <FormField label="Topping Price">
                         <FormControl
                             v-model="form.price"
                             name="price"
@@ -60,7 +60,7 @@
                     >
                         {{ props.errors.price }}
                     </NotificationBar>
-                    <FormField label="Cake Image">
+                    <FormField label="Topping Image">
                         <FormControl
                             v-model="form.image_url"
                             :icon="mdiImageArea"
@@ -68,6 +68,13 @@
                             type="file"
                         />
                     </FormField>
+                    <NotificationBar
+                        v-if="props.errors.image_url"
+                        color="danger"
+                        :icon="mdiAlertCircle"
+                    >
+                        {{ props.errors.image_url }}
+                    </NotificationBar>
                     <template #footer>
                         <BaseButton
                             type="submit"
@@ -90,7 +97,7 @@ import CardBox from "@/Components/DashboardAdmin/CardBox.vue";
 import BaseButton from "@/Components/DashboardAdmin/BaseButton.vue";
 import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import { useForm } from "@inertiajs/inertia-vue3";
-import { mdiCakeVariant, mdiCash, mdiAlertCircle } from "@mdi/js";
+import { mdiCash, mdiAlertCircle, mdiCookie } from "@mdi/js";
 import { ref } from "vue";
 
 import Loading from "vue-loading-overlay";
@@ -110,7 +117,7 @@ const submit = () => {
     isLoading.value = true;
     setTimeout(() => {
         isLoading.value = false;
-        form.post("/dashboard-flavour");
+        form.post("/dashboard-topping");
     }, 3000);
 };
 </script>

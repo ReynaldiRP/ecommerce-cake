@@ -47,6 +47,7 @@ class UpdateFlavourRequest extends FormRequest
             'name.unique' => 'The flavour is already exists',
             'name.regex' => 'The flavour may only contain alphabetic characters and dashes.',
             'price.max' => 'The flavour price must not be greater than 1,000,000.',
+            'image_url.mimes' => 'The image must be a file of type: png, jpg, jpeg.'
         ];
     }
 }

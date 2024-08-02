@@ -1,13 +1,16 @@
 <?php
 
-use App\Http\Controllers\Auth\LoginController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\CakeController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\FlavourController;
 use App\Models\User;
 use Inertia\Inertia;
+use App\Models\CakeSize;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CakeController;
+use App\Http\Controllers\FlavourController;
+use App\Http\Controllers\CakeSizeController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\ToppingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,9 +32,11 @@ Route::middleware(['auth'])->group(function () {
         Route::inertia('/checkout', 'CheckoutSection')->name('/checkout');
         Route::inertia('/order', 'OrderStatusSection')->name('/order');
         Route::inertia('/dashboard-home', 'AdminDashboard/HomeSection')->name('dashboard-home');
+
         Route::resource('/dashboard-cake', CakeController::class);
         Route::resource('/dashboard-flavour', FlavourController::class)->except('show');
-        Route::resource('/dashboard-category', CategoryController::class);
+        Route::resource('/dashboard-size', CakeSizeController::class)->except('show');
+        Route::resource('/dashboard-topping', ToppingController::class)->except('show');
     });
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 });

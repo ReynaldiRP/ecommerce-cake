@@ -13,7 +13,7 @@ class CakeController extends Controller
      */
     public function index()
     {
-        return Inertia::render('AdminDashboard/Product/Index');
+        return Inertia::render('AdminDashboard/Cake/Index');
     }
 
     /**
@@ -21,7 +21,7 @@ class CakeController extends Controller
      */
     public function create()
     {
-        return Inertia::render('AdminDashboard/Product/Create');
+        return Inertia::render('AdminDashboard/Cake/Create');
     }
 
     /**

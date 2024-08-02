@@ -11,9 +11,8 @@
                 <div class="breadcrumbs text-sm">
                     <ul>
                         <li>
-                            <inertia-link
-                                :href="route('dashboard-flavour.index')"
-                                >Flavour</inertia-link
+                            <inertia-link :href="route('dashboard-size.index')"
+                                >Cake Size</inertia-link
                             >
                         </li>
                         <li>
@@ -22,26 +21,27 @@
                     </ul>
                 </div>
 
-                <h1 class="font-bold text-2xl">Edit Flavour</h1>
+                <h1 class="font-bold text-2xl">Edit Cake Size</h1>
             </div>
             <form @submit.prevent="submit">
                 <CardBox>
-                    <FormField label="Flavour Cake">
+                    <FormField label="Cake Size">
                         <FormControl
-                            v-model="form.name"
-                            name="name"
-                            placeholder="Chocolate"
+                            v-model="form.size"
+                            name="size"
+                            placeholder="10"
                             :icon="mdiCakeVariant"
+                            type="number"
                         />
                     </FormField>
                     <NotificationBar
-                        v-if="props.errors.name"
+                        v-if="props.errors.size"
                         color="danger"
                         :icon="mdiAlertCircle"
                     >
-                        {{ props.errors.name }}
+                        {{ props.errors.size }}
                     </NotificationBar>
-                    <FormField label="Flavour Price">
+                    <FormField label="Cake Size Price">
                         <FormControl
                             v-model="form.price"
                             name="price"
@@ -57,13 +57,6 @@
                     >
                         {{ props.errors.price }}
                     </NotificationBar>
-                    <FormField label="Cake Image">
-                        <FormControl
-                            v-model="form.image_url"
-                            :icon="mdiImageArea"
-                            type="file"
-                        />
-                    </FormField>
                     <template #footer>
                         <BaseButton
                             type="submit"
@@ -93,7 +86,7 @@ import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
 
 const props = defineProps({
-    flavour: {
+    cakeSize: {
         type: Object,
     },
     errors: {
@@ -104,19 +97,16 @@ const props = defineProps({
 const isLoading = ref(false);
 
 const form = useForm({
-    id: props.flavour.id,
-    name: props.flavour.name,
-    price: props.flavour.price,
-    image_url: "",
+    id: props.cakeSize.id,
+    size: props.cakeSize.size,
+    price: props.cakeSize.price,
 });
 
 const submit = () => {
     isLoading.value = true;
     setTimeout(() => {
         isLoading.value = false;
-        form.put(
-            route("dashboard-flavour.update", { dashboard_flavour: form.id })
-        );
+        form.put(route("dashboard-size.update", { dashboard_size: form.id }));
     }, 3000);
 };
 </script>

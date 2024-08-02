@@ -5,9 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CakeSize extends Model
+class Topping extends Model
 {
     use HasFactory;
-    protected $table = 'cake_sizes';
-    protected $fillable = ['size', 'price'];
+    protected $fillable = ['name', 'price', 'image_url'];
 }

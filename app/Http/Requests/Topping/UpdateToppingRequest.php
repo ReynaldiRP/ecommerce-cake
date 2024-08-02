@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Flavour;
+namespace App\Http\Requests\Topping;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreFlavourRequest extends FormRequest
+class UpdateToppingRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +23,14 @@ class StoreFlavourRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|regex:/^[a-zA-Z\s\-]+$/|min:5|max:255|unique:flavours,name',
+            'id' => 'required',
+            'name' => [
+                'required',
+                'regex:/^[a-zA-Z\s\-]+$/',
+                'min:5',
+                'max:255',
+                Rule::unique('flavours', 'name')->ignore($this->id)
+            ],
             'price' => 'required|numeric|min:1|max:1000000',
             'image_url' => 'sometimes|mimes:png,jpg,jpeg'
         ];
@@ -36,10 +44,10 @@ class StoreFlavourRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.unique' => 'The flavour is already exists',
-            'name.regex' => 'The flavour may only contain alphabetic characters and dashes.',
-            'price.max' => 'The flavour price must not be greater than 1,000,000.',
-            'image_url.mimes' => 'The image must be a file of type: png, jpg, jpeg.'
+            'name.unique' => 'The topping is already exists',
+            'name.regex' => 'The topping may only contain alphabetic characters and dashes.',
+            'price.max' => 'The topping price must not be greater than 1,000,000.',
+            'image_url.mimes' => 'The topping image must be a file of type: png, jpg, jpeg.'
         ];
     }
 }

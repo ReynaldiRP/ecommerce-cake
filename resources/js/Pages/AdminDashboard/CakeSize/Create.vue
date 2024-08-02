@@ -11,46 +11,44 @@
                 <div class="breadcrumbs text-sm">
                     <ul>
                         <li>
-                            <inertia-link
-                                :href="route('dashboard-flavour.index')"
-                                >Category</inertia-link
+                            <inertia-link :href="route('dashboard-size.index')"
+                                >Cake Size</inertia-link
                             >
                         </li>
                         <li>
-                            <inertia-link
-                                :href="route('dashboard-flavour.create')"
+                            <inertia-link :href="route('dashboard-size.create')"
                                 >Create</inertia-link
                             >
                         </li>
                     </ul>
                 </div>
 
-                <h1 class="font-bold text-2xl">Add Category</h1>
+                <h1 class="font-bold text-2xl">Add Cake Size</h1>
             </div>
             <form @submit.prevent="submit">
                 <CardBox>
-                    <FormField label="Flavour Cake">
+                    <FormField label="Cake Size (Cm)">
                         <FormControl
-                            v-model="form.name"
-                            name="name"
-                            placeholder="Chocolate"
+                            v-model="form.size"
+                            placeholder="10"
                             :icon="mdiCakeVariant"
+                            type="number"
                         />
                     </FormField>
                     <NotificationBar
-                        v-if="props.errors.name"
+                        v-if="props.errors.size"
                         color="danger"
                         :icon="mdiAlertCircle"
                     >
-                        {{ props.errors.name }}
+                        {{ props.errors.size }}
                     </NotificationBar>
-                    <FormField label="Flavour Price">
+                    <FormField label="Cake Sized Price">
                         <FormControl
                             v-model="form.price"
-                            name="price"
                             placeholder="Rp5000"
                             :icon="mdiCash"
                             type="number"
+                            step="any"
                         />
                     </FormField>
                     <NotificationBar
@@ -93,7 +91,7 @@ const props = defineProps({ errors: Object });
 const isLoading = ref(false);
 
 const form = useForm({
-    name: "",
+    size: 0,
     price: 0,
 });
 
@@ -101,7 +99,7 @@ const submit = () => {
     isLoading.value = true;
     setTimeout(() => {
         isLoading.value = false;
-        form.post("/dashboard-flavour");
+        form.post("/dashboard-size");
     }, 3000);
 };
 </script>

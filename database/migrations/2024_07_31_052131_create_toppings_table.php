@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cake_sizes', function (Blueprint $table) {
+        Schema::create('toppings', function (Blueprint $table) {
             $table->id();
-            $table->integer('size');
+            $table->string('name', 255);
             $table->double('price', 8, 2);
+            $table->string('image_url', 255);
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cake_sizes');
+        Schema::dropIfExists('toppings');
     }
 };

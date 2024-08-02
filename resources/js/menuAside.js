@@ -15,14 +15,15 @@ export default [
                 label: "Cake",
             },
             {
-                href: "dashboard-category",
-                label: "Cake Category",
+                href: "dashboard-size",
+                label: "Cake Size",
             },
             {
                 href: "dashboard-flavour",
                 label: "Cake Flavour",
             },
             {
+                href: "dashboard-topping",
                 label: "Cake Topping",
             },
         ],

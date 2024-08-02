@@ -17,7 +17,7 @@ class FlavourController extends Controller
     public function index(): Response
     {
         $flavour = Flavour::all();
-        return Inertia::render('AdminDashboard/Flavour/Index', ['flavour' => $flavour]);
+        return Inertia::render('AdminDashboard/CakeFlavour/Index', ['flavour' => $flavour]);
     }
 
     /**
@@ -25,7 +25,7 @@ class FlavourController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('AdminDashboard/Flavour/Create');
+        return Inertia::render('AdminDashboard/CakeFlavour/Create');
     }
 
     /**
@@ -39,14 +39,14 @@ class FlavourController extends Controller
 
             $filename =  time() . '.' . $request->file('image_url')->getClientOriginalExtension();
 
-            $path = $request->file('image_url')->storeAs('flavour', $filename, 'public');
+            $path = $request->file('image_url')->storeAs('cake_flavour', $filename, 'public');
 
             $data['image_url'] = 'storage/' . $path;
         }
 
         Flavour::create($data);
 
-        return to_route('dashboard-flavour.index')->with('success', 'The Flavour has been success added');
+        return to_route('dashboard-flavour.index')->with('success', 'The Flavour has been successfully added');
     }
 
     /**
@@ -62,7 +62,7 @@ class FlavourController extends Controller
      */
     public function edit(Flavour $dashboard_flavour): Response
     {
-        return Inertia::render('AdminDashboard/Flavour/Edit', ['flavour' => $dashboard_flavour]);
+        return Inertia::render('AdminDashboard/CakeFlavour/Edit', ['flavour' => $dashboard_flavour]);
     }
 
     /**
@@ -70,8 +70,25 @@ class FlavourController extends Controller
      */
     public function update(UpdateFlavourRequest $request, Flavour $dashboard_flavour): RedirectResponse
     {
+        $imagePath = public_path($dashboard_flavour->image_url);
+
         $data = $request->validated();
+
+        if ($request->hasFile('image_url')) {
+
+            $filename =  time() . '.' . $request->file('image_url')->getClientOriginalExtension();
+
+            $path = $request->file('image_url')->storeAs('cake_flavour', $filename, 'public');
+
+            $data['image_url'] = 'storage/' . $path;
+
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+
         $dashboard_flavour->update($data);
+
         return to_route('dashboard-flavour.index')->with('success', 'The Flavour has been edited');
     }
 
@@ -80,7 +97,14 @@ class FlavourController extends Controller
      */
     public function destroy(Flavour $dashboard_flavour): RedirectResponse
     {
+        $imagePath = public_path($dashboard_flavour->image_url);
+
         $dashboard_flavour->delete();
+
+        if (file_exists($imagePath)) {
+            unlink($imagePath);
+        }
+
         return to_route('dashboard-flavour.index')->with('success', 'The Flavour has been deleted');
     }
 }

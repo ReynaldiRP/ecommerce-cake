@@ -10,10 +10,10 @@
         <SectionMain class="flex flex-col gap-6">
             <div class="grid grid-cols-12">
                 <div class="col-span-4 flex items-center gap-2">
-                    <h1 class="font-bold text-2xl">Flavour Table</h1>
+                    <h1 class="font-bold text-2xl">Cake Size Table</h1>
                     <BaseButton
                         color="success"
-                        :href="route('dashboard-flavour.create')"
+                        :href="route('dashboard-size.create')"
                         :icon="mdiPlus"
                         :icon-size="16"
                     />
@@ -35,35 +35,27 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Flavour Name</th>
-                                <th>Flavour Price</th>
-                                <th>Flavour Image</th>
+                                <th>Cake Size</th>
+                                <th>Price</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(flavour, index) in props.flavour"
-                                :key="flavour.id"
+                                v-for="(cakeSize, index) in props.cakeSize"
+                                :key="cakeSize.id"
                             >
                                 <th>{{ index + 1 }}</th>
-                                <td>{{ flavour.name }}</td>
-                                <td>Rp{{ flavour.price }}</td>
-                                <td>
-                                    <button class="btn btn-info">
-                                        <i
-                                            class="fa-solid fa-image text-lg text-neutral"
-                                        ></i>
-                                    </button>
-                                </td>
+                                <td>{{ cakeSize.size }}(Cm)</td>
+                                <td>Rp{{ cakeSize.price }}</td>
                                 <td
                                     class="flex lg:justify-start justify-end gap-2"
                                 >
                                     <inertia-link
                                         :href="
                                             route(
-                                                'dashboard-flavour.edit',
-                                                flavour.id
+                                                'dashboard-size.edit',
+                                                cakeSize.id
                                             )
                                         "
                                         class="btn btn-info"
@@ -78,17 +70,17 @@
                                     <CardBoxModal
                                         v-model="modalActive"
                                         class="backdrop-contrast-50"
-                                        title="Flavour Data"
+                                        title="Cake Size"
                                         button="info"
                                         button-label="Confirm"
                                         :click-handler="
-                                            () => deleteHandler(flavour.id)
+                                            () => deleteHandler(cakeSize.id)
                                         "
                                         has-cancel
                                     >
                                         <p>
-                                            Are you sure want to delete Flavour
-                                            ?
+                                            Are you sure want to delete Category
+                                            Cake ?
                                         </p>
                                     </CardBoxModal>
                                 </td>
@@ -127,16 +119,12 @@ const isLoading = ref(false);
 const modalActive = ref(false);
 
 const props = defineProps({
-    flavour: {
+    cakeSize: {
         type: Object,
     },
 });
 
-const closeModal = () => {
-    console.log("Close image modal");
-};
-
-const deleteHandler = (flavourId) => {
+const deleteHandler = (cakeSizeId) => {
     isLoading.value = true;
 
     const form = useForm({});
@@ -144,7 +132,7 @@ const deleteHandler = (flavourId) => {
     setTimeout(() => {
         isLoading.value = false;
 
-        form.delete(route("dashboard-flavour.destroy", flavourId));
+        form.delete(route("dashboard-size.destroy", cakeSizeId));
     }, 3000);
 };
 </script>

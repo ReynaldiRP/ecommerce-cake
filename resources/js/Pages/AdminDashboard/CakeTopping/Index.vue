@@ -10,10 +10,10 @@
         <SectionMain class="flex flex-col gap-6">
             <div class="grid grid-cols-12">
                 <div class="col-span-4 flex items-center gap-2">
-                    <h1 class="font-bold text-2xl">Category Table</h1>
+                    <h1 class="font-bold text-2xl">Topping Table</h1>
                     <BaseButton
                         color="success"
-                        :href="route('dashboard-category.create')"
+                        :href="route('dashboard-topping.create')"
                         :icon="mdiPlus"
                         :icon-size="16"
                     />
@@ -35,25 +35,35 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Category Cake</th>
+                                <th>Topping Name</th>
+                                <th>Topping Price</th>
+                                <th>Toppping Image</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(category, index) in props.category"
-                                :key="category.id"
+                                v-for="(topping, index) in props.topping"
+                                :key="topping.id"
                             >
                                 <th>{{ index + 1 }}</th>
-                                <td>{{ category.name }}</td>
+                                <td>{{ topping.name }}</td>
+                                <td>Rp{{ topping.price }}</td>
+                                <td>
+                                    <button class="my-image-links btn btn-info">
+                                        <i
+                                            class="fa-solid fa-image text-lg text-neutral"
+                                        ></i>
+                                    </button>
+                                </td>
                                 <td
                                     class="flex lg:justify-start justify-end gap-2"
                                 >
                                     <inertia-link
                                         :href="
                                             route(
-                                                'dashboard-flavour.edit',
-                                                flavour.id
+                                                'dashboard-topping.edit',
+                                                topping.id
                                             )
                                         "
                                         class="btn btn-info"
@@ -68,17 +78,17 @@
                                     <CardBoxModal
                                         v-model="modalActive"
                                         class="backdrop-contrast-50"
-                                        title="Category Cake"
+                                        title="Topping Data"
                                         button="info"
                                         button-label="Confirm"
                                         :click-handler="
-                                            () => deleteHandler(category.id)
+                                            () => deleteHandler(topping.id)
                                         "
                                         has-cancel
                                     >
                                         <p>
-                                            Are you sure want to delete Category
-                                            Cake ?
+                                            Are you sure want to delete Topping
+                                            ?
                                         </p>
                                     </CardBoxModal>
                                 </td>
@@ -117,12 +127,12 @@ const isLoading = ref(false);
 const modalActive = ref(false);
 
 const props = defineProps({
-    category: {
+    topping: {
         type: Object,
     },
 });
 
-const deleteHandler = (categoryId) => {
+const deleteHandler = (toppingId) => {
     isLoading.value = true;
 
     const form = useForm({});
@@ -130,7 +140,7 @@ const deleteHandler = (categoryId) => {
     setTimeout(() => {
         isLoading.value = false;
 
-        form.delete(route("dashboard-category.destroy", categoryId));
+        form.delete(route("dashboard-topping.destroy", toppingId));
     }, 3000);
 };
 </script>

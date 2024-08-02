@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Flavour;
+namespace App\Http\Requests\Topping;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreFlavourRequest extends FormRequest
+class StoreToppingRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -36,10 +36,10 @@ class StoreFlavourRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.unique' => 'The flavour is already exists',
-            'name.regex' => 'The flavour may only contain alphabetic characters and dashes.',
-            'price.max' => 'The flavour price must not be greater than 1,000,000.',
-            'image_url.mimes' => 'The image must be a file of type: png, jpg, jpeg.'
+            'name.unique' => 'The topping is already exists',
+            'name.regex' => 'The topping may only contain alphabetic characters and dashes.',
+            'price.max' => 'The topping price must not be greater than 1,000,000.',
+            'image_url.mimes' => 'The topping image must be a file of type: png, jpg, jpeg.'
         ];
     }
 }
