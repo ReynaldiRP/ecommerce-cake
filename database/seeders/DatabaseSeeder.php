@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Cake;
 use App\Models\CakeSize;
 use App\Models\Role;
 use App\Models\User;
@@ -53,6 +54,21 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Gold Flake',
                 'price' => 5000,
                 'image_url' => 'assets/image/default-img'
+            ]
+        ]);
+        Cake::factory()->createMany([
+            [
+                'cake_size_id' => 1,
+                'name' => 'Base cake',
+                'image_url' => 'assets/image/default-img',
+                'base_price' => 55000,
+                'personalization_type' => 'customized'
+            ],
+            [
+                'name' => 'Pudding',
+                'image_url' => 'assets/image/default-img',
+                'base_price' => 70000,
+                'personalization_type' => 'non-customized'
             ]
         ]);
     }

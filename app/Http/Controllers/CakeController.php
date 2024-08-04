@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Cake\StoreCakeRequest;
 use App\Models\Cake;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -13,7 +14,8 @@ class CakeController extends Controller
      */
     public function index()
     {
-        return Inertia::render('AdminDashboard/Cake/Index');
+        $cake = Cake::with('cakeSize')->get();
+        return Inertia::render('AdminDashboard/Cake/Index', ['cakes' => $cake]);
     }
 
     /**
@@ -21,15 +23,29 @@ class CakeController extends Controller
      */
     public function create()
     {
-        return Inertia::render('AdminDashboard/Cake/Create');
+        $cake = Cake::with('cakeSize')->get();
+        return Inertia::render('AdminDashboard/Cake/Create', ['cakes' => $cake]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCakeRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        if ($request->hasFile('image_url')) {
+
+            $filename =  time() . '.' . $request->file('image_url')->getClientOriginalExtension();
+
+            $path = $request->file('image_url')->storeAs('cake', $filename, 'public');
+
+            $data['image_url'] = 'storage/' . $path;
+        }
+
+        Cake::create($data);
+
+        return to_route('dashboard-cake.index')->with('success', 'The Cake has been successfully added');
     }
 
     /**
