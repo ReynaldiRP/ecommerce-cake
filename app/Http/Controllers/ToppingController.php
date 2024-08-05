@@ -85,6 +85,8 @@ class ToppingController extends Controller
             if (file_exists($imagePath)) {
                 unlink($imagePath);
             }
+        } else {
+            $data['image_url'] = $dashboard_topping->image_url;
         }
 
         $dashboard_topping->update($data);

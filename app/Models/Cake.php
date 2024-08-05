@@ -19,6 +19,6 @@ class Cake extends Model
 
     public function cakeSize(): BelongsTo
     {
-        return $this->belongsTo(CakeSize::class, 'id');
+        return $this->belongsTo(CakeSize::class, 'cake_size_id', 'id');
     }
 }

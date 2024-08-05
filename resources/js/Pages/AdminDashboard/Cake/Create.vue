@@ -34,16 +34,31 @@
                             :icon="mdiCakeVariant"
                         />
                     </FormField>
+                    <NotificationBar
+                        v-if="props.errors.name"
+                        color="danger"
+                        :icon="mdiAlertCircle"
+                    >
+                        {{ props.errors.name }}
+                    </NotificationBar>
                     <FormField label="Cake Size">
                         <FormControl
-                            v-model="form.cake_size"
-                            :options="cakeSizes"
+                            v-model="form.cake_size_id"
+                            :options="props.sizeCake"
                             option-label="size"
                             option-value="id"
+                            option-default="Choose the cake size"
                             :icon="mdiCakeVariant"
                             type="select"
                         />
                     </FormField>
+                    <NotificationBar
+                        v-if="props.errors.size"
+                        color="danger"
+                        :icon="mdiAlertCircle"
+                    >
+                        {{ props.errors.size }}
+                    </NotificationBar>
                     <FormField label="Cake Base Price">
                         <FormControl
                             v-model="form.base_price"
@@ -52,6 +67,13 @@
                             type="number"
                         />
                     </FormField>
+                    <NotificationBar
+                        v-if="props.errors.base_price"
+                        color="danger"
+                        :icon="mdiAlertCircle"
+                    >
+                        {{ props.errors.base_price }}
+                    </NotificationBar>
                     <FormField label="Cake Image">
                         <FormControl
                             v-model="form.image_url"
@@ -60,19 +82,31 @@
                             type="file"
                         />
                     </FormField>
+                    <NotificationBar
+                        v-if="props.errors.image_url"
+                        color="danger"
+                        :icon="mdiAlertCircle"
+                    >
+                        {{ props.errors.image_url }}
+                    </NotificationBar>
                     <FormField label="Cake Personalization Type">
                         <FormControl
                             v-model="form.personalization_type"
                             :options="cakePersonalizationType"
                             option-label="name"
                             option-value="name"
-                            @change="
-                                () => console.log(form.personalization_type)
-                            "
+                            option-default="Choose the cake personalization type"
                             :icon="mdiCakeVariant"
                             type="select"
                         />
                     </FormField>
+                    <NotificationBar
+                        v-if="props.errors.personalization_type"
+                        color="danger"
+                        :icon="mdiAlertCircle"
+                    >
+                        {{ props.errors.personalization_type }}
+                    </NotificationBar>
                     <template #footer>
                         <BaseButton
                             label="Submit"
@@ -93,8 +127,10 @@ import FormControl from "@/Components/DashboardAdmin/FormControl.vue";
 import FormField from "@/Components/DashboardAdmin/FormField.vue";
 import CardBox from "@/Components/DashboardAdmin/CardBox.vue";
 import BaseButton from "@/Components/DashboardAdmin/BaseButton.vue";
-import { computed, ref } from "vue";
-import { mdiCakeVariant, mdiImageArea, mdiCash } from "@mdi/js";
+import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
+
+import { ref } from "vue";
+import { mdiCakeVariant, mdiImageArea, mdiCash, mdiAlertCircle } from "@mdi/js";
 import { useForm } from "@inertiajs/inertia-vue3";
 
 import Loading from "vue-loading-overlay";
@@ -103,20 +139,12 @@ import "vue-loading-overlay/dist/css/index.css";
 const isLoading = ref(false);
 
 const props = defineProps({
-    cakes: {
-        type: Array,
+    sizeCake: {
+        type: Object,
     },
-});
-
-// get cake size data from props cake
-const cakeSizes = computed(() => {
-    return props.cakes
-        .map((cake) =>
-            cake.cake_size
-                ? { id: cake.cake_size.id, size: cake.cake_size.size }
-                : null
-        )
-        .filter((cakeSize) => cakeSize !== null);
+    errors: {
+        type: Object,
+    },
 });
 
 const cakePersonalizationType = [
@@ -134,8 +162,8 @@ const form = useForm({
     name: "",
     base_price: 0,
     image_url: "",
-    cake_size: cakeSizes.value.length > 0 ? cakeSizes.value[0].id : null,
-    personalization_type: cakePersonalizationType[0].name,
+    cake_size_id: "",
+    personalization_type: "",
 });
 
 const submit = () => {

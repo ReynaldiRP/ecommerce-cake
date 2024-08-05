@@ -52,6 +52,10 @@ const props = defineProps({
         type: String,
         default: null,
     },
+    optionDefault: {
+        type: String,
+        default: null,
+    },
     required: Boolean,
     borderless: Boolean,
     transparent: Boolean,
@@ -142,6 +146,7 @@ if (props.ctrlKFocus) {
             :name="name"
             :class="inputElClass"
         >
+            <option disabled value="">{{ optionDefault }}</option>
             <option
                 v-for="option in options"
                 :key="option.id ?? option"

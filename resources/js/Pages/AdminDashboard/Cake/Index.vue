@@ -1,4 +1,10 @@
 <template>
+    <loading
+        v-model:active="isLoading"
+        :can-cancel="true"
+        color="#EBA9AE"
+        background-color="#B2BEB5"
+    />
     <LayoutAuthenticated>
         <SectionMain class="flex flex-col gap-6">
             <div class="grid grid-cols-12">
@@ -59,7 +65,41 @@
                                     </button>
                                 </td>
                                 <td>{{ cakes.personalization_type }}</td>
-                                <td>Blue</td>
+                                <td
+                                    class="flex lg:justify-start justify-end gap-2"
+                                >
+                                    <inertia-link
+                                        :href="
+                                            route(
+                                                'dashboard-cake.edit',
+                                                cakes.id
+                                            )
+                                        "
+                                        class="btn btn-info"
+                                        >Edit</inertia-link
+                                    >
+                                    <button
+                                        class="btn btn-error"
+                                        @click="modalActive = true"
+                                    >
+                                        Delete
+                                    </button>
+                                    <CardBoxModal
+                                        v-model="modalActive"
+                                        class="backdrop-contrast-50"
+                                        title="Cakes"
+                                        button="info"
+                                        button-label="Confirm"
+                                        :click-handler="
+                                            () => deleteHandler(cakes.id)
+                                        "
+                                        has-cancel
+                                    >
+                                        <p>
+                                            Are you sure want to delete Cake ?
+                                        </p>
+                                    </CardBoxModal>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -80,13 +120,34 @@ import LayoutAuthenticated from "@/Layouts/Admin.vue";
 import BaseButton from "@/Components/DashboardAdmin/BaseButton.vue";
 import CardBox from "@/Components/DashboardAdmin/CardBox.vue";
 import SectionMain from "@/Components/DashboardAdmin/SectionMain.vue";
+import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
 import Pagination from "@/Components/Pagination.vue";
 import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import { mdiPlus, mdiCheckCircle } from "@mdi/js";
+import { ref } from "vue";
+import { useForm } from "@inertiajs/inertia-vue3";
+
+import Loading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/css/index.css";
 
 const props = defineProps({
     cakes: {
-        type: Array,
+        type: Object,
     },
 });
+
+const isLoading = ref(false);
+const modalActive = ref(false);
+
+const deleteHandler = (cakeId) => {
+    isLoading.value = true;
+
+    const form = useForm({});
+
+    setTimeout(() => {
+        isLoading.value = false;
+
+        form.delete(route("dashboard-cake.destroy", cakeId));
+    }, 3000);
+};
 </script>

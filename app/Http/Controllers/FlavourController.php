@@ -85,6 +85,8 @@ class FlavourController extends Controller
             if (file_exists($imagePath)) {
                 unlink($imagePath);
             }
+        } else {
+            $data['image_url'] = $dashboard_flavour->image_url;
         }
 
         $dashboard_flavour->update($data);

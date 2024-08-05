@@ -32,6 +32,7 @@ class UpdateFlavourRequest extends FormRequest
                 'max:255',
                 Rule::unique('flavours', 'name')->ignore($this->id)
             ],
+            'image_url' => 'nullable|mimes:png,jpg,jpeg',
             'price' => 'required|numeric|min:1|max:1000000'
         ];
     }

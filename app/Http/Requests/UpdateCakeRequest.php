@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Cake;
+namespace App\Http\Requests;
 
-use App\Models\Cake;
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCakeRequest extends FormRequest
+class UpdateCakeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +22,11 @@ class StoreCakeRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'id' => 'required',
             'cake_size_id' => 'nullable',
             'name' => 'required|regex:/^[a-zA-Z\s\-]+$/|min:3|max:255',
             'base_price' => 'required|numeric|min:1|max:1000000',
-            'image_url' => 'sometimes|mimes:png,jpg,jpeg',
+            'image_url' => 'nullable|mimes:png,jpg,jpeg',
             'personalization_type' => 'required'
         ];
     }

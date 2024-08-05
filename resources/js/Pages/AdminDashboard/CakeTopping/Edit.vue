@@ -133,6 +133,7 @@ const submit = () => {
             price: form.price,
             image_url: form.image_url,
         });
+        console.log(form);
     }, 3000);
 };
 </script>
