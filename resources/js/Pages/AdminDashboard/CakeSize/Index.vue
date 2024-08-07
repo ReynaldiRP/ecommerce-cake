@@ -42,7 +42,7 @@
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(cakeSize, index) in props.cakeSize"
+                                v-for="(cakeSize, index) in props.cakeSize.data"
                                 :key="cakeSize.id"
                             >
                                 <th>{{ index + 1 }}</th>
@@ -90,8 +90,17 @@
                 </div>
                 <template #footer>
                     <div class="flex justify-between items-center">
-                        <Pagination class="btn-outline" :numberPagination="3" />
-                        <span>Page 1 of 3</span>
+                        <Pagination
+                            class="btn-outline"
+                            :links="props.cakeSize.links"
+                            :next-page-url="props.cakeSize.next_page_url"
+                            :previous-page-url="props.cakeSize.prev_page_url"
+                        />
+                        <p>
+                            Page
+                            <span>{{ props.cakeSize.current_page }}</span> of
+                            <span>{{ props.cakeSize.last_page }}</span>
+                        </p>
                     </div>
                 </template>
             </CardBox>

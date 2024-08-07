@@ -33,10 +33,14 @@ Route::middleware(['auth'])->group(function () {
         Route::inertia('/order', 'OrderStatusSection')->name('/order');
         Route::inertia('/dashboard-home', 'AdminDashboard/HomeSection')->name('dashboard-home');
 
-        Route::resource('/dashboard-cake', CakeController::class);
-        Route::resource('/dashboard-flavour', FlavourController::class)->except('show');
-        Route::resource('/dashboard-size', CakeSizeController::class)->except('show');
-        Route::resource('/dashboard-topping', ToppingController::class)->except('show');
+        Route::resource('/dashboard-cake', CakeController::class)
+            ->name('index', 'dashboard-cake')->except('show');
+        Route::resource('/dashboard-flavour', FlavourController::class)
+            ->name('index', 'dashboard-flavour')->except('show');
+        Route::resource('/dashboard-size', CakeSizeController::class)
+            ->name('index', 'dashboard-size')->except('show');
+        Route::resource('/dashboard-topping', ToppingController::class)
+            ->name('index', 'dashboard-topping')->except('show');
     });
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 });

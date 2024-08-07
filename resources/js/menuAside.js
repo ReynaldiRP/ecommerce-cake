@@ -1,4 +1,4 @@
-import { mdiMonitor, mdiCakeLayered, mdiViewList } from "@mdi/js";
+import { mdiMonitor, mdiViewList } from "@mdi/js";
 
 export default [
     {
@@ -11,19 +11,19 @@ export default [
         icon: mdiViewList,
         menu: [
             {
-                href: "dashboard-cake",
+                route: "dashboard-cake",
                 label: "Cake",
             },
             {
-                href: "dashboard-size",
+                route: "dashboard-size",
                 label: "Cake Size",
             },
             {
-                href: "dashboard-flavour",
+                route: "dashboard-flavour",
                 label: "Cake Flavour",
             },
             {
-                href: "dashboard-topping",
+                route: "dashboard-topping",
                 label: "Cake Topping",
             },
         ],

@@ -43,7 +43,7 @@
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(topping, index) in props.topping"
+                                v-for="(topping, index) in props.topping.data"
                                 :key="topping.id"
                             >
                                 <th>{{ index + 1 }}</th>
@@ -98,8 +98,17 @@
                 </div>
                 <template #footer>
                     <div class="flex justify-between items-center">
-                        <Pagination class="btn-outline" :numberPagination="3" />
-                        <span>Page 1 of 3</span>
+                        <Pagination
+                            class="btn-outline"
+                            :links="props.topping.links"
+                            :next-page-url="props.topping.next_page_url"
+                            :previous-page-url="props.topping.prev_page_url"
+                        />
+                        <p>
+                            Page
+                            <span>{{ props.topping.current_page }}</span> of
+                            <span>{{ props.topping.last_page }}</span>
+                        </p>
                     </div>
                 </template>
             </CardBox>

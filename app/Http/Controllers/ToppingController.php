@@ -16,7 +16,7 @@ class ToppingController extends Controller
      */
     public function index(): Response
     {
-        $topping = Topping::all();
+        $topping = Topping::paginate(5);
         return Inertia::render('AdminDashboard/CakeTopping/Index', ['topping' => $topping]);
     }
 

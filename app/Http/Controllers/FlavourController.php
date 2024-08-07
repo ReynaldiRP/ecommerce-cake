@@ -16,7 +16,7 @@ class FlavourController extends Controller
      */
     public function index(): Response
     {
-        $flavour = Flavour::all();
+        $flavour = Flavour::paginate(5);
         return Inertia::render('AdminDashboard/CakeFlavour/Index', ['flavour' => $flavour]);
     }
 

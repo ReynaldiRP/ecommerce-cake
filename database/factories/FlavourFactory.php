@@ -17,9 +17,21 @@ class FlavourFactory extends Factory
      */
     public function definition(): array
     {
+
+        $flavour = [
+            'Blackforest',
+            'Double choco',
+            'Straberry jam',
+            'Vanilla jam',
+            'Bluberry jam',
+            'Pandan',
+            'Red Velvet',
+            'Matcha'
+        ];
+
         return [
-            'name' => $this->faker->unique()->words(2, true),
-            'price' => $this->faker->numberBetween(10000, 100000),
+            'name' => $this->faker->unique()->randomElement($flavour),
+            'price' => $this->faker->numberBetween(10, 13) * 5000,
             'image_url' => 'assets/image/default-img'
         ];
     }

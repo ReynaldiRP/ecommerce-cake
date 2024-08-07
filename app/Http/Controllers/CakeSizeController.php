@@ -17,7 +17,7 @@ class CakeSizeController extends Controller
      */
     public function index(): Response
     {
-        $cakeSize = CakeSize::all();
+        $cakeSize = CakeSize::paginate(5);
         return Inertia::render('AdminDashboard/CakeSize/Index', ['cakeSize' => $cakeSize]);
     }
 

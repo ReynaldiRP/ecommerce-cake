@@ -44,7 +44,7 @@
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(cakes, index) in props.cakes"
+                                v-for="(cakes, index) in props.cakes.data"
                                 :key="cakes.id"
                             >
                                 <th>{{ index + 1 }}</th>
@@ -70,10 +70,9 @@
                                 >
                                     <inertia-link
                                         :href="
-                                            route(
-                                                'dashboard-cake.edit',
-                                                cakes.id
-                                            )
+                                            route('dashboard-cake.edit', {
+                                                dashboard_cake: cakes.id,
+                                            })
                                         "
                                         class="btn btn-info"
                                         >Edit</inertia-link
@@ -106,8 +105,16 @@
                 </div>
                 <template #footer>
                     <div class="flex justify-between items-center">
-                        <Pagination class="btn-outline" :numberPagination="3" />
-                        <span>Page 1 of 3</span>
+                        <Pagination
+                            class="btn-outline"
+                            :links="props.cakes.links"
+                            :next-page-url="props.cakes.next_page_url"
+                            :previous-page-url="props.cakes.prev_page_url"
+                        />
+                        <p>
+                            Page <span>{{ props.cakes.current_page }}</span> of
+                            <span>{{ props.cakes.last_page }}</span>
+                        </p>
                     </div>
                 </template>
             </CardBox>

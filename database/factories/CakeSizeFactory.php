@@ -17,8 +17,8 @@ class CakeSizeFactory extends Factory
     public function definition(): array
     {
         return [
-            'size' => $this->faker->unique()->numberBetween(12, 25),
-            'price' => $this->faker->numberBetween(45000, 200000)
+            'size' => $this->faker->unique()->numberBetween(12, 24),
+            'price' => $this->faker->numberBetween(55000, 65000),
         ];
     }
 }

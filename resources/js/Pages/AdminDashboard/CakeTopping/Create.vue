@@ -11,8 +11,7 @@
                 <div class="breadcrumbs text-sm">
                     <ul>
                         <li>
-                            <inertia-link
-                                :href="route('dashboard-topping.index')"
+                            <inertia-link :href="route('dashboard-topping')"
                                 >Topping</inertia-link
                             >
                         </li>

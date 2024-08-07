@@ -43,7 +43,7 @@
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(flavour, index) in props.flavour"
+                                v-for="(flavour, index) in props.flavour.data"
                                 :key="flavour.id"
                             >
                                 <th>{{ index + 1 }}</th>
@@ -98,8 +98,17 @@
                 </div>
                 <template #footer>
                     <div class="flex justify-between items-center">
-                        <Pagination class="btn-outline" :numberPagination="3" />
-                        <span>Page 1 of 3</span>
+                        <Pagination
+                            class="btn-outline"
+                            :links="props.flavour.links"
+                            :next-page-url="props.flavour.next_page_url"
+                            :previous-page-url="props.flavour.prev_page_url"
+                        />
+                        <p>
+                            Page
+                            <span>{{ props.flavour.current_page }}</span> of
+                            <span>{{ props.flavour.last_page }}</span>
+                        </p>
                     </div>
                 </template>
             </CardBox>
@@ -115,7 +124,7 @@ import SectionMain from "@/Components/DashboardAdmin/SectionMain.vue";
 import Pagination from "@/Components/Pagination.vue";
 import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
 
 import Loading from "vue-loading-overlay";
@@ -131,6 +140,9 @@ const props = defineProps({
         type: Object,
     },
 });
+
+console.log(props.flavour.links);
+
 
 const deleteHandler = (flavourId) => {
     isLoading.value = true;
