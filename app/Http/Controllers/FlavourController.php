@@ -46,7 +46,7 @@ class FlavourController extends Controller
 
         Flavour::create($data);
 
-        return to_route('dashboard-flavour.index')->with('success', 'The Flavour has been successfully added');
+        return to_route('dashboard-flavour')->with('success', 'The Flavour has been successfully added');
     }
 
     /**
@@ -91,7 +91,7 @@ class FlavourController extends Controller
 
         $dashboard_flavour->update($data);
 
-        return to_route('dashboard-flavour.index')->with('success', 'The Flavour has been edited');
+        return to_route('dashboard-flavour')->with('success', 'The Flavour has been edited');
     }
 
     /**
@@ -107,6 +107,6 @@ class FlavourController extends Controller
             unlink($imagePath);
         }
 
-        return to_route('dashboard-flavour.index')->with('success', 'The Flavour has been deleted');
+        return to_route('dashboard-flavour')->with('success', 'The Flavour has been deleted');
     }
 }

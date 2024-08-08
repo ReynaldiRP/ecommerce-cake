@@ -51,7 +51,7 @@ class CakeController extends Controller
 
         Cake::create($data);
 
-        return to_route('dashboard-cake.index')->with('success', 'The Cake has been successfully added');
+        return to_route('dashboard-cake')->with('success', 'The Cake has been successfully added');
     }
 
     /**
@@ -99,7 +99,7 @@ class CakeController extends Controller
 
         $dashboard_cake->update($data);
 
-        return to_route('dashboard-cake.index')->with('success', 'The Cake has been successfully updated');
+        return to_route('dashboard-cake')->with('success', 'The Cake has been successfully updated');
     }
 
     /**
@@ -114,6 +114,6 @@ class CakeController extends Controller
             unlink($imagePath);
         }
 
-        return to_route('dashboard-cake.index')->with('success', 'The Cake has been deleted');
+        return to_route('dashboard-cake')->with('success', 'The Cake has been deleted');
     }
 }

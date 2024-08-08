@@ -36,7 +36,7 @@ class CakeSizeController extends Controller
     {
         $data = $request->validated();
         CakeSize::create($data);
-        return to_route('dashboard-size.index')->with('success', 'The Cake Size has been successfully added');
+        return to_route('dashboard-size')->with('success', 'The Cake Size has been successfully added');
     }
 
     /**
@@ -62,7 +62,7 @@ class CakeSizeController extends Controller
     {
         $data = $request->validated();
         $dashboard_size->updated($data);
-        return to_route('dashboard-size.index')->with('success', 'The Cake Size has been edited');
+        return to_route('dashboard-size')->with('success', 'The Cake Size has been edited');
     }
 
     /**
@@ -71,6 +71,6 @@ class CakeSizeController extends Controller
     public function destroy(CakeSize $dashboard_size): RedirectResponse
     {
         $dashboard_size->delete();
-        return to_route('dashboard-size.index')->with('success', 'The Cake Size has been deleted');
+        return to_route('dashboard-size')->with('success', 'The Cake Size has been deleted');
     }
 }
