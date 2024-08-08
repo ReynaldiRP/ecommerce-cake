@@ -11,8 +11,7 @@
                 <div class="breadcrumbs text-sm">
                     <ul>
                         <li>
-                            <inertia-link
-                                :href="route('dashboard-flavour.index')"
+                            <inertia-link :href="route('dashboard-flavour')"
                                 >Flavour</inertia-link
                             >
                         </li>

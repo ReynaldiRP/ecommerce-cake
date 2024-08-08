@@ -11,7 +11,7 @@
                 <div class="breadcrumbs text-sm">
                     <ul>
                         <li>
-                            <inertia-link :href="route('dashboard-size.index')"
+                            <inertia-link :href="route('dashboard-size')"
                                 >Cake Size</inertia-link
                             >
                         </li>

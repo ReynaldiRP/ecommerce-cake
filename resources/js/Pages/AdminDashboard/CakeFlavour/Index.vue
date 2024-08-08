@@ -141,9 +141,6 @@ const props = defineProps({
     },
 });
 
-console.log(props.flavour.links);
-
-
 const deleteHandler = (flavourId) => {
     isLoading.value = true;
 
