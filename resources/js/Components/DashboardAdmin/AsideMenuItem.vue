@@ -7,16 +7,6 @@ import { useDarkModeStore } from "../../Stores/darkMode";
 import BaseIcon from "@/Components/DashboardAdmin/BaseIcon.vue";
 import AsideMenuList from "@/Components/DashboardAdmin/AsideMenuList.vue";
 
-const itemHref = computed(() =>
-    props.item.route ? route(props.item.route) : props.item.href
-);
-
-const activeInactiveStyle = computed(() =>
-    props.item.route && route().current(props.item.route)
-        ? useDarkModeStore.asideMenuItemActiveStyle
-        : ""
-);
-
 const props = defineProps({
     item: {
         type: Object,
@@ -24,6 +14,16 @@ const props = defineProps({
     },
     isDropdownList: Boolean,
 });
+
+const itemHref = computed(() =>
+    props.item.route ? route(props.item.route) : props.item.href
+);
+
+const activeInactiveStyle = computed(() =>
+    props.item.route && route().current(props.item.route)
+        ? "font-bold text-white"
+        : "false"
+);
 
 const emit = defineEmits(["menu-click"]);
 
@@ -39,7 +39,7 @@ const componentClass = computed(() => [
     props.isDropdownList ? "py-3 px-6 text-sm" : "py-3",
     hasColor.value
         ? getButtonColor(props.item.color, false, true)
-        : `aside-menu-item dark:text-slate-300 dark:hover:text-white`,
+        : `aside-menu-item text-slate-300 hover:text-white`,
 ]);
 
 const hasDropdown = computed(() => !!props.item.menu);
@@ -89,7 +89,7 @@ const menuClick = (event) => {
             :menu="item.menu"
             :class="[
                 'aside-menu-dropdown',
-                isDropdownActive ? 'block dark:bg-slate-800/50' : 'hidden',
+                isDropdownActive ? 'block bg-slate-800/50' : 'hidden',
             ]"
             is-dropdown-list
         />

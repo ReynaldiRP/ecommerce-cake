@@ -19,8 +19,6 @@ class CakeController extends Controller
     {
         $cake = Cake::with('cakeSize')->paginate(5);
 
-        // dd($cake);
-
         return Inertia::render('AdminDashboard/Cake/Index', ['cakes' => $cake]);
     }
 

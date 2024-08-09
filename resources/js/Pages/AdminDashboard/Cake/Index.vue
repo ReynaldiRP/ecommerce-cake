@@ -5,6 +5,13 @@
         color="#EBA9AE"
         background-color="#B2BEB5"
     />
+
+    <vue-easy-lightbox
+        :visible="visibleRef"
+        :imgs="imgsRef"
+        @hide="onHide"
+    ></vue-easy-lightbox>
+
     <LayoutAuthenticated>
         <SectionMain class="flex flex-col gap-6">
             <div class="grid grid-cols-12">
@@ -58,7 +65,12 @@
                                 </td>
                                 <td>{{ cakes.base_price }}</td>
                                 <td>
-                                    <button class="my-image-links btn btn-info">
+                                    <button
+                                        @click="
+                                            () => showImage(cakes.image_url)
+                                        "
+                                        class="my-image-links btn btn-info"
+                                    >
                                         <i
                                             class="fa-solid fa-image text-lg text-neutral"
                                         ></i>
@@ -130,6 +142,7 @@ import SectionMain from "@/Components/DashboardAdmin/SectionMain.vue";
 import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
 import Pagination from "@/Components/Pagination.vue";
 import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
+import VueEasyLightbox from "vue-easy-lightbox";
 import { mdiPlus, mdiCheckCircle } from "@mdi/js";
 import { ref } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
@@ -145,10 +158,18 @@ const props = defineProps({
 
 const isLoading = ref(false);
 const modalActive = ref(false);
+const visibleRef = ref(false);
+const imgsRef = ref([]);
+
+const showImage = (imageUrl) => {
+    imgsRef.value = [imageUrl];
+    visibleRef.value = true;
+};
+
+const onHide = () => (visibleRef.value = false);
 
 const deleteHandler = (cakeId) => {
     isLoading.value = true;
-
     const form = useForm({});
 
     setTimeout(() => {
