@@ -1,5 +1,5 @@
 <template>
-    <div class="form-control" v-for="(items, index) in data" :key="index">
+    <div class="form-control">
         <label class="flex items-center gap-2 cursor-pointer">
             <input
                 type="radio"
@@ -7,7 +7,7 @@
                 class="radio btn-outline checked:bg-pink-400 checked:outline-white"
             />
             <span class="text-size text-color font-medium"
-                >{{ items.name }}
+                >{{ props.label }}
             </span>
         </label>
     </div>
@@ -15,8 +15,8 @@
 
 <script setup>
 const props = defineProps({
-    data: {
-        type: Array,
+    label: {
+        type: String,
     },
     textColor: {
         type: String,

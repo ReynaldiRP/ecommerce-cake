@@ -15,8 +15,7 @@
         </div>
         <LayoutCarousel :options="options" :on-moved="onMoved">
             <ImageCarousel
-                :link="route('/detail-product')"
-                :image-url="imageUrl"
+                :cakes="props.cakes"
                 :active-slide-index="activeSlideIndex"
             />
         </LayoutCarousel>
@@ -28,6 +27,12 @@ import { reactive, ref, defineComponent } from "vue";
 import LayoutCarousel from "@/Components/BaseCarousel/Layout.vue";
 import ImageCarousel from "@/Components/BaseCarousel/Image.vue";
 import "@splidejs/vue-splide/css";
+
+const props = defineProps({
+    cakes: {
+        type: Object,
+    },
+});
 
 const imageUrl = [
     {

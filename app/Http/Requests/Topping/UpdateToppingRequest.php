@@ -32,7 +32,7 @@ class UpdateToppingRequest extends FormRequest
                 Rule::unique('flavours', 'name')->ignore($this->id)
             ],
             'price' => 'required|numeric|min:1|max:1000000',
-            'image_url' => 'nullable|mimes:png,jpg,jpeg'
+            'image_url' => 'nullable|mimes:png,jpg,jpeg,webp'
         ];
     }
 

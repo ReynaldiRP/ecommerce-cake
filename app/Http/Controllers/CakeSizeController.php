@@ -61,7 +61,7 @@ class CakeSizeController extends Controller
     public function update(UpdateCakeSizeRequest $request, CakeSize $dashboard_size): RedirectResponse
     {
         $data = $request->validated();
-        $dashboard_size->updated($data);
+        $dashboard_size->update($data);
         return to_route('dashboard-size')->with('success', 'The Cake Size has been edited');
     }
 

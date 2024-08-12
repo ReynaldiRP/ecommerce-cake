@@ -106,7 +106,7 @@ const submit = () => {
     isLoading.value = true;
     setTimeout(() => {
         isLoading.value = false;
-        form.put(route("dashboard-size.update", { dashboard_size: form.id }));
+        form.put(`/dashboard-size/${form.id}`);
     }, 3000);
 };
 </script>

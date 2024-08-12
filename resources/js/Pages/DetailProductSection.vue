@@ -19,24 +19,21 @@
                             >
                         </li>
                         <li>
-                            <inertia-link :href="route('/detail-product')"
-                                >Detail Product</inertia-link
-                            >
+                            <inertia-link>Detail Product</inertia-link>
                         </li>
                     </ul>
                 </div>
-                <ProductImage url="assets/image/home-image-cake.png" />
+                <ProductImage :cake-image="props.cake.image_url" />
             </section>
             <section
                 class="h-full w-full flex flex-col justify-center px-8 mt-10 gap-6"
             >
                 <ProductDetail
-                    :cake-name="detailProduct.name"
-                    :cake-price="detailProduct.price"
+                    :cake="props.cake"
                     :cake-description="detailProduct.description"
                 />
-                <ProductFlavour :data="data" />
-                <ProductTopping :toppings="toppings" />
+                <ProductFlavour :flavours="props.flavour" />
+                <ProductTopping :toppings="props.topping" />
                 <ProductQuantity :quantity="5" />
                 <AddToChartButton type="default" />
             </section>
@@ -52,6 +49,20 @@ import ProductFlavour from "@/Components/DetailProduct/ProductFlavour.vue";
 import ProductTopping from "@/Components/DetailProduct/ProductTopping.vue";
 import ProductQuantity from "@/Components/DetailProduct/ProductQuantity.vue";
 import AddToChartButton from "@/Components/DetailProduct/AddToChartButton.vue";
+
+const props = defineProps({
+    cake: {
+        type: Object,
+    },
+    flavour: {
+        type: Object,
+    },
+    topping: {
+        type: Object,
+    },
+});
+
+console.log(props.cake.image_url);
 
 const detailProduct = {
     name: "Cake Name",
