@@ -1,8 +1,13 @@
 <template>
     <section class="flex flex-col gap-2">
-        <h1 class="text-3xl font-bold">{{ cake.name }}</h1>
+        <h1 class="text-3xl font-bold">
+            {{ cake.name
+            }}<span v-show="cake.cake_size?.size">
+                ({{ cake.cake_size?.size }}Cm)</span
+            >
+        </h1>
         <h2 class="text-2xl font-bold">
-            {{ formatPrice(cake.base_price + cake.cake_size.price) }}
+            {{ formatPrice(cake.totalCakePrice) }}
         </h2>
         <p class="text-lg text-justify">
             {{ cakeDescription }}

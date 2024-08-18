@@ -11,7 +11,7 @@
             <h2 class="text-base font-medium">
                 {{ cakeName }}
                 <span v-show="cakeSize" class="font-bold"
-                    >({{ cakeSize }}cm)</span
+                    >({{ cakeSize }}Cm)</span
                 >
             </h2>
             <p class="text-lg font-bold">{{ cakePrice }}</p>

@@ -19,7 +19,7 @@
                 class="w-full grid grid-cols-12 lg:grid-cols-6 place-items-center gap-8 px-8"
             >
                 <section
-                    class="h-fit w-[250px] col-span-4 lg:col-span-1 flex flex-col items-center mb-auto gap-2 py-36 lg:py-24"
+                    class="h-fit w-[250px] col-span-4 lg:col-span-1 flex flex-col items-center mb-auto gap-2 px-2 py-36 lg:py-24"
                 >
                     <div
                         class="w-full px-4 lg:px-0 flex items-center gap-2 relative right-4 lg:right-0 lg:left-4"
@@ -28,7 +28,9 @@
                             tabindex="0"
                             class="lg:hidden collapse collapse-arrow bg-base-300"
                         >
-                            <div class="collapse-title text-lg font-medium">Filter</div>
+                            <div class="collapse-title text-lg font-medium">
+                                Filter
+                            </div>
                             <div class="collapse-content">
                                 <FilterItem filtering-name="Personalization">
                                     <BaseRadio
@@ -84,10 +86,12 @@
                 <section
                     class="col-span-8 lg:col-span-5 flex flex-col items-center gap-8 py-44 lg:py-32"
                 >
-                    <section
-                        class="w-full grid grid-cols-2 lg:grid-cols-4 gap-8"
-                    >
-                        <CardLayout v-for="cakes in totalPrice" :key="cakes.id">
+                    <section class="grid grid-cols-4 lg:grid-cols-8 gap-8">
+                        <CardLayout
+                            v-for="cakes in totalPrice"
+                            :key="cakes.id"
+                            class="col-span-2"
+                        >
                             <CardItem
                                 :cake-id="cakes.id"
                                 :cake-name="cakes.name"
@@ -148,8 +152,6 @@ const formatPrice = (price) => {
         currency: "IDR",
     }).format(price);
 };
-
-console.log(formatPrice());
 
 const cakePersonalizationType = [
     {
