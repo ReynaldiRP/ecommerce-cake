@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cake;
+use App\Models\CakeSize;
 use App\Models\Flavour;
 use App\Models\Topping;
 use Inertia\Response;
@@ -19,6 +20,26 @@ class FrontEndController extends Controller
             ->get();
 
         return Inertia::render('LandingPageSection', ['cakes' => $cakes]);
+    }
+
+
+    public function products(): Response
+    {
+        $cakes =  Cake::with('cakeSize')->paginate(5);
+        $cakeSizes = CakeSize::orderBy('size')->get();
+
+        foreach ($cakes->items() as $cake) {
+            if ($cake->image_url) {
+                $cake->image_url = asset($cake->image_url);
+            } else {
+                $cake->image_url = asset('assets/image/default-img.jpg');
+            }
+        }
+
+        return Inertia::render('ProductSection', [
+            'cakes' => $cakes,
+            'cakeSizes' => $cakeSizes
+        ]);
     }
 
     public function detailProduct($cakeId): Response

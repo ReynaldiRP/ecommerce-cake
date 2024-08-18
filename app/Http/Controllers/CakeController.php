@@ -95,6 +95,8 @@ class CakeController extends Controller
             $data['image_url'] = $dashboard_cake->image_url;
         }
 
+
+
         $dashboard_cake->update($data);
 
         return to_route('dashboard-cake')->with('success', 'The Cake has been successfully updated');
@@ -108,8 +110,10 @@ class CakeController extends Controller
         $imagePath = public_path($dashboard_cake->image_url);
         $dashboard_cake->delete();
 
-        if (file_exists($imagePath)) {
-            unlink($imagePath);
+        if ($dashboard_cake->image_url) {
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
         }
 
         return to_route('dashboard-cake')->with('success', 'The Cake has been deleted');

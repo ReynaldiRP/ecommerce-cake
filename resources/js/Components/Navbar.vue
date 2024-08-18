@@ -14,7 +14,7 @@
                 </div>
             </div>
             <inertia-link
-                :href="route('/home')"
+                :href="route('home')"
                 class="text-xl font-bold text-primary-color cursor-pointer"
                 >Dream Dessert
             </inertia-link>
@@ -126,7 +126,7 @@ const logout = () => {
 const menu = [
     {
         name: "Catalouge",
-        link: route("/products"),
+        link: route("products"),
     },
     {
         name: "Order",

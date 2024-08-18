@@ -67,7 +67,12 @@
                                 <td>
                                     <button
                                         @click="
-                                            () => showImage(cakes.image_url)
+                                            () =>
+                                                showImage(
+                                                    cakes.image_url
+                                                        ? cakes.image_url
+                                                        : 'assets/image/default-img.jpg'
+                                                )
                                         "
                                         class="my-image-links btn btn-info"
                                     >

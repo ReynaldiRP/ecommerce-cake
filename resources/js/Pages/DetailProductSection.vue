@@ -4,17 +4,15 @@
             class="min-h-screen w-full grid grid-cols-1 lg:grid-cols-2 gap-2 place-items-center pt-28 lg:py-0"
         >
             <section class="flex flex-col gap-10">
-                <div
-                    class="breadcrumbs text-sm me-auto relative top-2 lg:right-28"
-                >
+                <div class="breadcrumbs text-sm me-auto relative lg:bottom-8">
                     <ul>
                         <li>
-                            <inertia-link :href="route('/home')"
+                            <inertia-link :href="route('home')"
                                 >Home</inertia-link
                             >
                         </li>
                         <li>
-                            <inertia-link :href="route('/products')"
+                            <inertia-link :href="route('products')"
                                 >Catalouge</inertia-link
                             >
                         </li>
@@ -26,11 +24,11 @@
                 <ProductImage :cake-image="props.cake.image_url" />
             </section>
             <section
-                class="h-full w-full flex flex-col justify-center px-8 mt-10 gap-6"
+                class="h-full w-full flex flex-col justify-center px-8 py-10 mt-10 gap-6"
             >
                 <ProductDetail
                     :cake="props.cake"
-                    :cake-description="detailProduct.description"
+                    :cake-description="description"
                 />
                 <ProductFlavour :flavours="props.flavour" />
                 <ProductTopping :toppings="props.topping" />
@@ -62,40 +60,11 @@ const props = defineProps({
     },
 });
 
-console.log(props.cake.image_url);
-
-const detailProduct = {
-    name: "Cake Name",
-    price: 15000,
-    description: `Lorem, ipsum dolor sit amet consectetur
+const description = `Lorem, ipsum dolor sit amet consectetur
     adipisicing elit. Sunt corporis numquam rem sequi consequuntur
     inventore minus excepturi. Animi tempore dignissimos, delectus iusto nisi
     eligendi vero inventore ex, sapiente expedita impedit. Lorem ipsum dolor sit amet
     consectetur adipisicing elit. Laudantium, repellat optio mollitia iure,
     dicta reiciendis, laborum quibusdam repellendus expedita cumque error
-    obcaecati dolorem architecto consequuntur ratione! Ipsum deserunt cupiditate beatae.`,
-};
-const data = [
-    {
-        name: "Vanilla",
-    },
-    {
-        name: "Red Velvet",
-    },
-    {
-        name: "Matcha",
-    },
-];
-
-const toppings = [
-    {
-        label: "Choco",
-    },
-    {
-        label: "Banana",
-    },
-    {
-        label: "Berry",
-    },
-];
+    obcaecati dolorem architecto consequuntur ratione! Ipsum deserunt cupiditate beatae.`;
 </script>

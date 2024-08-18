@@ -9,6 +9,7 @@
 defineProps({
     filteringName: {
         type: String,
+        default: null,
     },
 });
 </script>

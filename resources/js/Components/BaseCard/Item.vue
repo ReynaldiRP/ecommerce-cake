@@ -1,7 +1,11 @@
 <template>
-    <inertia-link :href="url">
+    <inertia-link :href="route('detail-product', { cakeId: cakeId })">
         <figure>
-            <img :src="imageUrl" alt="Shoes" />
+            <img
+                :src="imageUrl"
+                alt="Shoes"
+                class="h-[180px] object-cover w-full rounded-t-lg"
+            />
         </figure>
         <div class="card-body gap-1 text-base-300">
             <h2 class="text-base font-medium">
@@ -10,10 +14,9 @@
                     >({{ cakeSize }}cm)</span
                 >
             </h2>
-            <p class="text-lg font-bold">Rp{{ cakePrice }}</p>
+            <p class="text-lg font-bold">{{ cakePrice }}</p>
             <div class="w-fit flex gap-1">
                 <p class="badge">{{ cakePersonalizationType }}</p>
-                <!-- <p class="badge">{{ cakeCategory }}</p> -->
             </div>
         </div>
     </inertia-link>
@@ -34,19 +37,15 @@ defineProps({
         default: null,
     },
     cakePrice: {
-        type: Number,
+        type: String || Number,
         default: null,
     },
     cakePersonalizationType: {
         type: String,
         default: null,
     },
-    cakeCategory: {
-        type: String,
-        default: null,
-    },
-    url: {
-        type: String,
+    cakeId: {
+        type: Number,
         default: null,
     },
 });

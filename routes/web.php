@@ -28,11 +28,12 @@ Route::middleware(['auth'])->group(function () {
     Route::withoutMiddleware(['auth'])->group(function () {
         Route::controller(FrontEndController::class)->group(function () {
             Route::redirect('/', '/home');
-            Route::get('/home', 'index')->name('/home');
+            Route::get('/home', 'index')->name('home');
+            Route::get('/home/products', 'products')->name('products');
             Route::get('/home/{cakeId}/detail-product', 'detailProduct')->name('detail-product');
         });
 
-        Route::inertia('/products', 'ProductSection')->name('/products');
+        // Route::inertia('/products', 'ProductSection')->name('/products');
         Route::inertia('/detail-chart', 'DetailShoppingChart')->name('/detail-chart');
         Route::inertia('/checkout', 'CheckoutSection')->name('/checkout');
         Route::inertia('/order', 'OrderStatusSection')->name('/order');

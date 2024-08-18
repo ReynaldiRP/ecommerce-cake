@@ -14,7 +14,7 @@ class Cake extends Model
         'name',
         'image_url',
         'base_price',
-        'persnonalization_type'
+        'personalization_type'
     ];
 
     public function cakeSize(): BelongsTo
