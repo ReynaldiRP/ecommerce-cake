@@ -8,15 +8,24 @@
             />
             <span class="text-size text-color font-medium"
                 >{{ props.label }}
+                <span v-show="isTotalDataAvailable"
+                    >({{ props.totalData != null ? props.totalData : 0 }})</span
+                >
             </span>
         </label>
     </div>
 </template>
 
 <script setup>
+import { computed } from "vue";
+
 const props = defineProps({
     label: {
         type: String,
+    },
+    totalData: {
+        type: Number,
+        default: null,
     },
     textColor: {
         type: String,
@@ -24,6 +33,10 @@ const props = defineProps({
     textSize: {
         type: String,
     },
+});
+
+const isTotalDataAvailable = computed(() => {
+    return props.totalData != null;
 });
 </script>
 

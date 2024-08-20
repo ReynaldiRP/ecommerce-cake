@@ -51,6 +51,16 @@
                                         :label="`${cakeSize?.size} Cm`"
                                     />
                                 </FilterItem>
+                                <div class="flex items-center gap-2 mt-2">
+                                    <button class="btn btn-outline">
+                                        Clear
+                                    </button>
+                                    <button
+                                        class="btn bg-primary-color text-base-200 hover:bg-base-content"
+                                    >
+                                        Save
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <h1 class="hidden lg:block text-lg font-medium me-auto">
@@ -69,6 +79,11 @@
                                 ) in cakePersonalizationType"
                                 :key="index"
                                 :label="cakePersonalizationType.name"
+                                :total-data="
+                                    getTotalDataCakeType(
+                                        cakePersonalizationType.name
+                                    )
+                                "
                             />
                         </FilterItem>
                         <FilterItem
@@ -79,8 +94,19 @@
                                 v-for="cakeSize in props.cakeSizes"
                                 :key="cakeSize?.id"
                                 :label="`${cakeSize?.size} Cm`"
+                                :total-data="
+                                    getTotalDataCakeSize(cakeSize.size)
+                                "
                             />
                         </FilterItem>
+                        <div class="hidden lg:flex items-center gap-2 mt-2">
+                            <button class="btn btn-outline">Clear</button>
+                            <button
+                                class="btn bg-primary-color text-base-200 hover:bg-base-content"
+                            >
+                                Save
+                            </button>
+                        </div>
                     </FilterLayout>
                 </section>
                 <section
@@ -124,7 +150,7 @@ import FilterItem from "@/Components/FilterProduct/Item.vue";
 import BaseCheckbox from "@/Components/BaseCheckbox.vue";
 import BaseRadio from "@/Components/BaseRadio.vue";
 import Pagination from "@/Components/Pagination.vue";
-import { computed } from "vue";
+import { computed, reactive } from "vue";
 
 const props = defineProps({
     cakes: {
@@ -133,6 +159,68 @@ const props = defineProps({
     cakeSizes: {
         type: Object,
     },
+});
+
+const totalCakePersonalizationType = computed(() => {
+    const counts = {
+        customized: 0,
+        "non-customized": 0,
+    };
+
+    props.cakes.data.filter((cake) => {
+        const cakePersonalizationType = cake.personalization_type;
+
+        if (
+            cakePersonalizationType &&
+            counts.hasOwnProperty(cakePersonalizationType)
+        ) {
+            counts[cakePersonalizationType]++;
+        }
+
+        return cakePersonalizationType;
+    });
+
+    return counts;
+});
+
+// const totalCakePersonalizationType = computed(() => {
+//     const counts = reactive({
+//         customized: 0,
+//         "non-customized": 0,
+//     });
+
+//     props.cakes.data.forEach((cake) => {
+//         if (cake.personalization_type === "customized") {
+//             counts.customized += 1;
+//         } else if (cake.personalization_type === "non-customized") {
+//             counts["non-customized"] += 1;
+//         }
+//     });
+
+//     return counts;
+// });
+
+const totalCakeSizeForEachSize = computed(() => {
+    const counts = {
+        13: 0,
+        14: 0,
+        15: 0,
+        16: 0,
+        17: 0,
+        18: 0,
+    };
+
+    props.cakes?.data.filter((cake) => {
+        const size = cake.cake_size?.size;
+
+        if (size && counts.hasOwnProperty(size)) {
+            counts[size]++;
+        }
+
+        return size;
+    });
+
+    return counts;
 });
 
 const totalPrice = computed(() => {
@@ -156,11 +244,21 @@ const formatPrice = (price) => {
 const cakePersonalizationType = [
     {
         id: 1,
-        name: "Customized",
+        name: "customized",
     },
     {
         id: 2,
-        name: "Non-Customized",
+        name: "non-customized",
     },
 ];
+
+const getTotalDataCakeType = (name) => {
+    return totalCakePersonalizationType.value[
+        name.toLowerCase().replace(" ", "")
+    ];
+};
+
+const getTotalDataCakeSize = (size) => {
+    return totalCakeSizeForEachSize.value[size];
+};
 </script>

@@ -25,7 +25,7 @@ class FrontEndController extends Controller
 
     public function products(): Response
     {
-        $cakes =  Cake::with('cakeSize')->paginate(8);
+        $cakes =  Cake::with('cakeSize')->paginate(12);
         $cakeSizes = CakeSize::orderBy('size')->get();
 
         foreach ($cakes->items() as $cake) {

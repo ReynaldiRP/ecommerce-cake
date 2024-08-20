@@ -5,19 +5,34 @@
                 type="checkbox"
                 class="checkbox btn-outline [--chkbg:theme(colors.pink.400)] [--chkfg:white] checked:border-pink-400"
             />
-            <span class="text-base text-color font-medium">{{ label }}</span>
+            <span class="text-base text-color font-medium">
+                {{ label }}
+                <span v-show="isTotalDataAvailable"
+                    >({{ totalData != null ? totalData : 0 }})</span
+                >
+            </span>
         </label>
     </div>
 </template>
 
 <script setup>
-defineProps({
+import { computed } from "vue";
+
+const props = defineProps({
     label: {
         type: String,
+    },
+    totalData: {
+        type: Number,
+        default: null,
     },
     textColor: {
         type: String,
     },
+});
+
+const isTotalDataAvailable = computed(() => {
+    return props.totalData != null;
 });
 </script>
 

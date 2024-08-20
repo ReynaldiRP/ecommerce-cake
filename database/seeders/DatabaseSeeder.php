@@ -22,22 +22,33 @@ class DatabaseSeeder extends Seeder
         Role::factory(2)->create();
         User::factory(1)->create();
         Flavour::factory(8)->create();
-        CakeSize::factory(3)->create();
-        Topping::factory(8)->create();
-        Cake::factory()->createMany([
+        CakeSize::factory()->createMany([
             [
-                'cake_size_id' => 1,
-                'name' => 'Base cake',
-                'image_url' => 'assets/image/default-img',
-                'base_price' => 55000,
-                'personalization_type' => 'customized'
+                'size' => 13,
+                'price' => 10000
             ],
             [
-                'name' => 'Pudding',
-                'image_url' => 'assets/image/default-img',
-                'base_price' => 70000,
-                'personalization_type' => 'non-customized'
+                'size' => 14,
+                'price' => 15000
+            ],
+            [
+                'size' => 15,
+                'price' => 20000
+            ],
+            [
+                'size' => 16,
+                'price' => 25000
+            ],
+            [
+                'size' => 17,
+                'price' => 30000
+            ],
+            [
+                'size' => 18,
+                'price' => 35000
             ]
         ]);
+        Topping::factory(8)->create();
+        Cake::factory(12)->create();
     }
 }

@@ -6,7 +6,11 @@
             <section class="flex flex-col gap-10">
                 <div
                     class="breadcrumbs text-sm me-auto relative"
-                    :class="props.cake?.personalization_type == 'customized' ? 'lg:bottom-8' : 'lg:bottom-0'"
+                    :class="
+                        props.cake?.personalization_type == 'customized'
+                            ? 'lg:bottom-8'
+                            : 'lg:bottom-0'
+                    "
                 >
                     <ul>
                         <li>
@@ -34,11 +38,11 @@
                     :cake-description="description"
                 />
                 <ProductFlavour
-                    v-show="props.cake?.personalization_type == 'customized'"
+                    v-show="isCakeCustomized"
                     :flavours="props.flavour"
                 />
                 <ProductTopping
-                    v-show="props.cake?.personalization_type == 'customized'"
+                    v-show="isCakeCustomized"
                     :toppings="props.topping"
                 />
                 <ProductQuantity :quantity="5" />
@@ -81,7 +85,9 @@ const totalPrice = computed(() => {
     };
 });
 
-console.log(totalPrice.value);
+const isCakeCustomized = computed(() => {
+    return props.cake?.personalization_type === "customized";
+});
 
 const description = `Lorem, ipsum dolor sit amet consectetur
     adipisicing elit. Sunt corporis numquam rem sequi consequuntur
