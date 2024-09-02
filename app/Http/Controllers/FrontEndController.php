@@ -6,12 +6,18 @@ use App\Models\Cake;
 use App\Models\CakeSize;
 use App\Models\Flavour;
 use App\Models\Topping;
+use Illuminate\Http\Request;
 use Inertia\Response;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class FrontEndController extends Controller
 {
+    /**
+     * Show the landing page of the application. 
+     *
+     * @return Response
+     */
     public function index(): Response
     {
         $cakes = DB::table('cakes')
@@ -23,11 +29,28 @@ class FrontEndController extends Controller
     }
 
 
-    public function products(): Response
+    /**
+     * Show the product page of the application.
+     *
+     * @return Response
+     */
+    public function products(Request $request): Response
     {
-        $cakes =  Cake::with('cakeSize')->paginate(12);
-        $cakeSizes = CakeSize::orderBy('size')->get();
+        $cakes =  Cake::with('cakeSize');
 
+        // Check the filtred cake based on cake personalization type and cake size
+        if ($request->has('personalization_type')) {
+            $cakes->where('personalization_type', $request->personalization_type);
+        }
+
+        if ($request->has('cake_size_id')) {
+            $cakeSizeIds = explode(',', $request->cake_size_id);
+            $cakes->whereIn('cake_size_id', $cakeSizeIds);
+        }
+
+        $cakes = $cakes->paginate(12);
+
+        // Show image with base url
         foreach ($cakes->items() as $cake) {
             if ($cake->image_url) {
                 $cake->image_url = asset($cake->image_url);
@@ -38,10 +61,17 @@ class FrontEndController extends Controller
 
         return Inertia::render('ProductSection', [
             'cakes' => $cakes,
-            'cakeSizes' => $cakeSizes
+            'cakeSizes' => CakeSize::orderBy('size')->get()
         ]);
     }
 
+    /**
+     * Show the detail product page of the application.
+     *
+     * @param $cakeId $cakeId [id of the selected cake]
+     *
+     * @return Response
+     */
     public function detailProduct($cakeId): Response
     {
         $cake = Cake::with('cakeSize')->findOrFail($cakeId);

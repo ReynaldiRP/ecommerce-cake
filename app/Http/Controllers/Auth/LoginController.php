@@ -8,21 +8,31 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Http\RedirectResponse;
+use Inertia\Response;
 
 class LoginController extends Controller
 {
+
     /**
-     * Display a listing of the resource.
+     * Show the login page in the application.
+     *
+     * @return Response
      */
-    public function index()
+    public function index(): Response
     {
         return Inertia::render('LoginSection');
     }
 
+
     /**
-     * Handle an authentication attempt.
+     * Method to login in the application.
+     *
+     * @param LoginRequest $request [User credentials]
+     *
+     * @return RedirectResponse
      */
-    public function store(LoginRequest $request)
+    public function store(LoginRequest $request): RedirectResponse
     {
         $credential = $request->validated();
 
@@ -42,7 +52,14 @@ class LoginController extends Controller
         return to_route('login.index')->withErrors($errors);
     }
 
-    public function destroy(Request $request)
+    /**
+     * Method to logout from the application.
+     *
+     * @param Request $request [User credentials]
+     *
+     * @return RedirectResponse
+     */
+    public function destroy(Request $request): RedirectResponse
     {
         Auth::logout();
 

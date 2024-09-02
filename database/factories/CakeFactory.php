@@ -19,33 +19,37 @@ class CakeFactory extends Factory
     public function definition(): array
     {
 
-        $cakes = [
-            'Base cake',
+        $nonCustomizedCake = [
             'Pudding cup',
             'Pudding box',
-            'Pie buah',
+            'Fruit pie',
             'Cup cake',
             'Pastry',
+        ];
 
+        $customizedCake = [
+            'Butter cake',
+            'Sponge cake',
         ];
 
         static $uniqueNames = [];
+        $name = null;
+
+        if (count($uniqueNames) < count($nonCustomizedCake)) {
+            do {
+                $name = $this->faker->randomElement($nonCustomizedCake);
+            } while (in_array($name, $uniqueNames));
+            $uniqueNames[] = $name;
+        } else {
+            $name =
+                $this->faker->randomElement($customizedCake);;
+        }
+
 
         return [
-            'name' => function (array $attributes) use (&$uniqueNames, $cakes) {
-                $name = $this->faker->randomElement($cakes);
-
-                if ($name !== 'Base cake') {
-                    while (in_array($name, $uniqueNames)) {
-                        $name = $this->faker->randomElement($cakes);
-                    }
-                    $uniqueNames[] = $name;
-                }
-
-                return $name;
-            },
-            'cake_size_id' => function (array $attributes) {
-                if ($attributes['name'] === 'Base cake') {
+            'name' => $name,
+            'cake_size_id' => function (array $attributes) use ($customizedCake) {
+                if (in_array($attributes['name'], $customizedCake)) {
                     $cakeSizeIds = CakeSize::pluck('id')->toArray();
                     return !empty($cakeSizeIds) ? $this->faker->randomElement($cakeSizeIds) : null;
                 } else {

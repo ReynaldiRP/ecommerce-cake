@@ -12,8 +12,11 @@ use Inertia\Response;
 
 class CakeController extends Controller
 {
+
     /**
-     * Display a listing of the resource.
+     * Method to display all the cakes in dashboard.
+     *
+     * @return Response
      */
     public function index(): Response
     {

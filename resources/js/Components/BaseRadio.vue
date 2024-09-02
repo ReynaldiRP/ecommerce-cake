@@ -4,12 +4,14 @@
             <input
                 type="radio"
                 name="radio-1"
+                v-model="model"
+                :value="cakeId"
                 class="radio btn-outline checked:bg-pink-400 checked:outline-white"
             />
             <span class="text-size text-color font-medium"
                 >{{ props.label }}
                 <span v-show="isTotalDataAvailable"
-                    >({{ props.totalData != null ? props.totalData : 0 }})</span
+                    >({{ isTotalDataAvailable ? props.totalData : 0 }})</span
                 >
             </span>
         </label>
@@ -19,7 +21,12 @@
 <script setup>
 import { computed } from "vue";
 
+const model = defineModel();
+
 const props = defineProps({
+    cakeId: {
+        type: Number,
+    },
     label: {
         type: String,
     },

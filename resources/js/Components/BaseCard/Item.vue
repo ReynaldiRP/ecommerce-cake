@@ -16,14 +16,16 @@
             </h2>
             <p class="text-lg font-bold">{{ cakePrice }}</p>
             <div class="w-fit flex gap-1">
-                <p class="badge">{{ cakePersonalizationType }}</p>
+                <p class="badge font-medium" :class="isCustomizedBadge()">
+                    {{ cakePersonalizationType }}
+                </p>
             </div>
         </div>
     </inertia-link>
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
     imageUrl: {
         type: String,
         default: null,
@@ -49,4 +51,10 @@ defineProps({
         default: null,
     },
 });
+
+const isCustomizedBadge = () => {
+    return props.cakePersonalizationType === "customized"
+        ? "badge-secondary "
+        : " badge-neutral";
+};
 </script>

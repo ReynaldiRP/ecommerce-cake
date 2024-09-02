@@ -35,7 +35,7 @@ class RegisterController extends Controller
         $validated['role_id'] = 2;
         User::create($validated);
 
-        return to_route('login.index');
+        return to_route('home');
     }
 
     /**

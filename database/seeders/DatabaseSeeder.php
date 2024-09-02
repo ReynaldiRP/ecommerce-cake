@@ -49,6 +49,5 @@ class DatabaseSeeder extends Seeder
             ]
         ]);
         Topping::factory(8)->create();
-        Cake::factory(12)->create();
     }
 }
