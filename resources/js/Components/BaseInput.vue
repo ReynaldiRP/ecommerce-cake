@@ -1,15 +1,17 @@
 <template>
     <div class="flex flex-col">
         <label
-            class="input input-bordered input-lg lg:input-md xl:input-md flex items-center justify-between gap-2"
+            class="input input-bordered flex items-center gap-2"
             :class="{
+                'justify-between': inputType === `password`,
                 'border border-error mb-3': error,
             }"
         >
-            <div class="flex items-center gap-2">
+            <div class="w-full flex items-center gap-2">
                 <component :is="icon"></component>
                 <input
                     v-model="model"
+                    class="w-full"
                     :type="inputType"
                     :placeholder="placeholder"
                     autocomplete="username"
@@ -39,13 +41,14 @@ import IconUser from "@/Components/Icons/IconUser.vue";
 import IconAddress from "@/Components/Icons/IconAddress.vue";
 import IconEye from "@/Components/Icons/IconEye.vue";
 import IconEyeSlash from "@/Components/Icons/IconEyeSlash.vue";
+import IconDate from "@/Components/Icons/IconDate.vue";
 
 const model = defineModel();
 
 const props = defineProps({
     placeholder: {
         type: String,
-        required: true,
+        default: null,
     },
     error: {
         type: Boolean,
@@ -56,7 +59,7 @@ const props = defineProps({
         default: "",
     },
     inputType: {
-        type: String,
+        type: String || Number || Date,
         required: true,
     },
     isPasswordShow: {
@@ -74,6 +77,7 @@ const icon = computed(() => {
         password: IconPassword,
         address: IconAddress,
         username: IconUser,
+        date: IconDate,
     }[props.inputType];
 });
 </script>

@@ -1,7 +1,7 @@
 <template>
-    <section class="flex items-center gap-4">
+    <section class="flex flex-col gap-4">
         <h2 class="text-2xl font-bold">Quatity</h2>
-        <select class="select select-bordered w-fit max-w-xs">
+        <select class="select select-bordered w-full">
             <option v-for="(qty, index) in quantity" :key="index">
                 {{ qty }}
             </option>

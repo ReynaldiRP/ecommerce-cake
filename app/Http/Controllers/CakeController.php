@@ -91,14 +91,15 @@ class CakeController extends Controller
 
             $data['image_url'] = 'storage/' . $path;
 
-            if (file_exists($imagePath)) {
-                unlink($imagePath);
+            if (!empty($dashboard_cake->image_url)) {
+                if (file_exists($imagePath)) {
+                    unlink($imagePath);
+                }
             }
+        
         } else {
             $data['image_url'] = $dashboard_cake->image_url;
         }
-
-
 
         $dashboard_cake->update($data);
 

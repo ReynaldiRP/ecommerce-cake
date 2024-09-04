@@ -1,18 +1,19 @@
 <template>
-    <label for="email" class="text-lg font-bold"
+    <label for="email" class="font-bold" :class="isPageDetailProduct"
         >{{ label
         }}<span
             v-show="required"
-            class="relative bottom-2 text-lg font-medium text-red-500"
+            class="relative bottom-2 font-medium text-red-500"
+            :class="isPageDetailProduct"
             >*</span
         ></label
     >
 </template>
 
 <script setup>
-import { defineProps } from "vue";
+import { computed } from "vue";
 
-defineProps({
+const props = defineProps({
     label: {
         type: String,
         required: true,
@@ -21,5 +22,13 @@ defineProps({
         type: Boolean,
         default: false,
     },
+    isDetailProductSection: {
+        type: Boolean,
+        default: false,
+    },
+});
+
+const isPageDetailProduct = computed(() => {
+    return props.isDetailProductSection ? "text-2xl" : "text-lg";
 });
 </script>

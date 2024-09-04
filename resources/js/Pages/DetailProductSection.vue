@@ -37,6 +37,7 @@
                     :cake="totalPrice"
                     :cake-description="description"
                 />
+
                 <ProductFlavour
                     v-show="isCakeCustomized"
                     :flavours="props.flavour"
@@ -46,6 +47,14 @@
                     :toppings="props.topping"
                 />
                 <ProductQuantity :quantity="5" />
+                <div class="flex flex-col gap-4">
+                    <BaseLabel
+                        :required="true"
+                        :is-detail-product-section="true"
+                        label="Estimation time"
+                    />
+                    <BaseInput input-type="date" />
+                </div>
                 <AddToChartButton type="default" />
             </section>
         </section>
@@ -61,6 +70,8 @@ import ProductTopping from "@/Components/DetailProduct/ProductTopping.vue";
 import ProductQuantity from "@/Components/DetailProduct/ProductQuantity.vue";
 import AddToChartButton from "@/Components/DetailProduct/AddToChartButton.vue";
 import { computed } from "vue";
+import BaseInput from "@/Components/BaseInput.vue";
+import BaseLabel from "@/Components/BaseLabel.vue";
 
 const props = defineProps({
     cake: {

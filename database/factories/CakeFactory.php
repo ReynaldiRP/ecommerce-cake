@@ -28,8 +28,15 @@ class CakeFactory extends Factory
         ];
 
         $customizedCake = [
-            'Butter cake',
-            'Sponge cake',
+            'Shape Cakes',
+            'Sponge Cake',
+            'Vanilla Cake'
+        ];
+
+        $customizedCakePrice = [
+            'Shape Cakes' => 90000,
+            'Sponge Cake' => 100000,
+            'Vanilla Cake' => 60000
         ];
 
         static $uniqueNames = [];
@@ -56,7 +63,13 @@ class CakeFactory extends Factory
                     return null;
                 }
             },
-            'base_price' => $this->faker->numberBetween(10, 13) * 5000,
+            'base_price' => function (array $attributes) use ($customizedCakePrice) {
+                if ($attributes['cake_size_id'] !== null) {
+                    return $customizedCakePrice[$attributes['name']];
+                } else {
+                    return $this->faker->numberBetween(10, 13) * 5000;
+                }
+            },
             'personalization_type' => function (array $attributes) {
                 return $attributes['cake_size_id'] !== null ? 'customized' : 'non-customized';
             }
