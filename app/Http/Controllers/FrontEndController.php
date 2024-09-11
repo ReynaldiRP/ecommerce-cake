@@ -28,6 +28,26 @@ class FrontEndController extends Controller
         return Inertia::render('LandingPageSection', ['cakes' => $cakes]);
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('search');
+
+        $cakes = Cake::with('cakeSize')
+            ->where('name', 'like', "%{$query}%");
+
+
+        if (!$cakes) {
+            $cakes = [];
+        }
+
+        $cakes = $cakes->paginate(5);
+
+        return response()->json([
+            'searchResults' => $cakes->items(),
+            'query' => $query,
+        ]);
+        
+    }
 
     /**
      * Show the product page of the application.

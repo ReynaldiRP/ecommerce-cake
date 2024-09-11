@@ -5,7 +5,7 @@
                 type="radio"
                 name="radio-1"
                 v-model="model"
-                :value="cakeId"
+                :value="id"
                 class="radio btn-outline checked:bg-pink-400 checked:outline-white"
             />
             <span class="text-size text-color font-medium"
@@ -24,7 +24,7 @@ import { computed } from "vue";
 const model = defineModel();
 
 const props = defineProps({
-    cakeId: {
+    id: {
         type: Number,
     },
     label: {

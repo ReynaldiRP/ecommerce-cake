@@ -8,7 +8,7 @@
                     class="breadcrumbs text-sm me-auto relative"
                     :class="
                         props.cake?.personalization_type == 'customized'
-                            ? 'lg:bottom-8'
+                            ? '-bottom-4'
                             : 'lg:bottom-0'
                     "
                 >
@@ -28,7 +28,14 @@
                         </li>
                     </ul>
                 </div>
-                <ProductImage :cake-image="props.cake.image_url" />
+                <ProductImage
+                    :class="
+                        props.cake?.personalization_type == 'customized'
+                            ? 'w-[450px] h-[450px] lg:w-[600px] lg:h-[600px]'
+                            : 'w-[450px] h-[450px]'
+                    "
+                    :cake-image="props.cake.image_url"
+                />
             </section>
             <section
                 class="h-full w-full flex flex-col justify-center px-8 py-10 mt-10 gap-6"
@@ -41,20 +48,21 @@
                 <ProductFlavour
                     v-show="isCakeCustomized"
                     :flavours="props.flavour"
+                    v-model="selected.flavour"
+                    @update-flavour-price="handleUpdateFlavourPrice"
                 />
                 <ProductTopping
                     v-show="isCakeCustomized"
                     :toppings="props.topping"
+                    v-model="selected.topping"
+                    @update-topping-price="handleUpdateToppingPrice"
                 />
-                <ProductQuantity :quantity="5" />
-                <div class="flex flex-col gap-4">
-                    <BaseLabel
-                        :required="true"
-                        :is-detail-product-section="true"
-                        label="Estimation time"
-                    />
-                    <BaseInput input-type="date" />
-                </div>
+                <ProductQuantity
+                    v-model="selected.quantity"
+                    :quantity="qty"
+                    @update-quantity-price="handleUpdateQuantityPrice"
+                />
+
                 <AddToChartButton type="default" />
             </section>
         </section>
@@ -69,9 +77,7 @@ import ProductFlavour from "@/Components/DetailProduct/ProductFlavour.vue";
 import ProductTopping from "@/Components/DetailProduct/ProductTopping.vue";
 import ProductQuantity from "@/Components/DetailProduct/ProductQuantity.vue";
 import AddToChartButton from "@/Components/DetailProduct/AddToChartButton.vue";
-import { computed } from "vue";
-import BaseInput from "@/Components/BaseInput.vue";
-import BaseLabel from "@/Components/BaseLabel.vue";
+import { computed, ref, reactive } from "vue";
 
 const props = defineProps({
     cake: {
@@ -85,11 +91,57 @@ const props = defineProps({
     },
 });
 
+const qty = [1, 2, 3, 4, 5];
+
+const selected = reactive({
+    flavour: null,
+    topping: [],
+    quantity: qty[0],
+});
+
+const flavourPrice = ref(0);
+const toppingPrice = ref(0);
+const quantityPrice = ref(1);
+
+/**
+ * Updates the flavour price state with the provided price value.
+ *
+ * @param {number} price - The new flavour price value
+ * @return {void}
+ */
+const handleUpdateFlavourPrice = (price) => {
+    flavourPrice.value = price;
+};
+
+/**
+ * Updates the topping price state with the provided price value.
+ *
+ * @param {number} price - The new topping price value
+ * @return {void}
+ */
+const handleUpdateToppingPrice = (price) => {
+    toppingPrice.value = price;
+};
+
+const handleUpdateQuantityPrice = (quantity) => {
+    quantityPrice.value = quantity;
+};
+
+/**
+ * Computes the total price of the cake based on its base price, flavour price, and cake size.
+ *
+ * @return {object} An object containing the cake details and the calculated total price
+ */
 const totalPrice = computed(() => {
     const cakeSizedPrice = props.cake.cake_size
         ? props.cake.cake_size.price
         : 0;
-    const totalCakePrice = props.cake.base_price + cakeSizedPrice;
+    const totalCakePrice =
+        (props.cake.base_price +
+            cakeSizedPrice +
+            flavourPrice.value +
+            toppingPrice.value) *
+        quantityPrice.value;
     return {
         ...props.cake,
         totalCakePrice,

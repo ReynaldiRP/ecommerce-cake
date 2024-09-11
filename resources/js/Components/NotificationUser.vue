@@ -62,7 +62,7 @@
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
     notification: {
         type: Array,
     },

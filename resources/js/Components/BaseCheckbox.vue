@@ -4,7 +4,7 @@
             <input
                 type="checkbox"
                 v-model="model"
-                :value="cakeSizeId"
+                :value="id"
                 class="checkbox btn-outline [--chkbg:theme(colors.pink.400)] [--chkfg:white] checked:border-pink-400"
             />
             <span class="text-base text-color font-medium">
@@ -23,7 +23,7 @@ import { computed } from "vue";
 const model = defineModel();
 
 const props = defineProps({
-    cakeSizeId: {
+    id: {
         type: Number,
     },
     label: {

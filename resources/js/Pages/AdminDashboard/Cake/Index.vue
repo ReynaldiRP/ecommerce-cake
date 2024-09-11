@@ -150,10 +150,15 @@ import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import VueEasyLightbox from "vue-easy-lightbox";
 import { mdiPlus, mdiCheckCircle } from "@mdi/js";
 import { ref } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useForm, usePage } from "@inertiajs/inertia-vue3";
 
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
+
+const page = usePage();
+const cake = computed(() => page.props.value.cake);
+
+console.log(cake.value);
 
 const props = defineProps({
     cakes: {

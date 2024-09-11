@@ -10,11 +10,19 @@ import VueEasyLightbox from "vue-easy-lightbox";
 const pinia = createPinia();
 
 createInertiaApp({
-    resolve: (name) =>
-        resolvePageComponent(
-            `./Pages/${name}.vue`,
-            import.meta.glob("./Pages/**/*.vue")
-        ),
+    resolve: async (name) => {
+        try {
+            return await resolvePageComponent(
+                `./Pages/${name}.vue`,
+                import.meta.glob("./Pages/**/*.vue")
+            );
+        } catch (e) {
+            return resolvePageComponent(
+                `./Layouts/${name}.vue`,
+                import.meta.glob("./Layouts/**/*.vue")
+            );
+        }
+    },
     setup({ el, App, props, plugin }) {
         return createApp({ render: () => h(App, props) })
             .use(plugin)

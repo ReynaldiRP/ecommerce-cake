@@ -36,7 +36,7 @@
                         <div class="avatar">
                             <div class="w-16 rounded">
                                 <img
-                                    src="assets/image/default-img.jpg"
+                                    src="/assets/image/default-img.jpg"
                                     alt="Tailwind-CSS-Avatar-component"
                                 />
                             </div>

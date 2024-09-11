@@ -15,8 +15,13 @@
                 >
             </h2>
             <p class="text-lg font-bold">{{ cakePrice }}</p>
-            <div class="w-fit flex gap-1">
-                <p class="badge font-medium" :class="isCustomizedBadge()">
+            <div class="flex gap-2 items-center badge" :class="isCustomizedBadge()">
+                <i
+                    v-if="cakePersonalizationType == 'customized'"
+                    class="fa-solid fa-cake-candles"
+                ></i>
+                <i v-else class="fa-solid fa-cookie"></i>
+                <p class="font-medium">
                     {{ cakePersonalizationType }}
                 </p>
             </div>

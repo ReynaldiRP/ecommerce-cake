@@ -2,8 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\FrontEndController;
+use App\Models\Cake;
 use Inertia\Middleware;
+use Illuminate\Http\Request;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -35,11 +37,28 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $searchResults = [];
+        $query = '';
+
+        $searchController = new FrontEndController();
+        $searchData = $searchController->search($request)->getData();
+
+        $searchResults = $searchData->searchResults;
+
+
+        if ($request->filled('search')) {
+            $query = $searchData->query ?? '';
+        }
+
         return array_merge(parent::share($request), [
-            'auth.user' => fn () => $request->user(),
+            'auth.user' => fn() => $request->user(),
             'flash' => [
-                'success' => fn () => $request->session()->get('success'),
+                'success' => fn() => $request->session()->get('success'),
             ],
+            'search' => [
+                'searchResult' => $searchResults,
+                'query' => $query,
+            ]
         ]);
     }
 }

@@ -30,7 +30,7 @@ class CakeController extends Controller
      */
     public function create(): Response
     {
-        $cakeSize = CakeSize::all();
+        $cakeSize = CakeSize::orderBy('size', 'asc')->get();
         return Inertia::render('AdminDashboard/Cake/Create', ['sizeCake' => $cakeSize]);
     }
 
@@ -96,7 +96,6 @@ class CakeController extends Controller
                     unlink($imagePath);
                 }
             }
-        
         } else {
             $data['image_url'] = $dashboard_cake->image_url;
         }

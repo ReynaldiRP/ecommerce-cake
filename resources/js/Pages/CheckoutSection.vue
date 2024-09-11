@@ -87,21 +87,12 @@
                 >
                     <h1 class="text-4xl text-white font-bold">Checkout</h1>
                     <div class="flex flex-col gap-4">
-                        <div class="flex flex-col gap-2">
+                        <div class="flex flex-col gap-4">
                             <BaseLabel
-                                label="Contact Information"
                                 :required="true"
+                                label="Estimation time"
                             />
-                            <BaseInput
-                                v-model="form.email"
-                                style="width: 100%"
-                                placeholder="user@gmail.com"
-                                input-type="email"
-                                id="email"
-                                :error="error.email"
-                                :error-message="errorMessage.email"
-                                @change="onChangeEmail"
-                            />
+                            <BaseInput input-type="date" />
                         </div>
                         <div class="flex flex-col gap-2">
                             <BaseLabel
@@ -122,7 +113,7 @@
                             <BaseInput
                                 v-model="form.username"
                                 style="width: 100%"
-                                placeholder="user1234"
+                                placeholder="Consignee"
                                 input-type="username"
                                 :error="error.username"
                                 :error-message="errorMessage.username"

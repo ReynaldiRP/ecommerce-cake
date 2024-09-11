@@ -31,6 +31,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/home', 'index')->name('home');
             Route::get('/home/products', 'products')->name('products');
             Route::get('/home/{cakeId}/detail-product', 'detailProduct')->name('detail-product');
+            Route::get('/search',  'search')->name('search');
         });
 
         Route::inertia('/detail-chart', 'DetailShoppingChart')->name('/detail-chart');

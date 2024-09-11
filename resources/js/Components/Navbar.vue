@@ -19,24 +19,8 @@
                 >Dream Dessert
             </inertia-link>
         </div>
-        <ul class="navbar-center hidden lg:flex gap-8">
-            <label
-                class="w-[450px] input input-bordered flex items-center gap-2"
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 16 16"
-                    fill="currentColor"
-                    class="h-4 w-4 opacity-70"
-                >
-                    <path
-                        fill-rule="evenodd"
-                        d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                        clip-rule="evenodd"
-                    />
-                </svg>
-                <input type="text" class="grow" placeholder="Search" />
-            </label>
+        <ul class="navbar-center flex gap-8">
+            <SearchBar />
         </ul>
         <div class="navbar-end flex gap-5">
             <section class="flex justify-center items-center gap-2">
@@ -98,11 +82,11 @@
 <script setup>
 import { ref, reactive, watch, computed, onMounted, onUnmounted } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
-import { Inertia } from "@inertiajs/inertia";
 import Loading from "vue-loading-overlay";
 import Sidebar from "@/Components/Sidebar.vue";
 import ShoppingChart from "@/Components/ShoppingChart.vue";
 import NotificationUser from "@/Components/NotificationUser.vue";
+import SearchBar from "@/Components/SearchBar.vue";
 import "vue-loading-overlay/dist/css/index.css";
 
 const page = usePage();
@@ -170,12 +154,12 @@ onUnmounted(() => {
 
 const notification = [
     {
-        cakeImageUrl: "assets/image/pastry.png",
+        cakeImageUrl: "/assets/image/pastry.png",
         message: `Your Order Has Been Process.`,
         timestamp: `1 minutes ago`,
     },
     {
-        cakeImageUrl: "assets/image/pastry.png",
+        cakeImageUrl: "/assets/image/pastry.png",
         message: `Your Order Has Been Packing.`,
         timestamp: `1 minutes ago`,
     },

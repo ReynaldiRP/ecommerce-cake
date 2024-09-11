@@ -42,7 +42,7 @@
                                         "
                                         :key="index"
                                         :label="cakePersonalizationType.name"
-                                        :cake-id="cakePersonalizationType.id"
+                                        :id="cakePersonalizationType.id"
                                         :total-data="
                                             getTotalDataCakeType(
                                                 cakePersonalizationType.name
@@ -61,7 +61,7 @@
                                         "
                                         :key="cakeSize.id"
                                         :label="`${cakeSize?.size} Cm`"
-                                        :cake-size-id="cakeSize.id"
+                                        :id="cakeSize.id"
                                         :total-data="
                                             getTotalDataCakeSize(cakeSize.size)
                                         "
@@ -97,7 +97,7 @@
                                 v-model="filteredData.selectedPersonalizationId"
                                 :key="index"
                                 :label="cakePersonalizationType.name"
-                                :cake-id="cakePersonalizationType.id"
+                                :id="cakePersonalizationType.id"
                                 :total-data="
                                     getTotalDataCakeType(
                                         cakePersonalizationType.name
@@ -111,7 +111,7 @@
                                 v-model="filteredData.selectedCakeSizeId"
                                 :key="cakeSize.id"
                                 :label="`${cakeSize?.size} Cm`"
-                                :cake-size-id="cakeSize.id"
+                                :id="cakeSize.id"
                                 :total-data="
                                     getTotalDataCakeSize(cakeSize.size)
                                 "
@@ -277,8 +277,6 @@ const totalPrice = computed(() => {
 const isTotalPriceEmpty = computed(() => {
     return totalPrice.value.length > 0;
 });
-
-console.log(isTotalPriceEmpty.value);
 
 /**
  * Formats a given price into a currency string using the Indonesian Rupiah currency format.

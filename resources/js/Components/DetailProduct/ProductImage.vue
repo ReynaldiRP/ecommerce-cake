@@ -1,7 +1,5 @@
 <template>
-    <figure
-        class="w-[450px] h-[450px] shadow-xl bg-base-300 bg-opacity-65 rounded-xl"
-    >
+    <figure class="shadow-xl bg-base-300 bg-opacity-65 rounded-xl">
         <img :src="cakeImage" alt="pastry" class="h-full" />
     </figure>
 </template>
