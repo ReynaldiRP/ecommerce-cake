@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div @click="handleClick" ref="container">
         <label class="w-[450px] input input-bordered flex items-center gap-2">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -20,24 +20,37 @@
                 v-model="search"
                 @keyup="keyupSearch"
                 @focus="onFocusHandler"
-                @focusout="onOutFocusHandler"
             />
         </label>
         <div
-            v-show="onSearchClicked == true || onFocus == true"
+            v-show="onFocus"
             class="absolute top-[5.20rem] w-[450px] h-fit rounded-lg border border-[#383F47] bg-base-100"
             :class="
-                onSearchClicked == true || onFocus == true
-                    ? 'outline outline-[#383F47] outline-offset-2 '
-                    : ''
+                onFocus ? 'outline outline-[#383F47] outline-offset-2 ' : ''
             "
+            ref="resultsContainer"
         >
             <ul
                 tabindex="0"
                 class="dropdown-content menu rounded-box z-[1] w-full p-2 shadow"
             >
                 <li v-for="(cake, index) in results" :key="cake.id">
-                    <a>{{ cake.name }}</a>
+                    <inertia-link
+                        class="flex justify-between"
+                        :href="route('detail-product', { cakeId: cake.id })"
+                    >
+                        <div class="flex gap-1">
+                            <span>{{ cake.name }}</span>
+                            <span class="font-bold" v-show="cake.cake_size"
+                                >({{ cake.cake_size?.size }}Cm)</span
+                            >
+                        </div>
+                        <p>
+                            Rp{{
+                                cake.base_price + (cake.cake_size?.price ?? 0)
+                            }}
+                        </p>
+                    </inertia-link>
                 </li>
                 <li v-if="results.length <= 0">
                     <a>No results found</a>
@@ -48,7 +61,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, onMounted, onBeforeUnmount } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { debounce } from "lodash";
 
@@ -62,8 +75,9 @@ const searchResults = computed(
 );
 const results = ref(searchResults.value);
 
-const onSearchClicked = ref(false);
 const onFocus = ref(false);
+const container = ref(null);
+const resultsContainer = ref(null);
 
 /**
  * Fetches search results from the server based on the provided query.
@@ -89,17 +103,14 @@ const debouncedFetchSearchResults = debounce((query) => {
 }, 500);
 
 /**
- * Handles keyup event on the search input field.
- * Updates the onSearchClicked state based on the input field's value and focus state.
+ * Handles keyup event on the search input field and updates the search results accordingly.
  *
  * @return {void}
  */
 const keyupSearch = () => {
     if (search.value.length > 0) {
-        onSearchClicked.value = true;
         debouncedFetchSearchResults(search.value);
     } else {
-        onSearchClicked.value = false;
         results.value = searchResults.value;
     }
 };
@@ -119,13 +130,22 @@ const onFocusHandler = () => {
 };
 
 /**
- * Handles the event when the search input field loses focus.
- * Resets the onSearchClicked and onFocus states to false.
+ * Handles clicks outside the container to hide the results.
  *
+ * @param {Event} event - The click event.
  * @return {void}
  */
-const onOutFocusHandler = () => {
-    onFocus.value = false;
-    onSearchClicked.value = false;
+const handleClick = (event) => {
+    if (container.value && !container.value.contains(event.target)) {
+        onFocus.value = false;
+    }
 };
+
+onMounted(() => {
+    document.addEventListener("click", handleClick);
+});
+
+onBeforeUnmount(() => {
+    document.removeEventListener("click", handleClick);
+});
 </script>
