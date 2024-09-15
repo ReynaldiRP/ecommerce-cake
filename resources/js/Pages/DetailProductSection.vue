@@ -37,9 +37,11 @@
                     :cake-image="props.cake.image_url"
                 />
             </section>
-            <section
+            <form
+                @submit.prevent="submit"
                 class="h-full w-full flex flex-col justify-center px-8 py-10 mt-10 gap-6"
             >
+                <input type="text" hidden v-model="form.cake_id" />
                 <ProductDetail
                     :cake="totalPrice"
                     :cake-description="description"
@@ -48,23 +50,23 @@
                 <ProductFlavour
                     v-show="isCakeCustomized"
                     :flavours="props.flavour"
-                    v-model="selected.flavour"
+                    v-model="form.flavour_id"
                     @update-flavour-price="handleUpdateFlavourPrice"
                 />
                 <ProductTopping
                     v-show="isCakeCustomized"
                     :toppings="props.topping"
-                    v-model="selected.topping"
+                    v-model="form.topping_id"
                     @update-topping-price="handleUpdateToppingPrice"
                 />
                 <ProductQuantity
-                    v-model="selected.quantity"
+                    v-model="form.quantity"
                     :quantity="qty"
                     @update-quantity-price="handleUpdateQuantityPrice"
                 />
 
-                <AddToChartButton type="default" />
-            </section>
+                <AddToChartButton type="submit" />
+            </form>
         </section>
     </App>
 </template>
@@ -77,7 +79,8 @@ import ProductFlavour from "@/Components/DetailProduct/ProductFlavour.vue";
 import ProductTopping from "@/Components/DetailProduct/ProductTopping.vue";
 import ProductQuantity from "@/Components/DetailProduct/ProductQuantity.vue";
 import AddToChartButton from "@/Components/DetailProduct/AddToChartButton.vue";
-import { computed, ref, reactive } from "vue";
+import { computed, ref, reactive, watch } from "vue";
+import { useForm } from "@inertiajs/inertia-vue3";
 
 const props = defineProps({
     cake: {
@@ -128,7 +131,7 @@ const handleUpdateQuantityPrice = (quantity) => {
 };
 
 /**
- * Computes the total price of the cake based on its base price, flavour price, and cake size.
+ * Computes the total price of the cake based on its base price, flavour price, cake size and quantity.
  *
  * @return {object} An object containing the cake details and the calculated total price
  */
@@ -148,9 +151,30 @@ const totalPrice = computed(() => {
     };
 });
 
+const form = useForm({
+    cake_id: props.cake.id,
+    flavour_id: selected.flavour,
+    topping_id: selected.topping,
+    quantity: selected.quantity,
+    price: totalPrice.value.totalCakePrice,
+});
+
+watch(
+    () => totalPrice.value.totalCakePrice,
+    (newPrice) => {
+        form.price = newPrice;
+    }
+);
+
 const isCakeCustomized = computed(() => {
     return props.cake?.personalization_type === "customized";
 });
+
+const submit = () => {
+    form.post(route("add-chart-item"), {
+        preserveScroll: true,
+    });
+};
 
 const description = `Lorem, ipsum dolor sit amet consectetur
     adipisicing elit. Sunt corporis numquam rem sequi consequuntur

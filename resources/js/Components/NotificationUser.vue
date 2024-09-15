@@ -21,7 +21,7 @@
             class="z-[1] card card-compact dropdown-content w-96 bg-base-100 shadow-xl p-3"
         >
             <div
-                class="flex justify-between items-center text-base font-medium border-b-2 pb-1"
+                class="flex justify-between items-center text-base font-medium py-2"
             >
                 <p class="text-lg">Notification</p>
                 <inertia-link
@@ -30,8 +30,25 @@
                     >Mark All Notification</inertia-link
                 >
             </div>
+            <div
+                class="grid grid-flow-col-dense place-items-center pt-2 px-2 border-b-2 border-base-content"
+            >
+                <div
+                    v-for="(status, index) in orderStatus"
+                    :key="index"
+                    class="py-2"
+                >
+                    <div
+                        class="flex gap-1 flex-col text-center text-primary-color"
+                    >
+                        <i :class="status.icon"></i>
+                        <span class="text-sm">{{ status.name }}</span>
+                    </div>
+                </div>
+            </div>
+
             <inertia-link
-                class="card-body flex-row gap-4 my-2 rounded-lg bg-neutral"
+                class="card-body flex-row gap-4 mt-2 rounded-lg bg-neutral"
                 v-for="(notif, index) in notification"
                 :key="index"
                 :href="link"
@@ -54,7 +71,7 @@
                 <inertia-link
                     class="btn btn-sm bg-primary-color text-slate-700 hover:text-white btn-block"
                 >
-                    View Notification
+                    View Notification ({{ notification.length }})
                 </inertia-link>
             </div>
         </div>
@@ -63,11 +80,40 @@
 
 <script setup>
 const props = defineProps({
-    notification: {
-        type: Array,
-    },
     link: {
         type: String,
     },
 });
+
+const notification = [
+    {
+        cakeImageUrl: "/assets/image/pastry.png",
+        message: `Your Order Has Been Process.`,
+        timestamp: `1 minutes ago`,
+    },
+    {
+        cakeImageUrl: "/assets/image/pastry.png",
+        message: `Your Order Has Been Packing.`,
+        timestamp: `1 minutes ago`,
+    },
+];
+
+const orderStatus = [
+    {
+        icon: "fa-solid fa-clock fa-lg",
+        name: "Wait For Confirmation",
+    },
+    {
+        icon: "fa-solid fa-spinner fa-lg",
+        name: "Order Process",
+    },
+    {
+        icon: "fa-solid fa-truck fa-lg",
+        name: "Order Delivery",
+    },
+    {
+        icon: "fa-solid fa-location-dot fa-lg",
+        name: "Order Complete",
+    },
+];
 </script>

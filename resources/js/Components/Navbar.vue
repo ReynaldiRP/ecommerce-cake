@@ -25,10 +25,7 @@
         <div class="navbar-end flex gap-5">
             <section class="flex justify-center items-center gap-2">
                 <ShoppingChart link="#" :products="items" />
-                <NotificationUser
-                    :notification="notification"
-                    :link="route('/order')"
-                />
+                <NotificationUser :link="route('/order')" />
             </section>
 
             <!-- <div
@@ -82,6 +79,7 @@
 <script setup>
 import { ref, reactive, watch, computed, onMounted, onUnmounted } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
+import { Inertia } from "@inertiajs/inertia";
 import Loading from "vue-loading-overlay";
 import Sidebar from "@/Components/Sidebar.vue";
 import ShoppingChart from "@/Components/ShoppingChart.vue";
@@ -99,12 +97,14 @@ const state = reactive({
 
 const isLoading = ref(false);
 
-const logout = () => {
+const logout = async () => {
     isLoading.value = true;
-    setTimeout(() => {
+    try {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        await Inertia.post(route("logout"));
+    } finally {
         isLoading.value = false;
-        Inertia.post(route("logout"));
-    }, 5000);
+    }
 };
 
 const menu = [
@@ -151,19 +151,6 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener("scroll", handleScroll);
 });
-
-const notification = [
-    {
-        cakeImageUrl: "/assets/image/pastry.png",
-        message: `Your Order Has Been Process.`,
-        timestamp: `1 minutes ago`,
-    },
-    {
-        cakeImageUrl: "/assets/image/pastry.png",
-        message: `Your Order Has Been Packing.`,
-        timestamp: `1 minutes ago`,
-    },
-];
 
 const items = [
     {

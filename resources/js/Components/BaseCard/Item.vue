@@ -4,10 +4,10 @@
             <img
                 :src="imageUrl"
                 alt="Shoes"
-                class="h-[180px] object-cover w-full rounded-t-lg"
+                class="h-[180px] object-cover w-full rounded-lg"
             />
         </figure>
-        <div class="card-body gap-1 text-base-300">
+        <div class="card-body gap-1 text-base-content">
             <h2 class="text-base font-medium">
                 {{ cakeName }}
                 <span v-show="cakeSize" class="font-bold"
@@ -15,7 +15,10 @@
                 >
             </h2>
             <p class="text-lg font-bold">{{ cakePrice }}</p>
-            <div class="flex gap-2 items-center badge" :class="isCustomizedBadge()">
+            <div
+                class="flex gap-2 items-center badge"
+                :class="isCustomizedBadge()"
+            >
                 <i
                     v-if="cakePersonalizationType == 'customized'"
                     class="fa-solid fa-cake-candles"

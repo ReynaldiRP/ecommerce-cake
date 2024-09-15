@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Cake\StoreCakeRequest;
-use App\Http\Requests\UpdateCakeRequest;
+use App\Http\Requests\Cake\UpdateCakeRequest;
 use App\Models\Cake;
 use App\Models\CakeSize;
 use Illuminate\Http\RedirectResponse;

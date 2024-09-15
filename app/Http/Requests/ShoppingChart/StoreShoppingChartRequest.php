@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Cake;
-
+namespace App\Http\Requests\ShoppingChart;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCakeRequest extends FormRequest
+class StoreShoppingChartRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +22,11 @@ class StoreCakeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cake_size_id' => 'nullable',
-            'name' => 'required|regex:/^[a-zA-Z\s\-]+$/|min:3|max:255',
-            'base_price' => 'required|numeric|min:1|max:1000000',
-            'image_url' => 'nullable|mimes:png,jpg,jpeg,webp',
-            'personalization_type' => 'required'
+            'shopping_chart_id' => 'nullable',
+            'cake_id' => 'required',
+            'cake_flavour_id' => 'nullable',
+            'quantity' => 'required|numeric|min:1',
+            'price' => 'required|numeric|min:1',
         ];
     }
 }

@@ -3,7 +3,6 @@
         <loading
             v-model:active="isLoading"
             :can-cancel="true"
-            :on-cancel="onCancel"
             color="#EBA9AE"
             background-color="#B2BEB5"
         />

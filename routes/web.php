@@ -11,6 +11,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\FrontEndController;
+use App\Http\Controllers\ShoppingChartController;
 use App\Http\Controllers\ToppingController;
 
 /*
@@ -30,7 +31,6 @@ Route::middleware(['auth'])->group(function () {
             Route::redirect('/', '/home');
             Route::get('/home', 'index')->name('home');
             Route::get('/home/products', 'products')->name('products');
-            Route::get('/home/{cakeId}/detail-product', 'detailProduct')->name('detail-product');
             Route::get('/search',  'search')->name('search');
         });
 
@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
         Route::inertia('/checkout', 'CheckoutSection')->name('/checkout');
         Route::inertia('/order', 'OrderStatusSection')->name('/order');
         Route::inertia('/dashboard-home', 'AdminDashboard/HomeSection')->name('dashboard-home');
+
 
 
 
@@ -49,6 +50,11 @@ Route::middleware(['auth'])->group(function () {
             ->name('index', 'dashboard-size')->except('show');
         Route::resource('/dashboard-topping', ToppingController::class)
             ->name('index', 'dashboard-topping')->except('show');
+    });
+
+    Route::get('/home/{cakeId}/detail-product', [FrontEndController::class, 'detailProduct'])->name('detail-product');
+    Route::controller(ShoppingChartController::class)->group(function () {
+        Route::post('/add-chart-item', 'addChartItem')->name('add-chart-item');
     });
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 });

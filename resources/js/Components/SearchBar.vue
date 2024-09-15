@@ -39,8 +39,9 @@
                         class="flex justify-between"
                         :href="route('detail-product', { cakeId: cake.id })"
                     >
-                        <div class="flex gap-1">
-                            <span>{{ cake.name }}</span>
+                        <div class="flex items-center gap-1">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <span class="ml-1">{{ cake.name }}</span>
                             <span class="font-bold" v-show="cake.cake_size"
                                 >({{ cake.cake_size?.size }}Cm)</span
                             >
