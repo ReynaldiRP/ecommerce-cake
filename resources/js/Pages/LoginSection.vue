@@ -143,7 +143,11 @@ const passwordInputType = ref("password");
 
 const isLoading = ref(false);
 
-// Function for password toggle
+/**
+ * Toggles the password input type between 'password' and 'text'.
+ *
+ * @return {void}
+ */
 const showPasswordToggle = () => {
     isPasswordShow.value = !isPasswordShow.value;
     if (passwordInputType.value === "password") {
@@ -153,8 +157,14 @@ const showPasswordToggle = () => {
     }
 };
 
-// Function for validation user input in client side
-const validate = (value, type, e) => {
+/**
+ * Validates user input on the client-side based on predefined validation rules.
+ *
+ * @param {string} value - The input value to be validated.
+ * @param {string} type - The type of input (e.g., email, password).
+ * @return {void}
+ */
+const validate = (value, type) => {
     const validation = validations[type];
     if (!validation) return;
 
@@ -186,12 +196,17 @@ const onChangePassword = () => {
     validate(form.password, "password");
 };
 
+/**
+ * Submits the login form after a 3-second delay.
+ *
+ * @return {void}
+ */
 const submit = () => {
     isLoading.value = true;
     setTimeout(() => {
-        isLoading.value = false;
         form.post("/login");
-    }, 5000);
+        isLoading.value = false;
+    }, 3000);
 };
 </script>
 

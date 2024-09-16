@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('name', 255);
             $table->string('image_url', 255)->nullable();
             $table->double('base_price', 8, 2);
+            $table->text('description')->nullable();
             $table->enum('personalization_type', ['customized', 'non-customized']);
             $table->timestamps();
         });

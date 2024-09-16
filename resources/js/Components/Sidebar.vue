@@ -1,6 +1,11 @@
 <template>
     <div class="drawer drawer-end w-fit z-50">
-        <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
+        <input
+            id="my-drawer-4"
+            type="checkbox"
+            class="drawer-toggle"
+            v-model="isSidebarOpen"
+        />
         <div class="drawer-content">
             <label for="my-drawer-4" class="btn btn-ghost btn-circle w-fit">
                 <svg
@@ -67,6 +72,14 @@
                 </li>
                 <li
                     class="text-lg font-medium cursor-pointer hover:text-primary-color"
+                    :class="user ? 'block' : 'hidden'"
+                >
+                    <form @submit.prevent="logoutHandler">
+                        <button type="submit">Logout</button>
+                    </form>
+                </li>
+                <li
+                    class="text-lg font-medium cursor-pointer hover:text-primary-color"
                     :class="user ? 'hidden' : 'block'"
                 >
                     <inertia-link :href="route('login.index')"
@@ -87,6 +100,10 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
+
+const isSidebarOpen = ref(false);
+
 defineProps({
     menu: {
         type: Array,
@@ -98,6 +115,9 @@ defineProps({
     },
     user: {
         type: Object,
+    },
+    logoutHandler: {
+        type: Function,
     },
 });
 

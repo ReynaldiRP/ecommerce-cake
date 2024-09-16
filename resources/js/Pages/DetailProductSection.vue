@@ -42,10 +42,7 @@
                 class="h-full w-full flex flex-col justify-center px-8 py-10 mt-10 gap-6"
             >
                 <input type="text" hidden v-model="form.cake_id" />
-                <ProductDetail
-                    :cake="totalPrice"
-                    :cake-description="description"
-                />
+                <ProductDetail :cake="totalPrice" />
 
                 <ProductFlavour
                     v-show="isCakeCustomized"
@@ -65,9 +62,15 @@
                     @update-quantity-price="handleUpdateQuantityPrice"
                 />
 
-                <AddToChartButton type="submit" />
+                <AddToChartButton type="submit" :is-submitting="isSubmitting" />
             </form>
         </section>
+        <PreviewChartItem
+            :is-preview-open="isPreviewOpen"
+            :chart="chartItem"
+            :successMessage="succesMessage"
+            @update:isPreviewOpen="isPreviewOpen = $event"
+        />
     </App>
 </template>
 
@@ -79,8 +82,10 @@ import ProductFlavour from "@/Components/DetailProduct/ProductFlavour.vue";
 import ProductTopping from "@/Components/DetailProduct/ProductTopping.vue";
 import ProductQuantity from "@/Components/DetailProduct/ProductQuantity.vue";
 import AddToChartButton from "@/Components/DetailProduct/AddToChartButton.vue";
+import PreviewChartItem from "@/Components/PreviewChartItem.vue";
 import { computed, ref, reactive, watch } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
+import axios from "axios";
 
 const props = defineProps({
     cake: {
@@ -170,10 +175,34 @@ const isCakeCustomized = computed(() => {
     return props.cake?.personalization_type === "customized";
 });
 
+const isPreviewOpen = ref(false);
+const chartItem = ref([]);
+const succesMessage = ref("");
+const isSubmitting = ref(false);
+
+const addItemToChart = () => {
+    try {
+        axios
+            .post(route("add-chart-item"), form)
+            .then((result) => {
+                chartItem.value = result.data.cartItem;
+                succesMessage.value = result.data.message;
+            })
+            .catch((err) => {
+                console.error("Error adding item to cart:", err.response.data);
+            });
+    } catch (error) {
+        console.error("Request failed:", error);
+    }
+};
+
 const submit = () => {
-    form.post(route("add-chart-item"), {
-        preserveScroll: true,
-    });
+    isSubmitting.value = true;
+    setTimeout(function () {
+        addItemToChart();
+        isSubmitting.value = false;
+        isPreviewOpen.value = true;
+    }, 3000);
 };
 
 const description = `Lorem, ipsum dolor sit amet consectetur

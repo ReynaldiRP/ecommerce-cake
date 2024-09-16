@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         Role::factory(2)->create();
-        User::factory(1)->create();
+        User::factory(3)->create();
         Flavour::factory(8)->create();
         CakeSize::factory(6)->create();
         Topping::factory(8)->create();

@@ -10,7 +10,7 @@
             {{ formatPrice(cake.totalCakePrice) }}
         </h2>
         <p class="text-lg text-justify">
-            {{ cakeDescription }}
+            {{ cake.description }}
         </p>
     </section>
 </template>
@@ -19,9 +19,6 @@
 const props = defineProps({
     cake: {
         type: Object,
-    },
-    cakeDescription: {
-        type: String,
     },
 });
 

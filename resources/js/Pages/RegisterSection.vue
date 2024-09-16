@@ -248,7 +248,7 @@ const submit = () => {
     setTimeout(() => {
         isLoading.value = false;
         form.post("/register");
-    }, 5000);
+    }, 3000);
 };
 </script>
 

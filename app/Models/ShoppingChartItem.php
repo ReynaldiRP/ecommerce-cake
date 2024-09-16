@@ -24,4 +24,13 @@ class ShoppingChartItem extends Model
     {
         return $this->belongsTo(ShoppingChart::class, 'shopping_chart_id', 'id');
     }
+
+    public function cake(): BelongsTo
+    {
+        return $this->belongsTo(Cake::class, 'cake_id', 'id');
+    }
+    public function cakeFlavour(): BelongsTo
+    {
+        return $this->belongsTo(Flavour::class, 'cake_flavour_id', 'id');
+    }
 }

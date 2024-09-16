@@ -63,6 +63,7 @@
                 :menu="menu"
                 :menuAuthenticated="menuAuthenticated"
                 :user="user"
+                :logout-handler="logout"
             />
         </div>
     </div>
@@ -77,7 +78,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, computed, onMounted, onUnmounted } from "vue";
+import { ref, reactive, computed, onMounted, onUnmounted } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 import Loading from "vue-loading-overlay";
@@ -97,14 +98,17 @@ const state = reactive({
 
 const isLoading = ref(false);
 
-const logout = async () => {
+/**
+ * Logs out the current user by sending a POST request to the logout route.
+ *
+ * @return {void}
+ */
+const logout = () => {
     isLoading.value = true;
-    try {
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-        await Inertia.post(route("logout"));
-    } finally {
+    setTimeout(function () {
+        Inertia.post(route("logout"));
         isLoading.value = false;
-    }
+    }, 3000);
 };
 
 const menu = [
@@ -127,15 +131,16 @@ const menuAuthenticated = [
         name: "Order History",
         link: "#",
     },
-    {
-        name: "Logout",
-        link: logout,
-    },
 ];
 
+/**
+ * Updates the background color of the navbar based on the current scroll position.
+ *
+ * @return {void}
+ */
 const handleScroll = () => {
     const scrollPositition = window.scrollY;
-    if (scrollPositition > 50) {
+    if (scrollPositition > 10) {
         state.backgroundColor = "bg-base-200";
     } else {
         state.backgroundColor = "bg-transparent";

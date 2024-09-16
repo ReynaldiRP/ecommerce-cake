@@ -44,6 +44,7 @@
                                 <th>Cake Name</th>
                                 <th>Cake Size</th>
                                 <th>Cake Price</th>
+                                <th>Cake Description</th>
                                 <th>Cake Image</th>
                                 <th>Cake Personalization Type</th>
                                 <th>Action</th>
@@ -64,6 +65,9 @@
                                     }}
                                 </td>
                                 <td>{{ cakes.base_price }}</td>
+                                <td>
+                                    {{ descriptionLength(cakes.description) }}
+                                </td>
                                 <td>
                                     <button
                                         @click="
@@ -149,16 +153,11 @@ import Pagination from "@/Components/Pagination.vue";
 import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import VueEasyLightbox from "vue-easy-lightbox";
 import { mdiPlus, mdiCheckCircle } from "@mdi/js";
-import { ref } from "vue";
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
+import { ref, computed } from "vue";
+import { useForm } from "@inertiajs/inertia-vue3";
 
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
-
-const page = usePage();
-const cake = computed(() => page.props.value.cake);
-
-console.log(cake.value);
 
 const props = defineProps({
     cakes: {
@@ -187,5 +186,20 @@ const deleteHandler = (cakeId) => {
 
         form.delete(route("dashboard-cake.destroy", cakeId));
     }, 3000);
+};
+
+console.log(props.cakes.data);
+
+/**
+ * Truncates a given description to a maximum length of 30 characters.
+ *
+ * @param {string} description - The input description to be truncated.
+ * @return {string} The truncated description.
+ */
+const descriptionLength = (description) => {
+    if (!description) return "";
+    if (description.length > 30) return description.slice(0, 30) + "...";
+
+    return description;
 };
 </script>

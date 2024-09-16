@@ -4,7 +4,11 @@
             class="btn btn-block text-base-300 hover:text-white bg-primary-color"
             :type="type"
         >
-            Add to Chart
+            <span v-show="!isSubmitting">Add to Chart</span>
+            <span
+                v-show="isSubmitting"
+                class="loading loading-spinner loading-md"
+            ></span>
         </button>
     </div>
 </template>
@@ -13,6 +17,10 @@
 defineProps({
     type: {
         type: String,
+    },
+    isSubmitting: {
+        type: Boolean,
+        default: false,
     },
 });
 </script>

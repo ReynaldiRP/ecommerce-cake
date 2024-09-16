@@ -74,6 +74,20 @@
                     >
                         {{ props.errors.base_price }}
                     </NotificationBar>
+                    <FormField label="Cake Base Price">
+                        <FormControl
+                            v-model="form.description"
+                            placeholder="Cakes description"
+                            type="textarea"
+                        />
+                    </FormField>
+                    <NotificationBar
+                        v-if="props.errors.description"
+                        color="danger"
+                        :icon="mdiAlertCircle"
+                    >
+                        {{ props.errors.description }}
+                    </NotificationBar>
                     <FormField label="Cake Image">
                         <FormControl
                             v-model="form.image_url"
@@ -161,6 +175,7 @@ const cakePersonalizationType = [
 const form = useForm({
     name: "",
     base_price: 0,
+    description: "",
     image_url: "",
     cake_size_id: "",
     personalization_type: "",

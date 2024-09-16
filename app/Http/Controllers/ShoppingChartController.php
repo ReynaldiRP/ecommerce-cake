@@ -25,7 +25,6 @@ class ShoppingChartController extends Controller
     {
 
         $cart = $this->addChart();
-
         $cartItem = ShoppingChartItem::create([
             'shopping_chart_id' => $cart->id,
             'cake_id' => $request['cake_id'],
@@ -37,9 +36,12 @@ class ShoppingChartController extends Controller
         $cart->total_price += $request['price'];
         $cart->save();
 
+        $cartItemWithRelations = ShoppingChartItem::with('cart', 'cake', 'cakeFlavour')
+            ->find($cartItem->id);
+
         return response()->json([
             'cart' => $cart,
-            'cartItem' => $cartItem,
+            'cartItem' => $cartItemWithRelations,
             'message' => 'Item added to cart successfully!'
         ]);
     }

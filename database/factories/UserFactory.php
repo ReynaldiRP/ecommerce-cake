@@ -30,7 +30,7 @@ class UserFactory extends Factory
             'role_id' => fake()->randomElement(Role::pluck('id')),
             'username' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => static::$password ??= Hash::make('12345678'),
             'phone_number' => fake()->phoneNumber(),
             'address' => fake()->address(),
             'gender' => $gender[rand(0, 1)],

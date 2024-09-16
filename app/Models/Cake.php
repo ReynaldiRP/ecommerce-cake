@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Cake extends Model
 {
@@ -20,5 +21,10 @@ class Cake extends Model
     public function cakeSize(): BelongsTo
     {
         return $this->belongsTo(CakeSize::class, 'cake_size_id', 'id');
+    }
+
+    public function cartItem(): HasMany
+    {
+        return $this->hasMany(ShoppingChartItem::class, 'cake_id');
     }
 }
