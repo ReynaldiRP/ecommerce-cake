@@ -22,6 +22,12 @@ const props = defineProps({
     },
 });
 
+/**
+ * Formats a given price into a currency string using the Indonesian Rupiah currency format.
+ *
+ * @param {number} price - The price to be formatted.
+ * @return {string} The formatted currency string.
+ */
 const formatPrice = (price = 0) => {
     return new Intl.NumberFormat("id-ID", {
         style: "currency",

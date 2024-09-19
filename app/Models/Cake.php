@@ -15,6 +15,7 @@ class Cake extends Model
         'name',
         'image_url',
         'base_price',
+        'description',
         'personalization_type'
     ];
 

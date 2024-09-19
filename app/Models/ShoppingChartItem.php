@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ShoppingChartItemTopping;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ShoppingChartItem extends Model
 {
@@ -32,5 +35,9 @@ class ShoppingChartItem extends Model
     public function cakeFlavour(): BelongsTo
     {
         return $this->belongsTo(Flavour::class, 'cake_flavour_id', 'id');
+    }
+    public function cakeTopping(): BelongsToMany
+    {
+        return $this->belongsToMany(Topping::class, 'shopping_chart_item_topping', 'shopping_chart_item_id', 'topping_id');
     }
 }

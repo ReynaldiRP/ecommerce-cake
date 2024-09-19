@@ -27,6 +27,7 @@ class UpdateCakeRequest extends FormRequest
             'cake_size_id' => 'nullable',
             'name' => 'required|regex:/^[a-zA-Z\s\-]+$/|min:3|max:255',
             'base_price' => 'required|numeric|min:1|max:1000000',
+            'description' => 'nullable|min:3|max:255',
             'image_url' => 'nullable|mimes:png,jpg,jpeg,webp',
             'personalization_type' => 'required'
         ];

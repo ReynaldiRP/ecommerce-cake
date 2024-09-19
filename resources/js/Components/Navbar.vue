@@ -24,7 +24,7 @@
         </ul>
         <div class="navbar-end flex gap-5">
             <section class="flex justify-center items-center gap-2">
-                <ShoppingChart link="#" :products="items" />
+                <ShoppingChart />
                 <NotificationUser :link="route('/order')" />
             </section>
 
@@ -156,28 +156,4 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener("scroll", handleScroll);
 });
-
-const items = [
-    {
-        name: `Wedding Cake`,
-        flavour: `Stroberry`,
-        toppings: `Choco, Bluberry`,
-        quantity: 2,
-        price: 44000,
-    },
-    {
-        name: `Birthday Cake`,
-        flavour: `Red Velvet`,
-        toppings: `Cherry`,
-        quantity: 1,
-        price: 55000,
-    },
-    {
-        name: `Pudding`,
-        flavour: ``,
-        toppings: ``,
-        quantity: 1,
-        price: 14000,
-    },
-];
 </script>

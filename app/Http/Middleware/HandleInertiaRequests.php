@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Http\Controllers\FrontEndController;
+use App\Http\Controllers\ShoppingChartController;
 use App\Models\Cake;
 use Inertia\Middleware;
 use Illuminate\Http\Request;
@@ -37,28 +38,51 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $searchResults = [];
-        $query = '';
 
-        $searchController = new FrontEndController();
-        $searchData = $searchController->search($request)->getData();
-
-        $searchResults = $searchData->searchResults;
-
-
-        if ($request->filled('search')) {
-            $query = $searchData->query ?? '';
-        }
+        $searchData = $this->getSearchResults($request);
+        $cartItems = $this->getShoppingChartItems();
 
         return array_merge(parent::share($request), [
             'auth.user' => fn() => $request->user(),
             'flash' => [
                 'success' => fn() => $request->session()->get('success'),
             ],
-            'search' => [
-                'searchResult' => $searchResults,
-                'query' => $query,
-            ]
+            'search' => $searchData,
+            'shoppingChartItems' => $cartItems,
         ]);
+    }
+
+
+    /**
+     * Retrieves the search results and query from the search controller.
+     *
+     * @param Request $request The HTTP request object.
+     * @return array An array containing the search results and query.
+     */
+    public function getSearchResults(Request $request): array
+    {
+        $searchResults = [];
+        $query = '';
+
+        $searchController = new FrontEndController();
+
+        if ($request->filled('search')) {
+            $searchData = $searchController->search($request)->getData();
+            $searchResults = $searchData->searchResults;
+            $query = $searchData->query ?? '';
+        }
+
+        return [
+            'searchResults' => $searchResults,
+            'query' => $query,
+        ];
+    }
+
+    public function getShoppingChartItems()
+    {
+        $shoppingChartItems = new ShoppingChartController();
+        $shoppingChartItems = $shoppingChartItems->getShoppingChartItems();
+
+        return $shoppingChartItems;
     }
 }

@@ -13,6 +13,7 @@ use Inertia\Response;
 class CakeController extends Controller
 {
 
+
     /**
      * Method to display all the cakes in dashboard.
      *
@@ -21,12 +22,14 @@ class CakeController extends Controller
     public function index(): Response
     {
         $cake = Cake::with('cakeSize')->paginate(5);
-
         return Inertia::render('AdminDashboard/Cake/Index', ['cakes' => $cake]);
     }
 
+
     /**
      * Show the form for creating a new resource.
+     *
+     * @return Response
      */
     public function create(): Response
     {
@@ -34,12 +37,26 @@ class CakeController extends Controller
         return Inertia::render('AdminDashboard/Cake/Create', ['sizeCake' => $cakeSize]);
     }
 
+
     /**
-     * Store a newly created resource in storage.
+     * Method to store a newly created cake resource in storage.
+     *
+     * @param StoreCakeRequest $request description
+     * @return RedirectResponse
      */
     public function store(StoreCakeRequest $request): RedirectResponse
     {
+
+        $defaultDescription =  'Lorem, ipsum dolor sit amet consectetur
+    adipisicing elit. Sunt corporis numquam rem sequi consequuntur
+    inventore minus excepturi. Animi tempore dignissimos, delectus iusto nisi
+    eligendi vero inventore ex, sapiente expedita impedit. Lorem ipsum dolor sit amet
+    consectetur adipisicing elit. Laudantium, repellat optio mollitia iure,
+    dicta reiciendis, laborum quibusdam repellendus expedita cumque error
+    obcaecati dolorem architecto consequuntur ratione! Ipsum deserunt cupiditate beatae.';
+
         $data = $request->validated();
+
 
         if ($request->hasFile('image_url')) {
 
@@ -50,21 +67,19 @@ class CakeController extends Controller
             $data['image_url'] = 'storage/' . $path;
         }
 
+        $data['description'] = $data['description']  ?? $defaultDescription;
+
         Cake::create($data);
 
         return to_route('dashboard-cake')->with('success', 'The Cake has been successfully added');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Cake $cake)
-    {
-        //
-    }
 
     /**
-     * Show the form for editing the specified resource.
+     * Method to display the form for editing a cake resource.
+     *
+     * @param Cake $dashboard_cake The cake resource to be edited.
+     * @return Response The rendered edit form.
      */
     public function edit(Cake $dashboard_cake): Response
     {
@@ -74,8 +89,13 @@ class CakeController extends Controller
         return Inertia::render('AdminDashboard/Cake/Edit', ['cakes' => $dashboard_cake, 'cakeSize' => $cakeSize]);
     }
 
+
     /**
-     * Update the specified resource in storage.
+     * Updates an existing cake resource in storage.
+     *
+     * @param UpdateCakeRequest $request The request containing the updated cake details.
+     * @param Cake $dashboard_cake The cake resource to be updated.
+     * @return RedirectResponse A redirect response to the cake dashboard route with a success message.
      */
     public function update(UpdateCakeRequest $request, Cake $dashboard_cake): RedirectResponse
     {
@@ -105,8 +125,12 @@ class CakeController extends Controller
         return to_route('dashboard-cake')->with('success', 'The Cake has been successfully updated');
     }
 
+
     /**
-     * Remove the specified resource from storage.
+     * Removes the specified cake resource from storage.
+     *
+     * @param Cake $dashboard_cake The cake resource to be deleted.
+     * @return RedirectResponse A redirect response to the cake dashboard route with a success message.
      */
     public function destroy(Cake $dashboard_cake)
     {

@@ -28,6 +28,12 @@ class FrontEndController extends Controller
         return Inertia::render('LandingPageSection', ['cakes' => $cakes]);
     }
 
+    /**
+     * Handles search functionality for cakes.
+     *
+     * @param Request $request The incoming HTTP request containing search query.
+     * @return \Illuminate\Http\JsonResponse A JSON response containing search results and query.
+     */
     public function search(Request $request)
     {
         $query = $request->input('search');
@@ -46,7 +52,6 @@ class FrontEndController extends Controller
             'searchResults' => $cakes->items(),
             'query' => $query,
         ]);
-        
     }
 
     /**

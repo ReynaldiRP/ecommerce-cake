@@ -22,10 +22,13 @@ class StoreCakeRequest extends FormRequest
      */
     public function rules(): array
     {
+
+
         return [
             'cake_size_id' => 'nullable',
             'name' => 'required|regex:/^[a-zA-Z\s\-]+$/|min:3|max:255',
             'base_price' => 'required|numeric|min:1|max:1000000',
+            'description' => 'nullable',
             'image_url' => 'nullable|mimes:png,jpg,jpeg,webp',
             'personalization_type' => 'required'
         ];

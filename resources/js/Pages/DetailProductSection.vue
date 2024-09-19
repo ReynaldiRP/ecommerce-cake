@@ -53,7 +53,7 @@
                 <ProductTopping
                     v-show="isCakeCustomized"
                     :toppings="props.topping"
-                    v-model="form.topping_id"
+                    v-model="form.toppings"
                     @update-topping-price="handleUpdateToppingPrice"
                 />
                 <ProductQuantity
@@ -110,6 +110,10 @@ const selected = reactive({
 const flavourPrice = ref(0);
 const toppingPrice = ref(0);
 const quantityPrice = ref(1);
+const isPreviewOpen = ref(false);
+const chartItem = ref([]);
+const succesMessage = ref("");
+const isSubmitting = ref(false);
 
 /**
  * Updates the flavour price state with the provided price value.
@@ -131,6 +135,12 @@ const handleUpdateToppingPrice = (price) => {
     toppingPrice.value = price;
 };
 
+/**
+ * Updates the quantity price state with the provided quantity value.
+ *
+ * @param {number} quantity - The new quantity value
+ * @return {void}
+ */
 const handleUpdateQuantityPrice = (quantity) => {
     quantityPrice.value = quantity;
 };
@@ -159,7 +169,7 @@ const totalPrice = computed(() => {
 const form = useForm({
     cake_id: props.cake.id,
     flavour_id: selected.flavour,
-    topping_id: selected.topping,
+    toppings: selected.topping,
     quantity: selected.quantity,
     price: totalPrice.value.totalCakePrice,
 });
@@ -175,11 +185,11 @@ const isCakeCustomized = computed(() => {
     return props.cake?.personalization_type === "customized";
 });
 
-const isPreviewOpen = ref(false);
-const chartItem = ref([]);
-const succesMessage = ref("");
-const isSubmitting = ref(false);
-
+/**
+ * Adds an item to the chart by sending a POST request to the 'add-chart-item' route.
+ *
+ * @return {void}
+ */
 const addItemToChart = () => {
     try {
         axios
@@ -187,6 +197,12 @@ const addItemToChart = () => {
             .then((result) => {
                 chartItem.value = result.data.cartItem;
                 succesMessage.value = result.data.message;
+
+                // window.dispatchEvent(
+                //     new CustomEvent("cart-updated", {
+                //         detail: result.data.cartItem,
+                //     })
+                // );
             })
             .catch((err) => {
                 console.error("Error adding item to cart:", err.response.data);
@@ -196,6 +212,11 @@ const addItemToChart = () => {
     }
 };
 
+/**
+ * Submits the form and adds the item to the chart after a 3-second delay.
+ *
+ * @return {void}
+ */
 const submit = () => {
     isSubmitting.value = true;
     setTimeout(function () {

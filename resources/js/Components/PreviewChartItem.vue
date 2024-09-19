@@ -37,7 +37,7 @@
                             <div class="flex gap-1" v-if="chart.cake_flavour">
                                 <p>{{ chart.cake_flavour?.name }}</p>
                                 <span>|</span>
-                                <p>Toppings</p>
+                                <p>{{ toppingName }}</p>
                             </div>
                         </div>
                     </div>
@@ -52,7 +52,7 @@
                             Continue Shopping
                         </inertia-link>
                         <inertia-link
-                            :href="`#`"
+                            :href="route('/detail-chart')"
                             class="btn btn-md text-black bg-primary-color hover:bg-base-300 hover:text-white"
                         >
                             See Chart
@@ -65,7 +65,8 @@
 </template>
 
 <script setup>
-defineProps({
+import { computed } from "vue";
+const props = defineProps({
     isPreviewOpen: {
         type: Boolean,
         default: false,
@@ -78,5 +79,9 @@ defineProps({
         type: String,
         default: null,
     },
+});
+
+const toppingName = computed(() => {
+    return props.chart.cake_topping.map((topping) => topping.name).join(", ");
 });
 </script>

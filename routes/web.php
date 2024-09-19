@@ -31,17 +31,15 @@ Route::middleware(['auth'])->group(function () {
             Route::redirect('/', '/home');
             Route::get('/home', 'index')->name('home');
             Route::get('/home/products', 'products')->name('products');
+
             Route::get('/search',  'search')->name('search');
         });
 
-        Route::inertia('/detail-chart', 'DetailShoppingChart')->name('/detail-chart');
         Route::inertia('/checkout', 'CheckoutSection')->name('/checkout');
         Route::inertia('/order', 'OrderStatusSection')->name('/order');
+
+
         Route::inertia('/dashboard-home', 'AdminDashboard/HomeSection')->name('dashboard-home');
-
-
-
-
         Route::resource('/dashboard-cake', CakeController::class)
             ->name('index', 'dashboard-cake')->except('show');
         Route::resource('/dashboard-flavour', FlavourController::class)
@@ -55,7 +53,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home/{cakeId}/detail-product', [FrontEndController::class, 'detailProduct'])->name('detail-product');
     Route::controller(ShoppingChartController::class)->group(function () {
         Route::post('/add-chart-item', 'addChartItem')->name('add-chart-item');
+        Route::get('/shopping-chart-item', 'getShoppingChartItems')->name('get-cart-item');
     });
+    Route::inertia('/detail-chart', 'DetailShoppingChart')->name('/detail-chart');
+
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 });
 

@@ -17,7 +17,7 @@
                     />
                 </svg>
                 <span class="badge badge-sm indicator-item">{{
-                    products.length
+                    chartItems.length
                 }}</span>
             </div>
         </div>
@@ -28,31 +28,31 @@
             <div class="card-body gap-4">
                 <inertia-link
                     class="flex justify-between items-center gap-2 bg-neutral rounded-lg shadow-xl"
-                    v-for="(items, index) in products"
+                    v-for="(items, index) in chartItems"
                     :key="index"
-                    :href="link"
+                    :href="`#`"
                 >
                     <div class="flex items-center gap-2">
                         <div class="avatar">
                             <div class="w-16 rounded">
                                 <img
-                                    src="/assets/image/default-img.jpg"
+                                    :src="
+                                        chartItems.cake?.image_url ??
+                                        `/assets/image/default-img.jpg`
+                                    "
                                     alt="Tailwind-CSS-Avatar-component"
                                 />
                             </div>
                         </div>
                         <div class="flex flex-col">
                             <h1 class="font-bold text-lg m-0">
-                                {{ items.name }}
+                                {{ items.cake?.name }}
                             </h1>
                             <div
-                                class="flex text-sm font-medium text-opacity-70"
-                                :class="{
-                                    hidden: !items.flavour && !items.toppings,
-                                }"
+                                class="flex flex-col text-sm font-medium text-opacity-70"
                             >
-                                <p>{{ items.flavour }}</p>
-                                <p>, {{ items.toppings }}</p>
+                                <p>{{ items.cake_flavour?.name }}</p>
+                                <p>{{ getToppingNameBasedChartItem(items.id) }}</p>
                             </div>
                         </div>
                     </div>
@@ -67,7 +67,7 @@
                         :href="route('/detail-chart')"
                         class="btn btn-sm bg-primary-color text-slate-700 hover: btn-block"
                     >
-                        View cart ({{ products.length }})
+                        View cart ({{ chartItems.length }})
                     </inertia-link>
                 </div>
             </div>
@@ -76,12 +76,42 @@
 </template>
 
 <script setup>
-defineProps({
-    link: {
-        type: String,
-    },
-    products: {
-        type: Array,
-    },
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { usePage } from "@inertiajs/inertia-vue3";
+
+const page = usePage();
+const chartItems = ref(page.props.value.shoppingChartItems?.original.cart);
+
+/**
+ * Retrieves the names of the toppings for a specific chart item.
+ *
+ * @param {number} chartItemId - The ID of the chart item.
+ * @return {string} A comma-separated string of the names of the toppings, or an empty string if the chart item is not found.
+ */
+const getToppingNameBasedChartItem = (chartItemId) => {
+    if (!Array.isArray(chartItems.value)) {
+        return [];
+    }
+
+    const item = chartItems.value.find((item) => item.id === chartItemId);
+
+    if (!item) {
+        return "";
+    }
+
+    return item.cake_topping.map((topping) => topping.name).join(", ");
+};
+
+onMounted(() => {
+    const updateCartItems = (event) => {
+        chartItems.value = event.detail;
+        console.log(chartItems.value);
+    };
+
+    window.addEventListener("cart-updated", updateCartItems);
+
+    onBeforeUnmount(() => {
+        window.removeEventListener("cart-updated", updateCartItems);
+    });
 });
 </script>

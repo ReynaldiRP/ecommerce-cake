@@ -175,7 +175,7 @@ const cakePersonalizationType = [
 const form = useForm({
     name: "",
     base_price: 0,
-    description: "",
+    description: null,
     image_url: "",
     cake_size_id: "",
     personalization_type: "",

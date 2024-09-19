@@ -21,18 +21,12 @@
                         </p>
                     </div>
                     <div class="flex gap-2">
-                        <!-- <button
-                            class="btn btn-outline btn-xs sm:btn-sm lg:btn-md text-white hover:bg-primary-color hover:opacity-65 hover:text-black border-primary-color"
-                        >
-                            Order Now
-                        </button> -->
-                        <button
+                        <inertia-link
+                            :href="route('products')"
                             class="btn btn-xs sm:btn-sm lg:btn-md text-black bg-primary-color hover:bg-primary-color hover:opacity-65 hover:text-slate-500 border-none"
                         >
-                            <inertia-link :href="route('products')"
-                                >Discovery Our Catalogs</inertia-link
-                            >
-                        </button>
+                            Discovery Our Catalogs >
+                        </inertia-link>
                     </div>
                 </section>
             </section>
