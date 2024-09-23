@@ -22,6 +22,7 @@
             </div>
         </div>
         <div
+            v-if="chartItems.length > 0"
             tabindex="0"
             class="card card-compact dropdown-content w-96 max-h-96 bg-base-100 shadow overflow-auto"
         >
@@ -82,12 +83,14 @@
                 </inertia-link>
             </div>
         </div>
+        <EmptyShoppingChart v-else />
     </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
+import EmptyShoppingChart from "@/Components/EmptyShoppingChart.vue";
 
 const page = usePage();
 const chartItems = ref(

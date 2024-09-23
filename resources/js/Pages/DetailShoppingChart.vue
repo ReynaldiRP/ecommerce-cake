@@ -16,7 +16,10 @@
             </BaseAlert>
             <h1 class="text-2xl font-bold">Shopping Chart</h1>
             <section class="grid grid-cols-12 gap-8">
-                <section class="col-span-8 flex flex-col gap-6">
+                <section
+                    class="col-span-8 flex flex-col gap-6"
+                    v-if="chartItems.length > 0"
+                >
                     <div class="h-full px-3 py-5 bg-neutral rounded-t-lg">
                         <BaseCheckbox
                             label="Choose All"
@@ -138,6 +141,7 @@
                         </div>
                     </div>
                 </section>
+                <EmptyDetailShoppingChart v-else />
                 <section class="h-fit col-span-4 flex justify-center">
                     <section
                         class="w-full flex flex-col gap-2 px-5 py-4 bg-neutral rounded-lg"
@@ -168,7 +172,7 @@
 import App from "@/Layouts/App.vue";
 import BaseCheckbox from "@/Components/BaseCheckbox.vue";
 import BaseAlert from "@/Components/BaseAlert.vue";
-
+import EmptyDetailShoppingChart from "@/Components/EmptyDetailShoppingChart.vue";
 import { ref } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import axios from "axios";
