@@ -25,7 +25,7 @@
                                 <img
                                     :src="
                                         chart.image
-                                            ? chart.cake.image
+                                            ? chart.cake_image
                                             : '/assets/image/default-img.jpg'
                                     "
                                     alt="Tailwind-CSS-Avatar-component"
@@ -33,11 +33,14 @@
                             </div>
                         </div>
                         <div class="flex flex-col gap-1 text-balance">
-                            <p>{{ chart.cake?.name }}</p>
-                            <div class="flex gap-1" v-if="chart.cake_flavour">
-                                <p>{{ chart.cake_flavour?.name }}</p>
+                            <p>{{ chart.cake_name }}</p>
+                            <div
+                                class="flex gap-1"
+                                v-if="chart.cake_flavour_name"
+                            >
+                                <p>{{ chart.cake_flavour_name }}</p>
                                 <span>|</span>
-                                <p>{{ toppingName }}</p>
+                                <p>{{ chart.cake_toppings.join(", ") }}</p>
                             </div>
                         </div>
                     </div>
@@ -79,9 +82,5 @@ const props = defineProps({
         type: String,
         default: null,
     },
-});
-
-const toppingName = computed(() => {
-    return props.chart.cake_topping.map((topping) => topping.name).join(", ");
 });
 </script>

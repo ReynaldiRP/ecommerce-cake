@@ -23,8 +23,22 @@
         </div>
         <div
             tabindex="0"
-            class="z-[1] card card-compact dropdown-content w-96 bg-base-100 shadow"
+            class="card card-compact dropdown-content w-96 max-h-96 bg-base-100 shadow overflow-auto"
         >
+            <div class="card-body border-b-2 border-neutral">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold">
+                        Shopping Chart
+                        <span class="font-light">({{ chartItemsLength }})</span>
+                    </h3>
+                    <inertia-link
+                        :href="route('/detail-chart')"
+                        class="text-lg text-primary-color font-bold"
+                    >
+                        View
+                    </inertia-link>
+                </div>
+            </div>
             <div class="card-body gap-4">
                 <inertia-link
                     class="flex justify-between items-center gap-2 bg-neutral rounded-lg shadow-xl"
@@ -51,8 +65,12 @@
                             <div
                                 class="flex flex-col text-sm font-medium text-opacity-70"
                             >
-                                <p>{{ items.cake_flavour?.name }}</p>
-                                <p>{{ getToppingNameBasedChartItem(items.id) }}</p>
+                                <p>
+                                    {{ items.cake_flavour?.name }}
+                                </p>
+                                <p>
+                                    {{ getToppingNameBasedChartItem(items.id) }}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -62,25 +80,55 @@
                         <p>Rp{{ items.price }}</p>
                     </div>
                 </inertia-link>
-                <div class="card-actions">
-                    <inertia-link
-                        :href="route('/detail-chart')"
-                        class="btn btn-sm bg-primary-color text-slate-700 hover: btn-block"
-                    >
-                        View cart ({{ chartItems.length }})
-                    </inertia-link>
-                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 
 const page = usePage();
-const chartItems = ref(page.props.value.shoppingChartItems?.original.cart);
+const chartItems = ref(
+    page.props.value.shoppingChartItems?.original.cart ?? []
+);
+
+const chartItemsLength = computed(() => {
+    return chartItems.value.length;
+});
+
+/**
+ * Updates the shopping chart items by appending new items to the existing list.
+ *
+ * @param {Array} newCartItems - The new items to be added to the shopping chart.
+ * @return {void}
+ */
+const updateCartItems = (newCartItems = []) => {
+    chartItems.value = [...chartItems.value, ...newCartItems];
+};
+
+/**
+ * Deletes a cart item by its ID.
+ *
+ * @param {number} deletedItemId - The ID of the cart item to be deleted.
+ * @return {void}
+ */
+const deleteCartItems = (deletedItemId) => {
+    chartItems.value = chartItems.value.filter(
+        (item) => item.id !== deletedItemId
+    );
+};
+
+onMounted(() => {
+    window.addEventListener("update:cartItemCount", (event) => {
+        updateCartItems(event.detail.cartItems);
+    });
+
+    window.addEventListener("delete:cartItem", (event) => {
+        deleteCartItems(event.detail.deletedItemId);
+    });
+});
 
 /**
  * Retrieves the names of the toppings for a specific chart item.
@@ -101,17 +149,4 @@ const getToppingNameBasedChartItem = (chartItemId) => {
 
     return item.cake_topping.map((topping) => topping.name).join(", ");
 };
-
-onMounted(() => {
-    const updateCartItems = (event) => {
-        chartItems.value = event.detail;
-        console.log(chartItems.value);
-    };
-
-    window.addEventListener("cart-updated", updateCartItems);
-
-    onBeforeUnmount(() => {
-        window.removeEventListener("cart-updated", updateCartItems);
-    });
-});
 </script>

@@ -25,16 +25,18 @@ class ShoppingChartController extends Controller
 
 
 
+
     /**
-     * Adds an item to the shopping cart.
+     * Adds a new item to the shopping chart.
      *
-     * @param StoreShoppingChartRequest $request The request containing the item details.
-     * @return JsonResponse A JSON response containing the updated cart and item details.
+     * @param StoreShoppingChartRequest $request The request object containing the item details.
+     * @return JsonResponse The JSON response containing the added item details and a success message.
      */
     public function addChartItem(StoreShoppingChartRequest $request): JsonResponse
     {
 
         $cart = $this->addChart();
+
         $cartItem = ShoppingChartItem::create([
             'shopping_chart_id' => $cart->id,
             'cake_id' => $request['cake_id'],
@@ -42,6 +44,8 @@ class ShoppingChartController extends Controller
             'quantity' => $request['quantity'],
             'price' => $request['price'],
         ]);
+
+
 
         // Insert in pivot table ChartItemTopping
         if ($request->has('toppings') && is_array($request['toppings'])) {
@@ -59,8 +63,14 @@ class ShoppingChartController extends Controller
 
 
         return response()->json([
-            'cart' => $cart,
-            'cartItem' => $cartItemWithRelations,
+            'cartItem' => [
+                'cake_name' => $cartItemWithRelations->cake?->name,
+                'cake_image' => $cartItemWithRelations->cake?->image_url,
+                'cake_flavour_name' => $cartItemWithRelations->cakeFlavour?->name,
+                'cake_toppings' =>  $cartItemWithRelations->cakeTopping?->pluck('name'),
+            ],
+
+            'cartItems' => [$cartItemWithRelations],
             'message' => 'Item added to cart successfully!'
         ]);
     }
@@ -93,6 +103,25 @@ class ShoppingChartController extends Controller
 
         return response()->json([
             'cart' => $cartItem,
+        ]);
+    }
+
+
+    /**
+     * Deletes a shopping chart item and its associated toppings.
+     *
+     * @param ShoppingChartItem $shoppingChartItem The shopping chart item to delete.
+     *
+     * @return JsonResponse A JSON response with a success message.
+     */
+    public function deleteShoppingChartItem(ShoppingChartItem $shoppingChartItem): JsonResponse
+    {
+
+        ShoppingChartItemTopping::where('shopping_chart_item_id', '=', $shoppingChartItem->id)->delete();
+        $shoppingChartItem->delete();
+
+        return response()->json([
+            'message' => 'Cake successfully deleted!',
         ]);
     }
 }

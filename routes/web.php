@@ -1,18 +1,15 @@
 <?php
 
-use App\Models\User;
-use Inertia\Inertia;
-use App\Models\CakeSize;
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CakeController;
 use App\Http\Controllers\FlavourController;
+use App\Http\Controllers\ToppingController;
 use App\Http\Controllers\CakeSizeController;
-use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\FrontEndController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\FrontEndController;
 use App\Http\Controllers\ShoppingChartController;
-use App\Http\Controllers\ToppingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,8 +28,6 @@ Route::middleware(['auth'])->group(function () {
             Route::redirect('/', '/home');
             Route::get('/home', 'index')->name('home');
             Route::get('/home/products', 'products')->name('products');
-
-            Route::get('/search',  'search')->name('search');
         });
 
         Route::inertia('/checkout', 'CheckoutSection')->name('/checkout');
@@ -51,13 +46,13 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::get('/home/{cakeId}/detail-product', [FrontEndController::class, 'detailProduct'])->name('detail-product');
+    Route::inertia('/detail-chart', 'DetailShoppingChart')->name('/detail-chart');
+    Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
+
     Route::controller(ShoppingChartController::class)->group(function () {
         Route::post('/add-chart-item', 'addChartItem')->name('add-chart-item');
-        Route::get('/shopping-chart-item', 'getShoppingChartItems')->name('get-cart-item');
+        Route::delete('/shopping-chart-item/{shoppingChartItem}',  'deleteShoppingChartItem')->name('delete-cart-item');
     });
-    Route::inertia('/detail-chart', 'DetailShoppingChart')->name('/detail-chart');
-
-    Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 });
 
 

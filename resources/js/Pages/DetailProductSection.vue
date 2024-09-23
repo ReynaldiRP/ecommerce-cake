@@ -186,27 +186,24 @@ const isCakeCustomized = computed(() => {
 });
 
 /**
- * Adds an item to the chart by sending a POST request to the 'add-chart-item' route.
+ * Adds an item to the chart.
  *
- * @return {void}
+ * @return {Promise<void>} - A promise that resolves when the item is added to the chart.
  */
-const addItemToChart = () => {
+const addItemToChart = async () => {
     try {
-        axios
-            .post(route("add-chart-item"), form)
-            .then((result) => {
-                chartItem.value = result.data.cartItem;
-                succesMessage.value = result.data.message;
+        const response = await axios.post(route("add-chart-item"), form);
 
-                // window.dispatchEvent(
-                //     new CustomEvent("cart-updated", {
-                //         detail: result.data.cartItem,
-                //     })
-                // );
+        chartItem.value = response.data.cartItem;
+        succesMessage.value = response.data.message;
+
+        window.dispatchEvent(
+            new CustomEvent("update:cartItemCount", {
+                detail: {
+                    cartItems: response.data.cartItems,
+                },
             })
-            .catch((err) => {
-                console.error("Error adding item to cart:", err.response.data);
-            });
+        );
     } catch (error) {
         console.error("Request failed:", error);
     }
@@ -223,14 +220,6 @@ const submit = () => {
         addItemToChart();
         isSubmitting.value = false;
         isPreviewOpen.value = true;
-    }, 3000);
+    }, 2000);
 };
-
-const description = `Lorem, ipsum dolor sit amet consectetur
-    adipisicing elit. Sunt corporis numquam rem sequi consequuntur
-    inventore minus excepturi. Animi tempore dignissimos, delectus iusto nisi
-    eligendi vero inventore ex, sapiente expedita impedit. Lorem ipsum dolor sit amet
-    consectetur adipisicing elit. Laudantium, repellat optio mollitia iure,
-    dicta reiciendis, laborum quibusdam repellendus expedita cumque error
-    obcaecati dolorem architecto consequuntur ratione! Ipsum deserunt cupiditate beatae.`;
 </script>

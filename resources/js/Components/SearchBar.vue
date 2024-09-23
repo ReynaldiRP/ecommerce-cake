@@ -87,7 +87,9 @@ const resultsContainer = ref(null);
  * @return {void}
  */
 const fetchSearchResults = async (query) => {
-    const response = await fetch(`/search?search=${encodeURIComponent(query)}`);
+    const response = await fetch(
+        `api/search?search=${encodeURIComponent(query)}`
+    );
     const data = await response.json();
 
     results.value = data.searchResults || [];
