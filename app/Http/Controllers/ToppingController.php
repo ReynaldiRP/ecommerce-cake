@@ -46,7 +46,7 @@ class ToppingController extends Controller
 
         Topping::create($data);
 
-        return to_route('dashboard-topping')->with('success', 'The Topping has been successfully added');
+        return to_route('topping.index')->with('success', 'The Topping has been successfully added');
     }
 
     /**
@@ -91,7 +91,7 @@ class ToppingController extends Controller
 
         $dashboard_topping->update($data);
 
-        return to_route('dashboard-topping')->with('success', 'The Topping has been successfully updated');
+        return to_route('topping.index')->with('success', 'The Topping has been successfully updated');
     }
 
     /**
@@ -103,10 +103,12 @@ class ToppingController extends Controller
 
         $dashboard_topping->delete();
 
-        if (file_exists($imagePath)) {
-            unlink($imagePath);
+        if ($dashboard_topping->image_url) {
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
         }
 
-        return to_route('dashboard-topping')->with('success', 'The Topping has been deleted');
+        return to_route('topping.index')->with('success', 'The Topping has been deleted');
     }
 }

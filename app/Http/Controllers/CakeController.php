@@ -71,7 +71,7 @@ class CakeController extends Controller
 
         Cake::create($data);
 
-        return to_route('dashboard-cake')->with('success', 'The Cake has been successfully added');
+        return to_route('cake.index')->with('success', 'The Cake has been successfully added');
     }
 
 
@@ -84,7 +84,7 @@ class CakeController extends Controller
     public function edit(Cake $dashboard_cake): Response
     {
         $dashboard_cake = $dashboard_cake->load('cakeSize');
-        $cakeSize = CakeSize::all();
+        $cakeSize = CakeSize::orderBy('size', 'asc')->get();
 
         return Inertia::render('AdminDashboard/Cake/Edit', ['cakes' => $dashboard_cake, 'cakeSize' => $cakeSize]);
     }
@@ -122,7 +122,7 @@ class CakeController extends Controller
 
         $dashboard_cake->update($data);
 
-        return to_route('dashboard-cake')->with('success', 'The Cake has been successfully updated');
+        return to_route('cake.index')->with('success', 'The Cake has been successfully updated');
     }
 
 
@@ -143,6 +143,6 @@ class CakeController extends Controller
             }
         }
 
-        return to_route('dashboard-cake')->with('success', 'The Cake has been deleted');
+        return to_route('cake.index')->with('success', 'The Cake has been deleted');
     }
 }

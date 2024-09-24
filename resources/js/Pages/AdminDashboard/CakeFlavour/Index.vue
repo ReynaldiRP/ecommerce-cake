@@ -19,7 +19,7 @@
                     <h1 class="font-bold text-2xl">Flavour Table</h1>
                     <BaseButton
                         color="success"
-                        :href="route('dashboard-flavour.create')"
+                        :href="route('flavour.create')"
                         :icon="mdiPlus"
                         :icon-size="16"
                     />
@@ -72,10 +72,7 @@
                                 >
                                     <inertia-link
                                         :href="
-                                            route(
-                                                'dashboard-flavour.edit',
-                                                flavour.id
-                                            )
+                                            route('flavour.edit', flavour.id)
                                         "
                                         class="btn btn-info"
                                         >Edit</inertia-link
@@ -172,7 +169,7 @@ const deleteHandler = (flavourId) => {
     setTimeout(() => {
         isLoading.value = false;
 
-        form.delete(route("dashboard-flavour.destroy", flavourId));
+        form.delete(route("flavour.destroy", flavourId));
     }, 3000);
 };
 </script>

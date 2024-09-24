@@ -19,7 +19,7 @@
                     <h1 class="font-bold text-2xl">Cakes Table</h1>
                     <BaseButton
                         color="success"
-                        :href="route('dashboard-cake.create')"
+                        :href="route('cake.create')"
                         :icon="mdiPlus"
                         :icon-size="16"
                     />
@@ -91,7 +91,7 @@
                                 >
                                     <inertia-link
                                         :href="
-                                            route('dashboard-cake.edit', {
+                                            route('cake.edit', {
                                                 dashboard_cake: cakes.id,
                                             })
                                         "
@@ -108,7 +108,7 @@
                                         v-model="modalActive"
                                         class="backdrop-contrast-50"
                                         title="Cakes"
-                                        button="info"
+                                        button="danger"
                                         button-label="Confirm"
                                         :click-handler="
                                             () => deleteHandler(cakes.id)
@@ -184,11 +184,9 @@ const deleteHandler = (cakeId) => {
     setTimeout(() => {
         isLoading.value = false;
 
-        form.delete(route("dashboard-cake.destroy", cakeId));
+        form.delete(route("cake.destroy", cakeId));
     }, 3000);
 };
-
-console.log(props.cakes.data);
 
 /**
  * Truncates a given description to a maximum length of 30 characters.

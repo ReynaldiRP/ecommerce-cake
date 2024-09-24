@@ -32,17 +32,20 @@ Route::middleware(['auth'])->group(function () {
 
         Route::inertia('/checkout', 'CheckoutSection')->name('/checkout');
         Route::inertia('/order', 'OrderStatusSection')->name('/order');
+    });
 
-
-        Route::inertia('/dashboard-home', 'AdminDashboard/HomeSection')->name('dashboard-home');
-        Route::resource('/dashboard-cake', CakeController::class)
-            ->name('index', 'dashboard-cake')->except('show');
-        Route::resource('/dashboard-flavour', FlavourController::class)
-            ->name('index', 'dashboard-flavour')->except('show');
-        Route::resource('/dashboard-size', CakeSizeController::class)
-            ->name('index', 'dashboard-size')->except('show');
-        Route::resource('/dashboard-topping', ToppingController::class)
-            ->name('index', 'dashboard-topping')->except('show');
+    Route::middleware(['admin'])->group(function () {
+        Route::prefix('admin/dashboard')->group(function () {
+            Route::inertia('/home', 'AdminDashboard/HomeSection')->name('dashboard-home');
+            Route::resource('/cake', CakeController::class)->parameter('cake', 'dashboard_cake')
+                ->except('show');
+            Route::resource('/flavour', FlavourController::class)->parameter('flavour', 'dashboard_flavour')
+                ->except('show');
+            Route::resource('/size', CakeSizeController::class)->parameter('size', 'dashboard_size')
+                ->except('show');
+            Route::resource('/topping', ToppingController::class)->parameter('topping', 'dashboard_topping')
+                ->except('show');
+        });
     });
 
     Route::get('/home/{cakeId}/detail-product', [FrontEndController::class, 'detailProduct'])->name('detail-product');

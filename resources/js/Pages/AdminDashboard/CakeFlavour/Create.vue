@@ -11,13 +11,12 @@
                 <div class="breadcrumbs text-sm">
                     <ul>
                         <li>
-                            <inertia-link :href="route('dashboard-flavour')"
+                            <inertia-link :href="route('flavour.index')"
                                 >Flavour</inertia-link
                             >
                         </li>
                         <li>
-                            <inertia-link
-                                :href="route('dashboard-flavour.create')"
+                            <inertia-link :href="route('flavour.create')"
                                 >Create</inertia-link
                             >
                         </li>
@@ -59,7 +58,7 @@
                     >
                         {{ props.errors.price }}
                     </NotificationBar>
-                    <FormField label="Cake Image">
+                    <FormField label="Flavour Image">
                         <FormControl
                             v-model="form.image_url"
                             :icon="mdiImageArea"
@@ -116,7 +115,7 @@ const submit = () => {
     isLoading.value = true;
     setTimeout(() => {
         isLoading.value = false;
-        form.post("/dashboard-flavour");
+        form.post(route("flavour.store"));
     }, 3000);
 };
 </script>

@@ -19,7 +19,7 @@
                     <h1 class="font-bold text-2xl">Topping Table</h1>
                     <BaseButton
                         color="success"
-                        :href="route('dashboard-topping.create')"
+                        :href="route('topping.create')"
                         :icon="mdiPlus"
                         :icon-size="16"
                     />
@@ -72,10 +72,7 @@
                                 >
                                     <inertia-link
                                         :href="
-                                            route(
-                                                'dashboard-topping.edit',
-                                                topping.id
-                                            )
+                                            route('topping.edit', topping.id)
                                         "
                                         class="btn btn-info"
                                         >Edit</inertia-link
@@ -171,7 +168,7 @@ const deleteHandler = (toppingId) => {
     setTimeout(() => {
         isLoading.value = false;
 
-        form.delete(route("dashboard-topping.destroy", toppingId));
+        form.delete(route("topping.destroy", toppingId));
     }, 3000);
 };
 </script>

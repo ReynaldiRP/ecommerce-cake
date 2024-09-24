@@ -11,7 +11,7 @@
                 <div class="breadcrumbs text-sm">
                     <ul>
                         <li>
-                            <inertia-link :href="route('dashboard-size')"
+                            <inertia-link :href="route('size.index')"
                                 >Cake Size</inertia-link
                             >
                         </li>
@@ -106,7 +106,12 @@ const submit = () => {
     isLoading.value = true;
     setTimeout(() => {
         isLoading.value = false;
-        form.put(`/dashboard-size/${form.id}`);
+        form.put(route("size.update", form.id), {
+            _method: "put",
+            id: form.id,
+            size: form.size,
+            price: form.price,
+        });
     }, 3000);
 };
 </script>

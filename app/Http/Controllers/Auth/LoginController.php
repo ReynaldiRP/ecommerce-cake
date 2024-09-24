@@ -38,7 +38,12 @@ class LoginController extends Controller
 
         if (Auth::attempt($credential)) {
             $request->session()->regenerate();
-            return redirect('/');
+
+            if (Auth::user()->role_id == 2) {
+                return redirect()->route('dashboard-home');
+            }
+
+            return redirect()->route('home');
         }
 
         $user = User::where('email', $credential['email'])->first();

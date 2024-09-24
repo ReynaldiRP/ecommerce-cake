@@ -11,7 +11,7 @@
                 <div class="breadcrumbs text-sm">
                     <ul>
                         <li>
-                            <inertia-link :href="route('dashboard-topping')"
+                            <inertia-link :href="route('topping.index')"
                                 >Topping</inertia-link
                             >
                         </li>
@@ -125,14 +125,13 @@ const submit = () => {
     isLoading.value = true;
     setTimeout(() => {
         isLoading.value = false;
-        Inertia.post(`/dashboard-topping/${form.id}`, {
+        Inertia.post(route("topping.update", form.id), {
             _method: "put",
             id: form.id,
             name: form.name,
             price: form.price,
             image_url: form.image_url,
         });
-        console.log(form);
     }, 3000);
 };
 </script>

@@ -11,12 +11,12 @@
                 <div class="breadcrumbs text-sm">
                     <ul>
                         <li>
-                            <inertia-link :href="route('dashboard-size')"
+                            <inertia-link :href="route('size.index')"
                                 >Cake Size</inertia-link
                             >
                         </li>
                         <li>
-                            <inertia-link :href="route('dashboard-size.create')"
+                            <inertia-link :href="route('size.create')"
                                 >Create</inertia-link
                             >
                         </li>
@@ -99,7 +99,7 @@ const submit = () => {
     isLoading.value = true;
     setTimeout(() => {
         isLoading.value = false;
-        form.post("/dashboard-size");
+        form.post(route("size.store"));
     }, 3000);
 };
 </script>

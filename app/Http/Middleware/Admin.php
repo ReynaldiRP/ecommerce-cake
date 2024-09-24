@@ -15,10 +15,18 @@ class Admin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->user()->role_id == 1) {
-            return $next($request);
+        // Check if the user is an admin
+        if ($request->user()->role_id == 2) {
+            // If the request is already on the admin dashboard, allow it to proceed
+            if ($request->routeIs('dashboard-home')) {
+                return $next($request);
+            }
+
+            // If not already on the dashboard, redirect to the admin dashboard
+            return redirect()->route('dashboard-home');
         }
 
-        abort(403);
+        // If the user is not an admin, redirect them to the homepage
+        return redirect()->route('home');
     }
 }

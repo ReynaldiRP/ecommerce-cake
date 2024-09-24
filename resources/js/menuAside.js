@@ -11,19 +11,19 @@ export default [
         icon: mdiViewList,
         menu: [
             {
-                route: "dashboard-cake",
+                route: "cake.index",
                 label: "Cake",
             },
             {
-                route: "dashboard-size",
+                route: "size.index",
                 label: "Cake Size",
             },
             {
-                route: "dashboard-flavour",
+                route: "flavour.index",
                 label: "Cake Flavour",
             },
             {
-                route: "dashboard-topping",
+                route: "topping.index",
                 label: "Cake Topping",
             },
         ],

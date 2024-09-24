@@ -11,13 +11,12 @@
                 <div class="breadcrumbs text-sm">
                     <ul>
                         <li>
-                            <inertia-link :href="route('dashboard-topping')"
+                            <inertia-link :href="route('topping.index')"
                                 >Topping</inertia-link
                             >
                         </li>
                         <li>
-                            <inertia-link
-                                :href="route('dashboard-topping.create')"
+                            <inertia-link :href="route('topping.create')"
                                 >Create</inertia-link
                             >
                         </li>
@@ -116,7 +115,7 @@ const submit = () => {
     isLoading.value = true;
     setTimeout(() => {
         isLoading.value = false;
-        form.post("/dashboard-topping");
+        form.post(route("topping.store"));
     }, 3000);
 };
 </script>

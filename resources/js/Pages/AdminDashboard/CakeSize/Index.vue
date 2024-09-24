@@ -13,7 +13,7 @@
                     <h1 class="font-bold text-2xl">Cake Size Table</h1>
                     <BaseButton
                         color="success"
-                        :href="route('dashboard-size.create')"
+                        :href="route('size.create')"
                         :icon="mdiPlus"
                         :icon-size="16"
                     />
@@ -52,12 +52,7 @@
                                     class="flex lg:justify-start justify-end gap-2"
                                 >
                                     <inertia-link
-                                        :href="
-                                            route(
-                                                'dashboard-size.edit',
-                                                cakeSize.id
-                                            )
-                                        "
+                                        :href="route('size.edit', cakeSize.id)"
                                         class="btn btn-info"
                                         >Edit</inertia-link
                                     >
@@ -141,7 +136,7 @@ const deleteHandler = (cakeSizeId) => {
     setTimeout(() => {
         isLoading.value = false;
 
-        form.delete(route("dashboard-size.destroy", cakeSizeId));
+        form.delete(route("size.destroy", cakeSizeId));
     }, 3000);
 };
 </script>

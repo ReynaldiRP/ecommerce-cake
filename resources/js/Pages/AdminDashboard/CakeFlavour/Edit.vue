@@ -11,7 +11,7 @@
                 <div class="breadcrumbs text-sm">
                     <ul>
                         <li>
-                            <inertia-link :href="route('dashboard-flavour')"
+                            <inertia-link :href="route('flavour.index')"
                                 >Flavour</inertia-link
                             >
                         </li>
@@ -125,7 +125,7 @@ const submit = () => {
     isLoading.value = true;
     setTimeout(() => {
         isLoading.value = false;
-        Inertia.post(`/dashboard-flavour/${form.id}`, {
+        Inertia.post(route("flavour.update", form.id), {
             _method: "put",
             id: form.id,
             name: form.name,
