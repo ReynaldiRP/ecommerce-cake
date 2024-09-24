@@ -22,7 +22,7 @@
                 >
                     <div class="h-full px-3 py-5 bg-neutral rounded-t-lg">
                         <BaseCheckbox
-                            label="Choose All"
+                            :label="`Choose All (${chartItems.length})`"
                             text-color="white"
                             v-model="selectAllItem"
                             @change="isSelectedAll"
@@ -155,12 +155,25 @@
                             <p>Total</p>
                             <p>{{ formatPrice(totalPrice) }}</p>
                         </div>
-                        <inertia-link
-                            :href="route('/checkout')"
-                            class="btn btn-block mt-auto text-black bg-primary-color hover:bg-primary-color hover:opacity-65 hover:text-slate-500 border-none"
+                        <component
+                            :is="chartItems.length <= 0 ? 'div' : 'button'"
+                            :class="
+                                chartItems.length <= 0
+                                    ? 'bg-gray-400 hover:bg-gray-400 cursor-not-allowed'
+                                    : 'bg-primary-color hover:bg-primary-color hover:opacity-65 hover:text-slate-500 border-none'
+                            "
+                            @click.prevent="
+                                chartItems.length <= 0
+                                    ? (e) => e.preventDefault
+                                    : $inertia.visit(route('/checkout'))
+                            "
+                            class="btn btn-block mt-auto text-black"
                         >
                             Checkout
-                        </inertia-link>
+                            <span v-show="totalSelectedCake > 0">
+                                ({{ totalSelectedCake }})
+                            </span>
+                        </component>
                     </section>
                 </section>
             </section>
@@ -173,7 +186,7 @@ import App from "@/Layouts/App.vue";
 import BaseCheckbox from "@/Components/BaseCheckbox.vue";
 import BaseAlert from "@/Components/BaseAlert.vue";
 import EmptyDetailShoppingChart from "@/Components/EmptyDetailShoppingChart.vue";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import axios from "axios";
 
@@ -182,6 +195,9 @@ const page = usePage();
 const chartItems = ref(
     page.props.value.shoppingChartItems?.original.cart ?? []
 );
+
+console.log(chartItems.value.length);
+
 const selectAllItem = ref(false);
 const selectCake = ref({});
 const totalPrice = ref(0);
@@ -208,6 +224,15 @@ const updateTotalPrice = () => {
     // If not all are selected, uncheck "Select All"
     selectAllItem.value = allSelected;
 };
+
+/**
+ * A computed property that returns the total number of selected cakes in the chart.
+ *
+ * @returns {number} The total count of selected cakes.
+ */
+const totalSelectedCake = computed(() => {
+    return chartItems.value.filter((item) => selectCake.value[item.id]).length;
+});
 
 /**
  * Selects or deselects all items in the shopping chart based on the selectAllItem value.

@@ -45,7 +45,7 @@
                     class="flex justify-between items-center gap-2 bg-neutral rounded-lg shadow-xl"
                     v-for="(items, index) in chartItems"
                     :key="index"
-                    :href="`#`"
+                    :href="route('detail-product', items.cake?.id)"
                 >
                     <div class="flex items-center gap-2">
                         <div class="avatar">
