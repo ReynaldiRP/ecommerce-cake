@@ -4,7 +4,7 @@
             class="btn btn-block text-base-300 hover:text-white bg-primary-color"
             :type="type"
         >
-            <span v-show="!isSubmitting">Add to Chart</span>
+            <p v-show="!isSubmitting" class="font-bold">+ Add to Chart</p>
             <span
                 v-show="isSubmitting"
                 class="loading loading-spinner loading-md"

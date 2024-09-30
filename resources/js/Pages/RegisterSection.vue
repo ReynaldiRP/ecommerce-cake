@@ -24,16 +24,16 @@
                 <h1 class="text-primary-color font-bold text-3xl">Register</h1>
             </div>
             <form @submit.prevent="submit" class="flex flex-col gap-3">
-                <BaseAlert v-if="errors.email" type="error">{{
+                <BaseAlert v-if="errors.email" type="alert-error">{{
                     errors.email
                 }}</BaseAlert>
-                <BaseAlert v-else-if="errors.password" type="error">{{
+                <BaseAlert v-else-if="errors.password" type="alert-error">{{
                     errors.password
                 }}</BaseAlert>
-                <BaseAlert v-else-if="errors.username" type="error">{{
+                <BaseAlert v-else-if="errors.username" type="alert-error">{{
                     errors.username
                 }}</BaseAlert>
-                <BaseAlert v-else-if="errors.address" type="error">{{
+                <BaseAlert v-else-if="errors.address" type="alert-error">{{
                     errors.address
                 }}</BaseAlert>
                 <div class="flex flex-col gap-2">

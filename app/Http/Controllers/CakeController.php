@@ -57,7 +57,6 @@ class CakeController extends Controller
 
         $data = $request->validated();
 
-
         if ($request->hasFile('image_url')) {
 
             $filename =  time() . '.' . $request->file('image_url')->getClientOriginalExtension();

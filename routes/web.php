@@ -30,7 +30,6 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/home/products', 'products')->name('products');
         });
 
-        Route::inertia('/checkout', 'CheckoutSection')->name('/checkout');
         Route::inertia('/order', 'OrderStatusSection')->name('/order');
     });
 
@@ -48,7 +47,12 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
-    Route::get('/home/{cakeId}/detail-product', [FrontEndController::class, 'detailProduct'])->name('detail-product');
+    Route::controller(FrontEndController::class)->group(function () {
+        Route::get('/home/{cakeId}/detail-product', 'detailProduct')->name('detail-product');
+        Route::get('/home/detail-chart/checkout', 'checkout')->name('checkout',);
+    });
+
+
     Route::inertia('/detail-chart', 'DetailShoppingChart')->name('/detail-chart');
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 

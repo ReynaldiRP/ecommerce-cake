@@ -1,7 +1,7 @@
 <template>
     <App>
         <section class="min-h-screen flex flex-col justify-center">
-            <div
+            <aside
                 class="breadcrumbs text-sm me-auto relative top-32 lg:top-[88px] left-8"
             >
                 <ul>
@@ -14,17 +14,17 @@
                         >
                     </li>
                 </ul>
-            </div>
+            </aside>
             <section
                 class="w-full grid grid-cols-12 px-8 sm:px-4 place-items-center lg:place-items-start"
             >
                 <section
                     class="h-fit w-full lg:w-fit col-span-full sm:col-span-5 md:col-span-4 lg:col-span-3 flex flex-col justify-start mb-auto gap-2 px-2 pb-10 pt-36 sm:py-36 lg:py-24"
                 >
-                    <div
+                    <section
                         class="w-full px-4 lg:px-0 flex items-center gap-2 relative sm:right-4 lg:right-0 lg:left-4"
                     >
-                        <div
+                        <article
                             class="lg:hidden collapse collapse-arrow bg-base-300"
                         >
                             <input type="checkbox" />
@@ -82,11 +82,11 @@
                                     </button>
                                 </div>
                             </div>
-                        </div>
+                        </article>
                         <h1 class="hidden lg:block text-lg font-medium me-auto">
                             Filter
                         </h1>
-                    </div>
+                    </section>
 
                     <FilterLayout class="hidden lg:flex">
                         <FilterItem filtering-name="Personalization">

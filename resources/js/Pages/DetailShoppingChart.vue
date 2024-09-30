@@ -162,10 +162,15 @@
                                     ? 'bg-gray-400 hover:bg-gray-400 cursor-not-allowed'
                                     : 'bg-primary-color hover:bg-primary-color hover:opacity-65 hover:text-slate-500 border-none'
                             "
-                            @click.prevent="
+                            @click="
                                 chartItems.length <= 0
-                                    ? (e) => e.preventDefault
-                                    : $inertia.visit(route('/checkout'))
+                                    ? (e) => e.preventDefault()
+                                    : checkoutItems(
+                                          chartItems.map(
+                                              (item) => selectCake[item.id]
+                                          ),
+                                          e
+                                      )
                             "
                             class="btn btn-block mt-auto text-black"
                         >
@@ -189,14 +194,13 @@ import EmptyDetailShoppingChart from "@/Components/EmptyDetailShoppingChart.vue"
 import { ref, computed } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import axios from "axios";
+import { Inertia } from "@inertiajs/inertia";
 
 const page = usePage();
 
 const chartItems = ref(
     page.props.value.shoppingChartItems?.original.cart ?? []
 );
-
-console.log(chartItems.value.length);
 
 const selectAllItem = ref(false);
 const selectCake = ref({});
@@ -306,6 +310,44 @@ const deleteItem = async (id) => {
         setTimeout(() => {
             showAlert.value = false;
         }, 2000);
+    }
+};
+
+
+
+/**
+ * Initiates the checkout process by populating the shoppingChartItemsIds array with selected item IDs and redirecting to the checkout route.
+ *
+ * @param {array} shoppingChartItemsIds - The array to store the IDs of selected items.
+ * @param {event} e - The event object, used to prevent default behavior if provided.
+ * @return {void|event} Prevents default event behavior if e is provided, otherwise returns nothing.
+ */
+const checkoutItems = (shoppingChartItemsIds = [], e) => {
+    // Clear the shoppingChartItemsIds array before adding items
+    shoppingChartItemsIds.length = 0;
+
+    // Populate the array with selected item IDs
+    chartItems.value.forEach((item) => {
+        if (selectCake.value[item.id]) {
+            shoppingChartItemsIds.push(item.id);
+        }
+    });
+
+    if (totalSelectedCake.value > 0) {
+        console.log("Items Not Empty");
+        try {
+            Inertia.get(
+                route("checkout", {
+                    selectCake: shoppingChartItemsIds,
+                })
+            );
+        } catch (error) {
+            console.error("Error checking out items:", error);
+        }
+    }
+
+    if (e) {
+        return e.preventDefault();
     }
 };
 </script>

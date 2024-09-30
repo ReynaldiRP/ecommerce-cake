@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cake;
 use App\Models\CakeSize;
 use App\Models\Flavour;
+use App\Models\ShoppingChartItem;
 use App\Models\Topping;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -117,5 +118,26 @@ class FrontEndController extends Controller
             'topping' => $topping,
             'flavour' => $flavour
         ]);
+    }
+
+
+
+    /**
+     * Checkout the selected shopping chart items.
+     *
+     * @param Request $request The incoming HTTP request containing shopping chart item IDs.
+     * @return Response The rendered checkout section with the selected shopping chart items.
+     */
+    public function checkout(Request $request): Response
+    {
+        // Get the array of shoppingChartItemId from the query parameters
+        $shoppingChartItemIds = $request->input('selectCake', []);
+
+        // Fetch chart items by the given array of IDs
+        $chartItems = ShoppingChartItem::with('cart', 'cake', 'cake.cakeSize', 'cakeFlavour', 'cakeTopping')
+            ->whereIn('id', $shoppingChartItemIds)
+            ->get();
+
+        return Inertia::render('CheckoutSection', ['chartItems' => $chartItems]);
     }
 }

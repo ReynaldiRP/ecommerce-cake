@@ -4,7 +4,7 @@
             class="min-h-screen w-full grid grid-cols-1 lg:grid-cols-2 gap-2 place-items-center pt-28 lg:py-0"
         >
             <section class="flex flex-col gap-10">
-                <div
+                <aside
                     class="breadcrumbs text-sm me-auto relative"
                     :class="
                         props.cake?.personalization_type == 'customized'
@@ -27,7 +27,7 @@
                             <inertia-link>Detail Product</inertia-link>
                         </li>
                     </ul>
-                </div>
+                </aside>
                 <ProductImage
                     :class="
                         props.cake?.personalization_type == 'customized'

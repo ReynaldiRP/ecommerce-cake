@@ -22,8 +22,6 @@ class StoreCakeRequest extends FormRequest
      */
     public function rules(): array
     {
-
-
         return [
             'cake_size_id' => 'nullable',
             'name' => 'required|regex:/^[a-zA-Z\s\-]+$/|min:3|max:255',
