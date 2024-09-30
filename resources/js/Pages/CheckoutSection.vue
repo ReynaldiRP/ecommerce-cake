@@ -77,7 +77,12 @@
                         </div>
                         <div class="px-2 text-xl font-bold text-white/70">
                             <div class="flex justify-between">
-                                <h1>Subtotal</h1>
+                                <h1 class="flex items-center gap-2">
+                                    Subtotal
+                                    <small class="text-sm font-light"
+                                        >(Cake Price x Quantity)</small
+                                    >
+                                </h1>
                                 <h1>
                                     {{ formatPrice(getItemSubtotal(item)) }}
                                 </h1>

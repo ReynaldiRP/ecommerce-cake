@@ -174,8 +174,14 @@
                             "
                             class="btn btn-block mt-auto text-black"
                         >
-                            Checkout
-                            <span v-show="totalSelectedCake > 0">
+                            <span v-show="!isSubmitting"> Checkout </span>
+                            <span
+                                v-show="isSubmitting"
+                                class="loading loading-spinner loading-md"
+                            ></span>
+                            <span
+                                v-show="totalSelectedCake > 0 && !isSubmitting"
+                            >
                                 ({{ totalSelectedCake }})
                             </span>
                         </component>
@@ -207,6 +213,7 @@ const selectCake = ref({});
 const totalPrice = ref(0);
 const showAlert = ref(false);
 const messageDelete = ref("");
+const isSubmitting = ref(false);
 
 /**
  * Updates the total price of the selected cakes in the shopping chart.
@@ -313,8 +320,6 @@ const deleteItem = async (id) => {
     }
 };
 
-
-
 /**
  * Initiates the checkout process by populating the shoppingChartItemsIds array with selected item IDs and redirecting to the checkout route.
  *
@@ -334,13 +339,16 @@ const checkoutItems = (shoppingChartItemsIds = [], e) => {
     });
 
     if (totalSelectedCake.value > 0) {
-        console.log("Items Not Empty");
         try {
-            Inertia.get(
-                route("checkout", {
-                    selectCake: shoppingChartItemsIds,
-                })
-            );
+            isSubmitting.value = true;
+            setTimeout(function () {
+                Inertia.get(
+                    route("checkout", {
+                        selectCake: shoppingChartItemsIds,
+                    })
+                );
+                isSubmitting.value = false;
+            }, 2000);
         } catch (error) {
             console.error("Error checking out items:", error);
         }

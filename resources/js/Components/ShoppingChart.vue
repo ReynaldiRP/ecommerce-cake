@@ -33,7 +33,7 @@
                         <span class="font-light">({{ chartItemsLength }})</span>
                     </h3>
                     <inertia-link
-                        :href="route('/detail-chart')"
+                        :href="route('detail-chart')"
                         class="text-lg text-primary-color font-bold"
                     >
                         View

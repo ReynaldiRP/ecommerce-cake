@@ -55,7 +55,7 @@
                             Continue Shopping
                         </inertia-link>
                         <inertia-link
-                            :href="route('/detail-chart')"
+                            :href="route('detail-chart')"
                             class="btn btn-md text-black bg-primary-color hover:bg-base-300 hover:text-white"
                         >
                             See Chart

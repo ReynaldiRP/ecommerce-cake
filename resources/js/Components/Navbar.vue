@@ -25,7 +25,7 @@
         <div class="navbar-end flex gap-5">
             <section class="flex justify-center items-center gap-2">
                 <ShoppingChart />
-                <NotificationUser :link="route('/order')" />
+                <NotificationUser :link="route('order.status')" />
             </section>
 
             <!-- <div
@@ -118,7 +118,7 @@ const menu = [
     },
     {
         name: "Order",
-        link: route("/order"),
+        link: route("order.status"),
     },
 ];
 
