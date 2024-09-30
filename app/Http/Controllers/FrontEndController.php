@@ -42,7 +42,6 @@ class FrontEndController extends Controller
         $cakes = Cake::with('cakeSize')
             ->where('name', 'like', "%{$query}%");
 
-
         if (!$cakes) {
             $cakes = [];
         }

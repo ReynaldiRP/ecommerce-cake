@@ -65,6 +65,7 @@
 import { ref, watch, computed, onMounted, onBeforeUnmount } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { debounce } from "lodash";
+import axios from "axios";
 
 const page = usePage();
 
@@ -87,12 +88,14 @@ const resultsContainer = ref(null);
  * @return {void}
  */
 const fetchSearchResults = async (query) => {
-    const response = await fetch(
-        `api/search?search=${encodeURIComponent(query)}`
-    );
-    const data = await response.json();
+    const response = await axios.get(route("search"), {
+        params: { search: query },
+    });
 
-    results.value = data.searchResults || [];
+    console.log(response.data);
+    console.log(query);
+
+    results.value = response.data.searchResults || [];
 };
 
 /**

@@ -6,7 +6,9 @@
             <h1 class="text-4xl font-bold text-center xl:text-start">
                 Your Orders
             </h1>
-            <section class="flex justify-center xl:justify-between gap-4">
+            <section
+                class="flex flex-col-reverse lg:flex-row justify-center xl:justify-between gap-4"
+            >
                 <section class="flex flex-col gap-4">
                     <section
                         class="h-fit w-[700px] flex flex-col gap-6 p-4 border rounded-lg bg-neutral"
@@ -137,9 +139,17 @@
                                 style="width: 100%"
                                 placeholder="User Address"
                                 input-type="address"
-                                :error="error.address"
-                                :error-message="errorMessage.address"
-                                @change="onChangeAddress"
+                                @keyup="getSearchResultAdress"
+                                :input-class="
+                                    showSeachAddress
+                                        ? 'rounded-t-lg rounded-b-none'
+                                        : 'rounded-lg'
+                                "
+                            />
+                            <PreviewSearchAddress
+                                v-if="showSeachAddress"
+                                :results="searchResults"
+                                :selectAddress="selectedAddress"
                             />
                         </div>
                         <div class="flex flex-col gap-2">
@@ -169,12 +179,64 @@
 import App from "@/Layouts/App.vue";
 import BaseInput from "@/Components/BaseInput.vue";
 import BaseLabel from "@/Components/BaseLabel.vue";
+import PreviewSearchAddress from "@/Components/PreviewSearchAddress.vue";
+
 import { useForm } from "@inertiajs/inertia-vue3";
-import { reactive, computed } from "vue";
+import { ref, reactive, computed } from "vue";
+import axios from "axios";
+import { debounce } from "lodash";
 
 const props = defineProps({
     chartItems: Array,
 });
+
+const showResults = ref(false);
+const searchResults = ref([]);
+
+const showSeachAddress = computed(() => {
+    return showResults.value && form.address.length > 0;
+});
+
+/**
+ * Fetches search results based on the user's input address and updates the searchResults and showResults variables.
+ *
+ * @return {Promise<void>} - A Promise that resolves when the search results are fetched and the variables are updated.
+ */
+const onKeyUpAddress = async (query) => {
+    try {
+        const config = {
+            method: "get",
+            url: `https://api.geoapify.com/v1/geocode/autocomplete?text=${query}&apiKey=8f6a39785d72465ab4ea84a0870970ef`,
+            headers: {},
+        };
+
+        const response = await axios(config);
+
+        searchResults.value = response.data.features;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const debounceSearchAddress = debounce((query) => {
+    onKeyUpAddress(query);
+}, 500);
+
+const getSearchResultAdress = () => {
+    debounceSearchAddress(form.address);
+    showResults.value = true;
+};
+
+const selectedAddress = (address) => {
+    // First set the address
+    form.address = address;
+
+    // Then hide the search results
+    showResults.value = false;
+
+    // This should now log 'false' after the selection
+    console.log(showSeachAddress.value);
+};
 
 /**
  * Formats a given price into a currency string using the Indonesian Rupiah currency format.
@@ -226,14 +288,12 @@ const getToppingPriceBasedOnChartitems = (item) => {
 // State for error in client side
 const error = reactive({
     email: false,
-    address: false,
     username: false,
 });
 
 // State for error message in client side
 const errorMessage = reactive({
     email: "",
-    address: "",
     username: "",
 });
 
@@ -248,8 +308,6 @@ const errorMessageRegex = {
     username:
         "Username can only include letters, numbers, dots, underscores, and hyphens.",
     email: "Please enter a valid email address.",
-    address:
-        "Address can only include letters, numbers, spaces, commas, periods, and hyphens.",
 };
 
 // Valdation for email and password in client side
@@ -260,10 +318,6 @@ const validations = {
     },
     username: {
         regex: /^[a-zA-Z0-9._-]{1,}$/,
-        minLength: 1,
-    },
-    email: {
-        regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
         minLength: 1,
     },
 };
@@ -298,9 +352,5 @@ const onChangeEmail = () => {
 
 const onChangeUsername = () => {
     validate(form.username, "username");
-};
-
-const onChangeAddress = () => {
-    validate(form.address, "address");
 };
 </script>

@@ -2,10 +2,11 @@
     <div class="flex flex-col">
         <label
             class="input input-bordered flex items-center gap-2"
-            :class="{
-                'justify-between': inputType === `password`,
-                'border border-error mb-3': error,
-            }"
+            :class="[
+                { 'justify-between': inputType === 'password' },
+                { 'border border-error mb-3': error },
+                inputClass,
+            ]"
         >
             <div class="w-full flex items-center gap-2">
                 <component :is="icon"></component>
@@ -68,6 +69,10 @@ const props = defineProps({
     },
     showPasswordToggle: {
         type: Function,
+    },
+    inputClass: {
+        type: String,
+        default: null,
     },
 });
 
