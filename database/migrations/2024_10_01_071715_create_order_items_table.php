@@ -13,6 +13,23 @@ return new class extends Migration
     {
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('order_id')->constrained(
+                table: 'orders',
+                column: 'id',
+                indexName: 'order_items_order_id'
+            )->onDelete('cascade');
+            $table->foreignId('cake_id')->constrained(
+                table: 'cakes',
+                column: 'id',
+                indexName: 'order_items_cake_id'
+            )->onDelete('cascade');
+            $table->foreignId('cake_flavour_id')->nullable()->constrained(
+                table: 'cake_flavours',
+                column: 'id',
+                indexName: 'order_items_cake_flavour_id'
+            )->onDelete('cascade');
+            $table->integer('quantity');
+            $table->double('price');
             $table->timestamps();
         });
     }
