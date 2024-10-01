@@ -18,6 +18,7 @@ return new class extends Migration
                 column: 'id',
                 indexName: 'order_user_id'
             )->onDelete('cascade');
+            $table->uuid('order_code');
             $table->double('total_price');
             $table->string('status', 255);
             $table->timestamps();
