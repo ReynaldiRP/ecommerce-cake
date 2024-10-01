@@ -15,9 +15,9 @@
                         v-for="(item, index) in chartItems"
                         :key="index"
                     >
-                        <div class="flex items-center justify-between">
-                            <div class="flex gap-3">
-                                <div
+                        <section class="flex items-center justify-between">
+                            <section class="flex gap-3">
+                                <figure
                                     class="avatar rounded-lg outline outline-neutral shadow-lg"
                                 >
                                     <div class="w-20 rounded">
@@ -29,12 +29,12 @@
                                             alt="Tailwind-CSS-Avatar-component"
                                         />
                                     </div>
-                                </div>
-                                <div class="flex flex-col justify-center">
+                                </figure>
+                                <section class="flex flex-col justify-center">
                                     <h1 class="text-xl text-white">
                                         {{ item.cake.name }}
                                     </h1>
-                                    <div class="flex gap-2 text-white">
+                                    <article class="flex gap-2 text-white">
                                         <p class="text-base text-opacity-75">
                                             {{ item.cake_flavour?.name }}
                                         </p>
@@ -52,14 +52,14 @@
                                                 )
                                             }}
                                         </p>
-                                    </div>
-                                </div>
-                            </div>
+                                    </article>
+                                </section>
+                            </section>
                             <div class="flex flex-col gap-3 text-white">
                                 <h1 class="text-xl font-bold">
                                     {{ formatPrice(item.price) }}
                                 </h1>
-                                <div class="join">
+                                <article class="join">
                                     <button
                                         class="btn btn-outline border-white shadow-lg join-item"
                                     >
@@ -74,11 +74,11 @@
                                     >
                                         +
                                     </button>
-                                </div>
+                                </article>
                             </div>
-                        </div>
-                        <div class="px-2 text-xl font-bold text-white/70">
-                            <div class="flex justify-between">
+                        </section>
+                        <section class="px-2 text-xl font-bold text-white/70">
+                            <article class="flex justify-between">
                                 <h1 class="flex items-center gap-2">
                                     Subtotal
                                     <small class="text-sm font-light"
@@ -88,14 +88,14 @@
                                 <h1>
                                     {{ formatPrice(getItemSubtotal(item)) }}
                                 </h1>
-                            </div>
-                            <div class="flex justify-between">
+                            </article>
+                            <article class="flex justify-between">
                                 <h1>Flavour</h1>
                                 <h1>
                                     {{ formatPrice(item.cake_flavour?.price) }}
                                 </h1>
-                            </div>
-                            <div class="flex justify-between">
+                            </article>
+                            <article class="flex justify-between">
                                 <h1>Toppings</h1>
                                 <h1>
                                     {{
@@ -106,14 +106,14 @@
                                         )
                                     }}
                                 </h1>
-                            </div>
-                            <div
+                            </article>
+                            <article
                                 class="px-2 flex justify-between mt-4 border-t-white border-t-2 text-white"
                             >
                                 <h1>Totals</h1>
                                 <h1>{{ formatPrice(item.price) }}</h1>
-                            </div>
-                        </div>
+                            </article>
+                        </section>
                     </section>
                 </section>
                 <form
@@ -121,19 +121,31 @@
                     class="h-fit w-[700px] rounded-lg px-8 py-6 flex flex-col gap-4 bg-neutral border border-white"
                 >
                     <h1 class="text-4xl text-white font-bold">Checkout</h1>
-                    <div class="flex flex-col gap-4">
-                        <div class="flex flex-col gap-4">
-                            <BaseLabel
-                                :required="true"
-                                label="Estimation time"
-                            />
+                    <section class="flex flex-col gap-4">
+                        <article class="flex flex-col gap-2">
+                            <section class="flex gap-1 items-center">
+                                <BaseLabel
+                                    :required="true"
+                                    label="Estimation time"
+                                />
+                                <small class="font-medium"
+                                    >(Cake orders require 2 days' advance
+                                    notice.)</small
+                                >
+                            </section>
                             <BaseInput input-type="date" />
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <BaseLabel
-                                label="Shipping Address"
-                                :required="true"
-                            />
+                        </article>
+                        <article class="flex flex-col gap-2">
+                            <section class="flex gap-1 items-center">
+                                <BaseLabel
+                                    label="Shipping Address"
+                                    :required="true"
+                                />
+                                <small class="font-medium"
+                                    >(Delivery available only in Kediri and
+                                    nearby areas.)</small
+                                >
+                            </section>
                             <BaseInput
                                 v-model="form.address"
                                 style="width: 100%"
@@ -151,24 +163,24 @@
                                 :results="searchResults"
                                 :selectAddress="selectedAddress"
                             />
-                        </div>
-                        <div class="flex flex-col gap-2">
+                        </article>
+                        <article class="flex flex-col gap-2">
                             <BaseInput
                                 v-model="form.username"
                                 style="width: 100%"
-                                placeholder="Consignee"
+                                placeholder="Cake Recipient"
                                 input-type="username"
                                 :error="error.username"
                                 :error-message="errorMessage.username"
                                 @change="onChangeUsername"
                             />
-                        </div>
+                        </article>
                         <button
                             class="btn bg-primary-color text-base-300 hover:text-white"
                         >
                             Place Order
                         </button>
-                    </div>
+                    </section>
                 </form>
             </section>
         </section>
