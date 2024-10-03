@@ -16,9 +16,11 @@ class Admin
     public function handle(Request $request, Closure $next): Response
     {
         // Check if the user is an admin
-        if ($request->user()->role_id == 2) {
-            // If the request is already on the admin dashboard, allow it to proceed
-            if ($request->routeIs('dashboard-home')) {
+        if ($request->user()->role->name === 'admin') {
+
+
+            // Allow the request to proceed if the route belongs to the admin section
+            if ($request->is('admin/dashboard*')) {
                 return $next($request);
             }
 

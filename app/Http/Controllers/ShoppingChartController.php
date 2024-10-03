@@ -7,6 +7,7 @@ use App\Models\ShoppingChart;
 use App\Models\ShoppingChartItem;
 use App\Models\ShoppingChartItemTopping;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ShoppingChartController extends Controller
 {
@@ -114,14 +115,30 @@ class ShoppingChartController extends Controller
      *
      * @return JsonResponse A JSON response with a success message.
      */
-    public function deleteShoppingChartItem(ShoppingChartItem $shoppingChartItem): JsonResponse
+    public function deleteShoppingChartItem(Request $request): JsonResponse
     {
+        // Retrieve the selected item IDs for multiple deletions or single item deletion
+        $itemIds = $request->input('selectCake', []); // Array of selected item IDs
 
-        ShoppingChartItemTopping::where('shopping_chart_item_id', '=', $shoppingChartItem->id)->delete();
-        $shoppingChartItem->delete();
+        if (count($itemIds) > 0) {
+            // Delete the items
+            ShoppingChartItemTopping::whereIn('shopping_chart_item_id', $itemIds)->delete();
+            ShoppingChartItem::whereIn('id', $itemIds)->delete();
+
+            // Determine the message based on the number of items
+            $message = count($itemIds) === 1 ? 'Cake successfully deleted!' : 'Cake(s) successfully deleted!';
+
+            return response()->json([
+                'message' => $message,
+            ]);
+        }
 
         return response()->json([
-            'message' => 'Cake successfully deleted!',
-        ]);
+            'message' => 'No items selected for deletion.',
+        ], 400);
+
+        return response()->json([
+            'message' => 'No items selected for deletion.',
+        ], 400);
     }
 }

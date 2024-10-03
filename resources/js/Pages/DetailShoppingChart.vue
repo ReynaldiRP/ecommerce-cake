@@ -21,18 +21,30 @@
                     v-if="chartItems.length > 0"
                 >
                     <div class="h-full px-3 py-5 bg-neutral rounded-t-lg">
-                        <BaseCheckbox
-                            :label="`Choose All (${chartItems.length})`"
-                            text-color="white"
-                            v-model="selectAllItem"
-                            @change="isSelectedAll"
-                        />
+                        <div class="flex items-center justify-between">
+                            <BaseCheckbox
+                                :label="`Choose All (${chartItems.length})`"
+                                text-color="white"
+                                v-model="selectAllItem"
+                                @change="isSelectedAll"
+                            />
+                            <p
+                                v-show="totalSelectedCake > 0"
+                                class="text-lg font-medium text-primary-color cursor-pointer"
+                                @click="deleteItem"
+                            >
+                                Delete
+                            </p>
+                        </div>
                     </div>
                     <div class="flex flex-col gap-4">
                         <div
                             class="flex flex-col lg:flex-row lg:justify-between lg:items-center lg:gap-2 px-3 py-4 bg-neutral rounded-md"
                             v-for="(item, index) in chartItems"
                             :key="item.id"
+                            :class="{
+                                'slide-left': item.id === deleteAnimation,
+                            }"
                         >
                             <div class="flex gap-2">
                                 <BaseCheckbox
@@ -212,6 +224,7 @@ const selectAllItem = ref(false);
 const selectCake = ref({});
 const totalPrice = ref(0);
 const showAlert = ref(false);
+const deleteAnimation = ref(null);
 const messageDelete = ref("");
 const isSubmitting = ref(false);
 
@@ -292,21 +305,44 @@ const getToppingNameBasedChartItem = (chartItemId) => {
 };
 
 /**
- * Deletes an item from the chartItems array and updates the chart.
+ * Deletes a shopping chart item (or multiple items if the "Select All" checkbox is checked).
  *
- * @param {number} id - The ID of the item to be deleted.
- * @return {Promise<void>} - A promise that resolves when the item is successfully deleted.
+ * @param {number} id - The ID of the item to be deleted, or the single item ID if no items are selected.
+ * @return {Promise<void>} A promise that resolves when the deletion is successful.
  */
 const deleteItem = async (id) => {
     try {
-        const response = await axios.delete(route("delete-cart-item", id));
-        chartItems.value = chartItems.value.filter((item) => item.id !== id);
+        const selectedItems = chartItems.value
+            .filter((item) => selectCake.value[item.id])
+            .map((item) => item.id);
+
+        // If multiple items are selected, delete them all
+        const itemsToDelete = selectedItems.length > 0 ? selectedItems : [id]; // If no selected items, delete the single one
+
+        console.log("itemsToDelete: ", itemsToDelete);
+
+        const response = await axios.delete(route("delete-cart-item"), {
+            data: {
+                selectCake: itemsToDelete, // Send either multiple items or a single item in the array
+            },
+        });
+
+        // Update message based on how many items were deleted
         messageDelete.value = response.data.message;
+
+        deleteAnimation.value = id;
+
+        setTimeout(() => {
+            // Remove deleted items from chartItems
+            chartItems.value = chartItems.value.filter(
+                (item) => !itemsToDelete.includes(item.id)
+            );
+        }, 500);
 
         window.dispatchEvent(
             new CustomEvent("delete:cartItem", {
                 detail: {
-                    deletedItemId: id,
+                    deletedItemId: itemsToDelete,
                 },
             })
         );

@@ -80,7 +80,7 @@ Route::middleware(['auth'])->group(function () {
     // Shopping chart controller routes
     Route::controller(ShoppingChartController::class)->group(function () {
         Route::post('/add-chart-item', 'addChartItem')->name('add-chart-item'); // Add item to chart
-        Route::delete('/shopping-chart-item/{shoppingChartItem}', 'deleteShoppingChartItem')->name('delete-cart-item'); // Delete shopping chart item
+        Route::delete('/shopping-chart-item', 'deleteShoppingChartItem')->name('delete-cart-item'); // Delete shopping chart item
     });
 });
 

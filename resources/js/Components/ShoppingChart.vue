@@ -111,16 +111,24 @@ const updateCartItems = (newCartItems = []) => {
     chartItems.value = [...chartItems.value, ...newCartItems];
 };
 
+
 /**
- * Deletes a cart item by its ID.
+ * Deletes items from the shopping chart by their IDs.
  *
- * @param {number} deletedItemId - The ID of the cart item to be deleted.
+ * @param {Array<number>|number} deletedItemId - The ID(s) of the item(s) to be deleted.
  * @return {void}
  */
-const deleteCartItems = (deletedItemId) => {
-    chartItems.value = chartItems.value.filter(
-        (item) => item.id !== deletedItemId
-    );
+const deleteCartItems = (deletedItemId = []) => {
+    if (Array.isArray(deletedItemId)) {
+        chartItems.value = chartItems.value.filter(
+            (item) => !deletedItemId.includes(item.id)
+        );
+    } else {
+        // Single item deletion
+        chartItems.value = chartItems.value.filter(
+            (item) => item.id !== deletedItemId
+        );
+    }
 };
 
 onMounted(() => {
