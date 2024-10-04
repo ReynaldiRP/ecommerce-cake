@@ -3,18 +3,17 @@
         <section
             class="min-h-screen w-full flex flex-col gap-4 pt-36 pb-14 px-10 lg:px-20"
         >
-            <BaseAlert
-                v-show="showAlert"
-                class="w-fit py-2 font-medium ms-auto transform transition-transform duration-500 ease-in-out translate-y-0 opacity-100"
-                :class="{
-                    'translate-y-[-20px] opacity-0': !showAlert,
-                    'translate-y-0 opacity-100': showAlert,
-                }"
-                type="alert-success"
-            >
-                {{ messageDelete }}
-            </BaseAlert>
-            <h1 class="text-2xl font-bold">Shopping Chart</h1>
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold">Shopping Chart</h1>
+                <BaseAlert
+                    v-show="showAlert"
+                    class="w-fit py-2 font-medium ms-auto"
+                    type="alert-success"
+                >
+                    {{ messageDelete }}
+                </BaseAlert>
+            </div>
+
             <section class="grid grid-cols-12 gap-8">
                 <section
                     class="col-span-8 flex flex-col gap-6"
@@ -211,8 +210,8 @@ import BaseAlert from "@/Components/BaseAlert.vue";
 import EmptyDetailShoppingChart from "@/Components/EmptyDetailShoppingChart.vue";
 import { ref, computed } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
-import axios from "axios";
 import { Inertia } from "@inertiajs/inertia";
+import axios from "axios";
 
 const page = usePage();
 
@@ -337,6 +336,7 @@ const deleteItem = async (id) => {
             chartItems.value = chartItems.value.filter(
                 (item) => !itemsToDelete.includes(item.id)
             );
+            totalPrice.value = 0;
         }, 500);
 
         window.dispatchEvent(

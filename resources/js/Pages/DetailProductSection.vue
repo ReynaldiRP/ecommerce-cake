@@ -47,14 +47,16 @@
                 <ProductFlavour
                     v-show="isCakeCustomized"
                     :flavours="props.flavour"
-                    v-model="form.flavour_id"
+                    v-model="form.cake_flavour_id"
                     @update-flavour-price="handleUpdateFlavourPrice"
+                    :error-responses="errorResponses"
                 />
                 <ProductTopping
                     v-show="isCakeCustomized"
                     :toppings="props.topping"
                     v-model="form.toppings"
                     @update-topping-price="handleUpdateToppingPrice"
+                    :error-responses="errorResponses"
                 />
                 <ProductQuantity
                     v-model="form.quantity"
@@ -114,6 +116,7 @@ const isPreviewOpen = ref(false);
 const chartItem = ref([]);
 const succesMessage = ref("");
 const isSubmitting = ref(false);
+const errorResponses = ref([]);
 
 /**
  * Updates the flavour price state with the provided price value.
@@ -168,7 +171,7 @@ const totalPrice = computed(() => {
 
 const form = useForm({
     cake_id: props.cake.id,
-    flavour_id: selected.flavour,
+    cake_flavour_id: selected.flavour,
     toppings: selected.topping,
     quantity: selected.quantity,
     price: totalPrice.value.totalCakePrice,
@@ -204,8 +207,10 @@ const addItemToChart = async () => {
                 },
             })
         );
+
+        return response.data;
     } catch (error) {
-        console.error("Request failed:", error);
+        return { error: true, message: error.response.data.errors };
     }
 };
 
@@ -214,12 +219,25 @@ const addItemToChart = async () => {
  *
  * @return {void}
  */
-const submit = () => {
-    isSubmitting.value = true;
-    setTimeout(function () {
-        addItemToChart();
-        isSubmitting.value = false;
-        isPreviewOpen.value = true;
-    }, 2000);
+const submit = async () => {
+    try {
+        isSubmitting.value = true;
+        console.log(form);
+
+        const results = await addItemToChart();
+
+        setTimeout(function () {
+            isSubmitting.value = false;
+            window.scrollTo({ top: 0, behavior: "smooth" });
+
+            if (results && !results.error) {
+                isPreviewOpen.value = true;
+            } else {
+                errorResponses.value = results.message;
+            }
+        }, 2000);
+    } catch (error) {
+        console.error("Request failed:", error);
+    }
 };
 </script>

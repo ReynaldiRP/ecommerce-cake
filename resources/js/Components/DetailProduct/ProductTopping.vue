@@ -1,12 +1,20 @@
 <template>
     <section class="flex flex-col gap-4">
-        <div class="flex flex-col gap-1">
-            <h2 class="text-2xl font-bold">Topping</h2>
-            <small class="text-primary-color font-medium"
-                >Toppings is optional
-                <span class="text-neutral-content"
-                    >. Choose max 4
-                </span></small
+        <div class="flex justify-between items-center">
+            <div class="flex flex-col gap-1">
+                <h2 class="text-2xl font-bold">Topping</h2>
+                <small class="text-primary-color font-medium"
+                    >Toppings is optional
+                    <span class="text-neutral-content"
+                        >. Choose max 4
+                    </span></small
+                >
+            </div>
+            <BaseAlert
+                v-if="errorResponses.toppings"
+                class="w-fit"
+                type="alert-error"
+                >{{ errorResponses.toppings[0] }}</BaseAlert
             >
         </div>
         <section class="grid grid-cols-2 lg:grid-cols-4 items-center gap-4">
@@ -25,6 +33,7 @@
 
 <script setup>
 import BaseCheckbox from "@/Components/BaseCheckbox.vue";
+import BaseAlert from "@/Components/BaseAlert.vue";
 
 const model = defineModel({
     type: Array,
@@ -36,6 +45,9 @@ const emit = defineEmits(["update-topping-price"]);
 const props = defineProps({
     toppings: {
         type: Array,
+    },
+    errorResponses: {
+        type: Object,
     },
 });
 

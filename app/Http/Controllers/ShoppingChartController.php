@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ShoppingChart\StoreShoppingChartRequest;
+use Illuminate\Http\Request;
 use App\Models\ShoppingChart;
 use App\Models\ShoppingChartItem;
-use App\Models\ShoppingChartItemTopping;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use App\Models\ShoppingChartItemTopping;
+use Illuminate\Validation\ValidationException;
+use App\Http\Requests\ShoppingChart\StoreShoppingChartRequest;
 
 class ShoppingChartController extends Controller
 {
     /**
-     * Retrieves or creates a shopping chart for the currently authenticated user.
+     * Create a new shopping cart instance for the authenticated user, or return the existing one if it already exists.
      *
-     * @return ShoppingChart The shopping chart instance.
+     * @return ShoppingChart The existing or newly created shopping cart instance.
      */
     public function addChart(): ShoppingChart
     {
@@ -24,63 +25,78 @@ class ShoppingChartController extends Controller
         );
     }
 
-
-
-
     /**
-     * Adds a new item to the shopping chart.
+     * Add a new item to the shopping cart.
      *
-     * @param StoreShoppingChartRequest $request The request object containing the item details.
-     * @return JsonResponse The JSON response containing the added item details and a success message.
+     * @param StoreShoppingChartRequest $request The incoming request containing the new item details.
+     * @return JsonResponse A JSON response containing the new item with its relations and a success message.
+     *
+     * @bodyParam cake_id integer required The ID of the cake.
+     * @bodyParam flavour_id integer nullable The ID of the cake flavour.
+     * @bodyParam quantity integer required The quantity of the item.
+     * @bodyParam price integer required The price of the item.
+     * @bodyParam toppings array<integer> nullable The IDs of the toppings.
      */
     public function addChartItem(StoreShoppingChartRequest $request): JsonResponse
     {
 
-        $cart = $this->addChart();
+        try {
+            $cart = $this->addChart();
 
-        $cartItem = ShoppingChartItem::create([
-            'shopping_chart_id' => $cart->id,
-            'cake_id' => $request['cake_id'],
-            'cake_flavour_id' => $request['flavour_id'] ? $request['flavour_id'] : null,
-            'quantity' => $request['quantity'],
-            'price' => $request['price'],
-        ]);
+            $cartItem = ShoppingChartItem::create([
+                'shopping_chart_id' => $cart->id,
+                'cake_id' => $request['cake_id'],
+                'cake_flavour_id' => $request['cake_flavour_id'] ?? null,
+                'quantity' => $request['quantity'],
+                'price' => $request['price'],
+            ]);
 
-
-
-        // Insert in pivot table ChartItemTopping
-        if ($request->has('toppings') && is_array($request['toppings'])) {
-            $toppings = array_map('intval', $request['toppings']);
-            foreach ($toppings as $toppingId) {
-                ShoppingChartItemTopping::create([
-                    'shopping_chart_item_id' => $cartItem->id,
-                    'topping_id' => $toppingId
-                ]);
+            // Insert in pivot table ChartItemTopping
+            if ($request->has('toppings') && is_array($request['toppings'])) {
+                $toppings = array_map('intval', $request['toppings']);
+                foreach ($toppings as $toppingId) {
+                    ShoppingChartItemTopping::create([
+                        'shopping_chart_item_id' => $cartItem->id,
+                        'topping_id' => $toppingId
+                    ]);
+                }
             }
+
+            $cartItemWithRelations = ShoppingChartItem::with('cart', 'cake', 'cakeFlavour', 'cakeTopping')
+                ->find($cartItem->id);
+
+            return response()->json([
+                'cartItem' => [
+                    'cake_name' => $cartItemWithRelations->cake?->name,
+                    'cake_image' => $cartItemWithRelations->cake?->image_url,
+                    'cake_flavour_name' => $cartItemWithRelations->cakeFlavour?->name,
+                    'cake_toppings' =>  $cartItemWithRelations->cakeTopping?->pluck('name'),
+                ],
+                'cartItems' => [$cartItemWithRelations],
+                'message' => 'Item added to cart successfully!'
+            ]);
+        } catch (ValidationException $e) {
+            // Handle validation errors and return a response with the errors
+            return response()->json([
+                'errors' => $e->errors(), // The validation errors
+            ], 422);
+        } catch (\Exception $e) {
+            // Handle any other possible exceptions
+            return response()->json([
+                'message' => 'An error occurred while adding the item to the cart.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        $cartItemWithRelations = ShoppingChartItem::with('cart', 'cake', 'cakeFlavour', 'cakeTopping')
-            ->find($cartItem->id);
-
-
-        return response()->json([
-            'cartItem' => [
-                'cake_name' => $cartItemWithRelations->cake?->name,
-                'cake_image' => $cartItemWithRelations->cake?->image_url,
-                'cake_flavour_name' => $cartItemWithRelations->cakeFlavour?->name,
-                'cake_toppings' =>  $cartItemWithRelations->cakeTopping?->pluck('name'),
-            ],
-
-            'cartItems' => [$cartItemWithRelations],
-            'message' => 'Item added to cart successfully!'
-        ]);
     }
 
 
+
     /**
-     * Retrieves a list of shopping chart items for the authenticated user.
+     * Retrieves the shopping chart items for the currently authenticated user.
      *
      * @return JsonResponse A JSON response containing the shopping chart items.
+     *                      If the user is not authenticated, returns a JSON response with a message indicating the user is not authenticated.
+     *                      If the cart is empty, returns a JSON response with a message indicating that the cart is empty.
      */
     public function getShoppingChartItems(): JsonResponse
     {
@@ -108,12 +124,12 @@ class ShoppingChartController extends Controller
     }
 
 
+
     /**
-     * Deletes a shopping chart item and its associated toppings.
+     * Deletes one or multiple shopping chart items based on the provided item IDs.
      *
-     * @param ShoppingChartItem $shoppingChartItem The shopping chart item to delete.
-     *
-     * @return JsonResponse A JSON response with a success message.
+     * @param Request $request - The HTTP request containing the selected item IDs.
+     * @return JsonResponse - A JSON response with a success or error message.
      */
     public function deleteShoppingChartItem(Request $request): JsonResponse
     {

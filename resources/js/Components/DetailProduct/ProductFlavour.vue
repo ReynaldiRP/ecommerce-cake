@@ -1,10 +1,18 @@
 <template>
     <section class="flex flex-col gap-4">
-        <div class="flex flex-col gap-1">
-            <h2 class="text-2xl font-bold">Flavour</h2>
-            <small class="text-primary-color font-medium"
-                >Flavor is required
-                <span class="text-neutral-content">. Choose 1</span></small
+        <div class="flex justify-between items-center">
+            <div class="flex flex-col gap-1">
+                <h2 class="text-2xl font-bold">Flavour</h2>
+                <small class="text-primary-color font-medium"
+                    >Flavor is required
+                    <span class="text-neutral-content">. Choose 1</span></small
+                >
+            </div>
+            <BaseAlert
+                v-if="errorResponses.cake_flavour_id"
+                class="w-fit"
+                type="alert-error"
+                >{{ errorResponses.cake_flavour_id[0] }}</BaseAlert
             >
         </div>
         <section class="grid grid-cols-2 lg:grid-cols-4 items-center gap-4">
@@ -24,10 +32,15 @@
 
 <script setup>
 import BaseRadio from "@/Components/BaseRadio.vue";
+import BaseAlert from "@/Components/BaseAlert.vue";
 
 const props = defineProps({
     flavours: {
         type: Array,
+    },
+    errorResponses: {
+        type: Object,
+        default: null,
     },
 });
 

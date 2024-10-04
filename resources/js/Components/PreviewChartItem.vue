@@ -39,7 +39,13 @@
                                 v-if="chart.cake_flavour_name"
                             >
                                 <p>{{ chart.cake_flavour_name }}</p>
-                                <span>|</span>
+                                <span
+                                    v-show="
+                                        chart.cake_flavour_name &&
+                                        chart.cake_toppings.length > 1
+                                    "
+                                    >|</span
+                                >
                                 <p>{{ chart.cake_toppings.join(", ") }}</p>
                             </div>
                         </div>
@@ -68,7 +74,6 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
 const props = defineProps({
     isPreviewOpen: {
         type: Boolean,
