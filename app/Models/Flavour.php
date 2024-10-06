@@ -17,4 +17,14 @@ class Flavour extends Model
     {
         return $this->hasMany(ShoppingChartItem::class, 'cake_flavour_id');
     }
+
+    /**
+     * Get the order items that belong to the flavour.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function orderItem(): HasMany
+    {
+        return $this->hasMany(OrderItem::class, 'cake_flavour_id');
+    }
 }

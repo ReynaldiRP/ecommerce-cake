@@ -9,6 +9,7 @@ use App\Http\Controllers\CakeSizeController;
 use App\Http\Controllers\FrontEndController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ShoppingChartController;
 
 /*
@@ -81,6 +82,10 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(ShoppingChartController::class)->group(function () {
         Route::post('/add-chart-item', 'addChartItem')->name('add-chart-item'); // Add item to chart
         Route::delete('/shopping-chart-item', 'deleteShoppingChartItem')->name('delete-cart-item'); // Delete shopping chart item
+    });
+
+    Route::controller(OrderController::class)->group(function () {
+        Route::post('/add-order', 'createOrderItem')->name('add-order');
     });
 });
 

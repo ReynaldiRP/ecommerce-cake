@@ -117,7 +117,7 @@
                     </section>
                 </section>
                 <form
-                    @submit.prevent=""
+                    @submit.prevent="submit"
                     class="h-fit w-[700px] rounded-lg px-8 py-6 flex flex-col gap-4 bg-neutral border border-white"
                 >
                     <h1 class="text-4xl text-white font-bold">Checkout</h1>
@@ -133,7 +133,10 @@
                                     notice.)</small
                                 >
                             </section>
-                            <BaseInput input-type="date" />
+                            <BaseInput
+                                input-type="date"
+                                v-model="form.estimated_delivery_date"
+                            />
                         </article>
                         <article class="flex flex-col gap-2">
                             <section class="flex gap-1 items-center">
@@ -147,7 +150,7 @@
                                 >
                             </section>
                             <BaseInput
-                                v-model="form.address"
+                                v-model="form.user_address"
                                 style="width: 100%"
                                 placeholder="User Address"
                                 input-type="address"
@@ -166,17 +169,20 @@
                         </article>
                         <article class="flex flex-col gap-2">
                             <BaseInput
-                                v-model="form.username"
+                                v-model="form.cake_recipent"
                                 style="width: 100%"
                                 placeholder="Cake Recipient"
                                 input-type="username"
-                                :error="error.username"
-                                :error-message="errorMessage.username"
-                                @change="onChangeUsername"
                             />
                         </article>
+                        <input
+                            type="hidden"
+                            v-model="form.chartItems"
+                            name="chartItems"
+                        />
                         <button
                             class="btn bg-primary-color text-base-300 hover:text-white"
+                            type="submit"
                         >
                             Place Order
                         </button>
@@ -197,6 +203,7 @@ import { useForm } from "@inertiajs/inertia-vue3";
 import { ref, reactive, computed } from "vue";
 import axios from "axios";
 import { debounce } from "lodash";
+import { Inertia } from "@inertiajs/inertia";
 
 const props = defineProps({
     chartItems: Array,
@@ -206,7 +213,7 @@ const showResults = ref(false);
 const searchResults = ref([]);
 
 const showSeachAddress = computed(() => {
-    return showResults.value && form.address.length > 0;
+    return showResults.value && form.user_address.length > 0;
 });
 
 /**
@@ -234,20 +241,27 @@ const debounceSearchAddress = debounce((query) => {
     onKeyUpAddress(query);
 }, 500);
 
+/**
+ * Triggers the search for the given address and shows the search results.
+ *
+ * This function is called when the user types in the address input field.
+ */
 const getSearchResultAdress = () => {
-    debounceSearchAddress(form.address);
+    debounceSearchAddress(form.user_address);
     showResults.value = true;
 };
 
+/**
+ * Sets the selected address to the given address and hides the search results.
+ *
+ * @param {string} address - The selected address.
+ */
 const selectedAddress = (address) => {
     // First set the address
-    form.address = address;
+    form.user_address = address;
 
     // Then hide the search results
     showResults.value = false;
-
-    // This should now log 'false' after the selection
-    console.log(showSeachAddress.value);
 };
 
 /**
@@ -297,72 +311,20 @@ const getToppingPriceBasedOnChartitems = (item) => {
         .reduce((a, b) => a + b, 0);
 };
 
-// State for error in client side
-const error = reactive({
-    email: false,
-    username: false,
-});
-
-// State for error message in client side
-const errorMessage = reactive({
-    email: "",
-    username: "",
-});
-
 // Form helper for input fields
 const form = useForm({
-    email: "",
-    address: "",
-    username: "",
+    chartItems: props.chartItems,
+    estimated_delivery_date: "",
+    user_address: "",
+    cake_recipent: "",
 });
 
-const errorMessageRegex = {
-    username:
-        "Username can only include letters, numbers, dots, underscores, and hyphens.",
-    email: "Please enter a valid email address.",
-};
-
-// Valdation for email and password in client side
-const validations = {
-    email: {
-        regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-        minLength: 1,
-    },
-    username: {
-        regex: /^[a-zA-Z0-9._-]{1,}$/,
-        minLength: 1,
-    },
-};
-
-// Function for validation user input in client side
-const validate = (value, type) => {
-    const validation = validations[type];
-    if (!validation) return;
-
-    error[type] = false;
-    errorMessage[type] = "";
-
-    if (value.length < validation.minLength) {
-        error[type] = true;
-        errorMessage[type] = `${type.charAt(0).toUpperCase()}${type.slice(
-            1
-        )} must be at least ${validation.minLength} characters`;
-
-        return;
-    }
-
-    if (validation.regex && !validation.regex.test(value)) {
-        error[type] = true;
-        errorMessage[type] = errorMessageRegex[type];
-    }
-};
-
-// Function event on change input user email
-const onChangeEmail = () => {
-    validate(form.email, "email");
-};
-
-const onChangeUsername = () => {
-    validate(form.username, "username");
+const submit = () => {
+    Inertia.post(route("add-order"), {
+        chartItems: form.chartItems,
+        estimated_delivery_date: form.estimated_delivery_date,
+        user_address: form.user_address,
+        cake_recipent: form.cake_recipent,
+    });
 };
 </script>

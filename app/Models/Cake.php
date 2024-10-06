@@ -19,13 +19,33 @@ class Cake extends Model
         'personalization_type'
     ];
 
+    /**
+     * Get the cake size that owns the Cake
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function cakeSize(): BelongsTo
     {
         return $this->belongsTo(CakeSize::class, 'cake_size_id', 'id');
     }
 
+    /**
+     * Get the cart items for the Cake
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function cartItem(): HasMany
     {
         return $this->hasMany(ShoppingChartItem::class, 'cake_id');
+    }
+
+    /**
+     * Get the order items for the Cake
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function orderItem(): HasMany
+    {
+        return $this->hasMany(OrderItem::class, 'cake_id');
     }
 }
