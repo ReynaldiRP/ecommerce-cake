@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\ShoppingChartItem;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\OrderItem\StoreOrderItemRequest;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -42,9 +43,8 @@ class OrderController extends Controller
      */
     public function createOrder(array $data): Order
     {
-        return Order::firstOrCreate([
+        return Order::create([
             'user_id' => auth()->id(),
-        ], [
             'order_code' => uniqid(),
             'total_price' => 0,
             'status' => 'pending',
@@ -58,30 +58,51 @@ class OrderController extends Controller
 
     public function createOrderItem(Request $request): JsonResponse
     {
+        // Create the order with additional data
         $createOrder = $this->createOrder([
             'user_address' => $request['user_address'],
             'cake_recipent' => $request['cake_recipent'],
             'estimated_delivery_date' => $request['estimated_delivery_date'],
         ]);
 
-        dd($createOrder);
 
-        // $chartItems = $request->input('chartItems');
+        $chartItems = $request->input('chartItems');
+        $totalPrice = 0;
 
-        // dd($chartItems);
-        // foreach ($chartItems as $chartItem) {
-        // }
+        // Loop through each chart item and create an order item
+        foreach ($chartItems as $chartItem) {
+            $orderItem = OrderItem::create([
+                'order_id' => $createOrder['id'],
+                'cake_id' => $chartItem['cake_id'],
+                'cake_flavour_id' => $chartItem['cake_flavour_id'] ?? null,
+                'quantity' => $chartItem['quantity'],
+                'price' => $chartItem['price'],
+            ]);
 
-        // OrderItem::create([
-        //     'order_id' => $createOrder['id'],
-        //     'cake_id' => $request['cake_id'],
-        //     'cake_flavour_id' => $request['cake_flavour_id'] ?? null,
-        //     'quantity' => $request['quantity'],
-        //     'price' => $request['price'],
-        // ]);
+            // Add the current item's total (price * quantity) to the total order price
+            $totalPrice += $orderItem->price;
+        }
+
+        // Update the order's total price after all items are added
+        $createOrder->update(['total_price' => $totalPrice]);
+
+        //Extract ids from chartItems
+        $chartItemIds = array_column($chartItems, 'id');
+
+        // Delete the shopping chart items
+        ShoppingChartItem::whereIn('id', $chartItemIds)->delete();
 
 
+        return response()->json([
+            'message' => 'Order item created successfully.',
+        ]);
+    }
 
-        return response()->json(['message' => 'Order item created successfully.']);
+
+    public function payments(Request $request): JsonResponse
+    {
+        
+
+        return response()->json(['message' => 'Payment retrieved successfully.']);
     }
 }

@@ -24,7 +24,7 @@
                     class="fa-solid fa-cake-candles"
                 ></i>
                 <i v-else class="fa-solid fa-cookie"></i>
-                <p class="font-medium">
+                <p class="font-medium text-nowrap">
                     {{ cakePersonalizationType }}
                 </p>
             </div>

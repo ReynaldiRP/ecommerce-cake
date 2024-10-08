@@ -3,11 +3,9 @@
         <section
             class="min-h-screen w-full py-36 xl:py-28 px-10 flex flex-col justify-center gap-4"
         >
-            <h1 class="text-4xl font-bold text-center xl:text-start">
-                Your Orders
-            </h1>
+            <h1 class="text-4xl font-bold relative">Your Orders</h1>
             <section
-                class="flex flex-col-reverse lg:flex-row justify-center xl:justify-between gap-4"
+                class="flex flex-col-reverse items-center lg:items-start lg:flex-row justify-center xl:justify-between gap-4"
             >
                 <section class="flex flex-col gap-4">
                     <section
@@ -57,24 +55,9 @@
                             </section>
                             <div class="flex flex-col gap-3 text-white">
                                 <h1 class="text-xl font-bold">
+                                    {{ item.quantity }} x
                                     {{ formatPrice(item.price) }}
                                 </h1>
-                                <article class="join">
-                                    <button
-                                        class="btn btn-outline border-white shadow-lg join-item"
-                                    >
-                                        -
-                                    </button>
-                                    <input
-                                        class="input input-ghost input-bordered border-white text-center w-14 join-item focus:bg-transparent"
-                                        :value="item.quantity"
-                                    />
-                                    <button
-                                        class="btn btn-outline border-white shadow-lg join-item"
-                                    >
-                                        +
-                                    </button>
-                                </article>
                             </div>
                         </section>
                         <section class="px-2 text-xl font-bold text-white/70">
@@ -182,6 +165,11 @@
                         />
                         <button
                             class="btn bg-primary-color text-base-300 hover:text-white"
+                            :class="
+                                chartItems.length <= 0
+                                    ? 'bg-gray-400 hover:bg-gray-400 cursor-not-allowed'
+                                    : 'bg-primary-color hover:bg-primary-color hover:opacity-65 hover:text-slate-500 border-none'
+                            "
                             type="submit"
                         >
                             Place Order
@@ -317,6 +305,12 @@ const form = useForm({
     estimated_delivery_date: "",
     user_address: "",
     cake_recipent: "",
+});
+
+console.log(typeof form);
+
+const disableCheckout = computed(() => {
+    // return form.
 });
 
 const submit = () => {

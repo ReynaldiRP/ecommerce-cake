@@ -27,7 +27,11 @@
                     Sign In
                 </h1>
             </div>
-            <form @submit.prevent="submit" class="flex flex-col gap-3">
+            <form
+                @submit.prevent="submit"
+                class="flex flex-col gap-3"
+                autocomplete="on"
+            >
                 <BaseAlert v-if="errors.email" type="alert-error">{{
                     errors.email
                 }}</BaseAlert>
@@ -38,10 +42,11 @@
                     <BaseLabel label="Email" :required="true" />
                     <BaseInput
                         v-model="form.email"
+                        name="email"
+                        autocomplete="email"
                         style="width: 450px"
                         placeholder="user@gmail.com"
                         input-type="email"
-                        id="email"
                         :error="error.email"
                         :error-message="errorMessage.email"
                         @change="onChangeEmail"
@@ -51,6 +56,8 @@
                     <BaseLabel label="Password" :required="true" />
                     <BaseInput
                         v-model="form.password"
+                        name="password"
+                        autocomplete="current-password"
                         style="width: 450px"
                         placeholder="Min. 8 Characters"
                         :input-type="passwordInputType"

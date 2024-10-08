@@ -12,10 +12,12 @@
                 <component :is="icon"></component>
                 <input
                     v-model="model"
+                    @input="model = $event.target.value"
                     class="w-full"
                     :type="inputType"
                     :placeholder="placeholder"
-                    autocomplete="username"
+                    :name="inputName"
+                    :autocomplete="getAutocompleteValue"
                 />
             </div>
             <div
@@ -74,6 +76,10 @@ const props = defineProps({
         type: String,
         default: null,
     },
+    inputName: {
+        type: String,
+        default: null,
+    },
 });
 
 const icon = computed(() => {
@@ -84,5 +90,16 @@ const icon = computed(() => {
         username: IconUser,
         date: IconDate,
     }[props.inputType];
+});
+
+const getAutocompleteValue = computed(() => {
+    // Set autocomplete based on input type or name
+    if (props.inputType === "password") {
+        return "current-password";
+    } else if (props.inputType === "email") {
+        return "email";
+    }
+
+    return props.inputName; // Fallback to the inputName
 });
 </script>
