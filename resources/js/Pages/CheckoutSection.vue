@@ -277,10 +277,14 @@ const onKeyUpAddress = async (query) => {
             );
 
             // Process village data
-            const villageResults = villages.map((item) => ({
-                district_id: item.district_id,
-                name: item.name,
-            }));
+            const villageResults = villages
+                .filter((item) =>
+                    item.name.toLowerCase().includes(query.toLowerCase())
+                )
+                .map((item) => ({
+                    district_id: item.district_id,
+                    name: capitalizeWords(item.name),
+                }));
 
             // Compile final result
             const finalResult = {

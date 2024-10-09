@@ -129,8 +129,16 @@ class FrontEndController extends Controller
      */
     public function checkout(Request $request): Response
     {
-        // Get the array of shoppingChartItemId from the query parameters
-        $shoppingChartItemIds = $request->input('selectCake', []);
+        if ($request->isMethod('post')) {
+            // Get the array of shoppingChartItemId from the query parameters
+            $shoppingChartItemIds = $request->input('selectCake', []);
+
+            // Store the shopping chart item IDs in the session
+            $request->session()->put('selectedCakes', $shoppingChartItemIds);
+        } else {
+            // Retrieve the stored cake IDs from the session
+            $shoppingChartItemIds = $request->session()->get('selectedCakes', []);
+        }
 
         // Fetch chart items by the given array of IDs
         $chartItems = ShoppingChartItem::with('cart', 'cake', 'cake.cakeSize', 'cakeFlavour', 'cakeTopping')

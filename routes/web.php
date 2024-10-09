@@ -69,7 +69,7 @@ Route::middleware(['auth'])->group(function () {
     // Additional frontend controller routes
     Route::controller(FrontEndController::class)->group(function () {
         Route::get('/home/{cakeId}/detail-product', 'detailProduct')->name('detail-product'); // Cake detail product
-        Route::post('/home/detail-chart/checkout', 'checkout')->name('checkout'); // Checkout page
+        Route::match(['GET', 'POST'], '/home/detail-chart/checkout', 'checkout')->name('checkout'); // Checkout page
     });
 
     // Inertia route for detail shopping chart
