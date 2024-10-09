@@ -6,9 +6,10 @@
             <div
                 class="flex items-center gap-2 w-full hover:bg-neutral cursor-pointer p-2"
                 v-for="item in results"
-                :key="item.districts.id"
+                :key="item.villages.id"
                 @click="
                     selectAddress({
+                        village: item.villages.village_name,
                         district: item.districts.district_name,
                         city: item.city,
                         province: item.province,
@@ -17,6 +18,7 @@
             >
                 <IconAddress />
                 <p class="font-bold">
+                    {{ item.villages.village_name }},
                     {{ item.districts.district_name }}, {{ item.city }},
                     {{ item.province }}
                 </p>

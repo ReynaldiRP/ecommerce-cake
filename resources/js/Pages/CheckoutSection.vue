@@ -255,52 +255,39 @@ const onKeyUpAddress = async (query) => {
         );
 
         // Filter and process districts based on the query
-        const districtResults = districts
+        const districtResults = districts.map((item) => ({
+            districts: {
+                id: item.id,
+                district_name: capitalizeWords(item.name),
+            },
+        }));
+
+        const districtId = districtResults[0].districts.id;
+
+        // Fetch villages based on the district ID
+        const villages = await fetchData(
+            `${API_BASE_URL}/villages/${districtId}.json`
+        );
+
+        // Process village data
+        const villageResults = villages
             .filter((item) =>
                 item.name.toLowerCase().includes(query.toLowerCase())
             )
+            .slice(0, 5)
             .map((item) => ({
-                districts: {
-                    id: item.id,
-                    district_name: capitalizeWords(item.name),
+                villages: {
+                    district_id: item.district_id,
+                    village_name: capitalizeWords(item.name),
                 },
+                ...districtResults[0],
                 city: "Kediri",
                 province: "Jawa Timur",
             }));
 
-        if (districtResults.length > 0) {
-            const districtId = districtResults[0].districts.id;
+        console.log("Final Result:", villageResults);
 
-            // Fetch villages based on the district ID
-            const villages = await fetchData(
-                `${API_BASE_URL}/villages/${districtId}.json`
-            );
-
-            // Process village data
-            const villageResults = villages
-                .filter((item) =>
-                    item.name.toLowerCase().includes(query.toLowerCase())
-                )
-                .map((item) => ({
-                    district_id: item.district_id,
-                    name: capitalizeWords(item.name),
-                }));
-
-            // Compile final result
-            const finalResult = {
-                city: districtResults[0].city,
-                districts: districtResults[0].districts,
-                province: districtResults[0].province,
-                villages: villageResults,
-            };
-
-            console.log("Final Result:", finalResult);
-        } else {
-            console.log("No districts found matching the query.");
-        }
-
-        // Update search results (assuming searchResults is a ref)
-        searchResults.value = districtResults;
+        searchResults.value = villageResults;
     } catch (error) {
         console.error("Error in onKeyUpAddress:", error);
     }
@@ -327,7 +314,7 @@ const getSearchResultAdress = () => {
  */
 const selectedAddress = (address = {}) => {
     // First set the address
-    form.user_address = `${address.district}, ${address.city}, ${address.province}`; // You can also set this to an object if needed
+    form.user_address = `${address.village}, ${address.district}, ${address.city}, ${address.province}`; // You can also set this to an object if needed
 
     // Then hide the search results
     showResults.value = false;
