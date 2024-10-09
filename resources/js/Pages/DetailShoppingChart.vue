@@ -378,11 +378,9 @@ const checkoutItems = (shoppingChartItemsIds = [], e) => {
         try {
             isSubmitting.value = true;
             setTimeout(function () {
-                Inertia.get(
-                    route("checkout", {
-                        selectCake: shoppingChartItemsIds,
-                    })
-                );
+                Inertia.post(route("checkout"), {
+                    selectCake: shoppingChartItemsIds,
+                });
                 isSubmitting.value = false;
             }, 2000);
         } catch (error) {

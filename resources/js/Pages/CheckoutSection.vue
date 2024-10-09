@@ -100,7 +100,7 @@
                     </section>
                 </section>
                 <form
-                    @submit.prevent="submit"
+                    @submit.prevent=""
                     class="h-fit w-[700px] rounded-lg px-8 py-6 flex flex-col gap-4 bg-neutral border border-white"
                 >
                     <h1 class="text-4xl text-white font-bold">Checkout</h1>
@@ -188,7 +188,7 @@ import BaseLabel from "@/Components/BaseLabel.vue";
 import PreviewSearchAddress from "@/Components/PreviewSearchAddress.vue";
 
 import { useForm } from "@inertiajs/inertia-vue3";
-import { ref, reactive, computed } from "vue";
+import { ref, computed } from "vue";
 import axios from "axios";
 import { debounce } from "lodash";
 import { Inertia } from "@inertiajs/inertia";
@@ -199,29 +199,106 @@ const props = defineProps({
 
 const showResults = ref(false);
 const searchResults = ref([]);
-
 const showSeachAddress = computed(() => {
     return showResults.value && form.user_address.length > 0;
 });
+
+const API_BASE_URL = "https://www.emsifa.com/api-wilayah-indonesia/api";
+
+/**
+ * Fetch data from given URL.
+ *
+ * @param {string} url
+ * @returns {Promise<Object>}
+ * @throws {Error}
+ */
+const fetchData = async (url) => {
+    try {
+        const response = await axios.get(url);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching data from ${url}:`, error);
+        throw error;
+    }
+};
 
 /**
  * Fetches search results based on the user's input address and updates the searchResults and showResults variables.
  *
  * @return {Promise<void>} - A Promise that resolves when the search results are fetched and the variables are updated.
  */
+
+/**
+ * Capitalizes the first letter of each word in a given string.
+ *
+ * @param {string} str
+ * @returns {string}
+ */
+const capitalizeWords = (str) =>
+    str
+        .toLowerCase()
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+
+/**
+ * Handles keyup event on address input field and fetches search results based on the input query.
+ *
+ * @param {string} query - The user's input query.
+ * @return {Promise<void>} - A Promise that resolves when the search results are fetched and updated.
+ */
 const onKeyUpAddress = async (query) => {
     try {
-        const config = {
-            method: "get",
-            url: `https://api.geoapify.com/v1/geocode/autocomplete?text=${query}&apiKey=8f6a39785d72465ab4ea84a0870970ef`,
-            headers: {},
-        };
+        // Fetch data from all endpoints
+        const districts = await fetchData(
+            `${API_BASE_URL}/districts/3506.json`
+        );
 
-        const response = await axios(config);
+        // Filter and process districts based on the query
+        const districtResults = districts
+            .filter((item) =>
+                item.name.toLowerCase().includes(query.toLowerCase())
+            )
+            .map((item) => ({
+                districts: {
+                    id: item.id,
+                    district_name: capitalizeWords(item.name),
+                },
+                city: "Kediri",
+                province: "Jawa Timur",
+            }));
 
-        searchResults.value = response.data.features;
+        if (districtResults.length > 0) {
+            const districtId = districtResults[0].districts.id;
+
+            // Fetch villages based on the district ID
+            const villages = await fetchData(
+                `${API_BASE_URL}/villages/${districtId}.json`
+            );
+
+            // Process village data
+            const villageResults = villages.map((item) => ({
+                district_id: item.district_id,
+                name: item.name,
+            }));
+
+            // Compile final result
+            const finalResult = {
+                city: districtResults[0].city,
+                districts: districtResults[0].districts,
+                province: districtResults[0].province,
+                villages: villageResults,
+            };
+
+            console.log("Final Result:", finalResult);
+        } else {
+            console.log("No districts found matching the query.");
+        }
+
+        // Update search results (assuming searchResults is a ref)
+        searchResults.value = districtResults;
     } catch (error) {
-        console.log(error);
+        console.error("Error in onKeyUpAddress:", error);
     }
 };
 
@@ -240,13 +317,13 @@ const getSearchResultAdress = () => {
 };
 
 /**
- * Sets the selected address to the given address and hides the search results.
+ * Sets the selected address in the form and hides the search results.
  *
- * @param {string} address - The selected address.
+ * @param {object} [address={}] - The selected address object containing the district, city, and province.
  */
-const selectedAddress = (address) => {
+const selectedAddress = (address = {}) => {
     // First set the address
-    form.user_address = address;
+    form.user_address = `${address.district}, ${address.city}, ${address.province}`; // You can also set this to an object if needed
 
     // Then hide the search results
     showResults.value = false;
@@ -306,8 +383,6 @@ const form = useForm({
     user_address: "",
     cake_recipent: "",
 });
-
-console.log(typeof form);
 
 const disableCheckout = computed(() => {
     // return form.

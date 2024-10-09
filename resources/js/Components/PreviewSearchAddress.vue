@@ -6,11 +6,20 @@
             <div
                 class="flex items-center gap-2 w-full hover:bg-neutral cursor-pointer p-2"
                 v-for="item in results"
-                :key="item.properties.place_id"
-                @click="selectAddress(item.properties.formatted)"
+                :key="item.districts.id"
+                @click="
+                    selectAddress({
+                        district: item.districts.district_name,
+                        city: item.city,
+                        province: item.province,
+                    })
+                "
             >
                 <IconAddress />
-                <p>{{ item.properties.formatted ?? "properties wrong" }}</p>
+                <p class="font-bold">
+                    {{ item.districts.district_name }}, {{ item.city }},
+                    {{ item.province }}
+                </p>
             </div>
         </div>
     </div>

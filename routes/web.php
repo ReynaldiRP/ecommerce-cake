@@ -69,11 +69,11 @@ Route::middleware(['auth'])->group(function () {
     // Additional frontend controller routes
     Route::controller(FrontEndController::class)->group(function () {
         Route::get('/home/{cakeId}/detail-product', 'detailProduct')->name('detail-product'); // Cake detail product
-        Route::get('/home/detail-chart/checkout', 'checkout')->name('checkout'); // Checkout page
+        Route::post('/home/detail-chart/checkout', 'checkout')->name('checkout'); // Checkout page
     });
 
     // Inertia route for detail shopping chart
-    Route::inertia('/detail-chart', 'DetailShoppingChart')->name('detail-chart'); // Shopping cart detail
+    Route::inertia('/home/detail-chart', 'DetailShoppingChart')->name('detail-chart'); // Shopping cart detail
 
     // Logout route
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout'); // Logout
