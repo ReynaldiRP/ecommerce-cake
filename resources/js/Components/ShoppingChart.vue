@@ -88,7 +88,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import EmptyShoppingChart from "@/Components/EmptyShoppingChart.vue";
 
@@ -107,10 +107,9 @@ const chartItemsLength = computed(() => {
  * @param {Array} newCartItems - The new items to be added to the shopping chart.
  * @return {void}
  */
-const updateCartItems = (newCartItems = []) => {
-    chartItems.value = [...chartItems.value, ...newCartItems];
+const updateCartItems = (event) => {
+    chartItems.value = [...chartItems.value, ...event.detail.cartItems];
 };
-
 
 /**
  * Deletes items from the shopping chart by their IDs.
@@ -132,13 +131,15 @@ const deleteCartItems = (deletedItemId = []) => {
 };
 
 onMounted(() => {
-    window.addEventListener("update:cartItemCount", (event) => {
-        updateCartItems(event.detail.cartItems);
-    });
+    window.addEventListener("update:cartItemCount", updateCartItems);
 
     window.addEventListener("delete:cartItem", (event) => {
         deleteCartItems(event.detail.deletedItemId);
     });
+});
+
+onUnmounted(() => {
+    window.removeEventListener("update:cartItemCount", updateCartItems);
 });
 
 /**

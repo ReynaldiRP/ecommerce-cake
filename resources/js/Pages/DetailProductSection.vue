@@ -38,7 +38,7 @@
                 />
             </section>
             <form
-                @submit.prevent="submit"
+                @submit.prevent="addItemToChart"
                 class="h-full w-full flex flex-col justify-center px-8 py-10 mt-10 gap-6"
             >
                 <input type="text" hidden v-model="form.cake_id" />
@@ -189,9 +189,18 @@ const isCakeCustomized = computed(() => {
 });
 
 /**
- * Adds an item to the chart.
+ * Submits the form to add a new item to the shopping cart.
  *
- * @return {Promise<void>} - A promise that resolves when the item is added to the chart.
+ * This function performs an AJAX POST request to the route "add-chart-item" with the form data.
+ * On success, it updates the chartItem state with the new item, sets the success message and
+ * shows the PreviewChartItem component.
+ *
+ * If there is an error, it sets the errorResponses state with the error messages and scrolls
+ * the page to the top.
+ *
+ * It also dispatches a custom event "update:cartItemCount" with the new cart items count.
+ *
+ * @return {Promise<void>}
  */
 const addItemToChart = async () => {
     try {
@@ -200,44 +209,31 @@ const addItemToChart = async () => {
         chartItem.value = response.data.cartItem;
         succesMessage.value = response.data.message;
 
-        window.dispatchEvent(
-            new CustomEvent("update:cartItemCount", {
-                detail: {
-                    cartItems: response.data.cartItems,
-                },
-            })
-        );
-
-        return response.data;
-    } catch (error) {
-        return { error: true, message: error.response.data.errors };
-    }
-};
-
-/**
- * Submits the form and adds the item to the chart after a 3-second delay.
- *
- * @return {void}
- */
-const submit = async () => {
-    try {
         isSubmitting.value = true;
-        console.log(form);
-
-        const results = await addItemToChart();
 
         setTimeout(function () {
             isSubmitting.value = false;
-            window.scrollTo({ top: 0, behavior: "smooth" });
 
-            if (results && !results.error) {
-                isPreviewOpen.value = true;
-            } else {
-                errorResponses.value = results.message;
-            }
+            isPreviewOpen.value = true;
+            errorResponses.value = {};
+
+            window.dispatchEvent(
+                new CustomEvent("update:cartItemCount", {
+                    detail: {
+                        cartItems: response.data.cartItems,
+                    },
+                })
+            );
         }, 2000);
     } catch (error) {
-        console.error("Request failed:", error);
+        isSubmitting.value = true;
+
+        setTimeout(function () {
+            isSubmitting.value = false;
+
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            errorResponses.value = error.response.data.errors;
+        }, 2000);
     }
 };
 </script>

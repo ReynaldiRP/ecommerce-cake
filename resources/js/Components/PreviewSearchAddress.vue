@@ -5,6 +5,7 @@
         <div class="flex flex-col gap-2">
             <div
                 class="flex items-center gap-2 w-full hover:bg-neutral cursor-pointer p-2"
+                v-if="results.length > 0"
                 v-for="item in results"
                 :key="item.villages.id"
                 @click="
@@ -23,6 +24,7 @@
                     {{ item.province }}
                 </p>
             </div>
+            <p v-else class="font-bold">Address not found!</p>
         </div>
     </div>
 </template>
