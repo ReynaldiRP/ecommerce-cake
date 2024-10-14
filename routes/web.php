@@ -86,6 +86,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::controller(OrderController::class)->group(function () {
         Route::post('/add-order', 'createOrderItem')->name('add-order');
+        Route::post('/payments', 'payments')->name('payments');
     });
 });
 

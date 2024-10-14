@@ -1,6 +1,7 @@
 <template>
     <div
         class="w-full h-fit py-2 px-4 rounded-b-lg border border-[#383F47] bg-base-100 outline outline-[#383F47] outline-offset-2"
+        :ref="addressResultsContainer"
     >
         <div class="flex flex-col gap-2">
             <div
@@ -31,6 +32,7 @@
 
 <script setup>
 import IconAddress from "@/Components/Icons/IconAddress.vue";
+import { ref } from "vue";
 
 defineProps({
     results: {
@@ -40,6 +42,10 @@ defineProps({
     selectAddress: {
         type: Function,
         default: () => {},
+    },
+    addressResultsContainer: {
+        type: String,
+        default: null,
     },
 });
 </script>

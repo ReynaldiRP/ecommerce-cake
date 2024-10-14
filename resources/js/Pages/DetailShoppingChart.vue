@@ -318,8 +318,6 @@ const deleteItem = async (id) => {
         // If multiple items are selected, delete them all
         const itemsToDelete = selectedItems.length > 0 ? selectedItems : [id]; // If no selected items, delete the single one
 
-        console.log("itemsToDelete: ", itemsToDelete);
-
         const response = await axios.delete(route("delete-cart-item"), {
             data: {
                 selectCake: itemsToDelete, // Send either multiple items or a single item in the array
@@ -336,6 +334,7 @@ const deleteItem = async (id) => {
             chartItems.value = chartItems.value.filter(
                 (item) => !itemsToDelete.includes(item.id)
             );
+
             totalPrice.value = 0;
         }, 500);
 

@@ -100,7 +100,7 @@
                     </section>
                 </section>
                 <form
-                    @submit.prevent=""
+                    @submit.prevent="submit"
                     class="h-fit w-[700px] rounded-lg px-8 py-6 flex flex-col gap-4 bg-neutral border border-white"
                 >
                     <h1 class="text-4xl text-white font-bold">Checkout</h1>
@@ -121,7 +121,11 @@
                                 v-model="form.estimated_delivery_date"
                             />
                         </article>
-                        <article class="flex flex-col gap-2">
+                        <article
+                            class="flex flex-col gap-2"
+                            @click="handleClickOutsideAddressContainer"
+                            ref="addressContainer"
+                        >
                             <section class="flex gap-1 items-center">
                                 <BaseLabel
                                     label="Shipping Address"
@@ -148,6 +152,9 @@
                                 v-if="showSeachAddress"
                                 :results="searchResults"
                                 :selectAddress="selectedAddress"
+                                :addressResultsContainer="
+                                    addressResultsContainer
+                                "
                             />
                         </article>
                         <article class="flex flex-col gap-2">
@@ -164,12 +171,8 @@
                             name="chartItems"
                         />
                         <button
-                            class="btn bg-primary-color text-base-300 hover:text-white"
-                            :class="
-                                chartItems.length <= 0
-                                    ? 'bg-gray-400 hover:bg-gray-400 cursor-not-allowed'
-                                    : 'bg-primary-color hover:bg-primary-color hover:opacity-65 hover:text-slate-500 border-none'
-                            "
+                            class="btn"
+                            :class="disableCheckout"
                             type="submit"
                         >
                             Place Order
@@ -188,7 +191,7 @@ import BaseLabel from "@/Components/BaseLabel.vue";
 import PreviewSearchAddress from "@/Components/PreviewSearchAddress.vue";
 
 import { useForm } from "@inertiajs/inertia-vue3";
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import axios from "axios";
 import { debounce } from "lodash";
 import { Inertia } from "@inertiajs/inertia";
@@ -202,6 +205,9 @@ const searchResults = ref([]);
 const showSeachAddress = computed(() => {
     return showResults.value && form.user_address.length > 0;
 });
+
+const addressContainer = ref(null);
+const addressResultsContainer = ref(null);
 
 const API_BASE_URL = "https://www.emsifa.com/api-wilayah-indonesia/api";
 
@@ -375,16 +381,85 @@ const form = useForm({
     cake_recipent: "",
 });
 
-const disableCheckout = computed(() => {
-    // return form.
+const disableCheckout = computed(() =>
+    [form.estimated_delivery_date, form.user_address, form.cake_recipent].every(
+        (field) => field !== ""
+    )
+        ? "bg-primary-color text-base-300 hover:text-white"
+        : "bg-gray-400 hover:bg-gray-400 text-base-300 cursor-not-allowed"
+);
+
+/**
+ * Hides the address search results container when the user clicks outside of it.
+ *
+ * @param {object} event - The event object containing information about the click
+ */
+const handleClickOutsideAddressContainer = (event) => {
+    if (
+        addressContainer.value &&
+        !addressContainer.value.contains(event.target)
+    ) {
+        showResults.value = false;
+    }
+};
+
+// Add the event listener when the component mounts
+onMounted(() => {
+    document.addEventListener("click", handleClickOutsideAddressContainer);
 });
 
-const submit = () => {
-    Inertia.post(route("add-order"), {
-        chartItems: form.chartItems,
-        estimated_delivery_date: form.estimated_delivery_date,
-        user_address: form.user_address,
-        cake_recipent: form.cake_recipent,
-    });
+// Clean up the event listener when the component is unmounted
+onUnmounted(() => {
+    document.removeEventListener("click", handleClickOutsideAddressContainer);
+});
+
+/**
+ * Submits the checkout form.
+ *
+ * @param {object} e - The event object containing information about the form submission
+ *
+ * @returns {void}
+ */
+const submit = async (e) => {
+    try {
+        // Destructure the form data
+        const {
+            estimated_delivery_date,
+            user_address,
+            cake_recipent,
+            chartItems,
+        } = form;
+
+        // Check if all fields are filled in
+        if (estimated_delivery_date === undefined) {
+            console.error("estimated_delivery_date is undefined");
+            return e.preventDefault();
+        }
+        if (user_address === undefined) {
+            console.error("user_address is undefined");
+            return e.preventDefault();
+        }
+        if (cake_recipent === undefined) {
+            console.error("cake_recipent is undefined");
+            return e.preventDefault();
+        }
+
+        // If all fields are filled in, submit the form
+        const response = await axios.post(route("payments"), {
+            estimated_delivery_date,
+            user_address,
+            cake_recipent,
+            chartItems,
+        });
+
+        // Check if there is a redirect URL
+        if (response.data.redirect_url) {
+            window.location.href = response.data.redirect_url;
+        } else {
+            console.error("No redirect URL found");
+        }
+    } catch (error) {
+        console.error(error);
+    }
 };
 </script>

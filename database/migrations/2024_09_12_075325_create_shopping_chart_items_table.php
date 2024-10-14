@@ -17,17 +17,17 @@ return new class extends Migration
                 table: 'shopping_charts',
                 column: 'id',
                 indexName: 'shopping_chart_items_shopping_chart_id_index',
-            );
+            )->cascadeOnDelete();
             $table->foreignId('cake_id')->constrained(
                 table: 'cakes',
                 column: 'id',
                 indexName: 'shopping_chart_items_cake_id_index',
-            );
+            )->cascadeOnDelete();
             $table->foreignId('cake_flavour_id')->nullable()->constrained(
                 table: 'flavours',
                 column: 'id',
                 indexName: 'shopping_chart_items_cake_flavour_id_index',
-            );
+            )->cascadeOnDelete();
             $table->integer('quantity');
             $table->double('price');
             $table->timestamps();

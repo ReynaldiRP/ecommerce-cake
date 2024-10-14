@@ -17,12 +17,12 @@ return new class extends Migration
                 table: 'shopping_chart_items',
                 column: 'id',
                 indexName: 'shopping_chart_item_topping_shopping_chart_item_id_index',
-            );
+            )->cascadeOnDelete();
             $table->foreignId('topping_id')->constrained(
                 table: 'toppings',
                 column: 'id',
                 indexName: 'shopping_chart_item_topping_topping_id_index'
-            );
+            )->cascadeOnDelete();
             $table->timestamps();
         });
     }

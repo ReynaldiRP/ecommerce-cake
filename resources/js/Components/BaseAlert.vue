@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { defineProps, computed } from "vue";
+import { computed } from "vue";
 import IconAlertError from "@/Components/Icons/IconAlertError.vue";
 import IconAlertSuccess from "@/Components/Icons/IconAlertSuccess.vue";
 import IconAlertInfo from "@/Components/Icons/IconAlertInfo.vue";

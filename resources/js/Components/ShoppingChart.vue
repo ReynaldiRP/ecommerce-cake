@@ -130,9 +130,13 @@ const deleteCartItems = (deletedItemId = []) => {
     }
 };
 
+// This function is called when the component is mounted.
+// It adds event listeners to the window object.
 onMounted(() => {
+    // The first event listener listens for the "update:cartItemCount" event and calls the updateCartItems function when triggered.
     window.addEventListener("update:cartItemCount", updateCartItems);
 
+    // The second event listener listens for the "delete:cartItem" event and calls the deleteCartItems function with the deletedItemId from the event detail when triggered.
     window.addEventListener("delete:cartItem", (event) => {
         deleteCartItems(event.detail.deletedItemId);
     });
@@ -140,6 +144,10 @@ onMounted(() => {
 
 onUnmounted(() => {
     window.removeEventListener("update:cartItemCount", updateCartItems);
+
+    window.removeEventListener("delete:cartItem", (event) => {
+        deleteCartItems(event.detail.deletedItemId);
+    });
 });
 
 /**

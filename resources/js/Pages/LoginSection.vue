@@ -102,13 +102,15 @@
 
 <script setup>
 import { ref, reactive } from "vue";
-import { useForm } from "@inertiajs/inertia-vue3";
+import { useForm, usePage } from "@inertiajs/inertia-vue3";
 import Auth from "@/Layouts/Auth.vue";
 import BaseInput from "@/Components/BaseInput.vue";
 import BaseLabel from "@/Components/BaseLabel.vue";
 import BaseAlert from "@/Components/BaseAlert.vue";
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
+
+const page = usePage();
 
 // Properties for error messages in server-side
 defineProps({ errors: Object });
@@ -211,7 +213,9 @@ const onChangePassword = () => {
 const submit = () => {
     isLoading.value = true;
     setTimeout(() => {
-        form.post("/login");
+        form.post("/login", {
+            _token: page.props.value.csrf_token,
+        });
         isLoading.value = false;
     }, 3000);
 };

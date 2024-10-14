@@ -47,7 +47,7 @@ class OrderController extends Controller
             'user_id' => auth()->id(),
             'order_code' => uniqid(),
             'total_price' => 0,
-            'status' => 'pending',
+            'status' => 'Order Confirmed',
             'user_address' => $data['user_address'],
             'cake_recipent' => $data['cake_recipent'],
             'estimated_delivery_date' => $data['estimated_delivery_date'],
@@ -56,6 +56,14 @@ class OrderController extends Controller
 
 
 
+
+    /**
+     * Create a new order and associate it with the current user. The order items are created from the chart items
+     * passed in the request body. The order items are then associated with the order.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function createOrderItem(Request $request): JsonResponse
     {
         // Create the order with additional data
@@ -77,8 +85,8 @@ class OrderController extends Controller
                 'cake_flavour_id' => $chartItem['cake_flavour_id'] ?? null,
                 'quantity' => $chartItem['quantity'],
                 'price' => $chartItem['price'],
-            ]);
 
+            ]);
             // Add the current item's total (price * quantity) to the total order price
             $totalPrice += $orderItem->price;
         }
@@ -95,14 +103,78 @@ class OrderController extends Controller
 
         return response()->json([
             'message' => 'Order item created successfully.',
+            'data' => [
+                'order' => [
+                    'id' => $createOrder->id,
+                    'order_code' => $createOrder->order_code,
+                    'user_address' => $createOrder->user_address,
+                    'cake_recipent' => $createOrder->cake_recipent,
+                    'estimated_delivery_date' => $createOrder->estimated_delivery_date,
+                    'status' => $createOrder->status,
+                    'total_price' => $createOrder->total_price,
+                    'order_items' => $createOrder->orderItems()->with([
+                        'cake',
+                        'cakeFlavour',
+                    ])->get()->toArray(),
+                ],
+            ]
         ]);
     }
 
 
+
     public function payments(Request $request): JsonResponse
     {
-        
 
-        return response()->json(['message' => 'Payment retrieved successfully.']);
+        //Order Details
+        $orderResponse = $this->createOrderItem($request);
+
+        // Get the response data from JsonResponse as an object
+        $orderDetails = $orderResponse->getData();
+
+        if ($orderResponse->status() !== 200) {
+            return response()->json([
+                'message' => 'Order creation failed.',
+                'data' => null,
+            ], 400);
+        }
+
+        // Polpulate items_details array for midtrans
+        $items = [];
+        foreach ($orderDetails->data->order->order_items as $orderItem) {
+            $items[] = [
+                'id' => $orderItem->id,
+                'name' => $orderItem->cake->name,
+                'price' => $orderItem->price,
+                'category' => $orderItem->cake->personalization_type,
+                'quantity' => $orderItem->quantity,
+            ];
+        }
+
+        $payload = [
+            'transaction_details' => [
+                'order_id'     => $orderDetails->data->order->order_code,
+                'gross_amount' => $orderDetails->data->order->total_price,
+            ],
+            'customer_details' => [
+                'first_name' => $orderDetails->data->order->cake_recipent,
+                'email'      => auth()->user()->email,
+                'phone' => auth()->user()->phone_number,
+                'shipping_address' => [
+                    'address' => $orderDetails->data->order->user_address
+                ]
+            ],
+            'item_details' => $items
+        ];
+
+        // Create SnapToken
+        $snapToken = \Midtrans\Snap::getSnapToken($payload);
+
+        return response()->json([
+            'message' => 'Payment Processed',
+            'order_details'  => $payload,
+            'snap_token'     => $snapToken,
+            'redirect_url'   => 'https://app.sandbox.midtrans.com/snap/v2/vtweb/' . $snapToken,
+        ]);
     }
 }

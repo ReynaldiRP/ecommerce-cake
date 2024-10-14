@@ -49,6 +49,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'search' => $searchData,
             'shoppingChartItems' => $cartItems,
+            'csrf_token' => csrf_token(),
         ]);
     }
 

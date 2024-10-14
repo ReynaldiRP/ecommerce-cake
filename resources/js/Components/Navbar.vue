@@ -27,38 +27,6 @@
                 <ShoppingChart />
                 <NotificationUser :link="route('order.status')" />
             </section>
-
-            <!-- <div
-                class="dropdown dropdown-end"
-                :class="user ? 'block' : 'hidden'"
-            >
-                <div
-                    tabindex="0"
-                    role="button"
-                    class="btn btn-ghost btn-circle avatar"
-                >
-                    <div
-                        class="w-10 rounded-full ring ring-primary-color ring-offset-base-100 ring-offset-2"
-                    >
-                        <img
-                            alt="Tailwind CSS Navbar component"
-                            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-                        />
-                    </div>
-                </div>
-                <ul
-                    tabindex="0"
-                    class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-                >
-                    <li>
-                        <a class="justify-between"> Profile </a>
-                    </li>
-                    <li><a>Settings</a></li>
-                    <li>
-                        <button @click="logout">Logout</button>
-                    </li>
-                </ul>
-            </div> -->
             <Sidebar
                 :menu="menu"
                 :menuAuthenticated="menuAuthenticated"
@@ -106,7 +74,9 @@ const isLoading = ref(false);
 const logout = () => {
     isLoading.value = true;
     setTimeout(function () {
-        Inertia.post(route("logout"));
+        Inertia.post(route("logout"), {
+            _token: page.props.value.csrf_token,
+        });
         isLoading.value = false;
     }, 3000);
 };

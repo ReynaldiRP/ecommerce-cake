@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineModel, computed } from "vue";
+import { computed } from "vue";
 import IconEmail from "@/Components/Icons/IconEmail.vue";
 import IconPassword from "@/Components/Icons/IconPassword.vue";
 import IconUser from "@/Components/Icons/IconUser.vue";
