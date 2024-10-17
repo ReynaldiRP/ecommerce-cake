@@ -18,12 +18,13 @@ return new class extends Migration
                 column: 'id',
                 indexName: 'order_user_id'
             )->onDelete('cascade');
-            $table->uuid('order_code');
+            $table->uuid('order_code')->unique();
             $table->date('estimated_delivery_date');
             $table->string('user_address', 255);
             $table->string('cake_recipent', 255);
             $table->double('total_price');
             $table->string('status', 255);
+            $table->string('checkout_link')->nullable(); // Link to the payment gateway
             $table->timestamps();
         });
     }

@@ -213,9 +213,7 @@ const onChangePassword = () => {
 const submit = () => {
     isLoading.value = true;
     setTimeout(() => {
-        form.post("/login", {
-            _token: page.props.value.csrf_token,
-        });
+        form.post("/login");
         isLoading.value = false;
     }, 3000);
 };

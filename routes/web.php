@@ -10,6 +10,7 @@ use App\Http\Controllers\FrontEndController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ShoppingChartController;
 
 /*
@@ -86,8 +87,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::controller(OrderController::class)->group(function () {
         Route::post('/add-order', 'createOrderItem')->name('add-order');
-        Route::post('/payments', 'payments')->name('payments');
+        Route::post('/payments', 'redirectPaymentMidtrans')->name('payments');
     });
+
 });
 
 // Guest routes

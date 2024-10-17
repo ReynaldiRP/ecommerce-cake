@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\FrontEndController;
-use App\Http\Controllers\ShoppingChartController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\FrontEndController;
+use App\Http\Controllers\ShoppingChartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('auth')->group(function () {
     Route::get('/shopping-chart-item', [ShoppingChartController::class, 'getShoppingChartItems'])->name('get-cart-item');
 });
+
+Route::post('/webhook/payments', [PaymentController::class, 'midtransWebhook']);
 
 
 

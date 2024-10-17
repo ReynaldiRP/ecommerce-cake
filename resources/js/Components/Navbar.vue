@@ -74,9 +74,7 @@ const isLoading = ref(false);
 const logout = () => {
     isLoading.value = true;
     setTimeout(function () {
-        Inertia.post(route("logout"), {
-            _token: page.props.value.csrf_token,
-        });
+        Inertia.post(route("logout"));
         isLoading.value = false;
     }, 3000);
 };

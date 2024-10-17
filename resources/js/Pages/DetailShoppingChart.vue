@@ -378,6 +378,7 @@ const checkoutItems = (shoppingChartItemsIds = [], e) => {
             isSubmitting.value = true;
             setTimeout(function () {
                 Inertia.post(route("checkout"), {
+                    _token: page.props.value.csrf_token,
                     selectCake: shoppingChartItemsIds,
                 });
                 isSubmitting.value = false;

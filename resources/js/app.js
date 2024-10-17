@@ -5,10 +5,14 @@ import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { Link } from "@inertiajs/inertia-vue3";
 import { ZiggyVue } from "ziggy-js";
 import { createPinia } from "pinia";
+import axios from "axios";
 
 import VueEasyLightbox from "vue-easy-lightbox";
 
 const pinia = createPinia();
+
+// Set the base URL for Axios
+axios.defaults.baseURL = window.baseUrl;
 
 createInertiaApp({
     resolve: async (name) => {

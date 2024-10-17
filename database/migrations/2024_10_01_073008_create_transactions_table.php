@@ -18,9 +18,7 @@ return new class extends Migration
                 column: 'id',
                 indexName: 'transaction_payment_id'
             )->onDelete('cascade');
-            $table->double('amount'); // The amount involved in this transaction
             $table->string('transaction_status'); // e.g., 'success', 'failed', 'pending'
-            $table->string('snap_token')->nullable(); // The snap token
             $table->timestamps();
         });
     }

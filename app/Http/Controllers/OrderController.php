@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Order\StoreOrderRequest;
+
 use App\Models\Order;
-use App\Models\ShoppingChartItem;
-use Illuminate\Http\JsonResponse;
-use App\Http\Requests\OrderItem\StoreOrderItemRequest;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use App\Models\ShoppingChartItem;
+use Illuminate\Http\JsonResponse;
+
 
 class OrderController extends Controller
 {
@@ -123,58 +123,68 @@ class OrderController extends Controller
 
 
 
-    public function payments(Request $request): JsonResponse
+
+
+    public function redirectPaymentMidtrans(Request $request): JsonResponse
     {
+        try {
+            //Order Details
+            $orderResponse = $this->createOrderItem($request);
 
-        //Order Details
-        $orderResponse = $this->createOrderItem($request);
+            // Get the response data from JsonResponse as an object
+            $orderDetails = $orderResponse->getData();
 
-        // Get the response data from JsonResponse as an object
-        $orderDetails = $orderResponse->getData();
+            if ($orderResponse->status() !== 200) {
+                return response()->json([
+                    'message' => 'Order creation failed.',
+                    'data' => null,
+                ], 400);
+            }
 
-        if ($orderResponse->status() !== 200) {
-            return response()->json([
-                'message' => 'Order creation failed.',
-                'data' => null,
-            ], 400);
-        }
+            // Polpulate items_details array for midtrans
+            $items = [];
+            foreach ($orderDetails->data->order->order_items as $orderItem) {
+                $items[] = [
+                    'id' => $orderItem->id,
+                    'name' => $orderItem->cake->name,
+                    'price' => $orderItem->price,
+                    'category' => $orderItem->cake->personalization_type,
+                    'quantity' => $orderItem->quantity,
+                ];
+            }
 
-        // Polpulate items_details array for midtrans
-        $items = [];
-        foreach ($orderDetails->data->order->order_items as $orderItem) {
-            $items[] = [
-                'id' => $orderItem->id,
-                'name' => $orderItem->cake->name,
-                'price' => $orderItem->price,
-                'category' => $orderItem->cake->personalization_type,
-                'quantity' => $orderItem->quantity,
+            // Create payload for midtrans
+            $payload = [
+                'transaction_details' => [
+                    'order_id'     => $orderDetails->data->order->order_code,
+                    'gross_amount' => $orderDetails->data->order->total_price,
+                ],
+                'customer_details' => [
+                    'first_name' => $orderDetails->data->order->cake_recipent,
+                    'email'      => auth()->user()->email,
+                    'phone' => auth()->user()->phone_number,
+                    'shipping_address' => [
+                        'address' => $orderDetails->data->order->user_address
+                    ]
+                ],
+                'item_details' => $items,
             ];
+
+            // Get Snap Payment Page URL
+            $paymentUrl = \Midtrans\Snap::createTransaction($payload)->redirect_url;
+
+            // Return the payment page URL
+            return response()->json([
+                'success' => true,
+                'paymentUrl' => $paymentUrl
+            ]);
+        } catch (\Throwable $th) {
+            // Return error response
+            return response()->json([
+                'success' => false,
+                'message' => 'Payment creation failed. Please try again.',
+                'error' => $th->getMessage()
+            ], 500);
         }
-
-        $payload = [
-            'transaction_details' => [
-                'order_id'     => $orderDetails->data->order->order_code,
-                'gross_amount' => $orderDetails->data->order->total_price,
-            ],
-            'customer_details' => [
-                'first_name' => $orderDetails->data->order->cake_recipent,
-                'email'      => auth()->user()->email,
-                'phone' => auth()->user()->phone_number,
-                'shipping_address' => [
-                    'address' => $orderDetails->data->order->user_address
-                ]
-            ],
-            'item_details' => $items
-        ];
-
-        // Create SnapToken
-        $snapToken = \Midtrans\Snap::getSnapToken($payload);
-
-        return response()->json([
-            'message' => 'Payment Processed',
-            'order_details'  => $payload,
-            'snap_token'     => $snapToken,
-            'redirect_url'   => 'https://app.sandbox.midtrans.com/snap/v2/vtweb/' . $snapToken,
-        ]);
     }
 }

@@ -420,7 +420,7 @@ onUnmounted(() => {
  *
  * @returns {void}
  */
-const submit = async (e) => {
+const submit = (e) => {
     try {
         // Destructure the form data
         const {
@@ -445,19 +445,32 @@ const submit = async (e) => {
         }
 
         // If all fields are filled in, submit the form
-        const response = await axios.post(route("payments"), {
-            estimated_delivery_date,
-            user_address,
-            cake_recipent,
-            chartItems,
-        });
-
-        // Check if there is a redirect URL
-        if (response.data.redirect_url) {
-            window.location.href = response.data.redirect_url;
-        } else {
-            console.error("No redirect URL found");
-        }
+        axios.post(
+            route("payments"),
+            {
+                estimated_delivery_date,
+                user_address,
+                cake_recipent,
+                chartItems,
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+            }
+        )
+            .then((response) => {
+                if (response.data.success) {
+                    // Redirect to Midtrans payment page
+                    window.location.href = response.data.paymentUrl;
+                } else {
+                    // Handle error
+                    console.error(response.data.message);
+                    // You might want to show an error message to the user here
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
     } catch (error) {
         console.error(error);
     }
