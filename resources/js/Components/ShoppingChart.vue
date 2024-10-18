@@ -1,6 +1,16 @@
 <template>
-    <div class="dropdown dropdown-hover dropdown-end">
-        <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+    <component
+        :is="isMobileDisplayed ? 'inertia-link' : 'div'"
+        @click="checkCurrentUrl"
+        :class="{
+            'dropdown dropdown-hover dropdown-end': !isMobileDisplayed,
+        }"
+    >
+        <div
+            :tabindex="isMobileDisplayed ? null : '0'"
+            :role="isMobileDisplayed ? null : 'button'"
+            class="btn btn-ghost btn-circle"
+        >
             <div class="indicator">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -24,7 +34,11 @@
         <div
             v-if="chartItems.length > 0"
             tabindex="0"
-            class="card card-compact dropdown-content w-96 max-h-96 bg-base-100 shadow overflow-auto"
+            :class="{
+                'card card-compact dropdown-content w-96 max-h-96 bg-base-100 shadow overflow-auto':
+                    !isMobileDisplayed,
+                hidden: isMobileDisplayed,
+            }"
         >
             <div class="card-body border-b-2 border-neutral">
                 <div class="flex justify-between items-center">
@@ -83,14 +97,15 @@
                 </inertia-link>
             </div>
         </div>
-        <EmptyShoppingChart v-else />
-    </div>
+        <EmptyShoppingChart :is-mobile-displayed="isMobileDisplayed" v-else />
+    </component>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import EmptyShoppingChart from "@/Components/EmptyShoppingChart.vue";
+import { Inertia } from "@inertiajs/inertia";
 
 const page = usePage();
 const chartItems = ref(
@@ -100,6 +115,9 @@ const chartItems = ref(
 const chartItemsLength = computed(() => {
     return chartItems.value.length;
 });
+
+const isMobileDisplayed = ref(false);
+const pageWidth = ref(window.innerWidth);
 
 /**
  * Updates the shopping chart items by appending new items to the existing list.
@@ -135,19 +153,24 @@ const deleteCartItems = (deletedItemId = []) => {
 onMounted(() => {
     // The first event listener listens for the "update:cartItemCount" event and calls the updateCartItems function when triggered.
     window.addEventListener("update:cartItemCount", updateCartItems);
-
     // The second event listener listens for the "delete:cartItem" event and calls the deleteCartItems function with the deletedItemId from the event detail when triggered.
     window.addEventListener("delete:cartItem", (event) => {
         deleteCartItems(event.detail.deletedItemId);
     });
+
+    pageWidth.value = window.innerWidth;
+    handleRezize();
+
+    window.addEventListener("resize", handleRezize);
 });
 
 onUnmounted(() => {
     window.removeEventListener("update:cartItemCount", updateCartItems);
-
     window.removeEventListener("delete:cartItem", (event) => {
         deleteCartItems(event.detail.deletedItemId);
     });
+
+    window.addEventListener("resize", handleRezize);
 });
 
 /**
@@ -169,4 +192,47 @@ const getToppingNameBasedChartItem = (chartItemId) => {
 
     return item.cake_topping.map((topping) => topping.name).join(", ");
 };
+
+/**
+ * Handles the resize event by updating the page width value with the current inner width of the window.
+ */
+const handleRezize = () => {
+    pageWidth.value = window.innerWidth;
+
+    if (pageWidth.value <= 640) {
+        isMobileDisplayed.value = true;
+    } else {
+        isMobileDisplayed.value = false;
+    }
+};
+
+/**
+ * Checks the current URL to see if it includes "order-history".
+ * If not, it redirects to the "order.history" route.
+ * Prevents the default action of the event.
+ *
+ * @param {Event} e - The event object.
+ */
+const checkCurrentUrl = (e) => {
+    const currentUrl = window.location.href;
+
+    console.log(currentUrl);
+
+    if (currentUrl.includes("detail-chart")) {
+        // Prevent default navigation if already on the detail-chart page
+        e.preventDefault();
+        return;
+    } else {
+        // Use Inertia to navigate to the "detail-chart" route
+        Inertia.visit(route("detail-chart"));
+    }
+};
+
+watch(pageWidth, (newWidth) => {
+    if (newWidth <= 640) {
+        isMobileDisplayed.value = true;
+    } else {
+        isMobileDisplayed.value = false;
+    }
+});
 </script>

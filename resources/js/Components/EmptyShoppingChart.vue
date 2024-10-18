@@ -1,7 +1,11 @@
 <template>
     <div
         tabindex="0"
-        class="card card-compact dropdown-content w-96 bg-base-100 shadow"
+        :class="{
+            'card card-compact dropdown-content w-96 bg-base-100 shadow':
+                !isMobileDisplayed,
+            hidden: isMobileDisplayed,
+        }"
     >
         <div class="card-body">
             <div class="flex flex-col gap-1">
@@ -27,4 +31,11 @@
     </div>
 </template>
 
-<script setup></script>
+<script setup>
+defineProps({
+    isMobileDisplayed: {
+        type: Boolean,
+        default: false,
+    },
+});
+</script>

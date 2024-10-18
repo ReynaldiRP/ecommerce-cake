@@ -34,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
             Route::redirect('/', '/home'); // Redirect root to home
             Route::get('/home', 'index')->name('home'); // Home page
             Route::get('/home/products', 'products')->name('products'); // Products page
+            Route::inertia('/home/order-history', 'OrderHistorySection')->name('order.history');
         });
 
         // Inertia route for order status section
@@ -89,7 +90,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/add-order', 'createOrderItem')->name('add-order');
         Route::post('/payments', 'redirectPaymentMidtrans')->name('payments');
     });
-
 });
 
 // Guest routes

@@ -6,7 +6,7 @@
     >
         <div class="navbar-start gap-3">
             <div class="avatar">
-                <div class="w-24 lg:w-16 rounded-full">
+                <div class="w-16 rounded-full">
                     <img
                         src="/assets/image/logo-dreamdessert.webp"
                         alt="ini gambar"
@@ -15,15 +15,15 @@
             </div>
             <inertia-link
                 :href="route('home')"
-                class="text-xl font-bold text-primary-color cursor-pointer"
+                class="text-md font-bold text-primary-color cursor-pointer"
                 >Dream Dessert
             </inertia-link>
         </div>
-        <ul class="navbar-center flex gap-8">
+        <ul class="navbar-center hidden lg:flex gap-8">
             <SearchBar />
         </ul>
-        <div class="navbar-end flex gap-5">
-            <section class="flex justify-center items-center gap-2">
+        <div class="navbar-end flex gap-2">
+            <section class="flex justify-center items-center">
                 <ShoppingChart />
                 <NotificationUser :link="route('order.status')" />
             </section>
