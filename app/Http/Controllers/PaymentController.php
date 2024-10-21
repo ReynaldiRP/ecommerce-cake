@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Payment;
+use App\Mail\PaymentEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
@@ -57,7 +59,7 @@ class PaymentController extends Controller
                 $payment->payment_method = $notification->payment_type;
             }
 
-            
+
             // Update the payment status based on the transaction status
             if ($transaction_status == 'pending') {
                 $payment->payment_status = 'pending';
@@ -67,6 +69,9 @@ class PaymentController extends Controller
 
             // Save the payment (whether new or updated)
             $payment->save();
+
+            // Send email notification
+            Mail::to($order->user->email)->send(new PaymentEmail($order, $payment));
 
             return response('OK', 200);
         } catch (\Exception $e) {

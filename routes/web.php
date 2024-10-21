@@ -1,16 +1,18 @@
 <?php
 
 
+use App\Mail\PaymentEmail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CakeController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\FlavourController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ToppingController;
 use App\Http\Controllers\CakeSizeController;
 use App\Http\Controllers\FrontEndController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ShoppingChartController;
 
 /*
