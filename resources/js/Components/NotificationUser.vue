@@ -24,11 +24,6 @@
                 class="flex justify-between items-center text-base font-medium py-2"
             >
                 <p class="text-lg">Notification</p>
-                <inertia-link
-                    href="#"
-                    class="text-neutral-content/75 hover:text-neutral-content"
-                    >Mark All Notification</inertia-link
-                >
             </div>
             <div
                 class="grid grid-flow-col-dense place-items-center pt-2 px-2 border-b-2 border-base-content"
@@ -69,9 +64,10 @@
             </inertia-link>
             <div class="card-actions my-2">
                 <inertia-link
+                    :href="route('order.history')"
                     class="btn btn-sm bg-primary-color text-slate-700 hover:text-white btn-block"
                 >
-                    View Notification ({{ notification.length }})
+                    View Transaction
                 </inertia-link>
             </div>
         </div>
