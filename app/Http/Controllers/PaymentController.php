@@ -8,6 +8,8 @@ use App\Mail\PaymentEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class PaymentController extends Controller
 {
@@ -78,5 +80,16 @@ class PaymentController extends Controller
             Log::channel('midtrans')->error('Midtrans Notification Error: ' . $e->getMessage());
             return response('Error', 500);
         }
+    }
+
+    public function transactionHistory(): Response
+    {
+        $orders = Order::where('user_id', auth()->id())->with('payment')->get();
+
+        dd($orders);
+
+        return Inertia::render('OrderHistorySection', [
+            'orders' => $orders,
+        ]);
     }
 }

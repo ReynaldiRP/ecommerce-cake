@@ -64,7 +64,7 @@
             </inertia-link>
             <div class="card-actions my-2">
                 <inertia-link
-                    :href="route('order.history')"
+                    :href="route('transaction-history')"
                     class="btn btn-sm bg-primary-color text-slate-700 hover:text-white btn-block"
                 >
                     View Transaction

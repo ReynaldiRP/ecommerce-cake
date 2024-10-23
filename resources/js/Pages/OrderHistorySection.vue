@@ -17,9 +17,9 @@
 
             <!-- header content -->
             <section class="flex items-center gap-2 mt-4">
-                <h1 class="text-lg font-bold">Transaction Lists</h1>
+                <h1 class="text-2xl font-bold">Transaction Lists</h1>
                 <div
-                    class="px-3 rounded-lg bg-primary-color text-black font-medium"
+                    class="px-3 rounded-lg bg-primary-color text-black font-medium text-lg"
                 >
                     transaksi total
                 </div>
@@ -77,8 +77,7 @@
                     class="rounded-lg flex flex-col gap-4 border-2 border-neutral p-4"
                 >
                     <!-- Transaction Detail -->
-                    <section class="flex items-center gap-2 text-lg">
-                        <p class="font-medium">Cake Name</p>
+                    <section class="flex items-center gap-2 text-xl">
                         <p>Transaction Date</p>
                         <div class="badge badge-success font-medium">
                             Berhasil
@@ -88,12 +87,21 @@
 
                     <!-- Transaction Image -->
                     <section class="flex items-center justify-between">
-                        <div class="avatar">
-                            <div class="w-24 rounded">
-                                <img src="/assets/image/default-img.jpg" />
+                        <!-- Cake details -->
+                        <div class="flex gap-4">
+                            <div class="avatar">
+                                <div class="w-28 rounded">
+                                    <img src="/assets/image/default-img.jpg" />
+                                </div>
+                            </div>
+                            <div class="flex flex-col">
+                                <p class="text-lg font-bold">Cake Name (Cake size)</p>
+                                <p class="font-medium">Cake Flavour | Cake Toppings</p>
+                                <p class="font-light">Cake Quantity x Total Cake Price</p>
                             </div>
                         </div>
-                        <div class="flex flex-col text-lg pr-36">
+
+                        <div class="flex flex-col text-xl pr-40">
                             <p>Total Belanja</p>
                             <strong>Rp.150000</strong>
                         </div>
@@ -104,7 +112,7 @@
                         <inertia-link
                             href="#"
                             class="text-primary-color font-bold"
-                            >Detail Transaction</inertia-link
+                            >See Detail Transaction</inertia-link
                         >
                         <button class="btn btn-success font-semibold">
                             Buy Again

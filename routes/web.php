@@ -88,10 +88,14 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/shopping-chart-item', 'deleteShoppingChartItem')->name('delete-cart-item'); // Delete shopping chart item
     });
 
+    // Order controller routes
     Route::controller(OrderController::class)->group(function () {
         Route::post('/add-order', 'createOrderItem')->name('add-order');
         Route::post('/payments', 'redirectPaymentMidtrans')->name('payments');
     });
+
+    // Hisotry transaction route
+    Route::get('/transaction-history', [PaymentController::class, 'transactionHistory'])->name('transaction-history');
 });
 
 // Guest routes
