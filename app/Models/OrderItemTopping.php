@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class OrderItemTopping extends Model
 {
     use HasFactory;
+    protected $table = 'order_item_toppings';
+    protected $fillable = ['order_item_id', 'topping_id'];
 }

@@ -17,9 +17,10 @@ class Order extends Model
         'order_code',
         'estimated_delivery_date',
         'user_address',
-        'cake_recipent',
+        'cake_recipient',
         'total_price',
         'status',
+        'payment_url'
     ];
 
 

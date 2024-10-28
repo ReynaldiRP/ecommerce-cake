@@ -159,7 +159,7 @@
                         </article>
                         <article class="flex flex-col gap-2">
                             <BaseInput
-                                v-model="form.cake_recipent"
+                                v-model="form.cake_recipient"
                                 style="width: 100%"
                                 placeholder="Cake Recipient"
                                 input-type="username"
@@ -378,11 +378,11 @@ const form = useForm({
     chartItems: props.chartItems,
     estimated_delivery_date: "",
     user_address: "",
-    cake_recipent: "",
+    cake_recipient: "",
 });
 
 const disableCheckout = computed(() =>
-    [form.estimated_delivery_date, form.user_address, form.cake_recipent].every(
+    [form.estimated_delivery_date, form.user_address, form.cake_recipient].every(
         (field) => field !== ""
     )
         ? "bg-primary-color text-base-300 hover:text-white"
@@ -426,7 +426,7 @@ const submit = (e) => {
         const {
             estimated_delivery_date,
             user_address,
-            cake_recipent,
+            cake_recipient: cake_recipient,
             chartItems,
         } = form;
 
@@ -439,8 +439,8 @@ const submit = (e) => {
             console.error("user_address is undefined");
             return e.preventDefault();
         }
-        if (cake_recipent === undefined) {
-            console.error("cake_recipent is undefined");
+        if (cake_recipient === undefined) {
+            console.error("cake_recipient is undefined");
             return e.preventDefault();
         }
 
@@ -450,7 +450,7 @@ const submit = (e) => {
             {
                 estimated_delivery_date,
                 user_address,
-                cake_recipent,
+                cake_recipient: cake_recipient,
                 chartItems,
             },
             {

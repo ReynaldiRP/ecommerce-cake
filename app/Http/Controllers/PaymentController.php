@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Mail\PaymentEmail;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
@@ -84,12 +83,28 @@ class PaymentController extends Controller
 
     public function transactionHistory(): Response
     {
-        $orders = Order::where('user_id', auth()->id())->with('payment')->get();
+        // Get all orders with payment details from the authenticated user
+        $orders = Order::where('user_id', auth()->id())->with([
+            'orderItems',
+            'orderItems.cake',
+            'orderItems.cakeFlavour',
+            'orderItems.cakeTopping',
+            'payment'
+        ])->get();
 
-        dd($orders);
+
+        // Format the date to be more readable
+        $dateFormatted = $orders->map(function ($order) {
+            return [
+                'order_created_at' => $order->created_at->isoFormat('dddd, D MMMM Y'),
+                'order_updated_at' => $order->updated_at->isoFormat('dddd, D MMMM Y'),
+            ];
+        });
+
 
         return Inertia::render('OrderHistorySection', [
             'orders' => $orders,
+            'dateFormatted' => $dateFormatted,
         ]);
     }
 }

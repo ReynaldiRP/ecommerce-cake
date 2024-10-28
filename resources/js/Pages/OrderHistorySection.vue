@@ -21,7 +21,7 @@
                 <div
                     class="px-3 rounded-lg bg-primary-color text-black font-medium text-lg"
                 >
-                    transaksi total
+                    {{ orders.length }}
                 </div>
             </section>
 
@@ -61,8 +61,8 @@
                 </section>
 
                 <select class="select select-bordered w-full max-w-xs">
-                    <option disabled selected>Select Transaction Monts</option>
-                    <option v-for="(month, index) in months">
+                    <option disabled selected>Select Transaction Months</option>
+                    <option v-for="(month, index) in months" :key="index">
                         {{ month }}
                     </option>
                 </select>
@@ -73,20 +73,34 @@
                 class="flex flex-col gap-4 mt-4 p-4 border-2 border-neutral rounded-lg shadow-lg"
             >
                 <section
-                    v-for="item in 3"
+                    v-for="order in orders"
+                    :key="order.id"
                     class="rounded-lg flex flex-col gap-4 border-2 border-neutral p-4"
                 >
                     <!-- Transaction Detail -->
                     <section class="flex items-center gap-2 text-xl">
-                        <p>Transaction Date</p>
-                        <div class="badge badge-success font-medium">
-                            Berhasil
+                        <p>{{ dateFormatted[0].order_created_at }}</p>
+                        <div
+                            class="badge badge-outline font-medium text-lg"
+                            :class="changeBadgeColorOrderOrPaymentStatus(order)"
+                        >
+                            <!-- check order status or payment status -->
+                            {{ checkOrderOrPaymentStatus(order) }}
                         </div>
-                        <p class="font-extralight">Transaction Id</p>
+                        <p class="font-extralight">
+                            {{
+                                order.payment?.transaction_id ||
+                                order.order_code
+                            }}
+                        </p>
                     </section>
 
                     <!-- Transaction Image -->
-                    <section class="flex items-center justify-between">
+                    <section
+                        v-for="orderItem in order.order_items"
+                        :key="orderItem.id"
+                        class="flex items-center justify-between"
+                    >
                         <!-- Cake details -->
                         <div class="flex gap-4">
                             <div class="avatar">
@@ -95,15 +109,37 @@
                                 </div>
                             </div>
                             <div class="flex flex-col">
-                                <p class="text-lg font-bold">Cake Name (Cake size)</p>
-                                <p class="font-medium">Cake Flavour | Cake Toppings</p>
-                                <p class="font-light">Cake Quantity x Total Cake Price</p>
+                                <p class="text-lg font-bold">
+                                    {{ orderItem.cake?.name }}
+                                </p>
+                                <p
+                                    v-if="orderItem.cake_flavour"
+                                    class="font-medium"
+                                >
+                                    {{ orderItem.cake_flavour?.name }}
+                                </p>
+                                <div
+                                    v-if="orderItem.cake_topping"
+                                    class="flex gap-2"
+                                >
+                                    <p
+                                        v-for="orderTopping in orderItem.cake_topping"
+                                        :key="orderTopping.id"
+                                        class="font-medium"
+                                    >
+                                        {{ orderTopping.name }}
+                                    </p>
+                                </div>
+                                <p class="font-light">
+                                    {{ orderItem.quantity }} Cake x
+                                    {{ formatPrice(orderItem.price) }}
+                                </p>
                             </div>
                         </div>
 
                         <div class="flex flex-col text-xl pr-40">
-                            <p>Total Belanja</p>
-                            <strong>Rp.150000</strong>
+                            <p>Total Order</p>
+                            <strong>{{ formatPrice(orderItem.price) }}</strong>
                         </div>
                     </section>
 
@@ -128,7 +164,18 @@
 import App from "@/Layouts/App.vue";
 import { ref, onMounted, onUnmounted } from "vue";
 
-const transactionFilter = ["All", "Ongoing", "Succesfull"];
+const props = defineProps({
+    orders: {
+        type: Array,
+        default: () => [],
+    },
+    dateFormatted: {
+        type: Array,
+        default: () => [],
+    },
+});
+
+const transactionFilter = ["All", "Ongoing", "Successful"];
 const orderStatus = ["Wait for confirmation", "Order processed", "Delivered"];
 const months = [
     "January",
@@ -175,6 +222,35 @@ const handleOrderStatusTabClick = (index) => {
     );
 };
 
+const changeBadgeColorOrderOrPaymentStatus = (order) => {
+    const status = checkOrderOrPaymentStatus(order);
+    console.log(status);
+
+    const statusMap = {
+        "Order Confirmed": "badge-info",
+        "Order processed": "badge-info",
+        Delivered: "badge-success",
+        Pending: "badge-info",
+        Paid: "badge-success",
+    };
+
+    return statusMap[status] || "badge-neutral";
+};
+
+/**
+ * Checks the status of an order by returning the payment status if available,
+ * otherwise returns the order status.
+ *
+ * @param {Object} order - The order object to check.
+ * @param {Object} [order.payment] - The payment object associated with the order.
+ * @param {string} [order.payment.payment_status] - The status of the payment.
+ * @param {string} order.order_status - The status of the order.
+ * @returns {string} - The payment status if it exists, otherwise the order status.
+ */
+const checkOrderOrPaymentStatus = (order) => {
+    return order.payment?.payment_status || order.status;
+};
+
 onMounted(() => {
     // When loading i want the tab to be active default in first index
     transactionTabsClicked.value = transactionTabsClicked.value.map(
@@ -188,4 +264,17 @@ onUnmounted(() => {
         false
     );
 });
+
+/**
+ * Formats a given price into a currency string using the Indonesian Rupiah currency format.
+ *
+ * @param {number} price - The price to be formatted.
+ * @return {string} The formatted currency string.
+ */
+const formatPrice = (price = 0) => {
+    return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+    }).format(price);
+};
 </script>

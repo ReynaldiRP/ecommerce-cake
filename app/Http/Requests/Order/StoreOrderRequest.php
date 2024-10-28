@@ -24,7 +24,7 @@ class StoreOrderRequest extends FormRequest
         return [
             'estimated_delivery_date' => 'required|date|after:' . now()->addDays(2)->toDateString(), // Ensures estimation time is a valid date and in the future
             'user_address' => 'required|string|max:255',
-            'cake_recipent' => 'required|string|regex:/^[a-zA-Z\s]+$/|min:3|max:100',
+            'cake_recipient' => 'required|string|regex:/^[a-zA-Z\s]+$/|min:3|max:100',
         ];
     }
 }
