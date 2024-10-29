@@ -21,7 +21,7 @@
                 <div
                     class="px-3 rounded-lg bg-primary-color text-black font-medium text-lg"
                 >
-                    {{ orders.length }}
+                    {{ orderItem.flat().length }}
                 </div>
             </section>
 
@@ -72,87 +72,100 @@
             <section
                 class="flex flex-col gap-4 mt-4 p-4 border-2 border-neutral rounded-lg shadow-lg"
             >
+                <!-- Iterate over each order group (list of orders per transaction) -->
                 <section
-                    v-for="order in orders"
-                    :key="order.id"
-                    class="rounded-lg flex flex-col gap-4 border-2 border-neutral p-4"
+                    v-for="(orderGroup, groupIndex) in orderItem"
+                    :key="groupIndex"
+                    class="flex flex-col gap-4"
                 >
-                    <!-- Transaction Detail -->
-                    <section class="flex items-center gap-2 text-xl">
-                        <p>{{ dateFormatted[0].order_created_at }}</p>
-                        <div
-                            class="badge badge-outline font-medium text-lg"
-                            :class="changeBadgeColorOrderOrPaymentStatus(order)"
-                        >
-                            <!-- check order status or payment status -->
-                            {{ checkOrderOrPaymentStatus(order) }}
-                        </div>
-                        <p class="font-extralight">
-                            {{
-                                order.payment?.transaction_id ||
-                                order.order_code
-                            }}
-                        </p>
-                    </section>
-
-                    <!-- Transaction Image -->
+                    <!-- Iterate over each individual order -->
                     <section
-                        v-for="orderItem in order.order_items"
-                        :key="orderItem.id"
-                        class="flex items-center justify-between"
+                        v-for="(order, orderIndex) in orderGroup"
+                        :key="order.transaction_id + orderIndex"
+                        class="rounded-lg flex flex-col gap-4 border-2 border-neutral p-4"
                     >
-                        <!-- Cake details -->
-                        <div class="flex gap-4">
-                            <div class="avatar">
-                                <div class="w-28 rounded">
-                                    <img src="/assets/image/default-img.jpg" />
-                                </div>
+                        <!-- Transaction Detail -->
+                        <section class="flex items-center gap-2 text-xl">
+                            <p>
+                                {{ dateFormatted[0].order_created_at }}
+                            </p>
+                            <div
+                                class="badge badge-outline font-medium text-lg"
+                                :class="
+                                    changeBadgeColorOrderOrPaymentStatus(order)
+                                "
+                            >
+                                {{ checkOrderOrPaymentStatus(order) }}
                             </div>
-                            <div class="flex flex-col">
-                                <p class="text-lg font-bold">
-                                    {{ orderItem.cake?.name }}
-                                </p>
-                                <p
-                                    v-if="orderItem.cake_flavour"
-                                    class="font-medium"
-                                >
-                                    {{ orderItem.cake_flavour?.name }}
-                                </p>
-                                <div
-                                    v-if="orderItem.cake_topping"
-                                    class="flex gap-2"
-                                >
+                            <p class="font-extralight">
+                                {{ order.transaction_id || order.order_code }}
+                            </p>
+                        </section>
+
+                        <!-- Transaction Image and Details -->
+                        <section class="flex items-center justify-between">
+                            <div class="flex gap-4">
+                                <div class="avatar">
+                                    <div class="w-28 rounded">
+                                        <img
+                                            src="/assets/image/default-img.jpg"
+                                            alt="Cake Image"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="flex flex-col">
+                                    <p class="text-lg font-bold">
+                                        {{ order.cake_name }}
+                                    </p>
                                     <p
-                                        v-for="orderTopping in orderItem.cake_topping"
-                                        :key="orderTopping.id"
+                                        v-if="order.cake_flavour"
                                         class="font-medium"
                                     >
-                                        {{ orderTopping.name }}
+                                        {{ order.cake_flavour }}
+                                    </p>
+                                    <div
+                                        v-if="order.cake_toppings.length"
+                                        class="flex gap-2"
+                                    >
+                                        <p class="font-medium">
+                                            {{ order.cake_toppings.join(", ") }}
+                                        </p>
+                                    </div>
+                                    <p class="font-light">
+                                        {{ order.quantity }} Cake x
+                                        {{ formatPrice(order.price) }}
                                     </p>
                                 </div>
-                                <p class="font-light">
-                                    {{ orderItem.quantity }} Cake x
-                                    {{ formatPrice(orderItem.price) }}
-                                </p>
                             </div>
-                        </div>
 
-                        <div class="flex flex-col text-xl pr-40">
-                            <p>Total Order</p>
-                            <strong>{{ formatPrice(orderItem.price) }}</strong>
-                        </div>
-                    </section>
+                            <div class="flex flex-col text-xl pr-40">
+                                <p>Total Order</p>
+                                <strong>{{ formatPrice(order.price) }}</strong>
+                            </div>
+                        </section>
 
-                    <!-- Transaction CTA -->
-                    <section class="ms-auto flex gap-4 items-center">
-                        <inertia-link
-                            href="#"
-                            class="text-primary-color font-bold"
-                            >See Detail Transaction</inertia-link
-                        >
-                        <button class="btn btn-success font-semibold">
-                            Buy Again
-                        </button>
+                        <!-- Transaction CTA -->
+                        <section class="ms-auto flex gap-4 items-center">
+                            <inertia-link
+                                href="#"
+                                class="text-primary-color font-bold"
+                                >See Detail Transaction</inertia-link
+                            >
+                            <inertia-link
+                                v-if="showPayNowButton(order)"
+                                href="#"
+                                @click="redirectPayment(order.payment_url)"
+                                class="btn btn-outline btn-info font-semibold"
+                            >
+                                Pay Now
+                            </inertia-link>
+                            <button
+                                v-else
+                                class="btn btn-success font-semibold"
+                            >
+                                Buy Again
+                            </button>
+                        </section>
                     </section>
                 </section>
             </section>
@@ -169,11 +182,19 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+    orderItem: {
+        type: Array,
+        default: () => [],
+    },
     dateFormatted: {
         type: Array,
         default: () => [],
     },
 });
+
+// console.log(props.orders);
+
+console.log(props.orderItem);
 
 const transactionFilter = ["All", "Ongoing", "Successful"];
 const orderStatus = ["Wait for confirmation", "Order processed", "Delivered"];
@@ -224,14 +245,13 @@ const handleOrderStatusTabClick = (index) => {
 
 const changeBadgeColorOrderOrPaymentStatus = (order) => {
     const status = checkOrderOrPaymentStatus(order);
-    console.log(status);
 
     const statusMap = {
         "Order Confirmed": "badge-info",
         "Order processed": "badge-info",
-        Delivered: "badge-success",
-        Pending: "badge-info",
-        Paid: "badge-success",
+        delivered: "badge-success",
+        pending: "badge-info",
+        paid: "badge-success",
     };
 
     return statusMap[status] || "badge-neutral";
@@ -248,7 +268,13 @@ const changeBadgeColorOrderOrPaymentStatus = (order) => {
  * @returns {string} - The payment status if it exists, otherwise the order status.
  */
 const checkOrderOrPaymentStatus = (order) => {
-    return order.payment?.payment_status || order.status;
+    return order.transaction_status || order.order_status;
+};
+
+// Show the button pay now if the payment status is pending or the order status is order confirmed
+const showPayNowButton = (order) => {
+    const status = checkOrderOrPaymentStatus(order);
+    return status === "pending" || status === "Order Confirmed";
 };
 
 onMounted(() => {
@@ -264,6 +290,15 @@ onUnmounted(() => {
         false
     );
 });
+
+/**
+ * Redirects the user to the specified payment URL.
+ *
+ * @param {string} paymentUrl - The URL to which the user will be redirected for payment.
+ */
+const redirectPayment = (paymentUrl) => {
+    window.location = paymentUrl;
+};
 
 /**
  * Formats a given price into a currency string using the Indonesian Rupiah currency format.

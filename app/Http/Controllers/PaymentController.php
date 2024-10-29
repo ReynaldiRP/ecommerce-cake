@@ -93,6 +93,26 @@ class PaymentController extends Controller
         ])->get();
 
 
+        // Get each order item for each order
+        $orderItem = $orders->map(function ($order) {
+            return $order->orderItems->map(function ($item) {
+                return [
+                    'transaction_id' => $item->order->payment?->transaction_id,
+                    'order_code' => $item->order->order_code,
+                    'order_status' => $item->order->status,
+                    'transaction_status' => $item->order->payment?->payment_status,
+                    'cake_name' => $item->cake->name,
+                    'cake_flavour' => $item->cakeFlavour?->name,
+                    'cake_toppings' => $item->cakeTopping?->pluck('name'),
+                    'quantity' => $item->quantity,
+                    'price' => $item->price,
+                ];
+            });
+        });
+
+        // dd($orderItem);
+
+
         // Format the date to be more readable
         $dateFormatted = $orders->map(function ($order) {
             return [
@@ -104,6 +124,7 @@ class PaymentController extends Controller
 
         return Inertia::render('OrderHistorySection', [
             'orders' => $orders,
+            'orderItem' => $orderItem,
             'dateFormatted' => $dateFormatted,
         ]);
     }
