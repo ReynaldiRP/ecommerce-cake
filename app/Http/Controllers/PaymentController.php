@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use App\Models\Order;
+use Inertia\Response;
 use App\Models\Payment;
+use App\Models\OrderItem;
 use App\Mail\PaymentEmail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Inertia\Inertia;
-use Inertia\Response;
+use Illuminate\Http\Response as HttpResponse;
 
 class PaymentController extends Controller
 {
@@ -27,7 +29,7 @@ class PaymentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function midtransWebhook()
+    public function midtransWebhook(): HttpResponse
     {
         \Midtrans\Config::$serverKey    = config('services.midtrans.serverKey');
         \Midtrans\Config::$isProduction = config('services.midtrans.isProduction');
@@ -81,51 +83,65 @@ class PaymentController extends Controller
         }
     }
 
+    /**
+     * Display the transaction history of the authenticated user.
+     *
+     * This method retrieves all orders along with their payment details for the authenticated user.
+     * It then maps each order item to a structured array containing relevant information such as
+     * transaction ID, order code, order status, transaction status, cake details, quantity, price,
+     * payment URL, and timestamps for order creation and update.
+     *
+     * @return Inertia\Response\Response
+     */
     public function transactionHistory(): Response
     {
         // Get all orders with payment details from the authenticated user
-        $orders = Order::where('user_id', auth()->id())->with([
+        $orderItems = OrderItem::with([
+            'order.payment',  // Include payment relationship through order
+            'cake',
+            'cakeFlavour',
+            'cakeTopping'
+        ])
+            ->whereHas('order', function ($query) {
+                $query->where('user_id', auth()->id());
+            })
+            ->paginate(5);
+
+        $orderItems->through(function ($item) {
+            return [
+                'transaction_id' => $item->order?->payment?->transaction_id,
+                'order_code' => $item->order?->order_code,
+                'order_status' => $item->order?->status,
+                'transaction_status' => $item->order?->payment?->payment_status,
+                'cake_name' => $item->cake?->name,
+                'cake_flavour' => $item->cakeFlavour?->name,
+                'cake_toppings' => $item->cakeTopping?->pluck('name'),
+                'quantity' => $item->quantity,
+                'price' => $item->price,
+                'payment_url' => $item->order?->payment_url,
+                'order_created_at' => $item->order?->created_at?->isoFormat('dddd, D MMMM Y'),
+                'order_updated_at' => $item->order?->updated_at?->isoFormat('dddd, D MMMM Y')
+            ];
+        });
+
+        return Inertia::render('OrderHistorySection', [
+            'orderItems' => $orderItems,
+        ]);
+    }
+
+    public function detailTransaction($orderCode): Response
+    {
+        $orders = Order::where('order_code', $orderCode)->with([
             'orderItems',
             'orderItems.cake',
             'orderItems.cakeFlavour',
             'orderItems.cakeTopping',
             'payment'
-        ])->get();
+        ])->firstOrFail();
 
 
-        // Get each order item for each order
-        $orderItem = $orders->map(function ($order) {
-            return $order->orderItems->map(function ($item) {
-                return [
-                    'transaction_id' => $item->order->payment?->transaction_id,
-                    'order_code' => $item->order->order_code,
-                    'order_status' => $item->order->status,
-                    'transaction_status' => $item->order->payment?->payment_status,
-                    'cake_name' => $item->cake->name,
-                    'cake_flavour' => $item->cakeFlavour?->name,
-                    'cake_toppings' => $item->cakeTopping?->pluck('name'),
-                    'quantity' => $item->quantity,
-                    'price' => $item->price,
-                ];
-            });
-        });
-
-        // dd($orderItem);
-
-
-        // Format the date to be more readable
-        $dateFormatted = $orders->map(function ($order) {
-            return [
-                'order_created_at' => $order->created_at->isoFormat('dddd, D MMMM Y'),
-                'order_updated_at' => $order->updated_at->isoFormat('dddd, D MMMM Y'),
-            ];
-        });
-
-
-        return Inertia::render('OrderHistorySection', [
+        return Inertia::render('OrderStatusSection', [
             'orders' => $orders,
-            'orderItem' => $orderItem,
-            'dateFormatted' => $dateFormatted,
         ]);
     }
 }

@@ -94,8 +94,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/payments', 'redirectPaymentMidtrans')->name('payments');
     });
 
-    // History transaction route
-    Route::get('home/transaction-history', [PaymentController::class, 'transactionHistory'])->name('transaction-history');
+    // Payment controller routes
+    Route::controller(PaymentController::class)->group(function () {
+        // History transaction route
+        Route::get('home/transaction-history', 'transactionHistory')->name('transaction-history');
+        // Detail transaction route
+        Route::get('home/transaction-history/{orderCode}',  'detailTransaction')->name('detail-transaction');
+    });
 });
 
 // Guest routes

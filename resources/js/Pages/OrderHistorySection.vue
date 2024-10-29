@@ -21,7 +21,7 @@
                 <div
                     class="px-3 rounded-lg bg-primary-color text-black font-medium text-lg"
                 >
-                    {{ orderItem.flat().length }}
+                    {{ orderItems.length }}
                 </div>
             </section>
 
@@ -74,20 +74,18 @@
             >
                 <!-- Iterate over each order group (list of orders per transaction) -->
                 <section
-                    v-for="(orderGroup, groupIndex) in orderItem"
-                    :key="groupIndex"
+                    v-for="(order, orderIndex) in orderItems.data"
+                    :key="order.transaction_id + orderIndex"
                     class="flex flex-col gap-4"
                 >
                     <!-- Iterate over each individual order -->
                     <section
-                        v-for="(order, orderIndex) in orderGroup"
-                        :key="order.transaction_id + orderIndex"
                         class="rounded-lg flex flex-col gap-4 border-2 border-neutral p-4"
                     >
                         <!-- Transaction Detail -->
                         <section class="flex items-center gap-2 text-xl">
                             <p>
-                                {{ dateFormatted[0].order_created_at }}
+                                {{ order.order_created_at }}
                             </p>
                             <div
                                 class="badge badge-outline font-medium text-lg"
@@ -132,22 +130,32 @@
                                         </p>
                                     </div>
                                     <p class="font-light">
-                                        {{ order.quantity }} Cake x
-                                        {{ formatPrice(order.price) }}
+                                        {{ order.quantity }} Cake x Rp.{{
+                                            formatPrice(order.price)
+                                        }}
                                     </p>
                                 </div>
                             </div>
 
-                            <div class="flex flex-col text-xl pr-40">
+                            <div class="flex flex-col text-xl pr-36">
                                 <p>Total Order</p>
-                                <strong>{{ formatPrice(order.price) }}</strong>
+                                <strong>{{
+                                    formatPrice(
+                                        totalPrice(order.price, order.quantity)
+                                    )
+                                }}</strong>
                             </div>
                         </section>
 
                         <!-- Transaction CTA -->
                         <section class="ms-auto flex gap-4 items-center">
                             <inertia-link
-                                href="#"
+                                :href="
+                                    route(
+                                        'detail-transaction',
+                                        order.order_code
+                                    )
+                                "
                                 class="text-primary-color font-bold"
                                 >See Detail Transaction</inertia-link
                             >
@@ -178,23 +186,14 @@ import App from "@/Layouts/App.vue";
 import { ref, onMounted, onUnmounted } from "vue";
 
 const props = defineProps({
-    orders: {
-        type: Array,
-        default: () => [],
-    },
-    orderItem: {
-        type: Array,
-        default: () => [],
-    },
-    dateFormatted: {
+    orderItems: {
         type: Array,
         default: () => [],
     },
 });
 
-// console.log(props.orders);
 
-console.log(props.orderItem);
+console.log(props.orderItems.data);
 
 const transactionFilter = ["All", "Ongoing", "Successful"];
 const orderStatus = ["Wait for confirmation", "Order processed", "Delivered"];
@@ -301,15 +300,27 @@ const redirectPayment = (paymentUrl) => {
 };
 
 /**
- * Formats a given price into a currency string using the Indonesian Rupiah currency format.
+ * Formats the price of an item by multiplying the price with the quantity.
  *
- * @param {number} price - The price to be formatted.
- * @return {string} The formatted currency string.
+ * @param {number} price - The price of the item.
+ * @param {number} quantity - The quantity of the item.
+ * @returns {string} - The formatted price.
  */
 const formatPrice = (price = 0) => {
     return new Intl.NumberFormat("id-ID", {
         style: "currency",
         currency: "IDR",
     }).format(price);
+};
+
+/**
+ * Calculates the total price of an order by multiplying the price with the quantity.
+ *
+ * @param {number} price - The price of the item.
+ * @param {number} quantity - The quantity of the item.
+ * @returns {number} - The total price of the order.
+ */
+const totalPrice = (price, quantity) => {
+    return price * quantity;
 };
 </script>
