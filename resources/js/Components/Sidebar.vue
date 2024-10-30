@@ -101,10 +101,11 @@
 
 <script setup>
 import { ref } from "vue";
+import { usePage } from "@inertiajs/inertia-vue3";
 
 const isSidebarOpen = ref(false);
 
-defineProps({
+const props = defineProps({
     menu: {
         type: Array,
         default: null,
@@ -113,13 +114,13 @@ defineProps({
         type: [Array, Function],
         default: null,
     },
-    user: {
-        type: Object,
-    },
     logoutHandler: {
         type: Function,
     },
 });
+
+const page = usePage();
+const user = page.props.value.auth.user;
 
 const handlerClick = (link) => {
     if (typeof link === "string") {

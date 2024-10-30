@@ -1,20 +1,28 @@
 <template>
     <App>
-        <section class="min-h-screen container">
+        <section class="min-h-screen w-full">
             <section
+                v-for="(order, index) in orders"
+                :key="order.order_code"
                 class="min-h-screen flex flex-col py-[132px] lg:py-28 px-10 gap-8"
             >
                 <div class="flex gap-4">
                     <div class="flex flex-col gap-2 justify-center">
                         <h1 class="text-3xl font-bold">
-                            Order details {OrderId}
+                            Order details #{{ order.order_code }}
                         </h1>
-                        <span class="text-sm">Date: 08/11/2024</span>
+                        <span class="text-sm"
+                            >Order Created: {{ order.order_created_at }}</span
+                        >
+                        <span class="text-sm"
+                            >Estimated Order Arrival:
+                            {{ order.estimated_delivery }}</span
+                        >
                     </div>
                     <div
                         class="badge text-xl bg-neutral text-primary-color py-4 px-6 rounded-lg font-bold relative top-1"
                     >
-                        Order Confirmed
+                        {{ order.order_status }}
                     </div>
                 </div>
 
@@ -146,16 +154,19 @@
 
                 <div class="flex flex-col gap-4 mt-6">
                     <h1 class="text-2xl font-bold">Item ordered</h1>
-                    <div class="w-full px-8 bg-neutral rounded-lg">
+                    <div
+                        v-for="(orderItem, index) in order.order_items"
+                        :key="index"
+                        class="w-full px-8 bg-neutral rounded-lg"
+                    >
                         <div
                             class="flex justify-between items-center px-4 py-6"
-                            v-for="items in 3"
                         >
                             <div class="flex items-center gap-2">
                                 <div class="avatar">
                                     <div class="w-16 lg:w-20 rounded">
                                         <img
-                                            src="assets/image/default-img.jpg"
+                                            src="/assets/image/default-img.jpg"
                                             alt="Tailwind-CSS-Avatar-component"
                                         />
                                     </div>
@@ -164,18 +175,34 @@
                                     <h1
                                         class="font-bold text-base md:text-lg lg:text-xl m-0"
                                     >
-                                        Base Cake
+                                        {{ orderItem.cake_name }}
                                     </h1>
                                     <div
-                                        class="flex flex-col lg:flex-row gap-0 lg:gap-1  text-sm md:text-base lg:text-lg font-medium text-opacity-70"
+                                        class="flex flex-col lg:flex-row gap-0 lg:gap-1 text-sm md:text-base lg:text-lg font-medium text-opacity-70"
                                     >
-                                        <p>Chocolate</p>
-                                        <p>Stroberry, Manggo</p>
+                                        <p>{{ orderItem.cake_flavour }}</p>
+                                        <p
+                                            v-if="
+                                                orderItem.cake_flavour &&
+                                                orderItem.cake_toppings
+                                            "
+                                        >
+                                            |
+                                        </p>
+                                        <p>
+                                            {{
+                                                orderItem.cake_toppings.join(
+                                                    ", "
+                                                )
+                                            }}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
-                            <p class="text-lg">2x</p>
-                            <p class="text-lg">Rp4000</p>
+                            <p class="text-lg">{{ orderItem.quantity }}</p>
+                            <p class="text-lg">
+                                {{ formatPrice(totalPrice(orderItem.price, orderItem.quantity)) }}
+                            </p>
                         </div>
                     </div>
                     <div
@@ -183,7 +210,9 @@
                     >
                         <div class="flex gap-24">
                             <h1 class="text-xl font-bold">Product Total:</h1>
-                            <span class="text-lg font-bold">Rp40000</span>
+                            <span class="text-lg font-bold">{{
+                                formatPrice(order.total_price)
+                            }}</span>
                         </div>
                     </div>
                 </div>
@@ -194,4 +223,38 @@
 
 <script setup>
 import App from "@/Layouts/App.vue";
+
+const props = defineProps({
+    orders: {
+        type: Array,
+        default: () => [],
+    },
+});
+
+console.log(props.orders);
+
+/**
+ * Formats the price of an item by multiplying the price with the quantity.
+ *
+ * @param {number} price - The price of the item.
+ * @param {number} quantity - The quantity of the item.
+ * @returns {string} - The formatted price.
+ */
+const formatPrice = (price = 0) => {
+    return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+    }).format(price);
+};
+
+/**
+ * Calculates the total price of an order by multiplying the price with the quantity.
+ *
+ * @param {number} price - The price of the item.
+ * @param {number} quantity - The quantity of the item.
+ * @returns {number} - The total price of the order.
+ */
+const totalPrice = (price, quantity) => {
+    return price * quantity;
+};
 </script>

@@ -124,6 +124,13 @@ class PaymentController extends Controller
             ];
         });
 
+        // Filter order items based on the transaction status or order status when click the tab button
+        if (request()->has('status')) {
+            $orderItems = $orderItems->filter(function ($item) {
+                return $item['transaction_status'] === request('status');
+            });
+        }
+
         return Inertia::render('OrderHistorySection', [
             'orderItems' => $orderItems,
         ]);
@@ -131,17 +138,41 @@ class PaymentController extends Controller
 
     public function detailTransaction($orderCode): Response
     {
-        $orders = Order::where('order_code', $orderCode)->with([
+        $orders = Order::with([
             'orderItems',
             'orderItems.cake',
             'orderItems.cakeFlavour',
             'orderItems.cakeTopping',
             'payment'
-        ])->firstOrFail();
+        ])->where('order_code', $orderCode)->get();
 
+        $orderItems = $orders->map(function ($order) {
+            return [
+                'order_code' => $order->order_code,
+                'order_status' => $order->status,
+                'transaction_status' => $order->payment?->payment_status,
+                'payment_method' => $order->payment?->payment_method,
+                'payment_url' => $order->payment?->payment_url,
+                'total_price' => $order->total_price,
+                'order_created_at' => $order->created_at?->isoFormat('dddd, D MMMM Y'),
+                'order_updated_at' => $order->updated_at?->isoFormat('dddd, D MMMM Y'),
+                'estimated_delivery' => \Carbon\Carbon::parse($order->estimated_delivery_date)->isoFormat('dddd, D MMMM Y'),
+                'order_items' => $order->orderItems->map(function ($item) {
+                    return [
+                        'cake_name' => $item->cake?->name,
+                        'cake_flavour' => $item->cakeFlavour?->name,
+                        'cake_toppings' => $item->cakeTopping?->pluck('name'),
+                        'quantity' => $item->quantity,
+                        'price' => $item->price,
+                    ];
+                })
+            ];
+        });
+
+        // dd($orderItems);
 
         return Inertia::render('OrderStatusSection', [
-            'orders' => $orders,
+            'orders' => $orderItems,
         ]);
     }
 }

@@ -25,7 +25,7 @@
         <div class="navbar-end flex gap-2">
             <section class="flex justify-center items-center">
                 <ShoppingChart />
-                <NotificationUser :link="route('order.status')" />
+                <NotificationUser v-if="user" :link="route('order.status')" />
             </section>
             <Sidebar
                 :menu="menu"

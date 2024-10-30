@@ -21,7 +21,7 @@
                 <div
                     class="px-3 rounded-lg bg-primary-color text-black font-medium text-lg"
                 >
-                    {{ orderItems.length }}
+                    {{ orderItems.total }}
                 </div>
             </section>
 
@@ -60,7 +60,12 @@
                     </div>
                 </section>
 
-                <select class="select select-bordered w-full max-w-xs">
+                <select
+                    class="select select-bordered w-full max-w-xs"
+                    @change="
+                        onChangeTransactionDate($event.target.selectedIndex)
+                    "
+                >
                     <option disabled selected>Select Transaction Months</option>
                     <option v-for="(month, index) in months" :key="index">
                         {{ month }}
@@ -74,7 +79,7 @@
             >
                 <!-- Iterate over each order group (list of orders per transaction) -->
                 <section
-                    v-for="(order, orderIndex) in orderItems.data"
+                    v-for="(order, orderIndex) in filteredData"
                     :key="order.transaction_id + orderIndex"
                     class="flex flex-col gap-4"
                 >
@@ -93,11 +98,16 @@
                                     changeBadgeColorOrderOrPaymentStatus(order)
                                 "
                             >
-                                {{ checkOrderOrPaymentStatus(order) }}
+                                {{ order.transaction_status ?? "" }}
                             </div>
                             <p class="font-extralight">
                                 {{ order.transaction_id || order.order_code }}
                             </p>
+                            <div
+                                class="badge badge-outline badge-info font-medium text-lg"
+                            >
+                                {{ order.order_status }}
+                            </div>
                         </section>
 
                         <!-- Transaction Image and Details -->
@@ -176,6 +186,13 @@
                         </section>
                     </section>
                 </section>
+                <!-- Filtered Data not found -->
+                <section v-if="filteredData.length <= 0">
+                    <p>
+                        No transaction found with the selected filter. Please
+                        try again.
+                    </p>
+                </section>
             </section>
         </section>
     </App>
@@ -183,33 +200,33 @@
 
 <script setup>
 import App from "@/Layouts/App.vue";
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, watch, computed } from "vue";
 
 const props = defineProps({
     orderItems: {
-        type: Array,
-        default: () => [],
+        type: Object,
+        default: () => ({}),
     },
 });
 
-
-console.log(props.orderItems.data);
+const originalOrderItems = ref([]);
+originalOrderItems.value = props.orderItems.data;
 
 const transactionFilter = ["All", "Ongoing", "Successful"];
 const orderStatus = ["Wait for confirmation", "Order processed", "Delivered"];
 const months = [
-    "January",
-    "February",
-    "March",
+    "Januari",
+    "Februari",
+    "Maret",
     "April",
-    "May",
-    "June",
-    "July",
-    "August",
+    "Mei",
+    "Juni",
+    "Juli",
+    "Agustus",
     "September",
-    "October",
+    "Oktober",
     "November",
-    "December",
+    "Desember",
 ];
 
 const transactionTabsClicked = ref(
@@ -217,6 +234,8 @@ const transactionTabsClicked = ref(
 );
 
 const orderStatusTabsClicked = ref(new Array(orderStatus.length).fill(false));
+const selectedTransactionStatus = ref("All");
+const selectedTransactionDate = ref("");
 
 /**
  * Handles the click event for transaction tabs.
@@ -228,6 +247,9 @@ const handleTransactionTabClick = (index) => {
     transactionTabsClicked.value = transactionTabsClicked.value.map(
         (_, i) => i === index
     );
+
+    // Get the transaction status based on the clicked tab
+    selectedTransactionStatus.value = transactionFilter[index];
 };
 
 /**
@@ -242,6 +264,59 @@ const handleOrderStatusTabClick = (index) => {
     );
 };
 
+/**
+ * Handles the change of the transaction date based on the selected index.
+ *
+ * @param {number} index - The index of the selected date in the months array.
+ */
+const onChangeTransactionDate = (index) => {
+    // Get the transaction date based on the selected date
+    selectedTransactionDate.value = months[index - 1];
+};
+
+/**
+ * Computes the filtered order data based on the selected transaction status and date.
+ * This function allows filtering by both status and transaction date simultaneously.
+ *
+ * @returns {Array} - The filtered order items.
+ */
+const filteredData = computed(() => {
+    let filtered = originalOrderItems.value;
+
+    // Filter by transaction status
+    if (selectedTransactionStatus.value !== "All") {
+        filtered = filtered.filter((order) => {
+            if (selectedTransactionStatus.value === "Ongoing") {
+                return order.transaction_status === "pending";
+            } else if (selectedTransactionStatus.value === "Successful") {
+                return order.transaction_status === "paid";
+            }
+            return true;
+        });
+    }
+
+    // Filter by transaction date
+    if (selectedTransactionDate.value) {
+        filtered = filtered.filter((order) => {
+            const monthMatch = order.order_created_at.match(/(\w+), \d+ (\w+) \d+/);
+            if (monthMatch) {
+                const orderMonth = monthMatch[2];
+                return orderMonth === selectedTransactionDate.value;
+            }
+            return false;
+        });
+    }
+
+    return filtered;
+});
+
+/**
+ * Changes the badge color based on the order or payment status.
+ *
+ * @param {Object} order - The order object to check the status of.
+ * @returns {string} - The corresponding badge color class.
+ *
+ */
 const changeBadgeColorOrderOrPaymentStatus = (order) => {
     const status = checkOrderOrPaymentStatus(order);
 
@@ -277,7 +352,7 @@ const showPayNowButton = (order) => {
 };
 
 onMounted(() => {
-    // When loading i want the tab to be active default in first index
+    // When loading set the tab to be active default in first index
     transactionTabsClicked.value = transactionTabsClicked.value.map(
         (_, i) => i === 0
     );
