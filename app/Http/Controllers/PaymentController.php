@@ -21,12 +21,6 @@ class PaymentController extends Controller
      * When a payment status is changed, Midtrans will send a notification to
      * this endpoint.
      *
-     * The logic is as follows:
-     * 1. Parse the notification data
-     * 2. Find the related order based on the order_id
-     * 3. Create a new Payment model if the transaction status is pending
-     * 4. Update the order status based on the transaction status
-     *
      * @return \Illuminate\Http\Response
      */
     public function midtransWebhook(): HttpResponse
@@ -86,11 +80,6 @@ class PaymentController extends Controller
     /**
      * Display the transaction history of the authenticated user.
      *
-     * This method retrieves all orders along with their payment details for the authenticated user.
-     * It then maps each order item to a structured array containing relevant information such as
-     * transaction ID, order code, order status, transaction status, cake details, quantity, price,
-     * payment URL, and timestamps for order creation and update.
-     *
      * @return Inertia\Response\Response
      */
     public function transactionHistory(): Response
@@ -136,6 +125,12 @@ class PaymentController extends Controller
         ]);
     }
 
+    /**
+     * Display the details of a transaction based on the provided order code.
+     *
+     * @param string $orderCode The unique code of the order to retrieve details for.
+     * @return \Illuminate\Http\Response The response containing the order details.
+     */
     public function detailTransaction($orderCode): Response
     {
         $orders = Order::with([
@@ -168,8 +163,6 @@ class PaymentController extends Controller
                 })
             ];
         });
-
-        // dd($orderItems);
 
         return Inertia::render('OrderStatusSection', [
             'orders' => $orderItems,

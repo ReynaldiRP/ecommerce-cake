@@ -20,7 +20,7 @@
                         </li>
                         <li>
                             <inertia-link :href="route('products')"
-                                >Catalouge</inertia-link
+                                >Catalogue</inertia-link
                             >
                         </li>
                         <li>
@@ -70,7 +70,7 @@
         <PreviewChartItem
             :is-preview-open="isPreviewOpen"
             :chart="chartItem"
-            :successMessage="succesMessage"
+            :successMessage="successMessage"
             @update:isPreviewOpen="isPreviewOpen = $event"
         />
     </App>
@@ -114,7 +114,7 @@ const toppingPrice = ref(0);
 const quantityPrice = ref(1);
 const isPreviewOpen = ref(false);
 const chartItem = ref([]);
-const succesMessage = ref("");
+const successMessage = ref("");
 const isSubmitting = ref(false);
 const errorResponses = ref([]);
 
@@ -207,7 +207,7 @@ const addItemToChart = async () => {
         const response = await axios.post(route("add-chart-item"), form);
 
         chartItem.value = response.data.cartItem;
-        succesMessage.value = response.data.message;
+        successMessage.value = response.data.message;
 
         isSubmitting.value = true;
 

@@ -3,7 +3,15 @@
         <section
             class="min-h-screen w-full py-36 xl:py-28 px-10 flex flex-col justify-center gap-4"
         >
-            <h1 class="text-4xl font-bold relative">Your Orders</h1>
+            <div class="flex justify-between items-center">
+                <h1 class="text-4xl font-bold relative">Your Orders</h1>
+                <BaseAlert
+                    v-if="errorResponses"
+                    class="w-fit"
+                    type="alert-error"
+                    >{{ errorResponses }}</BaseAlert
+                >
+            </div>
             <section
                 class="flex flex-col-reverse items-center lg:items-start lg:flex-row justify-center xl:justify-between gap-4"
             >
@@ -45,7 +53,7 @@
                                         >
                                         <p class="text-base text-opacity-75">
                                             {{
-                                                getToppingNameBasedOnChartitems(
+                                                getToppingNameBasedOnChartItems(
                                                     item
                                                 )
                                             }}
@@ -83,7 +91,7 @@
                                 <h1>
                                     {{
                                         formatPrice(
-                                            getToppingPriceBasedOnChartitems(
+                                            getToppingPriceBasedOnChartItems(
                                                 item
                                             )
                                         )
@@ -141,15 +149,15 @@
                                 style="width: 100%"
                                 placeholder="User Address"
                                 input-type="address"
-                                @keyup="getSearchResultAdress"
+                                @keyup="getSearchResultAddress"
                                 :input-class="
-                                    showSeachAddress
+                                    showSearchAddress
                                         ? 'rounded-t-lg rounded-b-none'
                                         : 'rounded-lg'
                                 "
                             />
                             <PreviewSearchAddress
-                                v-if="showSeachAddress"
+                                v-if="showSearchAddress"
                                 :results="searchResults"
                                 :selectAddress="selectedAddress"
                                 :addressResultsContainer="
@@ -189,12 +197,11 @@ import App from "@/Layouts/App.vue";
 import BaseInput from "@/Components/BaseInput.vue";
 import BaseLabel from "@/Components/BaseLabel.vue";
 import PreviewSearchAddress from "@/Components/PreviewSearchAddress.vue";
-
+import BaseAlert from "@/Components/BaseAlert.vue";
 import { useForm } from "@inertiajs/inertia-vue3";
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import axios from "axios";
 import { debounce } from "lodash";
-import { Inertia } from "@inertiajs/inertia";
 
 const props = defineProps({
     chartItems: Array,
@@ -202,12 +209,13 @@ const props = defineProps({
 
 const showResults = ref(false);
 const searchResults = ref([]);
-const showSeachAddress = computed(() => {
+const showSearchAddress = computed(() => {
     return showResults.value && form.user_address.length > 0;
 });
 
 const addressContainer = ref(null);
 const addressResultsContainer = ref(null);
+const errorResponses = ref(null);
 
 const API_BASE_URL = "https://www.emsifa.com/api-wilayah-indonesia/api";
 
@@ -308,7 +316,7 @@ const debounceSearchAddress = debounce((query) => {
  *
  * This function is called when the user types in the address input field.
  */
-const getSearchResultAdress = () => {
+const getSearchResultAddress = () => {
     debounceSearchAddress(form.user_address);
     showResults.value = true;
 };
@@ -357,7 +365,7 @@ const getItemSubtotal = (item) => {
  * @param {object} item - The chart item object containing cake topping information
  * @return {string} A comma-separated string of the names of the toppings
  */
-const getToppingNameBasedOnChartitems = (item) => {
+const getToppingNameBasedOnChartItems = (item) => {
     return item.cake_topping?.map((topping) => topping.name).join(", ");
 };
 
@@ -367,7 +375,7 @@ const getToppingNameBasedOnChartitems = (item) => {
  * @param {object} item - The chart item object containing cake topping information
  * @return {number} The total price of the toppings
  */
-const getToppingPriceBasedOnChartitems = (item) => {
+const getToppingPriceBasedOnChartItems = (item) => {
     return item.cake_topping
         ?.map((topping) => topping.price)
         .reduce((a, b) => a + b, 0);
@@ -382,9 +390,11 @@ const form = useForm({
 });
 
 const disableCheckout = computed(() =>
-    [form.estimated_delivery_date, form.user_address, form.cake_recipient].every(
-        (field) => field !== ""
-    )
+    [
+        form.estimated_delivery_date,
+        form.user_address,
+        form.cake_recipient,
+    ].every((field) => field !== "")
         ? "bg-primary-color text-base-300 hover:text-white"
         : "bg-gray-400 hover:bg-gray-400 text-base-300 cursor-not-allowed"
 );
@@ -420,7 +430,7 @@ onUnmounted(() => {
  *
  * @returns {void}
  */
-const submit = (e) => {
+const submit = () => {
     try {
         // Destructure the form data
         const {
@@ -431,33 +441,34 @@ const submit = (e) => {
         } = form;
 
         // Check if all fields are filled in
-        if (estimated_delivery_date === undefined) {
-            console.error("estimated_delivery_date is undefined");
-            return e.preventDefault();
+        if (!estimated_delivery_date) {
+            errorResponses.value = "Estimated delivery date is required";
+            return false;
         }
-        if (user_address === undefined) {
-            console.error("user_address is undefined");
-            return e.preventDefault();
+        if (!user_address) {
+            errorResponses.value = "User address is required";
+            return false;
         }
-        if (cake_recipient === undefined) {
-            console.error("cake_recipient is undefined");
-            return e.preventDefault();
+        if (!cake_recipient) {
+            errorResponses.value = "Cake recipient is required";
+            return false;
         }
 
         // If all fields are filled in, submit the form
-        axios.post(
-            route("payments"),
-            {
-                estimated_delivery_date,
-                user_address,
-                cake_recipient: cake_recipient,
-                chartItems,
-            },
-            {
-                preserveState: true,
-                preserveScroll: true,
-            }
-        )
+        axios
+            .post(
+                route("payments"),
+                {
+                    estimated_delivery_date,
+                    user_address,
+                    cake_recipient: cake_recipient,
+                    chartItems,
+                },
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                }
+            )
             .then((response) => {
                 if (response.data.success) {
                     // Redirect to Midtrans payment page

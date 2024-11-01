@@ -47,8 +47,11 @@
                             >
                         </div>
                         <p>
-                            Rp{{
-                                cake.base_price + (cake.cake_size?.price ?? 0)
+                            {{
+                                formatPrice(
+                                    cake.base_price +
+                                        (cake.cake_size?.price ?? 0)
+                                )
                             }}
                         </p>
                     </inertia-link>
@@ -91,9 +94,6 @@ const fetchSearchResults = async (query) => {
     const response = await axios.get(route("search"), {
         params: { search: query },
     });
-
-    console.log(response.data);
-    console.log(query);
 
     results.value = response.data.searchResults || [];
 };
@@ -154,4 +154,18 @@ onMounted(() => {
 onBeforeUnmount(() => {
     document.removeEventListener("click", handleClick);
 });
+
+/**
+ * Formats the price of an item by multiplying the price with the quantity.
+ *
+ * @param {number} price - The price of the item.
+ * @param {number} quantity - The quantity of the item.
+ * @returns {string} - The formatted price.
+ */
+const formatPrice = (price = 0) => {
+    return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+    }).format(price);
+};
 </script>
