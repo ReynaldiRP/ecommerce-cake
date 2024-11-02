@@ -126,20 +126,20 @@
                                             class="btn btn-sm btn-outline shadow-lg join-item"
                                             @click="
                                                 (e) =>
-                                                    item.quantity <= 0
+                                                    cakeQuantity[index] <= 0
                                                         ? e.preventDefault()
-                                                        : item.quantity--
+                                                        : cakeQuantity[index]--
                                             "
                                         >
                                             -
                                         </button>
                                         <input
                                             class="input input-sm input-ghost input-bordered text-center w-10 join-item focus:bg-transparent"
-                                            :value="item.quantity"
+                                            v-model="cakeQuantity[index]"
                                         />
                                         <button
                                             class="btn btn-sm btn-outline shadow-lg join-item"
-                                            @click="item.quantity++"
+                                            @click="cakeQuantity[index]++"
                                         >
                                             +
                                         </button>
@@ -226,6 +226,7 @@ const showAlert = ref(false);
 const deleteAnimation = ref(null);
 const messageDelete = ref("");
 const isSubmitting = ref(false);
+const cakeQuantity = ref(chartItems.value.map((item) => item.quantity));
 
 /**
  * Updates the total price of the selected cakes in the shopping chart.
@@ -380,6 +381,7 @@ const checkoutItems = (shoppingChartItemsIds = [], e) => {
                 Inertia.post(route("checkout"), {
                     _token: page.props.value.csrf_token,
                     selectCake: shoppingChartItemsIds,
+                    cakeQuantity: cakeQuantity.value,
                 });
                 isSubmitting.value = false;
             }, 2000);

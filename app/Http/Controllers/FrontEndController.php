@@ -63,7 +63,7 @@ class FrontEndController extends Controller
     {
         $cakes =  Cake::with('cakeSize');
 
-        // Check the filtred cake based on cake personalization type and cake size
+        // Check the filtered cake based on cake personalization type and cake size
         if ($request->has('personalization_type')) {
             $cakes->where('personalization_type', $request->personalization_type);
         }
@@ -121,17 +121,31 @@ class FrontEndController extends Controller
 
 
 
+
     /**
-     * Checkout the selected shopping chart items.
+     * Handle the checkout process.
      *
-     * @param Request $request The incoming HTTP request containing shopping chart item IDs.
-     * @return Response The rendered checkout section with the selected shopping chart items.
+     * This method handles both GET and POST requests for the checkout process.
+     * If the request method is POST, it updates the quantities and prices of the selected cakes,
+     * and stores the selected cake IDs in the session. If the request method is GET, it retrieves
+     * the stored cake IDs from the session.
+     *
+     * @param \Illuminate\Http\Request $request The incoming request instance.
+     * @return \Illuminate\Http\Response The response instance.
      */
     public function checkout(Request $request): Response
     {
         if ($request->isMethod('post')) {
             // Get the array of shoppingChartItemId from the query parameters
             $shoppingChartItemIds = $request->input('selectCake', []);
+
+            // update quantity of cake
+            foreach ($shoppingChartItemIds as $key => $value) {
+                $cake = ShoppingChartItem::find($value);
+                $cake->quantity = $request->input('cakeQuantity')[$key];
+                $cake->price *= $cake->quantity;
+                $cake->save();
+            }
 
             // Store the shopping chart item IDs in the session
             $request->session()->put('selectedCakes', $shoppingChartItemIds);
