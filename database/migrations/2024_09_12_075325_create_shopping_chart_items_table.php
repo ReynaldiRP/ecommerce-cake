@@ -30,6 +30,7 @@ return new class extends Migration
             )->cascadeOnDelete();
             $table->integer('quantity');
             $table->double('price');
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }

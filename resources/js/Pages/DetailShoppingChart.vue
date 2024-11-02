@@ -120,7 +120,9 @@
                                 <p class="text-lg font-medium">
                                     {{ formatPrice(item.price) }}
                                 </p>
-                                <div class="flex flex-row-reverse gap-4">
+                                <div
+                                    class="flex flex-row-reverse items-center gap-4"
+                                >
                                     <div class="join">
                                         <button
                                             class="btn btn-sm btn-outline shadow-lg join-item"
@@ -147,6 +149,56 @@
                                     <button @click="deleteItem(item.id)">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
+                                    <div
+                                        class="flex flex-col gap-1 dropdown dropdown-end"
+                                    >
+                                        <div
+                                            tabindex="0"
+                                            class="font-bold cursor-pointer flex items-center"
+                                            @click="hiddenNotes = !hiddenNotes"
+                                        >
+                                            <BaseIcon
+                                                :path="mdiNoteEditOutline"
+                                                size=""
+                                            />
+                                        </div>
+                                        <div
+                                            class="bg-base-200 p-4 card compact dropdown-content menu mt-7 gap-4 items-center"
+                                            v-show="hiddenNotes"
+                                        >
+                                            <label class="form-control w-72">
+                                                <div class="label">
+                                                    <span class="label-text"
+                                                        >Catatan
+                                                    </span>
+                                                </div>
+                                                <textarea
+                                                    class="textarea textarea-bordered h-24"
+                                                    placeholder="Jangan lupa tambahkan catatan..."
+                                                ></textarea>
+                                                <div class="label ms-auto">
+                                                    <span class="label-text"
+                                                        >0/144</span
+                                                    >
+                                                </div>
+                                            </label>
+
+                                            <div
+                                                class="flex items-center gap-2"
+                                            >
+                                                <button
+                                                    class="btn w-36 btn-neutral"
+                                                >
+                                                    Batal
+                                                </button>
+                                                <button
+                                                    class="btn w-36 btn-success"
+                                                >
+                                                    Simpan
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -208,9 +260,11 @@ import App from "@/Layouts/App.vue";
 import BaseCheckbox from "@/Components/BaseCheckbox.vue";
 import BaseAlert from "@/Components/BaseAlert.vue";
 import EmptyDetailShoppingChart from "@/Components/EmptyDetailShoppingChart.vue";
+import BaseIcon from "@/Components/DashboardAdmin/BaseIcon.vue";
 import { ref, computed } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
+import { mdiNoteEditOutline } from "@mdi/js";
 import axios from "axios";
 
 const page = usePage();
@@ -227,6 +281,7 @@ const deleteAnimation = ref(null);
 const messageDelete = ref("");
 const isSubmitting = ref(false);
 const cakeQuantity = ref(chartItems.value.map((item) => item.quantity));
+const hiddenNotes = ref(false);
 
 /**
  * Updates the total price of the selected cakes in the shopping chart.

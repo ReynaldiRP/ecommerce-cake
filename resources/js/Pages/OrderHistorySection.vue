@@ -166,7 +166,7 @@
                                         order.order_code
                                     )
                                 "
-                                class="text-primary-color font-bold"
+                                class="link text-primary-color"
                                 >See Detail Transaction</inertia-link
                             >
                             <inertia-link
@@ -189,8 +189,8 @@
                 <!-- Filtered Data not found -->
                 <section v-if="originalOrderItems.length <= 0">
                     <p>
-                        No transaction found with the selected filter. Please
-                        try again.
+                        Oops! Looks like this transaction pulled a disappearing
+                        act. 🎩✨
                     </p>
                 </section>
             </section>
@@ -237,6 +237,7 @@ const transactionTabsClicked = ref(
 const orderStatusTabsClicked = ref(new Array(orderStatus.length).fill(false));
 const selectedTransactionStatus = ref("All");
 const selectedTransactionDate = ref("");
+const notFoundFilteredMessage = ref("");
 
 /**
  * Handles the click event for transaction tabs.
@@ -291,7 +292,13 @@ const fetchFilteredData = async () => {
             },
         });
 
-        originalOrderItems.value = response.data.orderItems.data;
+        const results = response.data.orderItems.data;
+
+        if (results.length <= 0) {
+            originalOrderItems.value = [];
+        } else {
+            originalOrderItems.value = results;
+        }
     } catch (error) {
         console.error("Error fetching filtered data:", error);
     }

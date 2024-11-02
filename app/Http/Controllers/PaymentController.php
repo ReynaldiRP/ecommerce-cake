@@ -99,7 +99,7 @@ class PaymentController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(5);
 
-        $orderItems->through(function ($item) {
+        $orderItems->getCollection()->transform(function ($item) {
             return [
                 'transaction_id' => $item->order?->payment?->transaction_id,
                 'order_code' => $item->order?->order_code,
@@ -179,6 +179,16 @@ class PaymentController extends Controller
                 $q->whereMonth('created_at', '=', $month);
             }
         });
+
+        // Check if the query returns any results
+        // if ($query->count() == 0) {
+        //     return response()->json([
+        //         'message' => 'Filter Results: Nothing Here! 🔍 We searched through
+        //                     everything with your filters, but came up empty-handed.
+        //                     Try adjusting your filters to cast a wider net.',
+        //         'orderItems' => []
+        //     ], 200);
+        // }
 
         // Paginate the results
         $orderItems = $query->orderBy('created_at', 'desc')->paginate(5);
