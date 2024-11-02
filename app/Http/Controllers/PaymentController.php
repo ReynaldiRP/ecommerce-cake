@@ -8,6 +8,8 @@ use Inertia\Response;
 use App\Models\Payment;
 use App\Models\OrderItem;
 use App\Mail\PaymentEmail;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Response as HttpResponse;
@@ -94,6 +96,7 @@ class PaymentController extends Controller
             ->whereHas('order', function ($query) {
                 $query->where('user_id', auth()->id());
             })
+            ->orderBy('created_at', 'desc')
             ->paginate(5);
 
         $orderItems->through(function ($item) {
@@ -113,16 +116,94 @@ class PaymentController extends Controller
             ];
         });
 
-        // Filter order items based on the transaction status or order status when click the tab button
-        if (request()->has('status')) {
-            $orderItems = $orderItems->filter(function ($item) {
-                return $item['transaction_status'] === request('status');
-            });
-        }
-
         return Inertia::render('OrderHistorySection', [
             'orderItems' => $orderItems,
         ]);
+    }
+
+    /**
+     * Fetch filtered data for transaction history.
+     *
+     * This method retrieves order items based on the provided query parameters for filtering.
+     * It supports filtering by status and date (month in Indonesian).
+     *
+     * @param \Illuminate\Http\Request $request The HTTP request instance.
+     *
+     * @return \Illuminate\Http\JsonResponse A JSON response containing the filtered order items.
+     */
+    public function fetchFilteredDataTransactionHistory(Request $request): JsonResponse
+    {
+        // Get query parameters for filtering
+        $status = $request->query('status', 'All');
+        $date = $request->query('date', '');
+
+        // Map Indonesian months to their respective month numbers
+        $indonesianMonths = [
+            'Januari' => 1,
+            'Februari' => 2,
+            'Maret' => 3,
+            'April' => 4,
+            'Mei' => 5,
+            'Juni' => 6,
+            'Juli' => 7,
+            'Agustus' => 8,
+            'September' => 9,
+            'Oktober' => 10,
+            'November' => 11,
+            'Desember' => 12,
+        ];
+
+        // Get the month number from the date parameter if it exists
+        $month = $date && isset($indonesianMonths[$date]) ? $indonesianMonths[$date] : null;
+
+        // Build the query for order items
+        $query = OrderItem::with([
+            'order.payment',
+            'cake',
+            'cakeFlavour',
+            'cakeTopping'
+        ])->whereHas('order', function ($q) use ($status, $month) {
+            if ($status !== 'All') {
+                if ($status === 'Ongoing') {
+                    $q->whereHas('payment', function ($q) {
+                        $q->where('payment_status', 'pending');
+                    });
+                } elseif ($status === 'Successful') {
+                    $q->whereHas('payment', function ($q) {
+                        $q->where('payment_status', 'paid');
+                    });
+                }
+            }
+
+            if ($month) {
+                $q->whereMonth('created_at', '=', $month);
+            }
+        });
+
+        // Paginate the results
+        $orderItems = $query->orderBy('created_at', 'desc')->paginate(5);
+
+        // Transform the order items
+        $orderItems->getCollection()->transform(function ($item) {
+            return [
+                'transaction_id' => $item->order?->payment?->transaction_id,
+                'order_code' => $item->order?->order_code,
+                'order_status' => $item->order?->status,
+                'transaction_status' => $item->order?->payment?->payment_status,
+                'cake_name' => $item->cake?->name,
+                'cake_flavour' => $item->cakeFlavour?->name,
+                'cake_toppings' => $item->cakeTopping?->pluck('name'),
+                'quantity' => $item->quantity,
+                'price' => $item->price,
+                'payment_url' => $item->order?->payment_url,
+                'order_created_at' => $item->order?->created_at?->isoFormat('dddd, D MMMM Y'),
+                'order_updated_at' => $item->order?->updated_at?->isoFormat('dddd, D MMMM Y')
+            ];
+        });
+
+        return response()->json([
+            'orderItems' => $orderItems,
+        ], 200);
     }
 
     /**

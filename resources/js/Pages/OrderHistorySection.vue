@@ -79,7 +79,7 @@
             >
                 <!-- Iterate over each order group (list of orders per transaction) -->
                 <section
-                    v-for="(order, orderIndex) in filteredData"
+                    v-for="(order, orderIndex) in originalOrderItems"
                     :key="order.transaction_id + orderIndex"
                     class="flex flex-col gap-4"
                 >
@@ -187,7 +187,7 @@
                     </section>
                 </section>
                 <!-- Filtered Data not found -->
-                <section v-if="filteredData.length <= 0">
+                <section v-if="originalOrderItems.length <= 0">
                     <p>
                         No transaction found with the selected filter. Please
                         try again.
@@ -200,6 +200,7 @@
 
 <script setup>
 import App from "@/Layouts/App.vue";
+import axios from "axios";
 import { ref, onMounted, onUnmounted, watch, computed } from "vue";
 
 const props = defineProps({
@@ -275,40 +276,32 @@ const onChangeTransactionDate = (index) => {
 };
 
 /**
- * Computes the filtered order data based on the selected transaction status and date.
- * This function allows filtering by both status and transaction date simultaneously.
+ * Fetches filtered transaction history data from the API based on the selected transaction status and date.
  *
- * @returns {Array} - The filtered order items.
+ * @async
+ * @function fetchFilteredData
+ * @returns {Promise<void>} - A promise that resolves when the data is successfully fetched and processed.
  */
-const filteredData = computed(() => {
-    let filtered = originalOrderItems.value;
-
-    // Filter by transaction status
-    if (selectedTransactionStatus.value !== "All") {
-        filtered = filtered.filter((order) => {
-            if (selectedTransactionStatus.value === "Ongoing") {
-                return order.transaction_status === "pending";
-            } else if (selectedTransactionStatus.value === "Successful") {
-                return order.transaction_status === "paid";
-            }
-            return true;
+const fetchFilteredData = async () => {
+    try {
+        const response = await axios.get(route("api.transaction-history"), {
+            params: {
+                status: selectedTransactionStatus.value,
+                date: selectedTransactionDate.value,
+            },
         });
-    }
 
-    // Filter by transaction date
-    if (selectedTransactionDate.value) {
-        filtered = filtered.filter((order) => {
-            const monthMatch = order.order_created_at.match(/(\w+), \d+ (\w+) \d+/);
-            if (monthMatch) {
-                const orderMonth = monthMatch[2];
-                return orderMonth === selectedTransactionDate.value;
-            }
-            return false;
-        });
+        originalOrderItems.value = response.data.orderItems.data;
+    } catch (error) {
+        console.error("Error fetching filtered data:", error);
     }
+};
 
-    return filtered;
-});
+/**
+ * Watches for changes in the selectedTransactionStatus and selectedTransactionDate variables.
+ * When either of these variables change, the fetchFilteredData function is called to update the data accordingly.
+ */
+watch([selectedTransactionStatus, selectedTransactionDate], fetchFilteredData);
 
 /**
  * Changes the badge color based on the order or payment status.

@@ -27,6 +27,8 @@ Route::middleware('auth')->group(function () {
 
 Route::post('/webhook/payments', [PaymentController::class, 'midtransWebhook']);
 
+Route::get('/api/transaction-history', [PaymentController::class, 'fetchFilteredDataTransactionHistory'])->name('api.transaction-history');
+
 
 
 Route::get('/search',  [FrontEndController::class, 'search'])->name('search');
