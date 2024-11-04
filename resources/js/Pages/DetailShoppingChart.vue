@@ -4,7 +4,7 @@
             class="min-h-screen w-full flex flex-col gap-4 pt-36 pb-14 px-10 lg:px-20"
         >
             <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold">Shopping Chart</h1>
+                <h1 class="text-2xl font-bold">Keranjang Belanja</h1>
                 <BaseAlert
                     v-show="showAlert"
                     class="w-fit py-2 font-medium ms-auto"
@@ -22,7 +22,7 @@
                     <div class="h-full px-3 py-5 bg-neutral rounded-t-lg">
                         <div class="flex items-center justify-between">
                             <BaseCheckbox
-                                :label="`Choose All (${chartItems.length})`"
+                                :label="`Pilih Semua (${chartItems.length})`"
                                 text-color="white"
                                 v-model="selectAllItem"
                                 @change="isSelectedAll"
@@ -162,7 +162,7 @@
                         class="w-full flex flex-col gap-2 px-5 py-4 bg-neutral rounded-lg"
                     >
                         <h1 class="text-white text-2xl font-bold">
-                            Shopping Summary
+                            Ringkasan Belanja
                         </h1>
                         <div
                             class="flex justify-between text-white font-bold text-lg"

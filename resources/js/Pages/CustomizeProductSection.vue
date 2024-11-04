@@ -4,13 +4,16 @@
     >
         <div class="grid grid-cols-1 gap-2 px-14 place-items-center">
             <h1 class="font-bold text-xl lg:text-2xl">
-                Try Our Customize Cake
+                Ciptakan Kue Impianmu Sendiri! 🎂✨
             </h1>
             <p
                 class="w-full md:w-3/4 lg:w-1/2 font-light text-lg lg:text-xl text-justify lg:text-center"
             >
-                Select from a wide range of flavors and mix-and-match your
-                favorite toppings to design a cake that's uniquely yours.
+                Ingin kue yang benar-benar sesuai selera? Di sini, kamu bisa
+                membuat kue spesial yang unik dan personal! Pilih ukuran, rasa,
+                topping, dan hiasan sesuai keinginanmu. Dengan bahan berkualitas
+                dan sentuhan kreativitasmu, setiap potongan jadi lebih dari
+                sekadar kue – ini adalah ekspresi dirimu!
             </p>
         </div>
         <LayoutCarousel :options="options" :on-moved="onMoved">

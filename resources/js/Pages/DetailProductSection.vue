@@ -15,16 +15,16 @@
                     <ul>
                         <li>
                             <inertia-link :href="route('home')"
-                                >Home</inertia-link
+                                >Beranda</inertia-link
                             >
                         </li>
                         <li>
                             <inertia-link :href="route('products')"
-                                >Catalogue</inertia-link
+                                >Katalog</inertia-link
                             >
                         </li>
                         <li>
-                            <inertia-link>Detail Product</inertia-link>
+                            <inertia-link>Detail Kue</inertia-link>
                         </li>
                     </ul>
                 </aside>

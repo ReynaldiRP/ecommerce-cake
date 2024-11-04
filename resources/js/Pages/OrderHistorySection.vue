@@ -5,11 +5,11 @@
             <aside class="breadcrumbs text-sm me-auto relative">
                 <ul>
                     <li>
-                        <inertia-link :href="route('home')">Home</inertia-link>
+                        <inertia-link :href="route('home')">Beranda</inertia-link>
                     </li>
                     <li>
                         <inertia-link :href="route('order.history')"
-                            >Transaction History
+                            >Histori Transaksi
                         </inertia-link>
                     </li>
                 </ul>
@@ -17,7 +17,7 @@
 
             <!-- header content -->
             <section class="flex items-center gap-2 mt-4">
-                <h1 class="text-2xl font-bold">Transaction Lists</h1>
+                <h1 class="text-2xl font-bold">Daftar Transaksi</h1>
                 <div
                     class="px-3 rounded-lg bg-primary-color text-black font-medium text-lg"
                 >
@@ -93,6 +93,7 @@
                                 {{ order.order_created_at }}
                             </p>
                             <div
+                                v-if="order.transaction_status"
                                 class="badge badge-outline font-medium text-lg"
                                 :class="
                                     changeBadgeColorOrderOrPaymentStatus(order)
@@ -213,8 +214,8 @@ const props = defineProps({
 const originalOrderItems = ref([]);
 originalOrderItems.value = props.orderItems.data;
 
-const transactionFilter = ["All", "Ongoing", "Successful"];
-const orderStatus = ["Wait for confirmation", "Order processed", "Delivered"];
+const transactionFilter = ["Semua", "Berjalan", "Sukses"];
+const orderStatus = ["Menunggu konfirmasi", "Pesanan diproses", "Terkirim"];
 const months = [
     "Januari",
     "Februari",
@@ -237,7 +238,6 @@ const transactionTabsClicked = ref(
 const orderStatusTabsClicked = ref(new Array(orderStatus.length).fill(false));
 const selectedTransactionStatus = ref("All");
 const selectedTransactionDate = ref("");
-const notFoundFilteredMessage = ref("");
 
 /**
  * Handles the click event for transaction tabs.
@@ -321,9 +321,9 @@ const changeBadgeColorOrderOrPaymentStatus = (order) => {
     const status = checkOrderOrPaymentStatus(order);
 
     const statusMap = {
-        "Order Confirmed": "badge-info",
-        "Order processed": "badge-info",
-        delivered: "badge-success",
+        "Menunggu konfirmasi": "badge-info",
+        "Pesanan diproses": "badge-info",
+        Terkirim: "badge-success",
         pending: "badge-info",
         paid: "badge-success",
     };

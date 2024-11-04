@@ -11,13 +11,15 @@
                 >
                     <div class="flex flex-col text-xl lg:text-2xl gap-3">
                         <h1 class="font-bold uppercase text-primary-color">
-                            Create your perfect cake just for you!
+                            Buat kue impian Anda hanya untuk Anda!
                         </h1>
                         <p class="text-lg lg:text-xl text-justify">
-                            Welcome to DreamDessert, where your dream cake
-                            becomes a reality! From elegant wedding cakes to
-                            delicious brownies and delightful pastries, we offer
-                            a wide range of options to satisfy your sweet tooth.
+                            Selamat datang di DreamDessert, tempat di mana kue
+                            impian Anda menjadi kenyataan! Dari kue pernikahan
+                            yang elegan hingga brownies lezat dan pastry yang
+                            menggugah selera, kami menghadirkan berbagai pilihan
+                            untuk memanjakan kecintaan Anda pada manisnya
+                            hidangan penutup.
                         </p>
                     </div>
                     <div class="flex gap-2">
@@ -25,7 +27,7 @@
                             :href="route('products')"
                             class="btn btn-xs sm:btn-sm lg:btn-md text-black bg-primary-color hover:bg-primary-color hover:opacity-65 hover:text-slate-500 border-none"
                         >
-                            Discovery Our Catalogs >
+                            Katalog Kami
                         </inertia-link>
                     </div>
                 </section>

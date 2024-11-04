@@ -4,9 +4,9 @@
             <div class="flex flex-col gap-1">
                 <h2 class="text-2xl font-bold">Topping</h2>
                 <small class="text-primary-color font-medium"
-                    >Toppings is optional
+                    >Toppings opsional
                     <span class="text-neutral-content"
-                        >. Choose max 4
+                        >. Pilih maximal 4
                     </span></small
                 >
             </div>

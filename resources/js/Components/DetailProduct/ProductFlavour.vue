@@ -2,10 +2,10 @@
     <section class="flex flex-col gap-4">
         <div class="flex justify-between items-center">
             <div class="flex flex-col gap-1">
-                <h2 class="text-2xl font-bold">Flavour</h2>
+                <h2 class="text-2xl font-bold">Rasa Kue</h2>
                 <small class="text-primary-color font-medium"
-                    >Flavor is required
-                    <span class="text-neutral-content">. Choose 1</span></small
+                    >Rasa kue harus dipilih
+                    <span class="text-neutral-content">. Pilih 1</span></small
                 >
             </div>
             <BaseAlert

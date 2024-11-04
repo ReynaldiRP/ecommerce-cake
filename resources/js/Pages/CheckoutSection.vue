@@ -4,7 +4,7 @@
             class="min-h-screen w-full py-36 xl:py-28 px-10 flex flex-col justify-center gap-4"
         >
             <div class="flex justify-between items-center">
-                <h1 class="text-4xl font-bold relative">Your Orders</h1>
+                <h1 class="text-4xl font-bold relative">Pesanan kamu</h1>
                 <BaseAlert
                     v-if="errorResponses"
                     class="w-fit"
@@ -82,7 +82,7 @@
                                 <h1 class="flex items-center gap-2">
                                     Subtotal
                                     <small class="text-sm font-light"
-                                        >(Cake Price x Quantity)</small
+                                        >(Harga Kue x Jumlah Kue)</small
                                     >
                                 </h1>
                                 <h1>
@@ -90,7 +90,7 @@
                                 </h1>
                             </article>
                             <article class="flex justify-between">
-                                <h1>Flavour</h1>
+                                <h1>Rasa Kue</h1>
                                 <h1>
                                     {{ formatPrice(item.cake_flavour?.price) }}
                                 </h1>
@@ -127,11 +127,11 @@
                             <section class="flex gap-1 items-center">
                                 <BaseLabel
                                     :required="true"
-                                    label="Estimation time"
+                                    label="Waktu Estimasi"
                                 />
                                 <small class="font-medium"
-                                    >(Cake orders require 2 days' advance
-                                    notice.)</small
+                                    >(Pemesanan kue memerlukan pemberitahuan 2
+                                    hari sebelumnya.)</small
                                 >
                             </section>
                             <BaseInput
@@ -146,18 +146,18 @@
                         >
                             <section class="flex gap-1 items-center">
                                 <BaseLabel
-                                    label="Shipping Address"
+                                    label="Alamat Pengiriman"
                                     :required="true"
                                 />
                                 <small class="font-medium"
-                                    >(Delivery available only in Kediri and
-                                    nearby areas.)</small
+                                    >(Pengiriman hanya tersedia di Kediri dan
+                                    area sekitarnya.)</small
                                 >
                             </section>
                             <BaseInput
                                 v-model="form.user_address"
                                 style="width: 100%"
-                                placeholder="User Address"
+                                placeholder="Alamat Penerima"
                                 input-type="address"
                                 @keyup="getSearchResultAddress"
                                 :input-class="
@@ -179,7 +179,7 @@
                             <BaseInput
                                 v-model="form.cake_recipient"
                                 style="width: 100%"
-                                placeholder="Cake Recipient"
+                                placeholder="Nama Penerima"
                                 input-type="username"
                             />
                         </article>
@@ -193,7 +193,7 @@
                             :class="disableCheckout"
                             type="submit"
                         >
-                            Place Order
+                            Pesan Sekarang
                         </button>
                     </section>
                 </form>

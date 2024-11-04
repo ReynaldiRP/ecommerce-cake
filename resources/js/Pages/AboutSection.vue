@@ -12,20 +12,20 @@
         <section class="h-full px-10 flex flex-col items-center my-6">
             <h1 class="text-3xl font-semibold uppercase">our story</h1>
             <p class="textarea-lg font-light text-justify">
-                Dream Dessert is a Micro, Small, and Medium Enterprise (MSME)
-                operating in the food industry, specializing in cake making
-                since 2021. Located in Mojoroto District, Jl. Kawi Gang 2,
-                Kediri City, East Java 64112. Dream Dessert offers a variety of
-                cakes such as tarts, wedding cakes, puddings, and brownies.
-                Additionally, for tarts and wedding cakes, customers can select
-                their desired variants and toppings.
+                Dream Dessert adalah UMKM yang bergerak di industri makanan,
+                khususnya pembuatan kue sejak 2021. Berlokasi di Kecamatan
+                Mojoroto, Jl. Kawi Gang 2, Kota Kediri, Jawa Timur 64112, kami
+                menghadirkan berbagai pilihan kue seperti tart, kue pernikahan,
+                puding, dan brownies. Untuk tart dan kue pernikahan, Anda bebas
+                memilih varian dan topping sesuai keinginan.
             </p>
             <p class="textarea-lg font-light text-justify">
-                We invite you to visit us in Kediri or explore our offerings
-                online. Let us be a part of your special moments, creating sweet
-                memories in every slice. At Dream Dessert, we believe that the
-                best moments in life deserve to be celebrated with the finest
-                desserts.
+                Kami mengundang Anda untuk berkunjung langsung ke tempat kami di
+                Kediri atau menjelajahi pilihan kue kami secara online. Jadikan
+                Dream Dessert bagian dari momen istimewa Anda, menciptakan
+                kenangan manis di setiap gigitan. Karena bagi kami, momen
+                terindah dalam hidup layak dirayakan dengan hidangan penutup
+                terbaik.
             </p>
         </section>
     </div>

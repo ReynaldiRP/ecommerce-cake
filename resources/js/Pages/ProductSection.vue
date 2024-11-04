@@ -6,11 +6,11 @@
             >
                 <ul>
                     <li>
-                        <inertia-link :href="route('home')">Home</inertia-link>
+                        <inertia-link :href="route('home')">Beranda</inertia-link>
                     </li>
                     <li>
                         <inertia-link :href="route('products')"
-                            >Catalouge</inertia-link
+                            >Katalog</inertia-link
                         >
                     </li>
                 </ul>
@@ -32,7 +32,7 @@
                                 Filter
                             </div>
                             <div class="collapse-content">
-                                <FilterItem filtering-name="Personalization">
+                                <FilterItem filtering-name="Tipe Kue">
                                     <BaseRadio
                                         v-for="(
                                             cakePersonalizationType, index
@@ -52,7 +52,7 @@
                                 </FilterItem>
                                 <FilterItem
                                     class="my-4"
-                                    filtering-name="Cake Size"
+                                    filtering-name="Ukuran Kue"
                                 >
                                     <BaseCheckbox
                                         v-for="cakeSize in props.cakeSizes"
@@ -89,7 +89,7 @@
                     </section>
 
                     <FilterLayout class="hidden lg:flex">
-                        <FilterItem filtering-name="Personalization">
+                        <FilterItem filtering-name="Tipe Kue">
                             <BaseRadio
                                 v-for="(
                                     cakePersonalizationType, index
@@ -105,7 +105,7 @@
                                 "
                             />
                         </FilterItem>
-                        <FilterItem filtering-name="Cake Size">
+                        <FilterItem filtering-name="Ukuran Kue">
                             <BaseCheckbox
                                 v-for="cakeSize in props.cakeSizes"
                                 v-model="filteredData.selectedCakeSizeId"

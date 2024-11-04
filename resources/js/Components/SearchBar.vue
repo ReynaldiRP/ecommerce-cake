@@ -16,7 +16,7 @@
             <input
                 type="text"
                 class="grow"
-                placeholder="Search"
+                placeholder="Cari kue..."
                 v-model="search"
                 @keyup="keyupSearch"
                 @focus="onFocusHandler"
@@ -57,7 +57,7 @@
                     </inertia-link>
                 </li>
                 <li v-if="results.length <= 0">
-                    <a>No results found</a>
+                    <a>Kue tidak ditemukan</a>
                 </li>
             </ul>
         </div>

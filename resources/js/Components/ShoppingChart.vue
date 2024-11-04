@@ -43,14 +43,14 @@
             <div class="card-body border-b-2 border-neutral">
                 <div class="flex justify-between items-center">
                     <h3 class="text-lg font-bold">
-                        Shopping Chart
+                        Keranjang Belanja
                         <span class="font-light">({{ chartItemsLength }})</span>
                     </h3>
                     <inertia-link
                         :href="route('detail-chart')"
                         class="text-lg text-primary-color font-bold"
                     >
-                        View
+                        Lihat Semua
                     </inertia-link>
                 </div>
             </div>
