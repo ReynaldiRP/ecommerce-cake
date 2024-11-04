@@ -388,6 +388,7 @@ const checkoutItems = (shoppingChartItemsIds = []) => {
                     _token: page.props.value.csrf_token,
                     selectCake: shoppingChartItemsIds,
                     cakeQuantity: cakeQuantity.value,
+                    notes: notes.value,
                 });
                 isSubmitting.value = false;
             }, 2000);

@@ -145,23 +145,27 @@ class FrontEndController extends Controller
                 $shoppingChartItemIds
             )->get();
 
-            // update quantity of cake
+            // update the cake prices, quantities and notes
             $cakePrices = [];
             $cakeQuantities = [];
+            $cakeNotes = [];
 
             foreach ($cakes as $index => $cake) {
                 $quantity = $request->input('cakeQuantity')[$index];
+                $note = $request->input('notes')[$index];
+
                 $cakeQuantities[$cake->id] = $quantity;
+                $cakeNotes[$cake->id] = $note;
 
                 $price = $cake->price * $quantity;
 
                 $cakePrices[$cake->id] = $price;
             }
 
-            // Store cake prices and quantities in the session
+            // Store cake prices, quantities and notes in the session
             $request->session()->put('cakePrices', $cakePrices);
             $request->session()->put('cakeQuantities', $cakeQuantities);
-
+            $request->session()->put('cakeNotes', $cakeNotes);
 
             // Store the shopping chart item IDs in the session
             $request->session()->put('selectedCakes', $shoppingChartItemIds);
@@ -171,9 +175,10 @@ class FrontEndController extends Controller
         }
 
 
-        // Retrieve the stored cake prices and cake quantity from the session
+        // Retrieve the stored cake prices, cake quantity and cake notes from the session
         $cakePrices = $request->session()->get('cakePrices', []);
         $cakeQuantities = $request->session()->get('cakeQuantities', []);
+        $cakeNotes = $request->session()->get('cakeNotes', []);
 
         // Fetch chart items by the given array of IDs
         $chartItems = ShoppingChartItem::with([
@@ -211,7 +216,8 @@ class FrontEndController extends Controller
         return Inertia::render('CheckoutSection', [
             'chartItems' => $chartItems,
             'cakePrices' => $cakePrices,
-            'cakeQuantities' => $cakeQuantities
+            'cakeQuantities' => $cakeQuantities,
+            'cakeNotes' => $cakeNotes
         ]);
     }
 }

@@ -16,6 +16,7 @@ class OrderItem extends Model
         'cake_flavour_id',
         'quantity',
         'price',
+        'note'
     ];
 
     /**

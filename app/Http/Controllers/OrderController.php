@@ -73,6 +73,7 @@ class OrderController extends Controller
 
         $cakePrices = $request->session()->get('cakePrices', []);
         $cakeQuantities = $request->session()->get('cakeQuantities', []);
+        $cakeNotes = $request->session()->get('cakeNotes', []);
 
         $chartItems = $request->input('chartItems');
 
@@ -86,6 +87,7 @@ class OrderController extends Controller
                 'cake_flavour_id' => $chartItem['cake_flavour_id'] ?? null,
                 'quantity' => $cakeQuantities[$chartItem['id']],
                 'price' => $cakePrices[$chartItem['id']],
+                'note' => $cakeNotes[$chartItem['id']],
             ];
 
 

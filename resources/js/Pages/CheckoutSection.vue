@@ -40,6 +40,7 @@
                                     <h1 class="text-xl text-white">
                                         {{ item.cake.name }}
                                     </h1>
+
                                     <article class="flex gap-2 text-white">
                                         <p class="text-base text-opacity-75">
                                             {{ item.cake_flavour?.name }}
@@ -59,9 +60,16 @@
                                             }}
                                         </p>
                                     </article>
+                                    <!-- Cake Notes -->
+                                    <p
+                                        v-if="cakeNotes[item.id]"
+                                        class="font-extralight"
+                                    >
+                                        "{{ cakeNotes[item.id] }}"
+                                    </p>
                                 </section>
                             </section>
-                            <div class="flex flex-col gap-3 text-white">
+                            <div class="flex flex-col text-white">
                                 <!-- Quantity and Order Price -->
                                 <h1 class="text-xl font-bold">
                                     {{ cakeQuantities[item.id] }} x
@@ -209,6 +217,7 @@ const props = defineProps({
     chartItems: Array,
     cakePrices: Array,
     cakeQuantities: Array,
+    cakeNotes: Array,
 });
 
 const showResults = ref(false);
