@@ -117,7 +117,7 @@
                                         item.cake_topping.length >= 1,
                                 }"
                             >
-                                <p class="text-lg font-medium">
+                                <p class="text-lg font-medium lg:ms-auto">
                                     {{ formatPrice(item.price) }}
                                 </p>
                                 <div
@@ -126,12 +126,7 @@
                                     <div class="join">
                                         <button
                                             class="btn btn-sm btn-outline shadow-lg join-item"
-                                            @click="
-                                                (e) =>
-                                                    cakeQuantity[index] <= 0
-                                                        ? e.preventDefault()
-                                                        : cakeQuantity[index]--
-                                            "
+                                            @click="decrementQuantity(index)"
                                         >
                                             -
                                         </button>
@@ -141,7 +136,7 @@
                                         />
                                         <button
                                             class="btn btn-sm btn-outline shadow-lg join-item"
-                                            @click="cakeQuantity[index]++"
+                                            @click="incrementQuantity(index)"
                                         >
                                             +
                                         </button>
@@ -149,56 +144,13 @@
                                     <button @click="deleteItem(item.id)">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
-                                    <div
-                                        class="flex flex-col gap-1 dropdown dropdown-end"
-                                    >
-                                        <div
-                                            tabindex="0"
-                                            class="font-bold cursor-pointer flex items-center"
-                                            @click="hiddenNotes = !hiddenNotes"
-                                        >
-                                            <BaseIcon
-                                                :path="mdiNoteEditOutline"
-                                                size=""
-                                            />
-                                        </div>
-                                        <div
-                                            class="bg-base-200 p-4 card compact dropdown-content menu mt-7 gap-4 items-center"
-                                            v-show="hiddenNotes"
-                                        >
-                                            <label class="form-control w-72">
-                                                <div class="label">
-                                                    <span class="label-text"
-                                                        >Catatan
-                                                    </span>
-                                                </div>
-                                                <textarea
-                                                    class="textarea textarea-bordered h-24"
-                                                    placeholder="Jangan lupa tambahkan catatan..."
-                                                ></textarea>
-                                                <div class="label ms-auto">
-                                                    <span class="label-text"
-                                                        >0/144</span
-                                                    >
-                                                </div>
-                                            </label>
-
-                                            <div
-                                                class="flex items-center gap-2"
-                                            >
-                                                <button
-                                                    class="btn w-36 btn-neutral"
-                                                >
-                                                    Batal
-                                                </button>
-                                                <button
-                                                    class="btn w-36 btn-success"
-                                                >
-                                                    Simpan
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <AddNotesOrder
+                                        :hiddenNotes="hiddenNotes"
+                                        v-model:notes="notes[index]"
+                                        @update:hiddenNotes="
+                                            hiddenNotes = $event
+                                        "
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -226,14 +178,11 @@
                                     : 'bg-primary-color hover:bg-primary-color hover:opacity-65 hover:text-slate-500 border-none'
                             "
                             @click="
-                                chartItems.length <= 0
-                                    ? (e) => e.preventDefault()
-                                    : checkoutItems(
-                                          chartItems.map(
-                                              (item) => selectCake[item.id]
-                                          ),
-                                          e
-                                      )
+                                checkoutItems(
+                                    chartItems.map(
+                                        (item) => selectCake[item.id]
+                                    )
+                                )
                             "
                             class="btn btn-block mt-auto text-black"
                         >
@@ -260,11 +209,10 @@ import App from "@/Layouts/App.vue";
 import BaseCheckbox from "@/Components/BaseCheckbox.vue";
 import BaseAlert from "@/Components/BaseAlert.vue";
 import EmptyDetailShoppingChart from "@/Components/EmptyDetailShoppingChart.vue";
-import BaseIcon from "@/Components/DashboardAdmin/BaseIcon.vue";
-import { ref, computed } from "vue";
+import AddNotesOrder from "@/Components/AddNotesOrder.vue";
+import { ref, computed, watch } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
-import { mdiNoteEditOutline } from "@mdi/js";
 import axios from "axios";
 
 const page = usePage();
@@ -282,16 +230,16 @@ const messageDelete = ref("");
 const isSubmitting = ref(false);
 const cakeQuantity = ref(chartItems.value.map((item) => item.quantity));
 const hiddenNotes = ref(false);
+const notes = ref(chartItems.value.map((item) => item.notes));
 
-/**
- * Updates the total price of the selected cakes in the shopping chart.
- *
- * @return {number} The total price of the selected cakes
- */
 const updateTotalPrice = () => {
     const selectedCake = chartItems.value
         .filter((item) => selectCake.value[item.id])
-        .reduce((totalPrice, item) => totalPrice + item.price, 0);
+        .reduce(
+            (totalPrice, item, index) =>
+                totalPrice + item.price * cakeQuantity.value[index],
+            0
+        );
 
     totalPrice.value = selectedCake;
 
@@ -303,6 +251,9 @@ const updateTotalPrice = () => {
     // If not all are selected, uncheck "Select All"
     selectAllItem.value = allSelected;
 };
+
+// Watch for changes in the cakeQuantity array and update the total price accordingly
+watch(cakeQuantity, updateTotalPrice, { deep: true });
 
 /**
  * A computed property that returns the total number of selected cakes in the chart.
@@ -418,7 +369,7 @@ const deleteItem = async (id) => {
  * @param {event} e - The event object, used to prevent default behavior if provided.
  * @return {void|event} Prevents default event behavior if e is provided, otherwise returns nothing.
  */
-const checkoutItems = (shoppingChartItemsIds = [], e) => {
+const checkoutItems = (shoppingChartItemsIds = []) => {
     // Clear the shoppingChartItemsIds array before adding items
     shoppingChartItemsIds.length = 0;
 
@@ -443,10 +394,32 @@ const checkoutItems = (shoppingChartItemsIds = [], e) => {
         } catch (error) {
             console.error("Error checking out items:", error);
         }
+    } else {
+        return false;
+    }
+};
+
+/**
+ * Decrements the quantity of a cake at the specified index.
+ * If the quantity is already 1 or less, the function returns false and does not decrement further.
+ *
+ * @param {number} index - The index of the cake in the cakeQuantity array.
+ * @returns {boolean} - Returns false if the quantity is 1 or less, otherwise decrements the quantity.
+ */
+const decrementQuantity = (index) => {
+    if (cakeQuantity.value[index] <= 1) {
+        return false;
     }
 
-    if (e) {
-        return e.preventDefault();
-    }
+    cakeQuantity.value[index]--;
+};
+
+/**
+ * Increments the quantity of a specific cake in the shopping cart.
+ *
+ * @param {number} index - The index of the cake in the shopping cart array.
+ */
+const incrementQuantity = (index) => {
+    cakeQuantity.value[index]++;
 };
 </script>

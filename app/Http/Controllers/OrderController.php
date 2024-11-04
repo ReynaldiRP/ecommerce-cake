@@ -71,7 +71,11 @@ class OrderController extends Controller
         $orderData = $request->only(['user_address', 'cake_recipient', 'estimated_delivery_date']);
         $order = $this->createOrder($orderData);
 
+        $cakePrices = $request->session()->get('cakePrices', []);
+        $cakeQuantities = $request->session()->get('cakeQuantities', []);
+
         $chartItems = $request->input('chartItems');
+
         $totalPrice = 0;
 
         // Loop through each chart item and create an order item
@@ -80,9 +84,11 @@ class OrderController extends Controller
                 'order_id' => $order->id,
                 'cake_id' => $chartItem['cake_id'],
                 'cake_flavour_id' => $chartItem['cake_flavour_id'] ?? null,
-                'quantity' => $chartItem['quantity'],
-                'price' => $chartItem['price'],
+                'quantity' => $cakeQuantities[$chartItem['id']],
+                'price' => $cakePrices[$chartItem['id']],
             ];
+
+
 
             $orderItem = OrderItem::create($orderItemData);
 
@@ -128,6 +134,7 @@ class OrderController extends Controller
         try {
             //Order Details
             $orderResponse = $this->createOrderItem($request);
+
 
             // Get the response data from JsonResponse as an object
             $orderDetails = $orderResponse->getData();

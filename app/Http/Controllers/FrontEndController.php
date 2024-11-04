@@ -122,16 +122,16 @@ class FrontEndController extends Controller
 
 
 
+
     /**
-     * Handle the checkout process.
+     * Handles the checkout process.
      *
-     * This method handles both GET and POST requests for the checkout process.
-     * If the request method is POST, it updates the quantities and prices of the selected cakes,
-     * and stores the selected cake IDs in the session. If the request method is GET, it retrieves
-     * the stored cake IDs from the session.
+     * This method processes the checkout request. If the request method is POST, it retrieves the selected cake IDs and their quantities
+     * from the request, fetches the corresponding cakes from the database, calculates their prices, and stores the prices and quantities
+     * in the session. If the request method is not POST, it retrieves the stored cake IDs, prices, and quantities from the session.
      *
-     * @param \Illuminate\Http\Request $request The incoming request instance.
-     * @return \Illuminate\Http\Response The response instance.
+     * @param Request $request The HTTP request instance.
+     * @return Response The response instance.
      */
     public function checkout(Request $request): Response
     {
@@ -139,13 +139,29 @@ class FrontEndController extends Controller
             // Get the array of shoppingChartItemId from the query parameters
             $shoppingChartItemIds = $request->input('selectCake', []);
 
+            // Fetch the selected cakes
+            $cakes = ShoppingChartItem::with(['cake', 'cake.cakeSize'])->whereIn(
+                'id',
+                $shoppingChartItemIds
+            )->get();
+
             // update quantity of cake
-            foreach ($shoppingChartItemIds as $key => $value) {
-                $cake = ShoppingChartItem::find($value);
-                $cake->quantity = $request->input('cakeQuantity')[$key];
-                $cake->price *= $cake->quantity;
-                $cake->save();
+            $cakePrices = [];
+            $cakeQuantities = [];
+
+            foreach ($cakes as $index => $cake) {
+                $quantity = $request->input('cakeQuantity')[$index];
+                $cakeQuantities[$cake->id] = $quantity;
+
+                $price = $cake->price * $quantity;
+
+                $cakePrices[$cake->id] = $price;
             }
+
+            // Store cake prices and quantities in the session
+            $request->session()->put('cakePrices', $cakePrices);
+            $request->session()->put('cakeQuantities', $cakeQuantities);
+
 
             // Store the shopping chart item IDs in the session
             $request->session()->put('selectedCakes', $shoppingChartItemIds);
@@ -154,11 +170,48 @@ class FrontEndController extends Controller
             $shoppingChartItemIds = $request->session()->get('selectedCakes', []);
         }
 
-        // Fetch chart items by the given array of IDs
-        $chartItems = ShoppingChartItem::with('cart', 'cake', 'cake.cakeSize', 'cakeFlavour', 'cakeTopping')
-            ->whereIn('id', $shoppingChartItemIds)
-            ->get();
 
-        return Inertia::render('CheckoutSection', ['chartItems' => $chartItems]);
+        // Retrieve the stored cake prices and cake quantity from the session
+        $cakePrices = $request->session()->get('cakePrices', []);
+        $cakeQuantities = $request->session()->get('cakeQuantities', []);
+
+        // Fetch chart items by the given array of IDs
+        $chartItems = ShoppingChartItem::with([
+            'cart',
+            'cake' => function ($query) {
+                $query->with('cakeSize');
+            },
+            'cakeFlavour',
+            'cakeTopping'
+        ])->whereIn('id', $shoppingChartItemIds)->get();
+
+        // DB::table('shopping_chart_items AS sc')
+        //     ->select([
+        //         'sc.id AS shopping_chart_id',
+        //         'sc.quantity AS order_quantity',
+        //         'sc.price AS order_price',
+        //         'c.name AS cake_name',
+        //         'c.base_price AS cake_price',
+        //         'c.description AS cake_description',
+        //         'c.personalization_type AS cake_type',
+        //         'cs.size',
+        //         'cs.price AS size_price',
+        //         'f.name AS flavour_name',
+        //         'f.price AS flavour_price',
+        //         DB::raw('GROUP_CONCAT(DISTINCT t.name ORDER BY t.name ASC SEPARATOR ", ") AS topping_names')
+        //     ])
+        //     ->leftJoin('cakes AS c', 'sc.cake_id', '=', 'c.id')
+        //     ->leftJoin('cake_sizes AS cs', 'c.cake_size_id', '=', 'cs.id')
+        //     ->leftJoin('flavours AS f', 'sc.cake_flavour_id', '=', 'f.id')
+        //     ->leftJoin('shopping_chart_item_topping AS scit', 'sc.id', '=', 'scit.shopping_chart_item_id')
+        //     ->leftJoin('toppings AS t', 'scit.topping_id', '=', 't.id')
+        //     ->groupBy('sc.id')
+        //     ->get();
+
+        return Inertia::render('CheckoutSection', [
+            'chartItems' => $chartItems,
+            'cakePrices' => $cakePrices,
+            'cakeQuantities' => $cakeQuantities
+        ]);
     }
 }

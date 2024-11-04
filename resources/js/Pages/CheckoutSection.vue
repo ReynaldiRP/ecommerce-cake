@@ -62,8 +62,9 @@
                                 </section>
                             </section>
                             <div class="flex flex-col gap-3 text-white">
+                                <!-- Quantity and Order Price -->
                                 <h1 class="text-xl font-bold">
-                                    {{ item.quantity }} x
+                                    {{ cakeQuantities[item.id] }} x
                                     {{ formatPrice(item.price) }}
                                 </h1>
                             </div>
@@ -102,7 +103,8 @@
                                 class="px-2 flex justify-between mt-4 border-t-white border-t-2 text-white"
                             >
                                 <h1>Totals</h1>
-                                <h1>{{ formatPrice(item.price) }}</h1>
+                                <!-- Order Total Price -->
+                                <h1>{{ formatPrice(cakePrices[item.id]) }}</h1>
                             </article>
                         </section>
                     </section>
@@ -205,6 +207,8 @@ import { debounce } from "lodash";
 
 const props = defineProps({
     chartItems: Array,
+    cakePrices: Array,
+    cakeQuantities: Array,
 });
 
 const showResults = ref(false);
@@ -355,8 +359,16 @@ const formatPrice = (price = 0) => {
  */
 const getItemSubtotal = (item) => {
     const basePrice = item.cake.base_price || 0;
+    const quantity = props.cakeQuantities[item.id] || null;
+
     const cakeSizePrice = item.cake.cake_size?.price || 0;
-    return (basePrice + cakeSizePrice) * item.quantity;
+    const totalPrice = (basePrice + cakeSizePrice) * quantity;
+
+    console.log(
+        `${basePrice} + ${cakeSizePrice} * ${quantity} = ${totalPrice}`
+    );
+
+    return totalPrice;
 };
 
 /**
