@@ -5,7 +5,9 @@
             <aside class="breadcrumbs text-sm me-auto relative">
                 <ul>
                     <li>
-                        <inertia-link :href="route('home')">Beranda</inertia-link>
+                        <inertia-link :href="route('home')"
+                            >Beranda</inertia-link
+                        >
                     </li>
                     <li>
                         <inertia-link :href="route('order.history')"
@@ -66,7 +68,7 @@
                         onChangeTransactionDate($event.target.selectedIndex)
                     "
                 >
-                    <option disabled selected>Select Transaction Months</option>
+                    <option disabled selected>Pilih Bulan Transaksi</option>
                     <option v-for="(month, index) in months" :key="index">
                         {{ month }}
                     </option>
@@ -324,8 +326,8 @@ const changeBadgeColorOrderOrPaymentStatus = (order) => {
         "Menunggu konfirmasi": "badge-info",
         "Pesanan diproses": "badge-info",
         Terkirim: "badge-success",
-        pending: "badge-info",
-        paid: "badge-success",
+        "menunggu pembayaran": "badge-info",
+        terbayar: "badge-success",
     };
 
     return statusMap[status] || "badge-neutral";
@@ -348,7 +350,7 @@ const checkOrderOrPaymentStatus = (order) => {
 // Show the button pay now if the payment status is pending or the order status is order confirmed
 const showPayNowButton = (order) => {
     const status = checkOrderOrPaymentStatus(order);
-    return status === "pending" || status === "Order Confirmed";
+    return status === "menunggu pembayaran" || status === "Order Confirmed";
 };
 
 onMounted(() => {

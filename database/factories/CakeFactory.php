@@ -20,36 +20,40 @@ class CakeFactory extends Factory
     {
         $nonCustomizedCake = [
             'Pudding Cup',
-            'Pudding Box',
-            'Fruit Pie',
-            'Cup Cake',
-            'Pastry',
+            'Fudge Brownies',
+            'Pie Buah',
+            'Cupcake (5 pcs)',
+            'Cupcake (6 pcs)',
         ];
 
         $customizedCake = [
-            'Shape Cakes',
-            'Sponge Cake',
-            'Vanilla Cake'
+            'Bento Cake',
+            'Cakes',
         ];
 
         $cakeDescription = [
-            'Pudding Cup' => 'A delightful, individual-sized dessert, encased in a clear cup, showcasing its vibrant layers of creamy custard and fruity toppings. Ideal for those who love to savor a personal treat on-the-go or after a meal.',
-            'Pudding Box' => 'A larger, rectangular pudding, perfect for sharing with friends and family. Its smooth, velvety texture combined with rich, sweet flavors makes it a comforting treat that pairs wonderfully with fresh fruit or whipped cream.',
-            'Fruit Pie' => 'A classic American dessert with a golden, flaky crust filled with sweet and tangy seasonal fruits, such as apples, berries, or peaches. Each bite offers a delightful contrast of textures and a burst of refreshing fruit flavor.',
-            'Cup Cake' => 'A small, festive cake baked in a decorative paper liner. These moist cakes come in various flavors, topped with swirls of buttercream frosting, sprinkles, or edible decorations, making them perfect for parties or personal indulgence.',
-            'Pastry' => 'A delicate, flaky baked good, often made with butter or shortening, such as croissants, danishes, or tarts, offering a buttery and satisfying crunch. Whether its a croissant, danish, or tart, each pastry offers layers of satisfying crispness with sweet or savory fillings.',
-            'Shape Cakes' => 'A cake shaped like a specific object or character, adding a playful and whimsical touch to any occasion. Whether it’s for a themed birthday party or a special occasion, these cakes are perfect for making a bold, memorable statement.',
-            'Sponge Cake' => 'A light and airy cake with a fluffy, delicate crumb. Made with simple ingredients like eggs, sugar, and flour, it serves as a versatile base for layered cakes, trifles, or simply paired with fresh berries and cream.',
-            'Vanilla Cake' => 'A timeless classic, this moist vanilla-flavored cake serves as the perfect foundation for a variety of toppings, from rich chocolate ganache to fresh fruit. Its simple yet rich flavor makes it a favorite for all occasions.'
+            'Pudding Cup' => 'Dessert mungil yang memanjakan, disajikan dalam cup transparan, menampilkan lapisan krim custard lembut dan topping buah segar yang menggoda. Cocok untuk Anda yang ingin menikmati hidangan manis personal, kapan saja dan di mana saja—baik sebagai teman ngemil atau penutup santap lezat Anda.',
+            'Fudge Brownies' => 'Brownies cokelat pekat berbentuk persegi yang siap memanjakan lidah Anda! Tekstur yang fudgy dan lembut berpadu sempurna dengan rasa cokelat yang kaya dan intens. Cocok untuk dinikmati sendiri atau dibagi bersama teman dan keluarga. Tambahkan es krim atau whipped cream di atasnya untuk sentuhan ekstra yang memanjakan!',
+            'Pie Buah' => 'Dessert klasik ala Amerika dengan kulit yang renyah keemasan, diisi dengan buah-buahan musiman yang manis dan segar seperti apel, beri, atau persik. Setiap gigitannya menghadirkan perpaduan tekstur yang sempurna dan sensasi rasa buah yang menyegarkan.',
+            'Cupcake (5 pcs)' => 'Kue kecil yang meriah, dipanggang dalam wadah kertas dekoratif. Kue lembut ini hadir dalam berbagai rasa, dilengkapi dengan swirl frosting buttercream, taburan sprinkles, atau dekorasi yang bisa dimakan, menjadikannya sempurna untuk pesta atau sekadar memanjakan diri sendiri.',
+            'Cupcake (6 pcs)' => 'Kue kecil yang meriah, dipanggang dalam wadah kertas dekoratif. Kue lembut ini hadir dalam berbagai rasa, dilengkapi dengan swirl frosting buttercream, taburan sprinkles, atau dekorasi yang bisa dimakan, menjadikannya sempurna untuk pesta atau sekadar memanjakan diri sendiri.',
+            'Pastry' => 'Kue panggang yang lembut dan renyah, sering kali dibuat dengan mentega atau shortening, seperti croissant, danish, atau tart. Setiap gigitan memberikan sensasi gurih mentega dan kerenyahan yang memuaskan. Baik itu croissant, danish, atau tart, semua pastry ini menghadirkan lapisan-lapisan kelezatan dengan isian manis atau gurih yang memanjakan.',
+            'Cakes' => 'Kue yang ringan dan lembut dengan tekstur remah yang halus. Dibuat dari bahan sederhana seperti telur, gula, dan tepung, kue ini cocok menjadi dasar untuk kue berlapis, trifle, atau dinikmati langsung dengan buah beri segar dan krim.',
+            'Bento Cake' => 'Kue mungil nan cantik yang pas untuk porsi satu atau dua orang. Dikemas dalam kotak bento yang praktis, kue ini hadir dengan desain yang sederhana namun penuh gaya, cocok sebagai hadiah atau kejutan kecil untuk orang terkasih. Meskipun ukurannya mini, rasanya tetap luar biasa dengan tekstur lembut dan topping yang dapat disesuaikan sesuai selera. Pilihan sempurna untuk merayakan momen spesial dalam keintiman!'
         ];
 
-        $customizedCakePrice = [
-            'Shape Cakes' => 90000,
-            'Sponge Cake' => 100000,
-            'Vanilla Cake' => 60000
+        $cakePrice = [
+            'Pudding Cup' => 5000,
+            'Pie Buah' => 150000,
+            'Cupcake (5 pcs)' => 45000,
+            'Cupcake (6 pcs)' => 50000,
+            'Fudge Brownies' => 40000,
+            'Bento Cake' => 25000,
+            'Cakes' => 60000,
         ];
 
         static $uniqueNames = [];
+        static $assignedSizes = [];
         $name = null;
 
         if (count($uniqueNames) < count($nonCustomizedCake)) {
@@ -68,17 +72,22 @@ class CakeFactory extends Factory
             'cake_size_id' => function (array $attributes) use ($customizedCake) {
                 if (in_array($attributes['name'], $customizedCake)) {
                     $cakeSizeIds = CakeSize::pluck('id')->toArray();
-                    return !empty($cakeSizeIds) ? $this->faker->randomElement($cakeSizeIds) : null;
+                    $availableSizes = array_diff($cakeSizeIds, $assignedSizes[$attributes['name']] ?? []);
+
+                    if (!empty($availableSizes)) {
+                        $selectedSize = $this->faker->randomElement($availableSizes);
+                        $assignedSizes[$attributes['name']][] = $selectedSize;
+                        return $selectedSize;
+                    } else {
+                        // Handle the case when no unique sizes are left for this cake
+                        return null;
+                    }
                 } else {
                     return null;
                 }
             },
-            'base_price' => function (array $attributes) use ($customizedCakePrice) {
-                if ($attributes['cake_size_id'] !== null) {
-                    return $customizedCakePrice[$attributes['name']];
-                } else {
-                    return $this->faker->numberBetween(10, 13) * 5000;
-                }
+            'base_price' => function (array $attributes) use ($cakePrice) {
+                return $cakePrice[$attributes['name']];
             },
             'description' => function (array $attributes) use ($cakeDescription) {
                 return $cakeDescription[$attributes['name']];

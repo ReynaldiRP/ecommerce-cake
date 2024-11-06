@@ -58,13 +58,13 @@
                             :href="route('products')"
                             class="btn btn-md btn-neutral"
                         >
-                            Continue Shopping
+                            Lanjut Belanja
                         </inertia-link>
                         <inertia-link
                             :href="route('detail-chart')"
                             class="btn btn-md text-black bg-primary-color hover:bg-base-300 hover:text-white"
                         >
-                            See Chart
+                            Lihat Keranjang Belanja
                         </inertia-link>
                     </div>
                 </div>

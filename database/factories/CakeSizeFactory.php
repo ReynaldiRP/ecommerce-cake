@@ -17,16 +17,19 @@ class CakeSizeFactory extends Factory
     public function definition(): array
     {
         $cakeSizePrice = [
-            13 => 45000,
-            14 => 50000,
-            15 => 55000,
-            16 => 60000,
-            17 => 65000,
-            18 => 70000,
+            10 => 5000,
+            12 => 10000,
+            15 => 20000,
+            17 => 30000,
+            18 => 40000,
+            20 => 50000,
+            22 => 60000,
+            24 => 70000,
         ];
 
+
         return [
-            'size' => $this->faker->unique()->numberBetween(13, 18),
+            'size' => $this->faker->unique()->randomElement(array_keys($cakeSizePrice)),
             'price' => function (array $attributes) use ($cakeSizePrice) {
                 return $cakeSizePrice[$attributes['size']];
             },

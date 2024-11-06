@@ -24,7 +24,7 @@
                 <h1
                     class="relative bottom-10 text-primary-color font-bold text-3xl"
                 >
-                    Sign In
+                    Selamat Datang Kembali
                 </h1>
             </div>
             <form
@@ -59,7 +59,7 @@
                         name="password"
                         autocomplete="current-password"
                         style="width: 450px"
-                        placeholder="Min. 8 Characters"
+                        placeholder="Min. 8 Karakter"
                         :input-type="passwordInputType"
                         :error="error.password"
                         :error-message="errorMessage.password"
@@ -71,7 +71,7 @@
                 <div class="flex items-center justify-between">
                     <div class="form-control">
                         <label class="flex gap-3 label cursor-pointer">
-                            <span class="label-text">Remember me</span>
+                            <span class="label-text">Ingat saya</span>
                             <input
                                 type="checkbox"
                                 checked="checked"
@@ -80,19 +80,19 @@
                         </label>
                     </div>
                     <inertia-link class="text-sm underline"
-                        >Forgot password?</inertia-link
+                        >Lupa password?</inertia-link
                     >
                 </div>
                 <button class="btn w-full bg-base-300 font-bold text-lg">
-                    Log In
+                    Masuk
                 </button>
                 <p class="text-sm mx-auto">
-                    Doesn't have an accont?
+                    Tidak punya akun ?
                     <inertia-link
                         :href="route('register.index')"
                         class="text-sm underline"
                     >
-                        Register Now</inertia-link
+                        Daftar Sekarang</inertia-link
                     >
                 </p>
             </form>

@@ -10,7 +10,7 @@
             class="first-section min-h-screen hidden lg:w-[60%] lg:block rounded-e-2xl"
         ></div>
         <div
-            class="h-full w-full lg:w-[40%] mt-3 flex flex-col items-center justify-center bg-base-100"
+            class="h-full w-full lg:w-[40%] mt-3 flex flex-col items-center justify-center gap-4 bg-base-100"
         >
             <div class="flex flex-col items-center justify-center">
                 <div class="avatar">
@@ -21,7 +21,9 @@
                         />
                     </div>
                 </div>
-                <h1 class="text-primary-color font-bold text-3xl">Register</h1>
+                <h1 class="text-primary-color font-bold text-3xl">
+                    Daftar Akun
+                </h1>
             </div>
             <form @submit.prevent="submit" class="flex flex-col gap-3">
                 <BaseAlert v-if="errors.email" type="alert-error">{{
@@ -37,7 +39,7 @@
                     errors.address
                 }}</BaseAlert>
                 <div class="flex flex-col gap-2">
-                    <BaseLabel label="Username" :required="true" />
+                    <BaseLabel label="Nama Pengguna" :required="true" />
                     <BaseInput
                         v-model="form.username"
                         style="width: 450px"
@@ -60,24 +62,24 @@
                         @change="onChangeEmail"
                     />
                 </div>
-                <div class="flex flex-col gap-2">
-                    <BaseLabel label="Address" :required="true" />
+                <!-- <div class="flex flex-col gap-2">
+                    <BaseLabel label="Alamat" :required="true" />
                     <BaseInput
                         v-model="form.address"
                         style="width: 450px"
-                        placeholder="User Address"
+                        placeholder="Alamat Pengguna"
                         input-type="address"
                         :error="error.address"
                         :error-message="errorMessage.address"
                         @change="onChangeAddress"
                     />
-                </div>
+                </div> -->
                 <div class="flex flex-col gap-2">
                     <BaseLabel label="Password" :required="true" />
                     <BaseInput
                         v-model="form.password"
                         style="width: 450px"
-                        placeholder="Min. 8 Characters"
+                        placeholder="Min. 8 Karakter"
                         :input-type="passwordInputType.password"
                         :error="error.password"
                         :error-message="errorMessage.password"
@@ -89,11 +91,11 @@
                     />
                 </div>
                 <div class="flex flex-col gap-2">
-                    <BaseLabel label="Confirm Password" :required="true" />
+                    <BaseLabel label="Ulangi Password" :required="true" />
                     <BaseInput
                         v-model="form.password_confirmation"
                         style="width: 450px"
-                        placeholder="Min. 8 Characters"
+                        placeholder="Sama dengan password di atas"
                         :input-type="passwordInputType.confirmPassword"
                         :error="error.confirmPassword"
                         :error-message="errorMessage.confirmPassword"
@@ -105,15 +107,15 @@
                     />
                 </div>
                 <button class="btn w-full bg-base-300 font-bold text-lg">
-                    Register
+                    Daftar
                 </button>
                 <p class="text-sm mx-auto">
-                    Already have an accont?
+                    Sudah punya akun?
                     <inertia-link
                         :href="route('login.index')"
                         class="text-sm underline"
                     >
-                        Login Now</inertia-link
+                        Masuk</inertia-link
                     >
                 </p>
             </form>

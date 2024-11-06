@@ -61,9 +61,9 @@ class PaymentController extends Controller
 
             // Update the payment status based on the transaction status
             if ($transaction_status == 'pending') {
-                $payment->payment_status = 'pending';
+                $payment->payment_status = 'menunggu pembayaran';
             } elseif ($transaction_status == 'settlement') {
-                $payment->payment_status = 'paid';
+                $payment->payment_status = 'terbayar';
             }
 
             // Save the payment (whether new or updated)
@@ -179,16 +179,6 @@ class PaymentController extends Controller
                 $q->whereMonth('created_at', '=', $month);
             }
         });
-
-        // Check if the query returns any results
-        // if ($query->count() == 0) {
-        //     return response()->json([
-        //         'message' => 'Filter Results: Nothing Here! 🔍 We searched through
-        //                     everything with your filters, but came up empty-handed.
-        //                     Try adjusting your filters to cast a wider net.',
-        //         'orderItems' => []
-        //     ], 200);
-        // }
 
         // Paginate the results
         $orderItems = $query->orderBy('created_at', 'desc')->paginate(5);

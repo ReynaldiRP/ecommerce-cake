@@ -42,7 +42,7 @@
                 class="h-full w-full flex flex-col justify-center px-8 py-10 mt-10 gap-6"
             >
                 <input type="text" hidden v-model="form.cake_id" />
-                <ProductDetail :cake="totalPrice" />
+                <ProductDetail :cake="totalPrice" :format-price="formatPrice" />
 
                 <ProductFlavour
                     v-show="isCakeCustomized"
@@ -50,6 +50,7 @@
                     v-model="form.cake_flavour_id"
                     @update-flavour-price="handleUpdateFlavourPrice"
                     :error-responses="errorResponses"
+                    :format-price="formatPrice"
                 />
                 <ProductTopping
                     v-show="isCakeCustomized"
@@ -57,6 +58,7 @@
                     v-model="form.toppings"
                     @update-topping-price="handleUpdateToppingPrice"
                     :error-responses="errorResponses"
+                    :format-price="formatPrice"
                 />
                 <ProductQuantity
                     v-model="form.quantity"
@@ -135,6 +137,8 @@ const handleUpdateFlavourPrice = (price) => {
  * @return {void}
  */
 const handleUpdateToppingPrice = (price) => {
+    console.log(price);
+
     toppingPrice.value = price;
 };
 
@@ -157,6 +161,7 @@ const totalPrice = computed(() => {
     const cakeSizedPrice = props.cake.cake_size
         ? props.cake.cake_size.price
         : 0;
+
     const totalCakePrice =
         (props.cake.base_price +
             cakeSizedPrice +
@@ -187,6 +192,19 @@ watch(
 const isCakeCustomized = computed(() => {
     return props.cake?.personalization_type === "customized";
 });
+
+/**
+ * Formats a given price into a currency string using the Indonesian Rupiah currency format.
+ *
+ * @param {number} price - The price to be formatted.
+ * @return {string} The formatted currency string.
+ */
+const formatPrice = (price = 0) => {
+    return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+    }).format(price);
+};
 
 /**
  * Submits the form to add a new item to the shopping cart.

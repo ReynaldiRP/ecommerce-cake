@@ -13,6 +13,6 @@ class CakesSeeder extends Seeder
      */
     public function run(): void
     {
-        Cake::factory()->count(20)->create();
+        Cake::factory()->count(16)->create();
     }
 }

@@ -18,15 +18,22 @@
             >
         </div>
         <section class="grid grid-cols-2 lg:grid-cols-4 items-center gap-4">
-            <BaseCheckbox
+            <div
+                class="flex flex-col"
                 v-for="(toppings, index) in toppings"
                 :key="toppings.id"
-                :id="toppings.id"
-                v-model="model"
-                text-color="#A6ADBB"
-                :label="toppings.name"
-                @change="updateToppingPrice"
-            />
+            >
+                <BaseCheckbox
+                    :id="toppings.id"
+                    v-model="model"
+                    text-color="#A6ADBB"
+                    :label="toppings.name"
+                    @change="updateToppingPrice"
+                />
+                <label for="" class="ps-8 font-extralight"
+                    >({{ formatPrice(toppings.price) }})</label
+                >
+            </div>
         </section>
     </section>
 </template>
@@ -48,6 +55,9 @@ const props = defineProps({
     },
     errorResponses: {
         type: Object,
+    },
+    formatPrice: {
+        type: Function,
     },
 });
 

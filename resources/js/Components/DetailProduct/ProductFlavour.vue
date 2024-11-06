@@ -16,16 +16,23 @@
             >
         </div>
         <section class="grid grid-cols-2 lg:grid-cols-4 items-center gap-4">
-            <BaseRadio
-                text-size="1rem"
+            <div
                 v-for="(flavour, index) in props.flavours"
-                :id="flavour?.id"
                 :key="index"
-                v-model="model"
-                text-color="#A6ADBB"
-                :label="flavour?.name"
-                @change="updateFlavourPrice"
-            />
+                class="flex flex-col"
+            >
+                <BaseRadio
+                    text-size="1rem"
+                    :id="flavour?.id"
+                    v-model="model"
+                    text-color="#A6ADBB"
+                    :label="flavour?.name"
+                    @change="updateFlavourPrice"
+                />
+                <label for="" class="ps-8 font-extralight"
+                    >({{ formatPrice(flavour.price) }})</label
+                >
+            </div>
         </section>
     </section>
 </template>
@@ -41,6 +48,9 @@ const props = defineProps({
     errorResponses: {
         type: Object,
         default: null,
+    },
+    formatPrice: {
+        type: Function,
     },
 });
 
