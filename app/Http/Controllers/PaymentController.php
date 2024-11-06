@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Support\Facades\Http;
 
 class PaymentController extends Controller
 {
@@ -90,6 +91,7 @@ class PaymentController extends Controller
         $orderItems = OrderItem::with([
             'order.payment',  // Include payment relationship through order
             'cake',
+            'cake.cakeSize',
             'cakeFlavour',
             'cakeTopping'
         ])
@@ -99,6 +101,7 @@ class PaymentController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(5);
 
+
         $orderItems->getCollection()->transform(function ($item) {
             return [
                 'transaction_id' => $item->order?->payment?->transaction_id,
@@ -106,6 +109,7 @@ class PaymentController extends Controller
                 'order_status' => $item->order?->status,
                 'transaction_status' => $item->order?->payment?->payment_status,
                 'cake_name' => $item->cake?->name,
+                'cake_size' => $item->cake?->cakeSize?->size,
                 'cake_flavour' => $item->cakeFlavour?->name,
                 'cake_toppings' => $item->cakeTopping?->pluck('name'),
                 'quantity' => $item->quantity,
@@ -248,5 +252,46 @@ class PaymentController extends Controller
         return Inertia::render('OrderStatusSection', [
             'orders' => $orderItems,
         ]);
+    }
+
+    // Buy again cake order from transaction history    
+    public function buyAgainCakeOrder($orderCode): JsonResponse
+    {
+        try {
+            $order = Order::where('order_code', $orderCode)->firstOrFail();
+
+            $orderItems = $order->orderItems->map(function ($item) {
+                return [
+                    'cake_id' => $item->cake_id,
+                    'cake_flavour_id' => $item->cake_flavour_id,
+                    'toppings' => $item->cakeTopping->pluck('id')->toArray(),
+                    'quantity' => $item->quantity,
+                    'price' => $item->price,
+                ];
+            });
+
+
+            foreach ($orderItems as $orderItem) {
+                $request = new \Illuminate\Http\Request();
+                $request->merge($orderItem);
+
+                $shoppingChartController = new ShoppingChartController();
+                $response =  $shoppingChartController->addChartItem($request);
+
+                // If the response is successful, add it to our results
+                if ($response->getStatusCode() === 200) {
+                    $addedItems[] = json_decode($response->getContent(), true);
+                }
+            }
+
+            return response()->json([
+                'message' => 'Buy again cake order successfully.',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while adding items to the cart.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

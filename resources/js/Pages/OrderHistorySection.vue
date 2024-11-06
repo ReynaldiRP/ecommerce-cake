@@ -126,7 +126,7 @@
                                 </div>
                                 <div class="flex flex-col">
                                     <p class="text-lg font-bold">
-                                        {{ order.cake_name }}
+                                        {{ order.cake_name }} ({{ order.cake_size }}Cm)
                                     </p>
                                     <p
                                         v-if="order.cake_flavour"
@@ -182,6 +182,7 @@
                             </inertia-link>
                             <button
                                 v-else
+                                @click="handleBuyAgain(order.order_code)"
                                 class="btn btn-success font-semibold"
                             >
                                 Buy Again
@@ -399,5 +400,23 @@ const formatPrice = (price = 0) => {
  */
 const totalPrice = (price, quantity) => {
     return price * quantity;
+};
+/**
+ * Handles the "Buy Again" action.
+ *
+ * @param {Object} order - The order object.
+ */
+const handleBuyAgain = (orderCode) => {
+    // Implement the logic for "Buy Again" action here
+    axios
+        .post(route("buy-again", { orderCode }))
+        .then((response) => {
+            // Redirect to the cart page
+            window.location = route("detail-chart");
+        })
+        .catch((error) => {
+            console.error("Error placing order again:", error);
+            // Handle error, possibly show an error message to the user
+        });
 };
 </script>

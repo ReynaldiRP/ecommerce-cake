@@ -75,7 +75,9 @@
                                             <h1
                                                 class="text-xl font-semibold text-white"
                                             >
-                                                {{ item.cake?.name }}
+                                                {{ item.cake?.name }} ({{
+                                                    item.cake.cake_size?.size
+                                                }}Cm)
                                             </h1>
                                             <div
                                                 class="flex gap-2 lg:items-center text-base text-nowrap text-white text-opacity-75"

@@ -215,9 +215,9 @@ import { debounce } from "lodash";
 
 const props = defineProps({
     chartItems: Array,
-    cakePrices: Array,
-    cakeQuantities: Array,
-    cakeNotes: Array,
+    cakePrices: Object,
+    cakeQuantities: Object,
+    cakeNotes: Object,
 });
 
 const showResults = ref(false);
@@ -312,8 +312,6 @@ const onKeyUpAddress = async (query) => {
                 province: "Jawa Timur",
             }));
 
-        console.log("Final Result:", villageResults);
-
         searchResults.value = villageResults;
     } catch (error) {
         console.error("Error in onKeyUpAddress:", error);
@@ -372,10 +370,6 @@ const getItemSubtotal = (item) => {
 
     const cakeSizePrice = item.cake.cake_size?.price || 0;
     const totalPrice = (basePrice + cakeSizePrice) * quantity;
-
-    console.log(
-        `${basePrice} + ${cakeSizePrice} * ${quantity} = ${totalPrice}`
-    );
 
     return totalPrice;
 };

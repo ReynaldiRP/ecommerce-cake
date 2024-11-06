@@ -100,6 +100,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('home/transaction-history', 'transactionHistory')->name('transaction-history');
         // Detail transaction route
         Route::get('home/transaction-history/{orderCode}',  'detailTransaction')->name('detail-transaction');
+        // Buy again cake order route
+        Route::post('home/transaction-history/{orderCode}/buy-again', 'buyAgainCakeOrder')->name('buy-again');
     });
 });
 

@@ -25,19 +25,17 @@ class ShoppingChartController extends Controller
         );
     }
 
+
     /**
-     * Add a new item to the shopping cart.
+     * Add an item to the shopping cart.
      *
-     * @param StoreShoppingChartRequest $request The incoming request containing the new item details.
-     * @return JsonResponse A JSON response containing the new item with its relations and a success message.
+     * @param \Illuminate\Http\Request $request The incoming request containing the item details.
+     * @return \Illuminate\Http\JsonResponse The JSON response containing the added cart item details or an error message.
      *
-     * @bodyParam cake_id integer required The ID of the cake.
-     * @bodyParam flavour_id integer nullable The ID of the cake flavour.
-     * @bodyParam quantity integer required The quantity of the item.
-     * @bodyParam price integer required The price of the item.
-     * @bodyParam toppings array<integer> nullable The IDs of the toppings.
+     * @throws \Illuminate\Validation\ValidationException If validation fails.
+     * @throws \Exception If any other error occurs while adding the item to the cart.
      */
-    public function addChartItem(StoreShoppingChartRequest $request): JsonResponse
+    public function addChartItem(Request $request): JsonResponse
     {
 
         try {
@@ -116,7 +114,7 @@ class ShoppingChartController extends Controller
             ]);
         }
 
-        $cartItem = ShoppingChartItem::with('cart', 'cake', 'cakeFlavour', 'cakeTopping')->where('shopping_chart_id', '=', $cart->first()->id)->get();
+        $cartItem = ShoppingChartItem::with('cart', 'cake', 'cake.cakeSize', 'cakeFlavour', 'cakeTopping')->where('shopping_chart_id', '=', $cart->first()->id)->get();
 
         return response()->json([
             'cart' => $cartItem,
