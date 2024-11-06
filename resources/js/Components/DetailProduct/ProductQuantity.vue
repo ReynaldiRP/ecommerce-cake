@@ -1,12 +1,8 @@
 <template>
     <section class="flex flex-col gap-4">
         <h2 class="text-2xl font-bold">Jumlah Kue</h2>
-        <select
-            class="select select-bordered w-full"
-            v-model="model"
-            @change="updateQuantityPrice"
-        >
-            <option v-for="(qty, index) in props.quantity" :key="index">
+        <select class="select select-bordered w-full" v-model="model">
+            <option v-for="(qty, index) in props.quantity" :key="index" :value="qty">
                 {{ qty }}
             </option>
         </select>
@@ -14,19 +10,23 @@
 </template>
 
 <script setup>
+import { watch } from "vue";
+
 const props = defineProps({
     quantity: {
         type: Array,
+        required: true,
     },
 });
 
 const model = defineModel({
-    type: Array[Number],
+    type: Number,
+    default: 1,
 });
 
 const emit = defineEmits(["update-quantity-price"]);
 
-const updateQuantityPrice = () => {
-    emit("update-quantity-price", model.value);
-};
+watch(model, (newVal) => {
+    emit("update-quantity-price", newVal);
+});
 </script>

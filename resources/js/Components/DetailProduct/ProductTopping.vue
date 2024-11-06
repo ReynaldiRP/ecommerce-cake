@@ -71,10 +71,6 @@ const updateToppingPrice = () => {
         .filter((topping) => model.value.includes(topping.id))
         .reduce((totalPrice, topping) => totalPrice + topping.price, 0);
 
-    if (selectedToppingsPrice) {
-        emit("update-topping-price", selectedToppingsPrice);
-    } else {
-        console.warn("Topping not found");
-    }
+    emit("update-topping-price", selectedToppingsPrice);
 };
 </script>

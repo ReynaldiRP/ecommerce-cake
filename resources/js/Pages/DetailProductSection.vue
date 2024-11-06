@@ -137,8 +137,6 @@ const handleUpdateFlavourPrice = (price) => {
  * @return {void}
  */
 const handleUpdateToppingPrice = (price) => {
-    console.log(price);
-
     toppingPrice.value = price;
 };
 
@@ -149,7 +147,7 @@ const handleUpdateToppingPrice = (price) => {
  * @return {void}
  */
 const handleUpdateQuantityPrice = (quantity) => {
-    quantityPrice.value = quantity;
+    quantityPrice.value = parseInt(quantity);
 };
 
 /**

@@ -27,9 +27,22 @@ class ToppingFactory extends Factory
             'Chocolate bar'
         ];
 
+        $toppingPrice = [
+            'Sliced kiwi' => 5000,
+            'Straberry' => 6000,
+            'Hazelnuts' => 7000,
+            'Kit kat' => 8000,
+            'Gummy bears' => 9000,
+            'Lollipops' => 10000,
+            'Macarons' => 11000,
+            'Chocolate bar' => 12000
+        ];
+
         return [
             'name' => $this->faker->unique()->randomElement($toppings),
-            'price' => $this->faker->numberBetween(10, 13) * 5000,
+            'price' => function (array $attributes) use ($toppingPrice) {
+                return $toppingPrice[$attributes['name']];
+            },
             'image_url' => 'assets/image/default-img'
         ];
     }
