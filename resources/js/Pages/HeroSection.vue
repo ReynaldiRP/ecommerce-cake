@@ -14,12 +14,10 @@
                             Buat kue impian Anda hanya untuk Anda!
                         </h1>
                         <p class="text-lg lg:text-xl text-justify">
-                            Selamat datang di DreamDessert, tempat di mana kue
-                            impian Anda menjadi kenyataan! Dari kue pernikahan
-                            yang elegan hingga brownies lezat dan pastry yang
-                            menggugah selera, kami menghadirkan berbagai pilihan
-                            untuk memanjakan kecintaan Anda pada manisnya
-                            hidangan penutup.
+                            Dari kue pernikahan yang elegan hingga brownies
+                            lezat dan pastry yang menggugah selera, kami
+                            menyediakan aneka pilihan untuk memanjakan kecintaan
+                            Anda pada manisnya hidangan penutup.
                         </p>
                     </div>
                     <div class="flex gap-2">

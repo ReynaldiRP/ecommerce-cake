@@ -72,6 +72,10 @@ const noteLength = computed(() => {
 
 const noteMaxLength = 144;
 
+/**
+ * Watches the `model` for changes. If the length of the new value exceeds `noteMaxLength`,
+ * it truncates the value to `noteMaxLength` characters.
+ */
 watch(model, (value) => {
     if (value.length > noteMaxLength) {
         model.value = value.slice(0, noteMaxLength);
@@ -80,8 +84,16 @@ watch(model, (value) => {
 
 const emit = defineEmits(["update:hiddenNotes"]);
 
+/**
+ * Toggles the visibility of the notes section by emitting an event to update the hiddenNotes property.
+ */
 const toggleHiddenNotes = () => emit("update:hiddenNotes", !props.hiddenNotes);
+
 const cancel = () => emit("update:hiddenNotes", false);
+
+/**
+ * Saves the notes and updates the hiddenNotes property to hide the notes section.
+ */
 const save = () => {
     emit("update:hiddenNotes", false);
     showPreviewNotes.value = true;

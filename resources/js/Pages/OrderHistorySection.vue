@@ -126,7 +126,10 @@
                                 </div>
                                 <div class="flex flex-col">
                                     <p class="text-lg font-bold">
-                                        {{ order.cake_name }} ({{ order.cake_size }}Cm)
+                                        {{ order.cake_name }}
+                                        <span v-if="order.cake_size"
+                                            >({{ order.cake_size }}Cm)</span
+                                        >
                                     </p>
                                     <p
                                         v-if="order.cake_flavour"
@@ -142,10 +145,19 @@
                                             {{ order.cake_toppings.join(", ") }}
                                         </p>
                                     </div>
+                                    <p
+                                        v-if="order.cake_note"
+                                        class="font-extralight"
+                                    >
+                                        "{{ order.cake_note }}"
+                                    </p>
                                     <p class="font-light">
-                                        {{ order.quantity }} Cake x Rp.{{
-                                            formatPrice(order.price)
-                                        }}
+                                        {{ order.quantity }}
+                                        {{ order.cake_name }}
+                                        <span v-if="order.cake_size"
+                                            >({{ order.cake_size }}Cm)</span
+                                        >
+                                        x Rp.{{ formatPrice(order.price) }}
                                     </p>
                                 </div>
                             </div>

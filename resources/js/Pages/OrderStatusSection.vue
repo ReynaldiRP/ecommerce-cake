@@ -8,16 +8,24 @@
             >
                 <div class="flex gap-4">
                     <div class="flex flex-col gap-2 justify-center">
-                        <h1 class="text-3xl font-bold">
-                            Order details #{{ order.order_code }}
+                        <h1 class="text-3xl font-bold w-fit">
+                            Detail Order #{{ order.order_code }}
                         </h1>
                         <span class="text-sm"
-                            >Order Created: {{ order.order_created_at }}</span
+                            >Order Dibuat: {{ order.order_created_at }}</span
                         >
-                        <span class="text-sm"
-                            >Estimated Order Arrival:
-                            {{ order.estimated_delivery }}</span
-                        >
+                        <span class="text-sm flex gap-2"
+                            >Estimasi Pengiriman Kue:
+                            <EditOrderEstimationDate
+                                v-model="estimationDate[index]"
+                                :hidden-edit-order-estimation-date="
+                                    showEditOrderEstimationDate
+                                "
+                                @update:hidden-edit-order-estimation-date="
+                                    showEditOrderEstimationDate = $event
+                                "
+                            />
+                        </span>
                     </div>
                     <div
                         class="badge text-xl bg-neutral text-primary-color py-4 px-6 rounded-lg font-bold relative top-1"
@@ -201,7 +209,14 @@
                             </div>
                             <p class="text-lg">{{ orderItem.quantity }}</p>
                             <p class="text-lg">
-                                {{ formatPrice(totalPrice(orderItem.price, orderItem.quantity)) }}
+                                {{
+                                    formatPrice(
+                                        totalPrice(
+                                            orderItem.price,
+                                            orderItem.quantity
+                                        )
+                                    )
+                                }}
                             </p>
                         </div>
                     </div>
@@ -223,6 +238,8 @@
 
 <script setup>
 import App from "@/Layouts/App.vue";
+import EditOrderEstimationDate from "@/Components/EditOrderEstimationDate.vue";
+import { ref } from "vue";
 
 const props = defineProps({
     orders: {
@@ -231,7 +248,11 @@ const props = defineProps({
     },
 });
 
-console.log(props.orders);
+const estimationDate = ref(
+    props.orders.map((order) => order.estimated_delivery)
+);
+
+const showEditOrderEstimationDate = ref(false);
 
 /**
  * Formats the price of an item by multiplying the price with the quantity.

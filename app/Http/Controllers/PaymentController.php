@@ -113,6 +113,7 @@ class PaymentController extends Controller
                 'cake_flavour' => $item->cakeFlavour?->name,
                 'cake_toppings' => $item->cakeTopping?->pluck('name'),
                 'quantity' => $item->quantity,
+                'cake_note' => $item->note,
                 'price' => $item->price,
                 'payment_url' => $item->order?->payment_url,
                 'order_created_at' => $item->order?->created_at?->isoFormat('dddd, D MMMM Y'),
@@ -168,13 +169,13 @@ class PaymentController extends Controller
             'cakeTopping'
         ])->whereHas('order', function ($q) use ($status, $month) {
             if ($status !== 'All') {
-                if ($status === 'Ongoing') {
+                if ($status === 'Berjalan') {
                     $q->whereHas('payment', function ($q) {
-                        $q->where('payment_status', 'pending');
+                        $q->where('payment_status', 'menunggu pembayaran');
                     });
-                } elseif ($status === 'Successful') {
+                } elseif ($status === 'Sukses') {
                     $q->whereHas('payment', function ($q) {
-                        $q->where('payment_status', 'paid');
+                        $q->where('payment_status', 'terbayar');
                     });
                 }
             }

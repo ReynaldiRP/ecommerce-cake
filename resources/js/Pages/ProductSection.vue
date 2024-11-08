@@ -6,7 +6,9 @@
             >
                 <ul>
                     <li>
-                        <inertia-link :href="route('home')">Beranda</inertia-link>
+                        <inertia-link :href="route('home')"
+                            >Beranda</inertia-link
+                        >
                     </li>
                     <li>
                         <inertia-link :href="route('products')"
@@ -63,7 +65,7 @@
                                         :label="`${cakeSize?.size} Cm`"
                                         :id="cakeSize.id"
                                         :total-data="
-                                            getTotalDataCakeSize(cakeSize.size)
+                                            getTotalCakesBySize(cakeSize.size)
                                         "
                                     />
                                 </FilterItem>
@@ -112,9 +114,7 @@
                                 :key="cakeSize.id"
                                 :label="`${cakeSize?.size} Cm`"
                                 :id="cakeSize.id"
-                                :total-data="
-                                    getTotalDataCakeSize(cakeSize.size)
-                                "
+                                :total-data="getTotalCakesBySize(cakeSize.size)"
                             />
                         </FilterItem>
                         <div class="hidden lg:flex items-center gap-2 mt-2">
@@ -235,14 +235,14 @@ const totalCakePersonalizationType = computed(() => {
  *
  * @returns {Object} An object with cake sizes as keys and their respective counts as values.
  */
-const totalCakeSizeForEachSize = computed(() => {
+const totalCakesBySize = computed(() => {
     const counts = {
-        13: 0,
-        14: 0,
+        12: 0,
         15: 0,
-        16: 0,
-        17: 0,
         18: 0,
+        20: 0,
+        22: 0,
+        24: 0,
     };
 
     props.cakes?.data.filter((cake) => {
@@ -320,8 +320,8 @@ const getTotalDataCakeType = (name) => {
  * @param {string} size - The size of the cake.
  * @return {object} The total data for the specified cake size.
  */
-const getTotalDataCakeSize = (size) => {
-    return totalCakeSizeForEachSize.value[size];
+const getTotalCakesBySize = (size) => {
+    return totalCakesBySize.value[size];
 };
 
 let filteredData = reactive({
