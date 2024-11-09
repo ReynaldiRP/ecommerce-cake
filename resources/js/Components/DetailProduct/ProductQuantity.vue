@@ -2,7 +2,11 @@
     <section class="flex flex-col gap-4">
         <h2 class="text-2xl font-bold">Jumlah Kue</h2>
         <select class="select select-bordered w-full" v-model="model">
-            <option v-for="(qty, index) in props.quantity" :key="index" :value="qty">
+            <option
+                v-for="(qty, index) in props.quantity"
+                :key="index"
+                :value="qty"
+            >
                 {{ qty }}
             </option>
         </select>

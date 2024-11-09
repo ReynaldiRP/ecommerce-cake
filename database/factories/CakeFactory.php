@@ -31,6 +31,16 @@ class CakeFactory extends Factory
             'Cakes',
         ];
 
+        $cakeImageUrl = [
+            'Pudding Cup' => '/assets/image/cakes/pudding-cup.png',
+            'Fudge Brownies' => '/assets/image/cakes/fudge-brownies.png',
+            'Pie Buah' => '/assets/image/cakes/pie-buah.png',
+            'Cupcake (5 pcs)' => '/assets/image/cakes/cupcakes.png',
+            'Cupcake (6 pcs)' => '/assets/image/cakes/cupcakes.png',
+            'Cakes' => '/assets/image/cakes/cakes.jpg',
+            'Bento Cake' => '/assets/image/cakes/bento-cake.jpg',
+        ];
+
         $cakeDescription = [
             'Pudding Cup' => 'Dessert mungil yang memanjakan, disajikan dalam cup transparan, menampilkan lapisan krim custard lembut dan topping buah segar yang menggoda. Cocok untuk Anda yang ingin menikmati hidangan manis personal, kapan saja dan di mana saja—baik sebagai teman ngemil atau penutup santap lezat Anda.',
             'Fudge Brownies' => 'Brownies cokelat pekat berbentuk persegi yang siap memanjakan lidah Anda! Tekstur yang fudgy dan lembut berpadu sempurna dengan rasa cokelat yang kaya dan intens. Cocok untuk dinikmati sendiri atau dibagi bersama teman dan keluarga. Tambahkan es krim atau whipped cream di atasnya untuk sentuhan ekstra yang memanjakan!',
@@ -53,7 +63,6 @@ class CakeFactory extends Factory
         ];
 
         static $uniqueNames = [];
-        static $assignedSizes = [];
         $name = null;
 
         if (count($uniqueNames) < count($nonCustomizedCake)) {
@@ -85,6 +94,9 @@ class CakeFactory extends Factory
                 } else {
                     return null;
                 }
+            },
+            'image_url' => function (array $attributes) use ($cakeImageUrl) {
+                return $cakeImageUrl[$attributes['name']];
             },
             'base_price' => function (array $attributes) use ($cakePrice) {
                 return $cakePrice[$attributes['name']];

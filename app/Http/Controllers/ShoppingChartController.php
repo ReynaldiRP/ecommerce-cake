@@ -8,7 +8,6 @@ use App\Models\ShoppingChartItem;
 use Illuminate\Http\JsonResponse;
 use App\Models\ShoppingChartItemTopping;
 use Illuminate\Validation\ValidationException;
-use App\Http\Requests\ShoppingChart\StoreShoppingChartRequest;
 
 class ShoppingChartController extends Controller
 {
@@ -147,9 +146,6 @@ class ShoppingChartController extends Controller
             ]);
         }
 
-        return response()->json([
-            'message' => 'No items selected for deletion.',
-        ], 400);
 
         return response()->json([
             'message' => 'No items selected for deletion.',

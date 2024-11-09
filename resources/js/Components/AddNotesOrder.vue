@@ -6,7 +6,7 @@
             @click="toggleHiddenNotes"
         >
             <input type="text" :value="noteSave" class="cursor-pointer" />
-            <BaseIcon :path="mdiNoteEditOutline" size="" />
+            <BaseIcon :path="mdiNoteEditOutline" size="22" />
         </label>
         <div
             v-else
@@ -14,7 +14,7 @@
             class="font-bold cursor-pointer flex items-center"
             @click="toggleHiddenNotes"
         >
-            <BaseIcon :path="mdiNoteEditOutline" size="" />
+            <BaseIcon :path="mdiNoteEditOutline" size="22" />
         </div>
 
         <div

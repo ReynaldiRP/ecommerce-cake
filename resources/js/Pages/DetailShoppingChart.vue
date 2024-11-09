@@ -61,8 +61,9 @@
                                             <div class="w-20 rounded">
                                                 <img
                                                     :src="
-                                                        item.image
-                                                            ? item.cake.image
+                                                        item.cake.image_url
+                                                            ? item.cake
+                                                                  .image_url
                                                             : '/assets/image/default-img.jpg'
                                                     "
                                                     alt="Tailwind-CSS-Avatar-component"
@@ -91,7 +92,7 @@
                                                     v-show="
                                                         item.cake_flavour &&
                                                         item.cake_topping
-                                                            .length > 1
+                                                            .length >= 1
                                                     "
                                                 >
                                                     |
@@ -234,14 +235,16 @@ const cakeQuantity = ref(chartItems.value.map((item) => item.quantity));
 const hiddenNotes = ref(false);
 const notes = ref(chartItems.value.map((item) => item.notes));
 
-const updateTotalPrice = () => {
+const updateTotalPrice = computed(() => {
     const selectedCake = chartItems.value
         .filter((item) => selectCake.value[item.id])
-        .reduce(
-            (totalPrice, item, index) =>
-                totalPrice + item.price * cakeQuantity.value[index],
-            0
-        );
+        .reduce((totalPrice, item) => {
+            const index = chartItems.value.findIndex(
+                (chartItem) => chartItem.id === item.id
+            );
+
+            return totalPrice + item.price * cakeQuantity.value[index];
+        }, 0);
 
     totalPrice.value = selectedCake;
 
@@ -252,10 +255,7 @@ const updateTotalPrice = () => {
 
     // If not all are selected, uncheck "Select All"
     selectAllItem.value = allSelected;
-};
-
-// Watch for changes in the cakeQuantity array and update the total price accordingly
-watch(cakeQuantity, updateTotalPrice, { deep: true });
+});
 
 /**
  * A computed property that returns the total number of selected cakes in the chart.
@@ -275,8 +275,6 @@ const isSelectedAll = () => {
     chartItems.value.forEach((item) => {
         selectCake.value[item.id] = selectAllItem.value;
     });
-
-    updateTotalPrice();
 };
 
 /**

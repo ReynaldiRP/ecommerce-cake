@@ -66,7 +66,7 @@
                             <div class="w-16 rounded">
                                 <img
                                     :src="
-                                        chartItems.cake?.image_url ??
+                                        items.cake?.image_url ??
                                         `/assets/image/default-img.jpg`
                                     "
                                     alt="Tailwind-CSS-Avatar-component"

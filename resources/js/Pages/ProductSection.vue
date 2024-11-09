@@ -192,7 +192,7 @@ import BaseCheckbox from "@/Components/BaseCheckbox.vue";
 import BaseRadio from "@/Components/BaseRadio.vue";
 import Pagination from "@/Components/Pagination.vue";
 import { Inertia } from "@inertiajs/inertia";
-import { computed, reactive, ref, watch } from "vue";
+import { computed, reactive } from "vue";
 
 const props = defineProps({
     cakes: {

@@ -24,7 +24,7 @@
                             <div class="w-16 rounded">
                                 <img
                                     :src="
-                                        chart.image
+                                        chart.cake_image
                                             ? chart.cake_image
                                             : '/assets/image/default-img.jpg'
                                     "
