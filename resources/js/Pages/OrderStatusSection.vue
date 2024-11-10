@@ -174,7 +174,10 @@
                                 <div class="avatar">
                                     <div class="w-16 lg:w-20 rounded">
                                         <img
-                                            src="/assets/image/default-img.jpg"
+                                            :src="
+                                                orderItem.cake_image ??
+                                                '/assets/image/default-img.jpg'
+                                            "
                                             alt="Tailwind-CSS-Avatar-component"
                                         />
                                     </div>
@@ -184,6 +187,9 @@
                                         class="font-bold text-base md:text-lg lg:text-xl m-0"
                                     >
                                         {{ orderItem.cake_name }}
+                                        <span v-if="orderItem.cake_size"
+                                            >({{ orderItem.cake_size }}Cm)</span
+                                        >
                                     </h1>
                                     <div
                                         class="flex flex-col lg:flex-row gap-0 lg:gap-1 text-sm md:text-base lg:text-lg font-medium text-opacity-70"
@@ -200,7 +206,7 @@
                                         <p>
                                             {{
                                                 orderItem.cake_toppings.join(
-                                                    ", "
+                                                    ", ",
                                                 )
                                             }}
                                         </p>
@@ -213,8 +219,8 @@
                                     formatPrice(
                                         totalPrice(
                                             orderItem.price,
-                                            orderItem.quantity
-                                        )
+                                            orderItem.quantity,
+                                        ),
                                     )
                                 }}
                             </p>
@@ -249,7 +255,7 @@ const props = defineProps({
 });
 
 const estimationDate = ref(
-    props.orders.map((order) => order.estimated_delivery)
+    props.orders.map((order) => order.estimated_delivery),
 );
 
 const showEditOrderEstimationDate = ref(false);

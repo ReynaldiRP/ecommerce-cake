@@ -50,7 +50,7 @@
                             {{
                                 formatPrice(
                                     cake.base_price +
-                                        (cake.cake_size?.price ?? 0)
+                                        (cake.cake_size?.price ?? 0),
                                 )
                             }}
                         </p>
@@ -76,7 +76,7 @@ const searchQuery = ref(page.props.value.search?.query || "");
 const search = ref(searchQuery.value);
 
 const searchResults = computed(
-    () => page.props.value.search?.searchResult || []
+    () => page.props.value.search?.searchResult || [],
 );
 const results = ref(searchResults.value);
 

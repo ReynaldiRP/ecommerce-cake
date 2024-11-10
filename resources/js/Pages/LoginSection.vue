@@ -183,7 +183,7 @@ const validate = (value, type) => {
     if (value.length < validation.minLength) {
         error[type] = true;
         errorMessage[type] = `${type.charAt(0).toUpperCase()}${type.slice(
-            1
+            1,
         )} must be at least ${validation.minLength} characters`;
 
         return;

@@ -47,7 +47,7 @@
                                         :id="cakePersonalizationType.id"
                                         :total-data="
                                             getTotalDataCakeType(
-                                                cakePersonalizationType.name
+                                                cakePersonalizationType.name,
                                             )
                                         "
                                     />
@@ -102,7 +102,7 @@
                                 :id="cakePersonalizationType.id"
                                 :total-data="
                                     getTotalDataCakeType(
-                                        cakePersonalizationType.name
+                                        cakePersonalizationType.name,
                                     )
                                 "
                             />
@@ -336,7 +336,7 @@ let filteredData = reactive({
  */
 const applyFilters = () => {
     const selectedPersonalization = cakePersonalizationType.find(
-        (item) => item.id === filteredData.selectedPersonalizationId
+        (item) => item.id === filteredData.selectedPersonalizationId,
     );
 
     const params = {};
@@ -375,7 +375,7 @@ const clearFilters = () => {
         {
             preserveState: true,
             preserveScroll: true,
-        }
+        },
     );
 };
 </script>

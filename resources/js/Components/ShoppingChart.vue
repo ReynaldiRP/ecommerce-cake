@@ -109,7 +109,7 @@ import { Inertia } from "@inertiajs/inertia";
 
 const page = usePage();
 const chartItems = ref(
-    page.props.value.shoppingChartItems?.original.cart ?? []
+    page.props.value.shoppingChartItems?.original.cart ?? [],
 );
 
 const chartItemsLength = computed(() => {
@@ -138,12 +138,12 @@ const updateCartItems = (event) => {
 const deleteCartItems = (deletedItemId = []) => {
     if (Array.isArray(deletedItemId)) {
         chartItems.value = chartItems.value.filter(
-            (item) => !deletedItemId.includes(item.id)
+            (item) => !deletedItemId.includes(item.id),
         );
     } else {
         // Single item deletion
         chartItems.value = chartItems.value.filter(
-            (item) => item.id !== deletedItemId
+            (item) => item.id !== deletedItemId,
         );
     }
 };
@@ -215,8 +215,6 @@ const handleRezize = () => {
  */
 const checkCurrentUrl = (e) => {
     const currentUrl = window.location.href;
-
-    console.log(currentUrl);
 
     if (currentUrl.includes("detail-chart")) {
         // Prevent default navigation if already on the detail-chart page

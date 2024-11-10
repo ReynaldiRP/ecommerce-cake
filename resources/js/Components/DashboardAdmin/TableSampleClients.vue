@@ -30,8 +30,8 @@ const checkedRows = ref([]);
 const itemsPaginated = computed(() =>
     items.value.slice(
         perPage.value * currentPage.value,
-        perPage.value * (currentPage.value + 1)
-    )
+        perPage.value * (currentPage.value + 1),
+    ),
 );
 
 const numPages = computed(() => Math.ceil(items.value.length / perPage.value));
@@ -66,7 +66,7 @@ const checked = (isChecked, client) => {
     } else {
         checkedRows.value = remove(
             checkedRows.value,
-            (row) => row.id === client.id
+            (row) => row.id === client.id,
         );
     }
 };

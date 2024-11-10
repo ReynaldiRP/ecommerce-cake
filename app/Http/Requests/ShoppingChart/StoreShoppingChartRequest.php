@@ -31,7 +31,7 @@ class StoreShoppingChartRequest extends FormRequest
     public function prepareForValidation()
     {
         if ($this->cake_id) {
-            $cake = Cake::findOrfail($this->cake_id);
+            $cake = Cake::query()->findOrfail($this->cake_id);
             if ($cake && $cake->cake_size_id) {
                 $this->merge([
                     'cake_size' => $cake->cake_size_id,

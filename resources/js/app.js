@@ -19,12 +19,12 @@ createInertiaApp({
         try {
             return await resolvePageComponent(
                 `./Pages/${name}.vue`,
-                import.meta.glob("./Pages/**/*.vue")
+                import.meta.glob("./Pages/**/*.vue"),
             );
         } catch (e) {
             return resolvePageComponent(
                 `./Layouts/${name}.vue`,
-                import.meta.glob("./Layouts/**/*.vue")
+                import.meta.glob("./Layouts/**/*.vue"),
             );
         }
     },

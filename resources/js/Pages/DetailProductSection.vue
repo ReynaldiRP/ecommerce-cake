@@ -184,7 +184,7 @@ watch(
     () => totalPrice.value.totalCakePrice,
     (newPrice) => {
         form.price = newPrice;
-    }
+    },
 );
 
 const isCakeCustomized = computed(() => {
@@ -238,7 +238,7 @@ const addItemToChart = async () => {
                     detail: {
                         cartItems: response.data.cartItems,
                     },
-                })
+                }),
             );
         }, 2000);
     } catch (error) {

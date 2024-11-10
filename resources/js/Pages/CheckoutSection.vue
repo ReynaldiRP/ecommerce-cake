@@ -55,7 +55,7 @@
                                         <p class="text-base text-opacity-75">
                                             {{
                                                 getToppingNameBasedOnChartItems(
-                                                    item
+                                                    item,
                                                 )
                                             }}
                                         </p>
@@ -101,8 +101,8 @@
                                     {{
                                         formatPrice(
                                             getToppingPriceBasedOnChartItems(
-                                                item
-                                            )
+                                                item,
+                                            ),
                                         )
                                     }}
                                 </h1>
@@ -209,7 +209,7 @@ import BaseLabel from "@/Components/BaseLabel.vue";
 import PreviewSearchAddress from "@/Components/PreviewSearchAddress.vue";
 import BaseAlert from "@/Components/BaseAlert.vue";
 import { useForm } from "@inertiajs/inertia-vue3";
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import axios from "axios";
 import { debounce } from "lodash";
 
@@ -278,7 +278,7 @@ const onKeyUpAddress = async (query) => {
     try {
         // Fetch data from all endpoints
         const districts = await fetchData(
-            `${API_BASE_URL}/districts/3506.json`
+            `${API_BASE_URL}/districts/3506.json`,
         );
 
         // Filter and process districts based on the query
@@ -293,13 +293,13 @@ const onKeyUpAddress = async (query) => {
 
         // Fetch villages based on the district ID
         const villages = await fetchData(
-            `${API_BASE_URL}/villages/${districtId}.json`
+            `${API_BASE_URL}/villages/${districtId}.json`,
         );
 
         // Process village data
-        const villageResults = villages
+        searchResults.value = villages
             .filter((item) =>
-                item.name.toLowerCase().includes(query.toLowerCase())
+                item.name.toLowerCase().includes(query.toLowerCase()),
             )
             .slice(0, 5)
             .map((item) => ({
@@ -311,8 +311,6 @@ const onKeyUpAddress = async (query) => {
                 city: "Kediri",
                 province: "Jawa Timur",
             }));
-
-        searchResults.value = villageResults;
     } catch (error) {
         console.error("Error in onKeyUpAddress:", error);
     }
@@ -369,9 +367,8 @@ const getItemSubtotal = (item) => {
     const quantity = props.cakeQuantities[item.id] || null;
 
     const cakeSizePrice = item.cake.cake_size?.price || 0;
-    const totalPrice = (basePrice + cakeSizePrice) * quantity;
 
-    return totalPrice;
+    return (basePrice + cakeSizePrice) * quantity;
 };
 
 /**
@@ -411,7 +408,7 @@ const disableCheckout = computed(() =>
         form.cake_recipient,
     ].every((field) => field !== "")
         ? "bg-primary-color text-base-300 hover:text-white"
-        : "bg-gray-400 hover:bg-gray-400 text-base-300 cursor-not-allowed"
+        : "bg-gray-400 hover:bg-gray-400 text-base-300 cursor-not-allowed",
 );
 
 /**
@@ -441,64 +438,39 @@ onUnmounted(() => {
 /**
  * Submits the checkout form.
  *
- * @param {object} e - The event object containing information about the form submission
- *
  * @returns {void}
  */
 const submit = () => {
-    try {
-        // Destructure the form data
-        const {
-            estimated_delivery_date,
-            user_address,
-            cake_recipient: cake_recipient,
-            chartItems,
-        } = form;
+    // If all fields are filled in, submit the form
+    axios
+        .post(
+            route("payments"),
+            {
+                estimated_delivery_date: form.estimated_delivery_date,
+                user_address: form.user_address,
+                cake_recipient: form.cake_recipient,
+                chartItems: props.chartItems,
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+            },
+        )
+        .then((response) => {
+            if (response.data.success) {
+                // Redirect to Midtrans payment page
+                window.location.href = response.data.paymentUrl;
+            } else {
+                // Handle error
+                console.error(response.data.message);
+            }
+        })
+        .catch((error) => {
+            console.log("Error submitting form:", error.response.data.errors);
 
-        // Check if all fields are filled in
-        if (!estimated_delivery_date) {
-            errorResponses.value = "Estimated delivery date is required";
-            return false;
-        }
-        if (!user_address) {
-            errorResponses.value = "User address is required";
-            return false;
-        }
-        if (!cake_recipient) {
-            errorResponses.value = "Cake recipient is required";
-            return false;
-        }
-
-        // If all fields are filled in, submit the form
-        axios
-            .post(
-                route("payments"),
-                {
-                    estimated_delivery_date,
-                    user_address,
-                    cake_recipient: cake_recipient,
-                    chartItems,
-                },
-                {
-                    preserveState: true,
-                    preserveScroll: true,
-                }
-            )
-            .then((response) => {
-                if (response.data.success) {
-                    // Redirect to Midtrans payment page
-                    window.location.href = response.data.paymentUrl;
-                } else {
-                    // Handle error
-                    console.error(response.data.message);
-                    // You might want to show an error message to the user here
-                }
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-            });
-    } catch (error) {
-        console.error(error);
-    }
+            // Get only the first error message
+            const errors = error.response.data.errors;
+            errorResponses.value = Object.values(errors)[0][0];
+        });
 };
 </script>

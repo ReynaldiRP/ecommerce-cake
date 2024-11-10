@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ShoppingChart\StoreShoppingChartRequest;
 use Illuminate\Http\Request;
 use App\Models\ShoppingChart;
 use App\Models\ShoppingChartItem;
@@ -28,13 +29,11 @@ class ShoppingChartController extends Controller
     /**
      * Add an item to the shopping cart.
      *
-     * @param \Illuminate\Http\Request $request The incoming request containing the item details.
-     * @return \Illuminate\Http\JsonResponse The JSON response containing the added cart item details or an error message.
+     * @param StoreShoppingChartRequest $request The incoming request containing the item details.
+     * @return JsonResponse The JSON response containing the added cart item details or an error message.
      *
-     * @throws \Illuminate\Validation\ValidationException If validation fails.
-     * @throws \Exception If any other error occurs while adding the item to the cart.
      */
-    public function addChartItem(Request $request): JsonResponse
+    public function addChartItem(StoreShoppingChartRequest $request): JsonResponse
     {
 
         try {

@@ -62,7 +62,7 @@ export default {
                         return {
                             scrollbarWidth: "thin",
                             scrollbarColor: `${theme(
-                                `colors.${color}.${thumb}`
+                                `colors.${color}.${thumb}`,
                             )} ${theme(`colors.${color}.${track}`)}`,
                             "&::-webkit-scrollbar": {
                                 width: "8px",
@@ -70,19 +70,19 @@ export default {
                             },
                             "&::-webkit-scrollbar-track": {
                                 backgroundColor: theme(
-                                    `colors.${color}.${track}`
+                                    `colors.${color}.${track}`,
                                 ),
                             },
                             "&::-webkit-scrollbar-thumb": {
                                 borderRadius: "0.25rem",
                                 backgroundColor: theme(
-                                    `colors.${color}.${thumb}`
+                                    `colors.${color}.${thumb}`,
                                 ),
                             },
                         };
                     },
                 },
-                { values: theme("asideScrollbars") }
+                { values: theme("asideScrollbars") },
             );
         }),
     ],

@@ -20,7 +20,7 @@ class Payment extends Model
     /**
      * Get the order that owns the Payment
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function order(): BelongsTo
     {

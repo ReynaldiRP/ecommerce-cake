@@ -1,6 +1,6 @@
 <template>
-    <figure class="shadow-xl bg-base-300 bg-opacity-65 rounded-xl">
-        <img :src="cakeImage" alt="pastry" class="h-full" />
+    <figure class="shadow-xl bg-base-300 bg-opacity-65">
+        <img :src="cakeImage" alt="pastry" class="h-full w-full rounded-xl" />
     </figure>
 </template>
 

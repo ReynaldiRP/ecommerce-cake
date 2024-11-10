@@ -100,7 +100,7 @@
                                                 <p v-show="item.cake_topping">
                                                     {{
                                                         getToppingNameBasedChartItem(
-                                                            item.id
+                                                            item.id,
                                                         )
                                                     }}
                                                 </p>
@@ -183,8 +183,8 @@
                             @click="
                                 checkoutItems(
                                     chartItems.map(
-                                        (item) => selectCake[item.id]
-                                    )
+                                        (item) => selectCake[item.id],
+                                    ),
                                 )
                             "
                             class="btn btn-block mt-auto text-black"
@@ -221,7 +221,7 @@ import axios from "axios";
 const page = usePage();
 
 const chartItems = ref(
-    page.props.value.shoppingChartItems?.original.cart ?? []
+    page.props.value.shoppingChartItems?.original.cart ?? [],
 );
 
 const selectAllItem = ref(false);
@@ -240,7 +240,7 @@ const updateTotalPrice = computed(() => {
         .filter((item) => selectCake.value[item.id])
         .reduce((totalPrice, item) => {
             const index = chartItems.value.findIndex(
-                (chartItem) => chartItem.id === item.id
+                (chartItem) => chartItem.id === item.id,
             );
 
             return totalPrice + item.price * cakeQuantity.value[index];
@@ -250,7 +250,7 @@ const updateTotalPrice = computed(() => {
 
     // Check if all individual items are selected
     const allSelected = chartItems.value.every(
-        (item) => selectCake.value[item.id]
+        (item) => selectCake.value[item.id],
     );
 
     // If not all are selected, uncheck "Select All"
@@ -339,7 +339,7 @@ const deleteItem = async (id) => {
         setTimeout(() => {
             // Remove deleted items from chartItems
             chartItems.value = chartItems.value.filter(
-                (item) => !itemsToDelete.includes(item.id)
+                (item) => !itemsToDelete.includes(item.id),
             );
 
             totalPrice.value = 0;
@@ -350,7 +350,7 @@ const deleteItem = async (id) => {
                 detail: {
                     deletedItemId: itemsToDelete,
                 },
-            })
+            }),
         );
     } catch (error) {
         console.error("Error deleting item:", error);

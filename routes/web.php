@@ -1,8 +1,5 @@
 <?php
 
-
-use App\Mail\PaymentEmail;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CakeController;
 use App\Http\Controllers\OrderController;
@@ -29,7 +26,7 @@ use App\Http\Controllers\ShoppingChartController;
 // Authenticated routes
 Route::middleware(['auth'])->group(function () {
 
-    // Routes accessible without 'auth' middleware
+    // Routes accessible without additional 'auth' middleware
     Route::withoutMiddleware(['auth'])->group(function () {
         // Frontend controller routes
         Route::controller(FrontEndController::class)->group(function () {
@@ -100,8 +97,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('home/transaction-history', 'transactionHistory')->name('transaction-history');
         // Detail transaction route
         Route::get('home/transaction-history/{orderCode}',  'detailTransaction')->name('detail-transaction');
+        // Update order estimation route
+
         // Buy again cake order route
-        Route::post('home/transaction-history/{orderCode}/buy-again', 'buyAgainCakeOrder')->name('buy-again');
+        Route::post('home/transaction-history/{orderItem}/buy-again', 'buyAgainCakeOrder')->name('buy-again');
     });
 });
 

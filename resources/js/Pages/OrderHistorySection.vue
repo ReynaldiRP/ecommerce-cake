@@ -157,7 +157,7 @@
                                         <span v-if="order.cake_size"
                                             >({{ order.cake_size }}Cm)</span
                                         >
-                                        x Rp.{{ formatPrice(order.price) }}
+                                        x {{ formatPrice(order.price) }}
                                     </p>
                                 </div>
                             </div>
@@ -165,9 +165,7 @@
                             <div class="flex flex-col text-xl pr-36">
                                 <p>Total Order</p>
                                 <strong>{{
-                                    formatPrice(
-                                        totalPrice(order.price, order.quantity)
-                                    )
+                                    totalPrice(order.price, order.quantity)
                                 }}</strong>
                             </div>
                         </section>
@@ -178,7 +176,7 @@
                                 :href="
                                     route(
                                         'detail-transaction',
-                                        order.order_code
+                                        order.order_code,
                                     )
                                 "
                                 class="link text-primary-color"
@@ -194,7 +192,7 @@
                             </inertia-link>
                             <button
                                 v-else
-                                @click="handleBuyAgain(order.order_code)"
+                                @click="handleBuyAgain(order.order_item_id)"
                                 class="btn btn-success font-semibold"
                             >
                                 Buy Again
@@ -217,7 +215,7 @@
 <script setup>
 import App from "@/Layouts/App.vue";
 import axios from "axios";
-import { ref, onMounted, onUnmounted, watch, computed } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
 
 const props = defineProps({
     orderItems: {
@@ -247,7 +245,7 @@ const months = [
 ];
 
 const transactionTabsClicked = ref(
-    new Array(transactionFilter.length).fill(false)
+    new Array(transactionFilter.length).fill(false),
 );
 
 const orderStatusTabsClicked = ref(new Array(orderStatus.length).fill(false));
@@ -262,7 +260,7 @@ const selectedTransactionDate = ref("");
  */
 const handleTransactionTabClick = (index) => {
     transactionTabsClicked.value = transactionTabsClicked.value.map(
-        (_, i) => i === index
+        (_, i) => i === index,
     );
 
     // Get the transaction status based on the clicked tab
@@ -277,7 +275,7 @@ const handleTransactionTabClick = (index) => {
  */
 const handleOrderStatusTabClick = (index) => {
     orderStatusTabsClicked.value = orderStatusTabsClicked.value.map(
-        (_, i) => i === index
+        (_, i) => i === index,
     );
 };
 
@@ -369,14 +367,14 @@ const showPayNowButton = (order) => {
 onMounted(() => {
     // When loading set the tab to be active default in first index
     transactionTabsClicked.value = transactionTabsClicked.value.map(
-        (_, i) => i === 0
+        (_, i) => i === 0,
     );
 });
 
 onUnmounted(() => {
     // When unmounted reset the tab to be active default in first index
     transactionTabsClicked.value = new Array(transactionFilter.length).fill(
-        false
+        false,
     );
 });
 
@@ -390,11 +388,10 @@ const redirectPayment = (paymentUrl) => {
 };
 
 /**
- * Formats the price of an item by multiplying the price with the quantity.
+ * Formats a given price to Indonesian Rupiah (IDR) currency format.
  *
- * @param {number} price - The price of the item.
- * @param {number} quantity - The quantity of the item.
- * @returns {string} - The formatted price.
+ * @param {number} [price=0] - The price to be formatted.
+ * @returns {string} - The formatted price string in IDR currency.
  */
 const formatPrice = (price = 0) => {
     return new Intl.NumberFormat("id-ID", {
@@ -408,27 +405,39 @@ const formatPrice = (price = 0) => {
  *
  * @param {number} price - The price of the item.
  * @param {number} quantity - The quantity of the item.
- * @returns {number} - The total price of the order.
+ * @returns {string} - The total price of the order formatted as a string.
  */
 const totalPrice = (price, quantity) => {
-    return price * quantity;
+    return formatPrice(price * quantity);
 };
+
 /**
- * Handles the "Buy Again" action.
+ * Handles the "Buy Again" action for a given order.
  *
- * @param {Object} order - The order object.
+ * This function sends a POST request to the server to place the same order again.
+ * If the request is successful, the user is redirected to the detail chart page.
+ * If there is an error, it logs the error to the console.
+ *
+ * @param {string} orderItem
  */
-const handleBuyAgain = (orderCode) => {
-    // Implement the logic for "Buy Again" action here
-    axios
-        .post(route("buy-again", { orderCode }))
-        .then((response) => {
-            // Redirect to the cart page
-            window.location = route("detail-chart");
-        })
-        .catch((error) => {
-            console.error("Error placing order again:", error);
-            // Handle error, possibly show an error message to the user
-        });
+const handleBuyAgain = async (orderItem) => {
+    try {
+        const response = await axios.post(
+            route("buy-again", { orderItem }),
+            null,
+            {
+                params: {
+                    orderItem: orderItem,
+                },
+            },
+        );
+
+        console.log("Buy again response:", response.data);
+
+        // Redirect to the detail chart page
+        // window.location.href = route("detail-chart", response.data);
+    } catch (e) {
+        console.error("Error buying again:", e);
+    }
 };
 </script>

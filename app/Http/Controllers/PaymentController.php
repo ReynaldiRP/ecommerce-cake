@@ -13,7 +13,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Response as HttpResponse;
-use Illuminate\Support\Facades\Http;
 
 class PaymentController extends Controller
 {
@@ -24,7 +23,7 @@ class PaymentController extends Controller
      * When a payment status is changed, Midtrans will send a notification to
      * this endpoint.
      *
-     * @return \Illuminate\Http\Response
+     * @return HttpResponse
      */
     public function midtransWebhook(): HttpResponse
     {
@@ -46,10 +45,10 @@ class PaymentController extends Controller
             ]);
 
             // Find the order based on the order_id
-            $order = Order::where('order_code', $notification->order_id)->firstOrFail();
+            $order = Order::query()->where('order_code', $notification->order_id)->firstOrFail();
 
             // Check if the payment already exists for this order
-            $payment = Payment::where('order_id', $order->id)->first();
+            $payment = Payment::query()->where('order_id', $order->id)->first();
 
             // If no existing payment is found, create a new Payment
             if (empty($payment)) {
@@ -83,7 +82,7 @@ class PaymentController extends Controller
     /**
      * Display the transaction history of the authenticated user.
      *
-     * @return Inertia\Response\Response
+     * @return Response
      */
     public function transactionHistory(): Response
     {
@@ -101,11 +100,12 @@ class PaymentController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(5);
 
-
+        // Transform the order items
         $orderItems->getCollection()->transform(function ($item) {
             return [
                 'transaction_id' => $item->order?->payment?->transaction_id,
                 'order_code' => $item->order?->order_code,
+                'order_item_id' => $item->id,
                 'order_status' => $item->order?->status,
                 'transaction_status' => $item->order?->payment?->payment_status,
                 'cake_name' => $item->cake?->name,
@@ -113,6 +113,7 @@ class PaymentController extends Controller
                 'cake_flavour' => $item->cakeFlavour?->name,
                 'cake_toppings' => $item->cakeTopping?->pluck('name'),
                 'quantity' => $item->quantity,
+                'cake_image' => $item->cake?->image_url,
                 'cake_note' => $item->note,
                 'price' => $item->price,
                 'payment_url' => $item->order?->payment_url,
@@ -132,9 +133,9 @@ class PaymentController extends Controller
      * This method retrieves order items based on the provided query parameters for filtering.
      * It supports filtering by status and date (month in Indonesian).
      *
-     * @param \Illuminate\Http\Request $request The HTTP request instance.
+     * @param Request $request The HTTP request instance.
      *
-     * @return \Illuminate\Http\JsonResponse A JSON response containing the filtered order items.
+     * @return JsonResponse A JSON response containing the filtered order items.
      */
     public function fetchFilteredDataTransactionHistory(Request $request): JsonResponse
     {
@@ -193,11 +194,13 @@ class PaymentController extends Controller
             return [
                 'transaction_id' => $item->order?->payment?->transaction_id,
                 'order_code' => $item->order?->order_code,
+                'order_item_id' => $item->id,
                 'order_status' => $item->order?->status,
                 'transaction_status' => $item->order?->payment?->payment_status,
                 'cake_name' => $item->cake?->name,
                 'cake_flavour' => $item->cakeFlavour?->name,
                 'cake_toppings' => $item->cakeTopping?->pluck('name'),
+                'cake_image' => $item->cake?->image_url,
                 'quantity' => $item->quantity,
                 'price' => $item->price,
                 'payment_url' => $item->order?->payment_url,
@@ -208,17 +211,18 @@ class PaymentController extends Controller
 
         return response()->json([
             'orderItems' => $orderItems,
-        ], 200);
+        ]);
     }
 
     /**
      * Display the details of a transaction based on the provided order code.
      *
      * @param string $orderCode The unique code of the order to retrieve details for.
-     * @return \Illuminate\Http\Response The response containing the order details.
+     * @return Response The response containing the order details.
      */
-    public function detailTransaction($orderCode): Response
+    public function detailTransaction(string $orderCode): Response
     {
+        // Get the order details based on the order code
         $orders = Order::with([
             'orderItems',
             'orderItems.cake',
@@ -227,6 +231,7 @@ class PaymentController extends Controller
             'payment'
         ])->where('order_code', $orderCode)->get();
 
+        // Transform the order items
         $orderItems = $orders->map(function ($order) {
             return [
                 'order_code' => $order->order_code,
@@ -241,6 +246,8 @@ class PaymentController extends Controller
                 'order_items' => $order->orderItems->map(function ($item) {
                     return [
                         'cake_name' => $item->cake?->name,
+                        'cake_image' => $item->cake?->image_url,
+                        'cake_size' => $item->cake?->cakeSize?->size,
                         'cake_flavour' => $item->cakeFlavour?->name,
                         'cake_toppings' => $item->cakeTopping?->pluck('name'),
                         'quantity' => $item->quantity,
@@ -255,13 +262,20 @@ class PaymentController extends Controller
         ]);
     }
 
-    // Buy again cake order from transaction history    
-    public function buyAgainCakeOrder($orderCode): JsonResponse
+    /**
+     * Buy again cake order.
+     *
+     * This method allows the user to buy the same cake order again.
+     *
+     * @param string $orderItem
+     * @return JsonResponse A JSON response indicating the result of the operation.
+     */
+    public function buyAgainCakeOrder(string $orderItem): JsonResponse
     {
         try {
-            $order = Order::where('order_code', $orderCode)->firstOrFail();
+            $orderItem = OrderItem::query()->where('id', $orderItem)->firstOrFail();
 
-            $orderItems = $order->orderItems->map(function ($item) {
+            $orderItems = collect([$orderItem])->map(function ($item) {
                 return [
                     'cake_id' => $item->cake_id,
                     'cake_flavour_id' => $item->cake_flavour_id,
@@ -273,7 +287,7 @@ class PaymentController extends Controller
 
 
             foreach ($orderItems as $orderItem) {
-                $request = new \Illuminate\Http\Request();
+                $request = new Request();
                 $request->merge($orderItem);
 
                 $shoppingChartController = new ShoppingChartController();
@@ -287,12 +301,32 @@ class PaymentController extends Controller
 
             return response()->json([
                 'message' => 'Buy again cake order successfully.',
-            ], 200);
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'An error occurred while adding items to the cart.',
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Update the estimated delivery date for a specific order.
+     *
+     * @param Request $request The HTTP request instance containing the new estimated delivery date.
+     * @param string $orderCode The unique code of the order to update.
+     * @return JsonResponse A JSON response indicating the result of the operation.
+     */
+    public function updateCakeOrderEstimation(Request $request, string $orderCode): JsonResponse
+    {
+        $validated = $request->validate([
+            'estimated_delivery_date' => 'required|date|after:' . now()->addDays(2)->toDateString(),
+        ]);
+
+        $order = Order::query()->where('order_code', $orderCode)->firstOrFail();
+        $order->estimated_delivery_date = $validated['estimated_delivery_date'];
+        $order->save();
+
+        return response()->json(['message' => 'Estimation date updated successfully.']);
     }
 }

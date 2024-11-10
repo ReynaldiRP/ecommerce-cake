@@ -16,13 +16,13 @@ const props = defineProps({
 });
 
 const itemHref = computed(() =>
-    props.item.route ? route(props.item.route) : props.item.href
+    props.item.route ? route(props.item.route) : props.item.href,
 );
 
 const activeInactiveStyle = computed(() =>
     props.item.route && route().current(props.item.route)
         ? "font-bold text-white"
-        : "false"
+        : "false",
 );
 
 const emit = defineEmits(["menu-click"]);
@@ -30,7 +30,7 @@ const emit = defineEmits(["menu-click"]);
 const hasColor = computed(() => props.item && props.item.color);
 
 const asideMenuItemActiveStyle = computed(() =>
-    hasColor.value ? "" : "aside-menu-item-active font-bold"
+    hasColor.value ? "" : "aside-menu-item-active font-bold",
 );
 
 const isDropdownActive = ref(false);

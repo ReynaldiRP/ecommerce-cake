@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 
+use App\Http\Requests\Order\StoreOrderRequest;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use App\Models\OrderItemTopping;
 use App\Models\ShoppingChartItem;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 
 
 class OrderController extends Controller
@@ -56,8 +58,6 @@ class OrderController extends Controller
     }
 
 
-
-
     /**
      * Create a new order and associate it with the current user. The order items are created from the chart items
      * passed in the request body. The order items are then associated with the order.
@@ -67,85 +67,94 @@ class OrderController extends Controller
      */
     public function createOrderItem(Request $request): JsonResponse
     {
-        // Create the order with additional data
-        $orderData = $request->only(['user_address', 'cake_recipient', 'estimated_delivery_date']);
-        $order = $this->createOrder($orderData);
+        try {
+            // Validate the request data
+            $orderData = $request->validate([
+                'estimated_delivery_date' => 'required|date|after:' . now()->addDays(2)->toDateString(),
+                'user_address' => 'required|string|max:255',
+                'cake_recipient' => 'required|string|regex:/^[a-zA-Z\s]+$/|min:3|max:100',
+            ], [
+                'estimated_delivery_date.after' => 'The estimated delivery date must be at least 2 days from now.',
+                'cake_recipient.regex' => 'The cake recipient name must contain only letters and spaces.',
+            ]);
 
-        $cakePrices = $request->session()->get('cakePrices', []);
-        $cakeQuantities = $request->session()->get('cakeQuantities', []);
-        $cakeNotes = $request->session()->get('cakeNotes', []);
-
-        $chartItems = $request->input('chartItems');
-
-        $totalPrice = 0;
-
-        // Loop through each chart item and create an order item
-        foreach ($chartItems as $chartItem) {
-            $orderItemData = [
-                'order_id' => $order->id,
-                'cake_id' => $chartItem['cake_id'],
-                'cake_flavour_id' => $chartItem['cake_flavour_id'] ?? null,
-                'quantity' => $cakeQuantities[$chartItem['id']],
-                'price' => $cakePrices[$chartItem['id']],
-                'note' => $cakeNotes[$chartItem['id']],
-            ];
+            $order = $this->createOrder($orderData);
+            $cakePrices = $request->session()->get('cakePrices', []);
+            $cakeQuantities = $request->session()->get('cakeQuantities', []);
+            $cakeNotes = $request->session()->get('cakeNotes', []);
+            $chartItems = $request->input('chartItems');
+            $totalPrice = 0;// Loop through each chart item and create an order item
+            foreach ($chartItems as $chartItem) {
+                $orderItemData = [
+                    'order_id' => $order->id,
+                    'cake_id' => $chartItem['cake_id'],
+                    'cake_flavour_id' => $chartItem['cake_flavour_id'] ?? null,
+                    'quantity' => $cakeQuantities[$chartItem['id']],
+                    'price' => $cakePrices[$chartItem['id']],
+                    'note' => $cakeNotes[$chartItem['id']],
+                ];
 
 
+                $orderItem = OrderItem::create($orderItemData);
 
-            $orderItem = OrderItem::create($orderItemData);
-
-            // Insert pivot table data for cake toppings
-            if (!empty($chartItem['cake_topping'])) {
-                $toppings = $chartItem['cake_topping'];
-                foreach ($toppings as $topping) {
-                    OrderItemTopping::create([
-                        'order_item_id' => $orderItem->id,
-                        'topping_id' => $topping['id'],
-                    ]);
+                // Insert pivot table data for cake toppings
+                if (!empty($chartItem['cake_topping'])) {
+                    $toppings = $chartItem['cake_topping'];
+                    foreach ($toppings as $topping) {
+                        OrderItemTopping::create([
+                            'order_item_id' => $orderItem->id,
+                            'topping_id' => $topping['id'],
+                        ]);
+                    }
                 }
+                // Add the current item's total (price * quantity) to the total order price
+                $totalPrice += $orderItem->price * $orderItem->quantity;
             }
 
-            // Add the current item's total (price * quantity) to the total order price
-            $totalPrice += $orderItem->price * $orderItem->quantity;
+            // Update the order's total price after all items are added
+            $order->update(['total_price' => $totalPrice]);// Extract ids from chartItems and delete the shopping chart items
+            $chartItemIds = array_column($chartItems, 'id');
+            ShoppingChartItem::whereIn('id', $chartItemIds)->delete();// Prepare response data
+            $responseData = [
+                'order' => $order->load(['orderItems.cake', 'orderItems.cakeFlavour']),
+            ];
+
+            return response()->json([
+                'message' => 'Order item created successfully.',
+                'data' => $responseData,
+            ]);
+
+        } catch (ValidationException $e) {
+            // Return error response
+            return response()->json([
+                'message' => 'Order item creation failed.',
+                'data' => null,
+                'error' => $e->errors(),
+            ], 500);
         }
-
-        // Update the order's total price after all items are added
-        $order->update(['total_price' => $totalPrice]);
-
-        // Extract ids from chartItems and delete the shopping chart items
-        $chartItemIds = array_column($chartItems, 'id');
-        ShoppingChartItem::whereIn('id', $chartItemIds)->delete();
-
-        // Prepare response data
-        $responseData = [
-            'order' => $order->load(['orderItems.cake', 'orderItems.cakeFlavour']),
-        ];
-
-        return response()->json([
-            'message' => 'Order item created successfully.',
-            'data' => $responseData,
-        ]);
     }
 
-
-
-
-
+    /**
+     * Handle the redirection to the Midtrans payment page.
+     *
+     * This method creates an order item, prepares the payment payload, and retrieves the payment URL from Midtrans.
+     *
+     * @param Request $request The HTTP request instance containing the order details.
+     * @return JsonResponse A JSON response containing the payment URL or an error message.
+     */
     public function redirectPaymentMidtrans(Request $request): JsonResponse
     {
         try {
             //Order Details
             $orderResponse = $this->createOrderItem($request);
-
-
             // Get the response data from JsonResponse as an object
             $orderDetails = $orderResponse->getData();
-
-
+            
             if ($orderResponse->status() !== 200) {
                 return response()->json([
                     'message' => 'Order creation failed.',
                     'data' => null,
+                    'errors' => $orderDetails->error,
                 ], 400);
             }
 
@@ -183,8 +192,6 @@ class OrderController extends Controller
 
             // Add payment URL to the order
             $order = Order::findOrFail($orderDetails->data->order->id);
-
-            // dd($order);
 
             $order->update([
                 'payment_url' => $paymentUrl,

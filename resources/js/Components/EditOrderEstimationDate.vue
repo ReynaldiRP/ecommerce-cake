@@ -62,7 +62,7 @@ const save = () => {
 const toggleHiddenEditOrderEstimationDate = () => {
     emit(
         "update:hiddenEditOrderEstimationDate",
-        !props.hiddenEditOrderEstimationDate
+        !props.hiddenEditOrderEstimationDate,
     );
 };
 

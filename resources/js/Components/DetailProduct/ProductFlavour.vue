@@ -59,7 +59,7 @@ const emit = defineEmits(["update-flavour-price"]);
 
 const updateFlavourPrice = () => {
     const selectedFlavour = props.flavours.find(
-        (flavour) => flavour.id === model.value
+        (flavour) => flavour.id === model.value,
     );
 
     if (selectedFlavour) {
