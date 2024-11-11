@@ -3,11 +3,12 @@
 namespace Database\Factories;
 
 use App\Models\CakeSize;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Log;
+
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Cake>
+ * @extends Factory<\App\Models\Cake>
  */
 class CakeFactory extends Factory
 {
@@ -63,7 +64,7 @@ class CakeFactory extends Factory
         ];
 
         static $uniqueNames = [];
-        $name = null;
+        static $assignedSizes = [];
 
         if (count($uniqueNames) < count($nonCustomizedCake)) {
             do {
@@ -78,22 +79,34 @@ class CakeFactory extends Factory
 
         return [
             'name' => $name,
-            'cake_size_id' => function (array $attributes) use ($customizedCake) {
+            'cake_size_id' => function (array $attributes) use (&$assignedSizes, $customizedCake) {
                 if (in_array($attributes['name'], $customizedCake)) {
-                    $cakeSizeIds = CakeSize::pluck('id')->toArray();
-                    $availableSizes = array_diff($cakeSizeIds, $assignedSizes[$attributes['name']] ?? []);
+                    // Initialize array for this cake type if it doesn't exist
+                    if (!isset($assignedSizes[$attributes['name']])) {
+                        $assignedSizes[$attributes['name']] = [];
+                    }
+
+                    // Get all available cake sizes from the database
+                    $allCakeSizes = CakeSize::pluck('id')->toArray();
+                    // Get sizes that haven't been assigned to this cake type yet
+                    $availableSizes = array_diff($allCakeSizes, $assignedSizes[$attributes['name']]);
+
+                    // Debug information
+                    Log::info("Creating {$attributes['name']} cake");
+                    Log::info("Available sizes: " . implode(', ', $availableSizes));
+                    Log::info("Already assigned: " . implode(', ', $assignedSizes[$attributes['name']]));
 
                     if (!empty($availableSizes)) {
-                        $selectedSize = $this->faker->randomElement($availableSizes);
+                        // Pick a random available size
+                        $selectedSize = $this->faker->randomElement(array_values($availableSizes));
+                        // Record that we've used this size for this cake type
                         $assignedSizes[$attributes['name']][] = $selectedSize;
                         return $selectedSize;
-                    } else {
-                        // Handle the case when no unique sizes are left for this cake
-                        return null;
                     }
-                } else {
+                    // If all sizes are used, return null or handle as needed
                     return null;
                 }
+                    return null;
             },
             'image_url' => function (array $attributes) use ($cakeImageUrl) {
                 return $cakeImageUrl[$attributes['name']];

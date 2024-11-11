@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 
-use App\Http\Requests\Order\StoreOrderRequest;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
@@ -11,6 +10,8 @@ use App\Models\OrderItemTopping;
 use App\Models\ShoppingChartItem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+use Inertia\Response;
 
 
 class OrderController extends Controller
@@ -32,9 +33,42 @@ class OrderController extends Controller
     }
 
 
-    public function getDetailOrderItem(): JsonResponse
+    public function index(): Response
     {
-        return response()->json(['message' => 'Order item retrieved successfully.']);
+        $orders = Order::query()->
+        orderBy('created_at', 'desc')->paginate(5);
+
+        // Transform order estimates to human-readable format
+        $orders->getCollection()->transform(function ($order) {
+            $order->estimated_delivery_date = \Carbon\Carbon::parse($order->estimated_delivery_date)->isoFormat('dddd, MMMM Do YYYY');
+            return $order;
+        });
+
+        return Inertia::render('AdminDashboard/Order/Index', [
+            'orders' => $orders,
+        ]);
+    }
+
+    public function show($orderId): Response
+    {
+        $orders = OrderItem::query()->where('order_id', $orderId)->get();
+
+        // Transform the order items to include the cake toppings and flavours
+        $orders->map(function ($order) {
+            return [
+                'id' => $order->id,
+                'cake' => $order->cake,
+                'cakeFlavour' => $order->cakeFlavour,
+                'cakeToppings' => $order->cakeTopping,
+                'quantity' => $order->quantity,
+                'price' => $order->price,
+                'note' => $order->note,
+            ];
+        });
+
+        return Inertia::render('AdminDashboard/Order/Show', [
+            'order' => $orders,
+        ]);
     }
 
 
@@ -42,7 +76,7 @@ class OrderController extends Controller
      * Create a new order and associate it with the current user.
      *
      * @param  array  $data
-     * @return \App\Models\Order
+     * @return Order
      */
     public function createOrder(array $data): Order
     {
@@ -149,7 +183,7 @@ class OrderController extends Controller
             $orderResponse = $this->createOrderItem($request);
             // Get the response data from JsonResponse as an object
             $orderDetails = $orderResponse->getData();
-            
+
             if ($orderResponse->status() !== 200) {
                 return response()->json([
                     'message' => 'Order creation failed.',

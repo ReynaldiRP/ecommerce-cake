@@ -119,7 +119,10 @@
                                 <div class="avatar">
                                     <div class="w-28 rounded">
                                         <img
-                                            src="/assets/image/default-img.jpg"
+                                            :src="
+                                                order.cake_image ??
+                                                '/assets/image/default-img.jpg'
+                                            "
                                             alt="Cake Image"
                                         />
                                     </div>
@@ -432,10 +435,8 @@ const handleBuyAgain = async (orderItem) => {
             },
         );
 
-        console.log("Buy again response:", response.data);
-
         // Redirect to the detail chart page
-        // window.location.href = route("detail-chart", response.data);
+        window.location.href = route("detail-chart", response.data);
     } catch (e) {
         console.error("Error buying again:", e);
     }

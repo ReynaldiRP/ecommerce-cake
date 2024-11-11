@@ -7,7 +7,7 @@
                 <aside
                     class="breadcrumbs text-sm me-auto relative"
                     :class="
-                        props.cake?.personalization_type == 'customized'
+                        props.cake?.personalization_type === 'customized'
                             ? '-bottom-4'
                             : 'lg:bottom-0'
                     "
@@ -30,7 +30,7 @@
                 </aside>
                 <ProductImage
                     :class="
-                        props.cake?.personalization_type == 'customized'
+                        props.cake?.personalization_type === 'customized'
                             ? 'w-[450px] h-[450px] lg:w-[600px] lg:h-[600px]'
                             : 'w-[450px] h-[450px]'
                     "

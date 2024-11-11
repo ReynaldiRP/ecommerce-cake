@@ -33,7 +33,12 @@
                             </div>
                         </div>
                         <div class="flex flex-col gap-1 text-balance">
-                            <p>{{ chart.cake_name }}</p>
+                            <p>
+                                {{ chart.cake_name }}
+                                <span v-if="chart.cake_size"
+                                    >({{ chart.cake_size }}Cm)</span
+                                >
+                            </p>
                             <div
                                 class="flex gap-1"
                                 v-if="chart.cake_flavour_name"

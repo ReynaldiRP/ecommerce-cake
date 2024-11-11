@@ -64,6 +64,7 @@ class ShoppingChartController extends Controller
             return response()->json([
                 'cartItem' => [
                     'cake_name' => $cartItemWithRelations->cake?->name,
+                    'cake_size' => $cartItemWithRelations->cake?->cakeSize?->size,
                     'cake_image' => $cartItemWithRelations->cake?->image_url,
                     'cake_flavour_name' => $cartItemWithRelations->cakeFlavour?->name,
                     'cake_toppings' =>  $cartItemWithRelations->cakeTopping?->pluck('name'),

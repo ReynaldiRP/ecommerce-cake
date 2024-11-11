@@ -48,7 +48,7 @@
                                         <span
                                             v-show="
                                                 item.cake_flavour &&
-                                                item.cake_topping
+                                                item.cake_topping.length >= 1
                                             "
                                             >|</span
                                         >
@@ -219,6 +219,8 @@ const props = defineProps({
     cakeQuantities: Object,
     cakeNotes: Object,
 });
+
+console.log(props.chartItems);
 
 const showResults = ref(false);
 const searchResults = ref([]);
@@ -466,8 +468,6 @@ const submit = () => {
             }
         })
         .catch((error) => {
-            console.log("Error submitting form:", error.response.data.errors);
-
             // Get only the first error message
             const errors = error.response.data.errors;
             errorResponses.value = Object.values(errors)[0][0];

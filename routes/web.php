@@ -64,6 +64,18 @@ Route::middleware(['auth'])->group(function () {
             Route::resource('/topping', ToppingController::class)
                 ->parameter('topping', 'dashboard_topping')
                 ->except('show'); // Topping management (excluding show)
+
+            // Routes for managing orders
+            Route::controller(OrderController::class)->group(function () {
+                Route::get('/orders', 'index')->name('orders.index');
+                Route::get('/order/{orderId}', 'show')->name('order.show');
+                Route::patch('/order/{orderId}', 'update')->name('order.update');
+            });
+
+            // Routes for managing payments
+            Route::controller(PaymentController::class)->group(function () {
+                Route::get('/payments', 'index')->name('payments.index');
+            });
         });
     });
 
@@ -97,8 +109,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('home/transaction-history', 'transactionHistory')->name('transaction-history');
         // Detail transaction route
         Route::get('home/transaction-history/{orderCode}',  'detailTransaction')->name('detail-transaction');
-        // Update order estimation route
-
         // Buy again cake order route
         Route::post('home/transaction-history/{orderItem}/buy-again', 'buyAgainCakeOrder')->name('buy-again');
     });

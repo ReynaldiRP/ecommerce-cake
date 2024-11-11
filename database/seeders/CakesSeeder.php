@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Cake;
+use App\Models\CakeSize;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class CakesSeeder extends Seeder
 {
@@ -13,6 +13,11 @@ class CakesSeeder extends Seeder
      */
     public function run(): void
     {
-        Cake::factory()->count(16)->create();
+        // Calculate how many cakes to create based on available sizes
+        $totalSizes = CakeSize::query()->count();
+        $customizedCakeTypes = ['Bento Cake', 'Cakes'];
+        $totalCakesToCreate = $totalSizes * count($customizedCakeTypes);
+
+        Cake::factory($totalCakesToCreate)->create();
     }
 }

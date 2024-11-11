@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ShoppingChart\StoreShoppingChartRequest;
 use Inertia\Inertia;
 use App\Models\Order;
 use Inertia\Response;
@@ -16,6 +17,37 @@ use Illuminate\Http\Response as HttpResponse;
 
 class PaymentController extends Controller
 {
+
+    /**
+     * Display a paginated list of payments.
+     *
+     * This method retrieves a paginated list of payments, transforms the payment data,
+     * and renders the 'AdminDashboard/Payment/Index' view with the transformed payments.
+     *
+     * @return Response The response containing the rendered view with the payments' data.
+     */
+    public function index(): Response
+    {
+        $payments = Payment::with('order')->orderBy('created_at', 'desc')->paginate(5);
+
+        // Transform the payments
+        $payments->getCollection()->transform(function ($payment) {
+            return [
+                'transaction_id' => $payment->transaction_id,
+                'order_code' => $payment->order->order_code,
+                'payment_method' => $payment->payment_method,
+                'payment_status' => $payment->payment_status,
+                'payment_created_at' => $payment->created_at->isoFormat('dddd, D MMMM Y, HH:mm:ss'),
+                'payment_paid_at' => $payment->updated_at->isoFormat('dddd, D MMMM Y, HH:mm:ss'),
+            ];
+        });
+
+        return Inertia::render('AdminDashboard/Payment/Index', [
+            'payments' => $payments,
+        ]);
+    }
+
+
     /**
      * Midtrans Webhook.
      *
@@ -287,7 +319,7 @@ class PaymentController extends Controller
 
 
             foreach ($orderItems as $orderItem) {
-                $request = new Request();
+                $request = new StoreShoppingChartRequest();
                 $request->merge($orderItem);
 
                 $shoppingChartController = new ShoppingChartController();

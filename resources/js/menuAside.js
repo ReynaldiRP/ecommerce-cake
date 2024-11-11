@@ -1,4 +1,4 @@
-import { mdiMonitor, mdiViewList } from "@mdi/js";
+import { mdiAccountCash, mdiMonitor, mdiShopping, mdiViewList } from "@mdi/js";
 
 export default [
     {
@@ -27,5 +27,15 @@ export default [
                 label: "Cake Topping",
             },
         ],
+    },
+    {
+        label: "Orders",
+        icon: mdiShopping,
+        route: "orders.index",
+    },
+    {
+        label: "Payments",
+        icon: mdiAccountCash,
+        route: "payments.index",
     },
 ];
