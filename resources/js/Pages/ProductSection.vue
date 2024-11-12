@@ -52,23 +52,20 @@
                                         "
                                     />
                                 </FilterItem>
-                                <!--                                <FilterItem-->
-                                <!--                                    class="my-4"-->
-                                <!--                                    filtering-name="Ukuran Kue"-->
-                                <!--                                >-->
-                                <!--                                    <BaseCheckbox-->
-                                <!--                                        v-for="cakeSize in props.cakeSizes"-->
-                                <!--                                        v-model="-->
-                                <!--                                            filteredData.selectedCakeSizeId-->
-                                <!--                                        "-->
-                                <!--                                        :key="cakeSize.id"-->
-                                <!--                                        :label="`${cakeSize?.size} Cm`"-->
-                                <!--                                        :id="cakeSize.id"-->
-                                <!--                                        :total-data="-->
-                                <!--                                            getTotalCakesBySize(cakeSize.size)-->
-                                <!--                                        "-->
-                                <!--                                    />-->
-                                <!--                                </FilterItem>-->
+                                <FilterItem
+                                    class="my-4"
+                                    filtering-name="Kategori Kue"
+                                >
+                                    <BaseCheckbox
+                                        v-for="cakeCategory in props.cakeCategories"
+                                        v-model="
+                                            filteredData.selectedCakeCategoryId
+                                        "
+                                        :key="cakeCategory.id"
+                                        :label="cakeCategory?.name"
+                                        :id="cakeCategory.id"
+                                    />
+                                </FilterItem>
                                 <div class="flex items-center gap-2 mt-2">
                                     <button
                                         class="btn btn-outline"
@@ -107,16 +104,18 @@
                                 "
                             />
                         </FilterItem>
-                        <!--                        <FilterItem filtering-name="Ukuran Kue">-->
-                        <!--                            <BaseCheckbox-->
-                        <!--                                v-for="cakeSize in props.cakeSizes"-->
-                        <!--                                v-model="filteredData.selectedCakeSizeId"-->
-                        <!--                                :key="cakeSize.id"-->
-                        <!--                                :label="`${cakeSize?.size} Cm`"-->
-                        <!--                                :id="cakeSize.id"-->
-                        <!--                                :total-data="getTotalCakesBySize(cakeSize.size)"-->
-                        <!--                            />-->
-                        <!--                        </FilterItem>-->
+                        <FilterItem filtering-name="Kategori Kue">
+                            <BaseCheckbox
+                                v-for="cakeCategory in props.cakeCategories"
+                                v-model="filteredData.selectedCakeCategoryId"
+                                :key="cakeCategory.id"
+                                :label="cakeCategory?.name"
+                                :id="cakeCategory.id"
+                                :total-data="
+                                    totalCakeCategory[cakeCategory.name]
+                                "
+                            />
+                        </FilterItem>
                         <div class="hidden lg:flex items-center gap-2 mt-2">
                             <button
                                 class="btn btn-outline"
@@ -135,13 +134,15 @@
                 </section>
                 <section
                     class="col-span-full sm:col-span-7 md:col-span-8 lg:col-span-9 flex flex-col items-center gap-8 pb-8"
-                    :class="{ 'sm:py-36 lg:py-32': isTotalPriceEmpty }"
+                    :class="{
+                        'sm:py-36 lg:py-32': props.cakes.data.length > 0,
+                    }"
                 >
                     <section
                         class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-11 place-items-center gap-4"
                     >
                         <CardLayout
-                            v-for="cakes in totalPrice"
+                            v-for="cakes in props.cakes.data"
                             :key="cakes.id"
                             class="col-span-2"
                         >
@@ -149,7 +150,7 @@
                                 :cake-id="cakes.id"
                                 :cake-name="cakes.name"
                                 :cake-category="cakes.category.name"
-                                :cake-price="formatPrice(cakes.totalCakePrice)"
+                                :cake-price="formatPrice(cakes.base_price)"
                                 :image-url="cakes.image_url"
                                 :cake-personalization-type="
                                     cakes.personalization_type
@@ -158,7 +159,7 @@
                         </CardLayout>
                     </section>
                     <Pagination
-                        v-if="totalPrice.length > 0"
+                        v-if="props.cakes.data.length > 0"
                         :links="props.cakes.links"
                         :next-page-url="props.cakes.next_page_url"
                         :previous-page-url="props.cakes.prev_page_url"
@@ -198,12 +199,10 @@ const props = defineProps({
     cakes: {
         type: Object,
     },
-    cakeSizes: {
+    cakeCategories: {
         type: Object,
     },
 });
-
-console.log(props.cakes);
 
 /**
  * Computed property that counts the number of cakes by personalization type.
@@ -232,52 +231,29 @@ const totalCakePersonalizationType = computed(() => {
     return counts;
 });
 
-/**
- * Computed property that counts the number of cakes for each cake size.
- *
- * @returns {Object} An object with cake sizes as keys and their respective counts as values.
- */
-const totalCakesBySize = computed(() => {
+const totalCakeCategory = computed(() => {
     const counts = {
-        12: 0,
-        15: 0,
-        18: 0,
-        20: 0,
-        22: 0,
-        24: 0,
+        Cupcake: 0,
+        Tart: 0,
+        Brownies: 0,
+        Pie: 0,
+        Pudding: 0,
+        Wedding: 0,
     };
 
-    props.cakes?.data.filter((cake) => {
-        const size = cake.cake_size?.size;
+    props.cakes.data.filter((cake) => {
+        const cakeCategory = cake.category.name;
 
-        if (size && counts.hasOwnProperty(size)) {
-            counts[size]++;
+        if (cakeCategory && !counts.hasOwnProperty(cakeCategory)) {
+            counts[cakeCategory] = 1;
+        } else {
+            counts[cakeCategory]++;
         }
 
-        return size;
+        return cakeCategory;
     });
 
     return counts;
-});
-
-/**
- * Computed property that calculates the total price of all cakes.
- *
- * @returns {Array} An array of cake objects with an additional 'totalCakePrice' property.
- */
-const totalPrice = computed(() => {
-    return props.cakes.data.map((cake) => {
-        const cakeSizedPrice = cake.cake_size ? cake.cake_size.price : 0;
-        const totalCakePrice = cake.base_price + cakeSizedPrice;
-        return {
-            ...cake,
-            totalCakePrice,
-        };
-    });
-});
-
-const isTotalPriceEmpty = computed(() => {
-    return totalPrice.value.length > 0;
 });
 
 /**
@@ -316,19 +292,9 @@ const getTotalDataCakeType = (name) => {
     ];
 };
 
-/**
- * Retrieves the total data for a specific cake size.
- *
- * @param {string} size - The size of the cake.
- * @return {object} The total data for the specified cake size.
- */
-const getTotalCakesBySize = (size) => {
-    return totalCakesBySize.value[size];
-};
-
 let filteredData = reactive({
     selectedPersonalizationId: null,
-    selectedCakeSizeId: [],
+    selectedCakeCategoryId: [],
 });
 
 /**
@@ -347,14 +313,14 @@ const applyFilters = () => {
         params.personalization_type = selectedPersonalization.name;
     }
 
-    if (filteredData.selectedCakeSizeId.length > 0) {
-        params.cake_size_id = filteredData.selectedCakeSizeId.join(",");
+    if (filteredData.selectedCakeCategoryId.length > 0) {
+        params.cake_category_id = filteredData.selectedCakeCategoryId.join(",");
     }
 
     Inertia.get("products", params, {
         preserveState: true,
         preserveScroll: true,
-        onFinish: (visit) => {
+        onFinish: () => {
             const currentUrl = window.location.href;
             const updateUrl = currentUrl.replace(/%2C/g, ",");
             window.history.replaceState(null, "", updateUrl);
@@ -369,7 +335,7 @@ const applyFilters = () => {
  */
 const clearFilters = () => {
     filteredData.selectedPersonalizationId = null;
-    filteredData.selectedCakeSizeId = [];
+    filteredData.selectedCakeCategoryId = [];
 
     Inertia.get(
         "products",

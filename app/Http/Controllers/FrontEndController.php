@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cake;
 use App\Models\CakeSize;
+use App\Models\Category;
 use App\Models\Flavour;
 use App\Models\ShoppingChartItem;
 use App\Models\Topping;
@@ -58,10 +59,21 @@ class FrontEndController extends Controller
     public function products(Request $request): Response
     {
         $cakes = Cake::with('category');
+        $cakeCategories = Category::all();
 
         // Check the filtered cake based on cake personalization type and cake size
         if ($request->has('personalization_type')) {
             $cakes->where('personalization_type', $request->personalization_type);
+        }
+
+
+        if ($request->has('cake_category_id')) {
+            $cakeCategoryIds = $request->input('cake_category_id');
+            if (!is_array($cakeCategoryIds)) {
+                $cakeCategoryIds = explode(',', $cakeCategoryIds);
+            }
+
+            $cakes->whereIn('category_id', $cakeCategoryIds);
         }
 
         $cakes = $cakes->paginate(12);
@@ -77,6 +89,7 @@ class FrontEndController extends Controller
 
         return Inertia::render('ProductSection', [
             'cakes' => $cakes,
+            'cakeCategories' => $cakeCategories
         ]);
     }
 
@@ -179,29 +192,6 @@ class FrontEndController extends Controller
             'cakeFlavour',
             'cakeTopping'
         ])->whereIn('id', $shoppingChartItemIds)->get();
-
-        // DB::table('shopping_chart_items AS sc')
-        //     ->select([
-        //         'sc.id AS shopping_chart_id',
-        //         'sc.quantity AS order_quantity',
-        //         'sc.price AS order_price',
-        //         'c.name AS cake_name',
-        //         'c.base_price AS cake_price',
-        //         'c.description AS cake_description',
-        //         'c.personalization_type AS cake_type',
-        //         'cs.size',
-        //         'cs.price AS size_price',
-        //         'f.name AS flavour_name',
-        //         'f.price AS flavour_price',
-        //         DB::raw('GROUP_CONCAT(DISTINCT t.name ORDER BY t.name ASC SEPARATOR ", ") AS topping_names')
-        //     ])
-        //     ->leftJoin('cakes AS c', 'sc.cake_id', '=', 'c.id')
-        //     ->leftJoin('cake_sizes AS cs', 'c.cake_size_id', '=', 'cs.id')
-        //     ->leftJoin('flavours AS f', 'sc.cake_flavour_id', '=', 'f.id')
-        //     ->leftJoin('shopping_chart_item_topping AS scit', 'sc.id', '=', 'scit.shopping_chart_item_id')
-        //     ->leftJoin('toppings AS t', 'scit.topping_id', '=', 't.id')
-        //     ->groupBy('sc.id')
-        //     ->get();
 
         return Inertia::render('CheckoutSection', [
             'chartItems' => $chartItems,

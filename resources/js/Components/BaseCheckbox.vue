@@ -1,5 +1,5 @@
 <template>
-    <div class="form-control">
+    <div>
         <label class="flex items-center gap-2 cursor-pointer">
             <input
                 type="checkbox"
