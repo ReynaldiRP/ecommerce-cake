@@ -13,8 +13,13 @@ class CakeSize extends Model
     protected $fillable = ['size', 'price'];
 
 
-    public function cake(): HasMany
+    public function shoppingChartItem(): HasMany
     {
-        return $this->hasMany(Cake::class, 'id');
+        return $this->hasMany(ShoppingChartItem::class, 'cake_size_id', 'id');
+    }
+
+    public function orderItem(): HasMany
+    {
+        return $this->hasMany(OrderItem::class, 'cake_size_id', 'id');
     }
 }

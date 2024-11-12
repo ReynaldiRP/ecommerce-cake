@@ -39,6 +39,11 @@ class OrderItem extends Model
         return $this->belongsTo(Cake::class, 'cake_id', 'id');
     }
 
+    public function cakeSize(): BelongsTo
+    {
+        return $this->belongsTo(CakeSize::class, 'cake_size_id', 'id');
+    }
+
     /**
      * Get the flavour that owns the OrderItem
      *

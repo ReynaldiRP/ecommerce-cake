@@ -20,13 +20,13 @@ class Cake extends Model
     ];
 
     /**
-     * Get the cake size that owns the Cake
+     * Get the category that owns the Cake.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function cakeSize(): BelongsTo
+    public function category(): BelongsTo
     {
-        return $this->belongsTo(CakeSize::class, 'cake_size_id', 'id');
+        return $this->belongsTo(Category::class);
     }
 
     /**

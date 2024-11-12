@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('cakes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cake_size_id')
-                ->nullable()
-                ->constrained(
-                    table: 'cake_sizes',
-                    column: 'id',
-                    indexName: 'cake_size_id'
-                )->onDelete('cascade');
             $table->string('name', 255);
+            $table->foreignId('category_id')
+                ->constrained(
+                    table: 'categories',
+                    column: 'id',
+                    indexName: 'cakes_category_id_index',
+                )
+                ->onDelete('cascade');
             $table->string('image_url', 255)->nullable();
             $table->double('base_price', 8, 2);
             $table->text('description')->nullable();

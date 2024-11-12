@@ -23,6 +23,11 @@ return new class extends Migration
                 column: 'id',
                 indexName: 'order_items_cake_id'
             )->onDelete('cascade');
+            $table->foreignId('cake_size_id')->nullable()->constrained(
+                table: 'cake_sizes',
+                column: 'id',
+                indexName: 'order_items_cake_size_id'
+            )->onDelete('cascade');
             $table->foreignId('cake_flavour_id')->nullable()->constrained(
                 table: 'flavours',
                 column: 'id',
