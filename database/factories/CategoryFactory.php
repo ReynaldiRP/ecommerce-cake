@@ -19,8 +19,9 @@ class CategoryFactory extends Factory
         $categoryCakeName = [
             'Tart Cake',
             'Wedding Cake',
-            'Pudding Cake',
-            'Pie Cake',
+            'Brownies',
+            'Pudding',
+            'Pie',
             'Cupcake',
         ];
 
