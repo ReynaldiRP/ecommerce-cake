@@ -10,23 +10,25 @@
         <div class="card-body gap-1 text-base-content">
             <h2 class="text-base font-medium">
                 {{ cakeName }}
-                <span v-show="cakeSize" class="font-bold"
-                    >({{ cakeSize }}Cm)</span
-                >
             </h2>
             <p class="text-lg font-bold">{{ cakePrice }}</p>
-            <div
-                class="flex gap-2 items-center badge"
-                :class="isCustomizedBadge()"
-            >
-                <i
-                    v-if="cakePersonalizationType == 'customized'"
-                    class="fa-solid fa-cake-candles"
-                ></i>
-                <i v-else class="fa-solid fa-cookie"></i>
-                <p class="font-medium text-nowrap">
-                    {{ cakePersonalizationType }}
-                </p>
+            <div class="flex flex-col gap-2">
+                <div
+                    class="flex gap-2 items-center badge"
+                    :class="isCustomizedBadge()"
+                >
+                    <i
+                        v-if="cakePersonalizationType == 'customized'"
+                        class="fa-solid fa-cake-candles"
+                    ></i>
+                    <i v-else class="fa-solid fa-cookie"></i>
+                    <p class="font-medium text-nowrap">
+                        {{ cakePersonalizationType }}
+                    </p>
+                </div>
+                <div class="badge badge-outline badge-light">
+                    {{ cakeCategory }}
+                </div>
             </div>
         </div>
     </inertia-link>
@@ -42,8 +44,8 @@ const props = defineProps({
         type: String,
         default: null,
     },
-    cakeSize: {
-        type: Number,
+    cakeCategory: {
+        type: String,
         default: null,
     },
     cakePrice: {

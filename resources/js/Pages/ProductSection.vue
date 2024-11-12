@@ -52,23 +52,23 @@
                                         "
                                     />
                                 </FilterItem>
-                                <FilterItem
-                                    class="my-4"
-                                    filtering-name="Ukuran Kue"
-                                >
-                                    <BaseCheckbox
-                                        v-for="cakeSize in props.cakeSizes"
-                                        v-model="
-                                            filteredData.selectedCakeSizeId
-                                        "
-                                        :key="cakeSize.id"
-                                        :label="`${cakeSize?.size} Cm`"
-                                        :id="cakeSize.id"
-                                        :total-data="
-                                            getTotalCakesBySize(cakeSize.size)
-                                        "
-                                    />
-                                </FilterItem>
+                                <!--                                <FilterItem-->
+                                <!--                                    class="my-4"-->
+                                <!--                                    filtering-name="Ukuran Kue"-->
+                                <!--                                >-->
+                                <!--                                    <BaseCheckbox-->
+                                <!--                                        v-for="cakeSize in props.cakeSizes"-->
+                                <!--                                        v-model="-->
+                                <!--                                            filteredData.selectedCakeSizeId-->
+                                <!--                                        "-->
+                                <!--                                        :key="cakeSize.id"-->
+                                <!--                                        :label="`${cakeSize?.size} Cm`"-->
+                                <!--                                        :id="cakeSize.id"-->
+                                <!--                                        :total-data="-->
+                                <!--                                            getTotalCakesBySize(cakeSize.size)-->
+                                <!--                                        "-->
+                                <!--                                    />-->
+                                <!--                                </FilterItem>-->
                                 <div class="flex items-center gap-2 mt-2">
                                     <button
                                         class="btn btn-outline"
@@ -107,16 +107,16 @@
                                 "
                             />
                         </FilterItem>
-                        <FilterItem filtering-name="Ukuran Kue">
-                            <BaseCheckbox
-                                v-for="cakeSize in props.cakeSizes"
-                                v-model="filteredData.selectedCakeSizeId"
-                                :key="cakeSize.id"
-                                :label="`${cakeSize?.size} Cm`"
-                                :id="cakeSize.id"
-                                :total-data="getTotalCakesBySize(cakeSize.size)"
-                            />
-                        </FilterItem>
+                        <!--                        <FilterItem filtering-name="Ukuran Kue">-->
+                        <!--                            <BaseCheckbox-->
+                        <!--                                v-for="cakeSize in props.cakeSizes"-->
+                        <!--                                v-model="filteredData.selectedCakeSizeId"-->
+                        <!--                                :key="cakeSize.id"-->
+                        <!--                                :label="`${cakeSize?.size} Cm`"-->
+                        <!--                                :id="cakeSize.id"-->
+                        <!--                                :total-data="getTotalCakesBySize(cakeSize.size)"-->
+                        <!--                            />-->
+                        <!--                        </FilterItem>-->
                         <div class="hidden lg:flex items-center gap-2 mt-2">
                             <button
                                 class="btn btn-outline"
@@ -148,7 +148,7 @@
                             <CardItem
                                 :cake-id="cakes.id"
                                 :cake-name="cakes.name"
-                                :cake-size="cakes.cake_size?.size"
+                                :cake-category="cakes.category.name"
                                 :cake-price="formatPrice(cakes.totalCakePrice)"
                                 :image-url="cakes.image_url"
                                 :cake-personalization-type="
@@ -202,6 +202,8 @@ const props = defineProps({
         type: Object,
     },
 });
+
+console.log(props.cakes);
 
 /**
  * Computed property that counts the number of cakes by personalization type.

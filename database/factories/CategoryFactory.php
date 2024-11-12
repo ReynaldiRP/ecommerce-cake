@@ -17,8 +17,8 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         $categoryCakeName = [
-            'Tart Cake',
-            'Wedding Cake',
+            'Tart',
+            'Wedding',
             'Brownies',
             'Pudding',
             'Pie',

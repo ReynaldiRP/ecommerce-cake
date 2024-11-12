@@ -29,8 +29,17 @@ class CakeFactory extends Factory
         ];
 
         $customizedCake = [
-            'Tart Cake',
-            'Wedding Cake',
+            'Tart' => [
+                'Black Forest Cake',
+                'Red Velvet Cake',
+                'Tiramisu Cake',
+                'Mocha Cake',
+            ],
+            'Wedding' => [
+                'Traditional Tiered Cake',
+                'Naked Cake',
+                'Semi-Naked Cake',
+            ]
         ];
 
         $cakeImageUrl = [
@@ -39,8 +48,17 @@ class CakeFactory extends Factory
             'Pie Buah' => '/assets/image/cakes/pie-buah.png',
             'Cupcake (5 pcs)' => '/assets/image/cakes/cupcakes.png',
             'Cupcake (6 pcs)' => '/assets/image/cakes/cupcakes.png',
-            'Wedding Cake' => '/assets/image/cakes/cakes.jpg',
-            'Tart Cake' => '/assets/image/cakes/bento-cake.jpg',
+            'Wedding' => [
+                'Traditional Tiered Cake' => '/assets/image/cakes/cakes.jpg',
+                'Naked Cake' => '/assets/image/cakes/cakes.jpg',
+                'Semi-Naked Cake' => '/assets/image/cakes/cakes.jpg',
+            ],
+            'Tart' => [
+                'Black Forest Cake' => '/assets/image/cakes/bento-cake.jpg',
+                'Red Velvet Cake' => '/assets/image/cakes/bento-cake.jpg',
+                'Tiramisu Cake' => '/assets/image/cakes/bento-cake.jpg',
+                'Mocha Cake' => '/assets/image/cakes/bento-cake.jpg',
+            ],
         ];
 
         $cakeDescription = [
@@ -50,8 +68,17 @@ class CakeFactory extends Factory
             'Cupcake (5 pcs)' => 'Kue kecil yang meriah, dipanggang dalam wadah kertas dekoratif. Kue lembut ini hadir dalam berbagai rasa, dilengkapi dengan swirl frosting buttercream, taburan sprinkles, atau dekorasi yang bisa dimakan, menjadikannya sempurna untuk pesta atau sekadar memanjakan diri sendiri.',
             'Cupcake (6 pcs)' => 'Kue kecil yang meriah, dipanggang dalam wadah kertas dekoratif. Kue lembut ini hadir dalam berbagai rasa, dilengkapi dengan swirl frosting buttercream, taburan sprinkles, atau dekorasi yang bisa dimakan, menjadikannya sempurna untuk pesta atau sekadar memanjakan diri sendiri.',
             'Pastry' => 'Kue panggang yang lembut dan renyah, sering kali dibuat dengan mentega atau shortening, seperti croissant, danish, atau tart. Setiap gigitan memberikan sensasi gurih mentega dan kerenyahan yang memuaskan. Baik itu croissant, danish, atau tart, semua pastry ini menghadirkan lapisan-lapisan kelezatan dengan isian manis atau gurih yang memanjakan.',
-            'Wedding Cake' => 'Kue yang ringan dan lembut dengan tekstur remah yang halus. Dibuat dari bahan sederhana seperti telur, gula, dan tepung, kue ini cocok menjadi dasar untuk kue berlapis, trifle, atau dinikmati langsung dengan buah beri segar dan krim.',
-            'Tart Cake' => 'Kue mungil nan cantik yang pas untuk porsi satu atau dua orang. Dikemas dalam kotak bento yang praktis, kue ini hadir dengan desain yang sederhana namun penuh gaya, cocok sebagai hadiah atau kejutan kecil untuk orang terkasih. Meskipun ukurannya mini, rasanya tetap luar biasa dengan tekstur lembut dan topping yang dapat disesuaikan sesuai selera. Pilihan sempurna untuk merayakan momen spesial dalam keintiman!'
+            'Tart' => [
+                'Black Forest Cake' => 'Kue tart klasik dengan lapisan krim lembut, taburan cokelat, dan ceri merah di atasnya. Setiap gigitan menghadirkan sensasi rasa manis, asam, dan gurih yang memanjakan lidah Anda. Cocok untuk dinikmati bersama secangkir teh atau kopi hangat.',
+                'Red Velvet Cake' => 'Kue tart merah muda dengan lapisan krim keju lembut yang manis dan gurih. Setiap gigitan menggoda dengan rasa cokelat yang lembut dan keju yang kaya. Cocok untuk dinikmati sebagai hidangan penutup istimewa di hari spesial Anda.',
+                'Tiramisu Cake' => 'Kue tart klasik Italia yang lembut dan lezat, diisi dengan lapisan krim keju mascarpone yang manis dan kopi espresso yang kuat. Setiap gigitan menghadirkan perpaduan rasa kopi, cokelat, dan keju yang memanjakan lidah Anda. Cocok untuk dinikmati sebagai hidangan penutup istimewa di hari spesial Anda.',
+                'Mocha Cake' => 'Kue tart klasik dengan lapisan krim lembut dan taburan cokelat bubuk di atasnya. Setiap gigitan menghadirkan sensasi rasa manis, asam, dan gurih yang memanjakan lidah Anda dengan aroma kopi yang harum. Cocok untuk dinikmati bersama secangkir teh atau kopi hangat.',
+            ],
+            'Wedding' => [
+                'Traditional Tiered Cake' => 'Kue pernikahan klasik dengan lapisan krim lembut dan hiasan bunga yang indah. Setiap gigitan menghadirkan sensasi rasa manis dan gurih yang memanjakan lidah Anda. Cocok untuk dinikmati bersama keluarga dan teman di hari bahagia Anda.',
+                'Naked Cake' => 'Kue pernikahan dengan lapisan krim tipis yang memperlihatkan lapisan kue di dalamnya. Tampilan yang natural dan sederhana ini memberikan kesan hangat dan ramah, cocok untuk pernikahan di taman atau suasana yang santai.',
+                'Semi-Naked Cake' => 'Kue pernikahan dengan lapisan krim tipis yang memperlihatkan lapisan kue di dalamnya. Tampilan yang natural dan sederhana ini memberikan kesan hangat dan ramah, cocok untuk pernikahan di taman atau suasana yang santai.',
+            ]
         ];
 
         $cakePrice = [
@@ -60,18 +87,34 @@ class CakeFactory extends Factory
             'Cupcake (5 pcs)' => 45000,
             'Cupcake (6 pcs)' => 50000,
             'Fudge Brownies' => 40000,
-            'Tart Cake' => 100000,
-            'Wedding Cake' => 130000,
+            'Tart' => [
+                'Black Forest Cake' => 120000,
+                'Red Velvet Cake' => 120000,
+                'Tiramisu Cake' => 120000,
+                'Mocha Cake' => 120000,
+            ],
+            'Wedding' => [
+                'Traditional Tiered Cake' => 100000,
+                'Naked Cake' => 80000,
+                'Semi-Naked Cake' => 90000,
+            ],
         ];
 
         return [
-            'name' => $this->faker->unique()->randomElement(array_merge($nonCustomizedCake, $customizedCake)),
-            'category_id' => function (array $attributes) use ($customizedCake, $nonCustomizedCake) {
+            'name' => $this->faker->unique()->randomElement(array_merge($nonCustomizedCake, ...array_values($customizedCake))),
+            'category_id' => function (array $attributes) {
                 // Define mapping of cake names to category names
                 $categoryMapping = [
-                    // Customized cakes
-                    'Tart Cake' => 'Tart Cake',
-                    'Wedding Cake' => 'Wedding Cake',
+                    // Tart cakes
+                    'Black Forest Cake' => 'Tart',
+                    'Red Velvet Cake' => 'Tart',
+                    'Tiramisu Cake' => 'Tart',
+                    'Mocha Cake' => 'Tart',
+
+                    // Wedding cakes
+                    'Traditional Tiered Cake' => 'Wedding',
+                    'Naked Cake' => 'Wedding',
+                    'Semi-Naked Cake' => 'Wedding',
 
                     // Non-customized cakes
                     'Pudding Cup' => 'Pudding',
@@ -95,16 +138,63 @@ class CakeFactory extends Factory
                     ->id;
             },
             'image_url' => function (array $attributes) use ($cakeImageUrl) {
-                return $cakeImageUrl[$attributes['name']];
+                $cakeName = $attributes['name'];
+
+                // First check if it's a direct mapping
+                if (isset($cakeImageUrl[$cakeName])) {
+                    return $cakeImageUrl[$cakeName];
+                }
+
+                // If not found directly, search in nested categories
+                foreach (['Wedding', 'Tart'] as $category) {
+                    if (isset($cakeImageUrl[$category][$cakeName])) {
+                        return $cakeImageUrl[$category][$cakeName];
+                    }
+                }
+
+                return null;
             },
             'base_price' => function (array $attributes) use ($cakePrice) {
-                return $cakePrice[$attributes['name']];
+                $cakeName = $attributes['name'];
+
+                // First check if it's a direct mapping
+                if (isset($cakePrice[$cakeName])) {
+                    return $cakePrice[$cakeName];
+                }
+
+                // If not found directly, search in nested categories
+                foreach (['Wedding', 'Tart'] as $category) {
+                    if (isset($cakePrice[$category][$cakeName])) {
+                        return $cakePrice[$category][$cakeName];
+                    }
+                }
+
+                return null;
             },
             'description' => function (array $attributes) use ($cakeDescription) {
-                return $cakeDescription[$attributes['name']];
+                $cakeName = $attributes['name'];
+
+                // First check if it's a direct mapping
+                if (isset($cakeDescription[$cakeName])) {
+                    return $cakeDescription[$cakeName];
+                }
+
+                // If not found directly, search in nested categories
+                foreach (['Wedding', 'Tart'] as $category) {
+                    if (isset($cakeDescription[$category][$cakeName])) {
+                        return $cakeDescription[$category][$cakeName];
+                    }
+                }
+
+                return null;
             },
             'personalization_type' => function (array $attributes) use ($customizedCake) {
-                return in_array($attributes['name'], $customizedCake) ? 'customized' : 'non-customized';
+                foreach ($customizedCake as $category => $cakes) {
+                    if (in_array($attributes['name'], $cakes)) {
+                        return 'customized';
+                    }
+                }
+                return 'non-customized';
             },
         ];
     }

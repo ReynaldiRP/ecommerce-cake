@@ -11,7 +11,7 @@ class Cake extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'cake_size_id',
+        'category_id',
         'name',
         'image_url',
         'base_price',
@@ -22,7 +22,7 @@ class Cake extends Model
     /**
      * Get the category that owns the Cake.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function category(): BelongsTo
     {

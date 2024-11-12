@@ -15,17 +15,13 @@ use Inertia\Inertia;
 class FrontEndController extends Controller
 {
     /**
-     * Show the landing page of the application. 
+     * Show the landing page of the application.
      *
      * @return Response
      */
     public function index(): Response
     {
-        $cakes = DB::table('cakes')
-            ->join('cake_sizes', 'cakes.cake_size_id', '=', 'cake_sizes.id')
-            ->select('cakes.id', 'cakes.cake_size_id', 'cakes.name', 'cake_sizes.size', 'cakes.image_url')
-            ->get();
-
+        $cakes = Cake::query()->where('personalization_type', '=', 'customized')->get();
         return Inertia::render('LandingPageSection', ['cakes' => $cakes]);
     }
 
@@ -39,7 +35,7 @@ class FrontEndController extends Controller
     {
         $query = $request->input('search');
 
-        $cakes = Cake::with('cakeSize')
+        $cakes = Cake::query()
             ->where('name', 'like', "%{$query}%");
 
         if (!$cakes) {
@@ -61,16 +57,11 @@ class FrontEndController extends Controller
      */
     public function products(Request $request): Response
     {
-        $cakes =  Cake::with('cakeSize');
+        $cakes = Cake::with('category');
 
         // Check the filtered cake based on cake personalization type and cake size
         if ($request->has('personalization_type')) {
             $cakes->where('personalization_type', $request->personalization_type);
-        }
-
-        if ($request->has('cake_size_id')) {
-            $cakeSizeIds = explode(',', $request->cake_size_id);
-            $cakes->whereIn('cake_size_id', $cakeSizeIds);
         }
 
         $cakes = $cakes->paginate(12);
@@ -86,7 +77,6 @@ class FrontEndController extends Controller
 
         return Inertia::render('ProductSection', [
             'cakes' => $cakes,
-            'cakeSizes' => CakeSize::orderBy('size')->get()
         ]);
     }
 

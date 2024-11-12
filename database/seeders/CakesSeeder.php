@@ -15,7 +15,7 @@ class CakesSeeder extends Seeder
     public function run(): void
     {
         Cake::Factory()
-            ->count(7)
+            ->count(12)
             ->create();
     }
 }

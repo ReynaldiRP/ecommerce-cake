@@ -23,9 +23,6 @@
                 }"
             >
                 {{ cake.name }}
-                <span class="font-bold text-primary-color"
-                    >({{ cake.size }}Cm)
-                </span>
             </p>
         </inertia-link>
     </SplideSlide>

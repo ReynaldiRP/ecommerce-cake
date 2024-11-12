@@ -37,21 +37,6 @@ const props = defineProps({
     },
 });
 
-const imageUrl = [
-    {
-        link: "assets/image/hero-image.png",
-        name: "Wedding Cake",
-    },
-    {
-        link: "assets/image/home-image-cake.png",
-        name: "Birthday Cake",
-    },
-    {
-        link: "assets/image/pink-cake.png",
-        name: "Tart",
-    },
-];
-
 const options = reactive({
     rewind: true,
     fixedHeight: 450,
