@@ -32,9 +32,9 @@ class StoreShoppingChartRequest extends FormRequest
     {
         if ($this->cake_id) {
             $cake = Cake::query()->findOrfail($this->cake_id);
-            if ($cake && $cake->cake_size_id) {
+            if ($cake && $cake->personalization_type === "customized") {
                 $this->merge([
-                    'cake_size' => $cake->cake_size_id,
+                    'cake_personalization_type' => $cake->personalization_type,
                 ]);
             }
         }
@@ -50,6 +50,7 @@ class StoreShoppingChartRequest extends FormRequest
         return [
             'shopping_chart_id' => 'nullable',
             'cake_id' => 'required',
+            'cake_size_id' => 'required_with:cake_id',
             'cake_flavour_id' => 'required_with:cake_size',
             'toppings' => 'sometimes|array|max:4',
             'toppings.*' => 'integer|exists:toppings,id',

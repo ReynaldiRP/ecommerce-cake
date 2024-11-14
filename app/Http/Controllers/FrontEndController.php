@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Flavour;
 use App\Models\ShoppingChartItem;
 use App\Models\Topping;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +31,7 @@ class FrontEndController extends Controller
      * Handles search functionality for cakes.
      *
      * @param Request $request The incoming HTTP request containing search query.
-     * @return \Illuminate\Http\JsonResponse A JSON response containing search results and query.
+     * @return JsonResponse A JSON response containing search results and query.
      */
     public function search(Request $request)
     {
@@ -102,7 +103,7 @@ class FrontEndController extends Controller
      */
     public function detailProduct($cakeId): Response
     {
-        $cake = Cake::with('cakeSize')->findOrFail($cakeId);
+        $cake = Cake::with('category')->findOrFail($cakeId);
 
         if ($cake->image_url) {
             $cake->image_url = asset($cake->image_url);
@@ -110,6 +111,7 @@ class FrontEndController extends Controller
             $cake->image_url = asset('assets/image/default-img.jpg');
         }
 
+        $cakeSize = CakeSize::query()->orderBy('size')->get();
         $topping = Topping::all();
         $flavour = Flavour::all();
 
@@ -117,6 +119,7 @@ class FrontEndController extends Controller
 
         return Inertia::render('DetailProductSection', [
             'cake' => $cake,
+            'size' => $cakeSize,
             'topping' => $topping,
             'flavour' => $flavour
         ]);

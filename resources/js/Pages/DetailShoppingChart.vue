@@ -77,7 +77,7 @@
                                                 class="text-xl font-semibold text-white"
                                             >
                                                 {{ item.cake?.name }} ({{
-                                                    item.cake.cake_size?.size
+                                                    item.cake_size?.size
                                                 }}Cm)
                                             </h1>
                                             <div

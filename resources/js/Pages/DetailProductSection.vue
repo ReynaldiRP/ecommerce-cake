@@ -45,7 +45,7 @@
                 <ProductDetail :cake="totalPrice" :format-price="formatPrice" />
 
                 <ProductFlavour
-                    v-show="isCakeCustomized"
+                    v-if="isCakeCustomized"
                     :flavours="props.flavour"
                     v-model="form.cake_flavour_id"
                     @update-flavour-price="handleUpdateFlavourPrice"
@@ -53,12 +53,19 @@
                     :format-price="formatPrice"
                 />
                 <ProductTopping
-                    v-show="isCakeCustomized"
+                    v-if="isCakeCustomized"
                     :toppings="props.topping"
                     v-model="form.toppings"
                     @update-topping-price="handleUpdateToppingPrice"
                     :error-responses="errorResponses"
                     :format-price="formatPrice"
+                />
+                <ProductSize
+                    v-if="isCakeCustomized"
+                    v-model="form.cake_size_id"
+                    :cake-size="props.size"
+                    :error-responses="errorResponses"
+                    @update-cake-size-price="handleUpdateCakeSizePrice"
                 />
                 <ProductQuantity
                     v-model="form.quantity"
@@ -87,7 +94,8 @@ import ProductTopping from "@/Components/DetailProduct/ProductTopping.vue";
 import ProductQuantity from "@/Components/DetailProduct/ProductQuantity.vue";
 import AddToChartButton from "@/Components/DetailProduct/AddToChartButton.vue";
 import PreviewChartItem from "@/Components/PreviewChartItem.vue";
-import { computed, ref, reactive, watch } from "vue";
+import ProductSize from "@/Components/DetailProduct/ProductSize.vue";
+import { computed, reactive, ref, watch } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
 import axios from "axios";
 
@@ -101,6 +109,9 @@ const props = defineProps({
     topping: {
         type: Object,
     },
+    size: {
+        type: Array,
+    },
 });
 
 const qty = [1, 2, 3, 4, 5];
@@ -109,11 +120,13 @@ const selected = reactive({
     flavour: null,
     topping: [],
     quantity: qty[0],
+    size: "",
 });
 
 const flavourPrice = ref(0);
 const toppingPrice = ref(0);
 const quantityPrice = ref(1);
+const sizePrice = ref(0);
 const isPreviewOpen = ref(false);
 const chartItem = ref([]);
 const successMessage = ref("");
@@ -143,11 +156,23 @@ const handleUpdateToppingPrice = (price) => {
 /**
  * Updates the quantity price state with the provided quantity value.
  *
- * @param {number} quantity - The new quantity value
+ * @param {number} price
  * @return {void}
  */
-const handleUpdateQuantityPrice = (quantity) => {
-    quantityPrice.value = parseInt(quantity);
+const handleUpdateQuantityPrice = (price) => {
+    quantityPrice.value = parseInt(price);
+};
+
+/**
+ * Updates the cake size price state with the provided size id.
+ *
+ * @param {number} size - The new cake size value
+ * @return {void}
+ */
+const handleUpdateCakeSizePrice = (size) => {
+    sizePrice.value = Object.values(props.size).find(
+        (cakeSize) => cakeSize.id === size,
+    ).price;
 };
 
 /**
@@ -156,13 +181,9 @@ const handleUpdateQuantityPrice = (quantity) => {
  * @return {object} An object containing the cake details and the calculated total price
  */
 const totalPrice = computed(() => {
-    const cakeSizedPrice = props.cake.cake_size
-        ? props.cake.cake_size.price
-        : 0;
-
     const totalCakePrice =
         (props.cake.base_price +
-            cakeSizedPrice +
+            sizePrice.value +
             flavourPrice.value +
             toppingPrice.value) *
         quantityPrice.value;
@@ -178,6 +199,7 @@ const form = useForm({
     toppings: selected.topping,
     quantity: selected.quantity,
     price: totalPrice.value.totalCakePrice,
+    cake_size_id: selected.size,
 });
 
 watch(
@@ -221,6 +243,8 @@ const formatPrice = (price = 0) => {
 const addItemToChart = async () => {
     try {
         const response = await axios.post(route("add-chart-item"), form);
+
+        console.log(response.data);
 
         chartItem.value = response.data.cartItem;
         successMessage.value = response.data.message;

@@ -47,7 +47,7 @@
                                 <span
                                     v-show="
                                         chart.cake_flavour_name &&
-                                        chart.cake_toppings.length > 1
+                                        chart.cake_toppings.length >= 1
                                     "
                                     >|</span
                                 >

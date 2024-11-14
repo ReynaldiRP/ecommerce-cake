@@ -64,6 +64,9 @@
                                         :key="cakeCategory.id"
                                         :label="cakeCategory?.name"
                                         :id="cakeCategory.id"
+                                        :total-data="
+                                            totalCakeCategory[cakeCategory.name]
+                                        "
                                     />
                                 </FilterItem>
                                 <div class="flex items-center gap-2 mt-2">
@@ -231,6 +234,11 @@ const totalCakePersonalizationType = computed(() => {
     return counts;
 });
 
+/**
+ * Computes the total number of cakes for each category.
+ *
+ * @returns {Object} An object with cake categories as keys and their respective counts as values.
+ */
 const totalCakeCategory = computed(() => {
     const counts = {
         Cupcake: 0,
@@ -298,7 +306,7 @@ let filteredData = reactive({
 });
 
 /**
- * Applies filters to the products based on the selected personalization and cake size.
+ * Applies filters to the products based on the selected personalization and cake category.
  *
  * @return {void}
  */

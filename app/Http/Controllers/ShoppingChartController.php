@@ -42,6 +42,7 @@ class ShoppingChartController extends Controller
             $cartItem = ShoppingChartItem::create([
                 'shopping_chart_id' => $cart->id,
                 'cake_id' => $request['cake_id'],
+                'cake_size_id' => $request['cake_size_id'],
                 'cake_flavour_id' => $request['cake_flavour_id'] ?? null,
                 'quantity' => $request['quantity'],
                 'price' => $request['price'],
@@ -64,7 +65,7 @@ class ShoppingChartController extends Controller
             return response()->json([
                 'cartItem' => [
                     'cake_name' => $cartItemWithRelations->cake?->name,
-                    'cake_size' => $cartItemWithRelations->cake?->cakeSize?->size,
+                    'cake_size' => $cartItemWithRelations->cakeSize?->size,
                     'cake_image' => $cartItemWithRelations->cake?->image_url,
                     'cake_flavour_name' => $cartItemWithRelations->cakeFlavour?->name,
                     'cake_toppings' =>  $cartItemWithRelations->cakeTopping?->pluck('name'),
@@ -113,7 +114,7 @@ class ShoppingChartController extends Controller
             ]);
         }
 
-        $cartItem = ShoppingChartItem::with('cart', 'cake', 'cake.cakeSize', 'cakeFlavour', 'cakeTopping')->where('shopping_chart_id', '=', $cart->first()->id)->get();
+        $cartItem = ShoppingChartItem::with('cart', 'cake', 'cakeSize', 'cakeFlavour', 'cakeTopping')->where('shopping_chart_id', '=', $cart->first()->id)->get();
 
         return response()->json([
             'cart' => $cartItem,

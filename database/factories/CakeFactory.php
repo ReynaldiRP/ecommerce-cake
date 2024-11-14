@@ -49,15 +49,15 @@ class CakeFactory extends Factory
             'Cupcake (5 pcs)' => '/assets/image/cakes/cupcakes.png',
             'Cupcake (6 pcs)' => '/assets/image/cakes/cupcakes.png',
             'Wedding' => [
-                'Traditional Tiered Cake' => '/assets/image/cakes/cakes.jpg',
-                'Naked Cake' => '/assets/image/cakes/cakes.jpg',
-                'Semi-Naked Cake' => '/assets/image/cakes/cakes.jpg',
+                'Traditional Tiered Cake' => '/assets/image/cakes/traditional-wedding-cake.jpg',
+                'Naked Cake' => '/assets/image/cakes/wedding-cake-2.jpg',
+                'Semi-Naked Cake' => '/assets/image/cakes/wedding-cake-3.jpg',
             ],
             'Tart' => [
-                'Black Forest Cake' => '/assets/image/cakes/bento-cake.jpg',
+                'Black Forest Cake' => '/assets/image/cakes/black-forrest-cake.jpg',
                 'Red Velvet Cake' => '/assets/image/cakes/bento-cake.jpg',
-                'Tiramisu Cake' => '/assets/image/cakes/bento-cake.jpg',
-                'Mocha Cake' => '/assets/image/cakes/bento-cake.jpg',
+                'Tiramisu Cake' => '/assets/image/cakes/tiramisu-cake.jpg',
+                'Mocha Cake' => '/assets/image/cakes/mocha-cake.jpg',
             ],
         ];
 

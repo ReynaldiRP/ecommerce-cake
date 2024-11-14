@@ -18,6 +18,7 @@ class ShoppingChartItem extends Model
         'shopping_chart_id',
         'cake_id',
         'cake_flavour_id',
+        'cake_size_id',
         'quantity',
         'price'
     ];
@@ -42,7 +43,7 @@ class ShoppingChartItem extends Model
     {
         return $this->belongsTo(Flavour::class, 'cake_flavour_id', 'id');
     }
-    
+
     public function cakeTopping(): BelongsToMany
     {
         return $this->belongsToMany(Topping::class, 'shopping_chart_item_topping', 'shopping_chart_item_id', 'topping_id');
