@@ -20,6 +20,7 @@ return new class extends Migration
             )->onDelete('cascade');
             $table->uuid('order_code')->unique();
             $table->date('estimated_delivery_date');
+            $table->string('method_delivery', 255);
             $table->string('user_address', 255);
             $table->string('cake_recipient', 255);
             $table->double('total_price');

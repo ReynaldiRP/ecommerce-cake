@@ -50,7 +50,7 @@ class StoreShoppingChartRequest extends FormRequest
         return [
             'shopping_chart_id' => 'nullable',
             'cake_id' => 'required',
-            'cake_size_id' => 'required_with:cake_id',
+            'cake_size_id' => 'required_with:cake_personalization_type',
             'cake_flavour_id' => 'required_with:cake_size',
             'toppings' => 'sometimes|array|max:4',
             'toppings.*' => 'integer|exists:toppings,id',
@@ -63,8 +63,9 @@ class StoreShoppingChartRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'cake_flavour_id.required_with' => 'Please choose atleast one flavour',
-            'toppings.max' => 'You can only add upto 4 toppings',
+            'cake_size_id.required_with' => 'Pilih minimal satu ukuran kue',
+            'cake_flavour_id.required_with' => 'Pilih minimal satu rasa kue',
+            'toppings.max' => 'Hanya bisa memilih maksimal 4 topping',
         ];
     }
 }

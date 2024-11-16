@@ -17,37 +17,6 @@ use Illuminate\Http\Response as HttpResponse;
 
 class PaymentController extends Controller
 {
-
-    /**
-     * Display a paginated list of payments.
-     *
-     * This method retrieves a paginated list of payments, transforms the payment data,
-     * and renders the 'AdminDashboard/Payment/Index' view with the transformed payments.
-     *
-     * @return Response The response containing the rendered view with the payments' data.
-     */
-    public function index(): Response
-    {
-        $payments = Payment::with('order')->orderBy('created_at', 'desc')->paginate(5);
-
-        // Transform the payments
-        $payments->getCollection()->transform(function ($payment) {
-            return [
-                'transaction_id' => $payment->transaction_id,
-                'order_code' => $payment->order->order_code,
-                'payment_method' => $payment->payment_method,
-                'payment_status' => $payment->payment_status,
-                'payment_created_at' => $payment->created_at->isoFormat('dddd, D MMMM Y, HH:mm:ss'),
-                'payment_paid_at' => $payment->updated_at->isoFormat('dddd, D MMMM Y, HH:mm:ss'),
-            ];
-        });
-
-        return Inertia::render('AdminDashboard/Payment/Index', [
-            'payments' => $payments,
-        ]);
-    }
-
-
     /**
      * Midtrans Webhook.
      *
@@ -96,6 +65,10 @@ class PaymentController extends Controller
                 $payment->payment_status = 'menunggu pembayaran';
             } elseif ($transaction_status == 'settlement') {
                 $payment->payment_status = 'terbayar';
+            } elseif ($transaction_status == 'expire') {
+                $payment->payment_status = 'pembayaran kedaluwarsa';
+            } elseif ($transaction_status == 'cancel') {
+                $payment->payment_status = 'pembayaran dibatalkan';
             }
 
             // Save the payment (whether new or updated)
@@ -122,7 +95,7 @@ class PaymentController extends Controller
         $orderItems = OrderItem::with([
             'order.payment',  // Include payment relationship through order
             'cake',
-            'cake.cakeSize',
+            'cakeSize',
             'cakeFlavour',
             'cakeTopping'
         ])
@@ -141,7 +114,7 @@ class PaymentController extends Controller
                 'order_status' => $item->order?->status,
                 'transaction_status' => $item->order?->payment?->payment_status,
                 'cake_name' => $item->cake?->name,
-                'cake_size' => $item->cake?->cakeSize?->size,
+                'cake_size' => $item->cakeSize?->size,
                 'cake_flavour' => $item->cakeFlavour?->name,
                 'cake_toppings' => $item->cakeTopping?->pluck('name'),
                 'quantity' => $item->quantity,
@@ -198,6 +171,7 @@ class PaymentController extends Controller
         $query = OrderItem::with([
             'order.payment',
             'cake',
+            'cakeSize',
             'cakeFlavour',
             'cakeTopping'
         ])->whereHas('order', function ($q) use ($status, $month) {
@@ -230,6 +204,7 @@ class PaymentController extends Controller
                 'order_status' => $item->order?->status,
                 'transaction_status' => $item->order?->payment?->payment_status,
                 'cake_name' => $item->cake?->name,
+                'cake_size' => $item->cakeSize?->size,
                 'cake_flavour' => $item->cakeFlavour?->name,
                 'cake_toppings' => $item->cakeTopping?->pluck('name'),
                 'cake_image' => $item->cake?->image_url,
@@ -275,6 +250,7 @@ class PaymentController extends Controller
                 'order_created_at' => $order->created_at?->isoFormat('dddd, D MMMM Y'),
                 'order_updated_at' => $order->updated_at?->isoFormat('dddd, D MMMM Y'),
                 'estimated_delivery' => \Carbon\Carbon::parse($order->estimated_delivery_date)->isoFormat('dddd, D MMMM Y'),
+                'method_delivery' => $order->method_delivery,
                 'order_items' => $order->orderItems->map(function ($item) {
                     return [
                         'cake_name' => $item->cake?->name,

@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, watch } from "vue";
 
 const model = defineModel();
 
@@ -44,6 +44,10 @@ const props = defineProps({
 
 const isTotalDataAvailable = computed(() => {
     return props.totalData != null;
+});
+
+watch(model, (newValue) => {
+    console.log(newValue);
 });
 </script>
 

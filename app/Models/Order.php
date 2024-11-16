@@ -17,6 +17,7 @@ class Order extends Model
         'user_id',
         'order_code',
         'estimated_delivery_date',
+        'method_delivery',
         'user_address',
         'cake_recipient',
         'total_price',

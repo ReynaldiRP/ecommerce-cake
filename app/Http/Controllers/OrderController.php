@@ -80,6 +80,8 @@ class OrderController extends Controller
      */
     public function createOrder(array $data): Order
     {
+        $method_delivery = $data['method_delivery'] === 1 ? 'Ambil di Toko' : 'Dikirim';
+
         return Order::create([
             'user_id' => auth()->id(),
             'order_code' => uniqid(),
@@ -88,6 +90,7 @@ class OrderController extends Controller
             'user_address' => $data['user_address'],
             'cake_recipient' => $data['cake_recipient'],
             'estimated_delivery_date' => $data['estimated_delivery_date'],
+            'method_delivery' => $method_delivery,
         ]);
     }
 
@@ -107,9 +110,13 @@ class OrderController extends Controller
                 'estimated_delivery_date' => 'required|date|after:' . now()->addDays(2)->toDateString(),
                 'user_address' => 'required|string|max:255',
                 'cake_recipient' => 'required|string|regex:/^[a-zA-Z\s]+$/|min:3|max:100',
+                'method_delivery' => 'required',
             ], [
-                'estimated_delivery_date.after' => 'The estimated delivery date must be at least 2 days from now.',
-                'cake_recipient.regex' => 'The cake recipient name must contain only letters and spaces.',
+                'estimated_delivery_date.after' => 'Tanggal pengambilan minimal 2 hari setelah hari ini',
+                'user_address.required' => 'Alamat penerima harus diisi.',
+                'user_address.max' => 'Alamat penerima maksimal 255 karakter.',
+                'cake_recipient.required' => 'Nama penerima kue harus diisi.',
+                'cake_recipient.regex' => 'Nama penerima hanya boleh berisi huruf dan spasi.',
             ]);
 
             $order = $this->createOrder($orderData);
@@ -118,10 +125,12 @@ class OrderController extends Controller
             $cakeNotes = $request->session()->get('cakeNotes', []);
             $chartItems = $request->input('chartItems');
             $totalPrice = 0;// Loop through each chart item and create an order item
+
             foreach ($chartItems as $chartItem) {
                 $orderItemData = [
                     'order_id' => $order->id,
                     'cake_id' => $chartItem['cake_id'],
+                    'cake_size_id' => $chartItem['cake_size_id'] ?? null,
                     'cake_flavour_id' => $chartItem['cake_flavour_id'] ?? null,
                     'quantity' => $cakeQuantities[$chartItem['id']],
                     'price' => $cakePrices[$chartItem['id']],
@@ -146,9 +155,11 @@ class OrderController extends Controller
             }
 
             // Update the order's total price after all items are added
-            $order->update(['total_price' => $totalPrice]);// Extract ids from chartItems and delete the shopping chart items
+            $order->update(['total_price' => $totalPrice]); // Extract ids from chartItems and delete the shopping chart items
             $chartItemIds = array_column($chartItems, 'id');
-            ShoppingChartItem::whereIn('id', $chartItemIds)->delete();// Prepare response data
+
+            ShoppingChartItem::query()->whereIn('id', $chartItemIds)->delete(); // Prepare response data
+
             $responseData = [
                 'order' => $order->load(['orderItems.cake', 'orderItems.cakeFlavour']),
             ];
@@ -181,6 +192,7 @@ class OrderController extends Controller
         try {
             //Order Details
             $orderResponse = $this->createOrderItem($request);
+
             // Get the response data from JsonResponse as an object
             $orderDetails = $orderResponse->getData();
 
@@ -225,7 +237,7 @@ class OrderController extends Controller
             $paymentUrl = \Midtrans\Snap::createTransaction($payload)->redirect_url;
 
             // Add payment URL to the order
-            $order = Order::findOrFail($orderDetails->data->order->id);
+            $order = Order::query()->findOrFail($orderDetails->data->order->id);
 
             $order->update([
                 'payment_url' => $paymentUrl,

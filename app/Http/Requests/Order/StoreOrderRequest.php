@@ -27,4 +27,15 @@ class StoreOrderRequest extends FormRequest
             'cake_recipient' => 'required|string|regex:/^[a-zA-Z\s]+$/|min:3|max:100',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'estimated_delivery_date.after' => 'Tanggal pengambilan harus lebih dari 2 hari dari hari ini.',
+            'user_address.required' => 'Alamat penerima harus diisi.',
+            'user_address.max' => 'Alamat penerima maksimal 255 karakter.',
+            'cake_recipient.required' => 'Nama penerima kue harus diisi.',
+            'cake_recipient.regex' => 'Nama penerima hanya boleh berisi huruf dan spasi.',
+        ];
+    }
 }

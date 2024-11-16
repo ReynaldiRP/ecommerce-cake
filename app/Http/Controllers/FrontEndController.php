@@ -146,7 +146,7 @@ class FrontEndController extends Controller
             $shoppingChartItemIds = $request->input('selectCake', []);
 
             // Fetch the selected cakes
-            $cakes = ShoppingChartItem::with(['cake', 'cake.cakeSize'])->whereIn(
+            $cakes = ShoppingChartItem::with(['cake', 'cakeSize'])->whereIn(
                 'id',
                 $shoppingChartItemIds
             )->get();
@@ -189,9 +189,8 @@ class FrontEndController extends Controller
         // Fetch chart items by the given array of IDs
         $chartItems = ShoppingChartItem::with([
             'cart',
-            'cake' => function ($query) {
-                $query->with('cakeSize');
-            },
+            'cake',
+            'cakeSize',
             'cakeFlavour',
             'cakeTopping'
         ])->whereIn('id', $shoppingChartItemIds)->get();

@@ -9,23 +9,35 @@
                 <div class="flex gap-4">
                     <div class="flex flex-col gap-2 justify-center">
                         <h1 class="text-3xl font-bold w-fit">
-                            Detail Order #{{ order.order_code }}
+                            Detail Pesanan #{{ order.order_code }}
                         </h1>
-                        <span class="text-sm"
-                            >Order Dibuat: {{ order.order_created_at }}</span
-                        >
-                        <span class="text-sm flex gap-2"
-                            >Estimasi Pengiriman Kue:
-                            <EditOrderEstimationDate
-                                v-model="estimationDate[index]"
-                                :hidden-edit-order-estimation-date="
-                                    showEditOrderEstimationDate
-                                "
-                                @update:hidden-edit-order-estimation-date="
-                                    showEditOrderEstimationDate = $event
-                                "
-                            />
-                        </span>
+                        <p class="text-sm">
+                            Pesanan Dibuat:
+                            <span class="font-bold">{{
+                                order.order_created_at
+                            }}</span>
+                        </p>
+                        <p class="text-sm flex gap-2">
+                            Tanggal Pengiriman atau Pengambilan:
+                            <span class="font-bold">{{
+                                order.estimated_delivery
+                            }}</span>
+                            <!--                            <EditOrderEstimationDate-->
+                            <!--                                v-model="estimationDate[index]"-->
+                            <!--                                :hidden-edit-order-estimation-date="-->
+                            <!--                                    showEditOrderEstimationDate-->
+                            <!--                                "-->
+                            <!--                                @update:hidden-edit-order-estimation-date="-->
+                            <!--                                    showEditOrderEstimationDate = $event-->
+                            <!--                                "-->
+                            <!--                            />-->
+                        </p>
+                        <p class="text-sm">
+                            Metode Pengiriman:
+                            <span class="font-bold">
+                                {{ order.method_delivery }}
+                            </span>
+                        </p>
                     </div>
                     <div
                         class="badge text-xl bg-neutral text-primary-color py-4 px-6 rounded-lg font-bold relative top-1"
@@ -194,7 +206,9 @@
                                     <div
                                         class="flex flex-col lg:flex-row gap-0 lg:gap-1 text-sm md:text-base lg:text-lg font-medium text-opacity-70"
                                     >
-                                        <p>{{ orderItem.cake_flavour }}</p>
+                                        <p>
+                                            {{ orderItem.cake_flavour }}
+                                        </p>
                                         <p
                                             v-if="
                                                 orderItem.cake_flavour &&
@@ -264,7 +278,6 @@ const showEditOrderEstimationDate = ref(false);
  * Formats the price of an item by multiplying the price with the quantity.
  *
  * @param {number} price - The price of the item.
- * @param {number} quantity - The quantity of the item.
  * @returns {string} - The formatted price.
  */
 const formatPrice = (price = 0) => {

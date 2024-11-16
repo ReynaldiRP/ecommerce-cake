@@ -76,9 +76,12 @@
                                             <h1
                                                 class="text-xl font-semibold text-white"
                                             >
-                                                {{ item.cake?.name }} ({{
-                                                    item.cake_size?.size
-                                                }}Cm)
+                                                {{ item.cake?.name }}
+                                                <span v-if="item.cake_size">
+                                                    ({{
+                                                        item.cake_size?.size
+                                                    }}Cm)
+                                                </span>
                                             </h1>
                                             <div
                                                 class="flex gap-2 lg:items-center text-base text-nowrap text-white text-opacity-75"
@@ -213,7 +216,7 @@ import BaseCheckbox from "@/Components/BaseCheckbox.vue";
 import BaseAlert from "@/Components/BaseAlert.vue";
 import EmptyDetailShoppingChart from "@/Components/EmptyDetailShoppingChart.vue";
 import AddNotesOrder from "@/Components/AddNotesOrder.vue";
-import { ref, computed, watch } from "vue";
+import { computed, ref } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 import axios from "axios";
@@ -236,7 +239,7 @@ const hiddenNotes = ref(false);
 const notes = ref(chartItems.value.map((item) => item.notes));
 
 const updateTotalPrice = computed(() => {
-    const selectedCake = chartItems.value
+    totalPrice.value = chartItems.value
         .filter((item) => selectCake.value[item.id])
         .reduce((totalPrice, item) => {
             const index = chartItems.value.findIndex(
@@ -246,15 +249,11 @@ const updateTotalPrice = computed(() => {
             return totalPrice + item.price * cakeQuantity.value[index];
         }, 0);
 
-    totalPrice.value = selectedCake;
-
     // Check if all individual items are selected
-    const allSelected = chartItems.value.every(
+    // If not all are selected, uncheck "Select All"
+    selectAllItem.value = chartItems.value.every(
         (item) => selectCake.value[item.id],
     );
-
-    // If not all are selected, uncheck "Select All"
-    selectAllItem.value = allSelected;
 });
 
 /**
@@ -366,7 +365,6 @@ const deleteItem = async (id) => {
  * Initiates the checkout process by populating the shoppingChartItemsIds array with selected item IDs and redirecting to the checkout route.
  *
  * @param {array} shoppingChartItemsIds - The array to store the IDs of selected items.
- * @param {event} e - The event object, used to prevent default behavior if provided.
  * @return {void|event} Prevents default event behavior if e is provided, otherwise returns nothing.
  */
 const checkoutItems = (shoppingChartItemsIds = []) => {

@@ -39,6 +39,9 @@
                                 <section class="flex flex-col justify-center">
                                     <h1 class="text-xl text-white">
                                         {{ item.cake.name }}
+                                        <span v-if="item.cake_size">
+                                            ({{ item.cake_size?.size }}Cm)
+                                        </span>
                                     </h1>
 
                                     <article class="flex gap-2 text-white">
@@ -124,10 +127,10 @@
                     <h1 class="text-4xl text-white font-bold">Checkout</h1>
                     <section class="flex flex-col gap-4">
                         <article class="flex flex-col gap-2">
-                            <section class="flex gap-1 items-center">
+                            <section class="flex flex-col gap-1">
                                 <BaseLabel
                                     :required="true"
-                                    label="Waktu Estimasi"
+                                    label="Tanggal Pengiriman / Pengambilan"
                                 />
                                 <small class="font-medium"
                                     >(Pemesanan kue memerlukan pemberitahuan 2
@@ -144,15 +147,15 @@
                             @click="handleClickOutsideAddressContainer"
                             ref="addressContainer"
                         >
-                            <section class="flex gap-1 items-center">
+                            <section class="flex flex-col gap-1">
                                 <BaseLabel
                                     label="Alamat Pengiriman"
                                     :required="true"
                                 />
-                                <small class="font-medium"
-                                    >(Pengiriman hanya tersedia di Kediri dan
-                                    area sekitarnya.)</small
-                                >
+                                <small class="font-medium">
+                                    (Pengiriman hanya tersedia di Kediri dan
+                                    area sekitarnya.)
+                                </small>
                             </section>
                             <BaseInput
                                 v-model="form.user_address"
@@ -183,6 +186,26 @@
                                 input-type="username"
                             />
                         </article>
+                        <article class="flex flex-col gap-2">
+                            <section class="flex flex-col gap-1">
+                                <BaseLabel
+                                    label="Metode Pengiriman"
+                                    :required="true"
+                                />
+                                <small class="font-medium">
+                                    (Pilih salah satu metode pengiriman.)
+                                </small>
+                            </section>
+                            <div class="flex items-center gap-2">
+                                <BaseRadio
+                                    v-for="method in deliveryMethod"
+                                    v-model="form.method_delivery"
+                                    :key="method.id"
+                                    :label="method.label"
+                                    :id="method.id"
+                                />
+                            </div>
+                        </article>
                         <input
                             type="hidden"
                             v-model="form.chartItems"
@@ -212,6 +235,7 @@ import { useForm } from "@inertiajs/inertia-vue3";
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import axios from "axios";
 import { debounce } from "lodash";
+import BaseRadio from "@/Components/BaseRadio.vue";
 
 const props = defineProps({
     chartItems: Array,
@@ -220,13 +244,21 @@ const props = defineProps({
     cakeNotes: Object,
 });
 
-console.log(props.chartItems);
-
 const showResults = ref(false);
 const searchResults = ref([]);
 const showSearchAddress = computed(() => {
     return showResults.value && form.user_address.length > 0;
 });
+const deliveryMethod = [
+    {
+        id: 1,
+        label: "Ambil di Toko",
+    },
+    {
+        id: 2,
+        label: "Dikirim",
+    },
+];
 
 const addressContainer = ref(null);
 const addressResultsContainer = ref(null);
@@ -401,6 +433,7 @@ const form = useForm({
     estimated_delivery_date: "",
     user_address: "",
     cake_recipient: "",
+    method_delivery: "",
 });
 
 const disableCheckout = computed(() =>
@@ -408,6 +441,7 @@ const disableCheckout = computed(() =>
         form.estimated_delivery_date,
         form.user_address,
         form.cake_recipient,
+        form.method_delivery,
     ].every((field) => field !== "")
         ? "bg-primary-color text-base-300 hover:text-white"
         : "bg-gray-400 hover:bg-gray-400 text-base-300 cursor-not-allowed",
@@ -443,6 +477,8 @@ onUnmounted(() => {
  * @returns {void}
  */
 const submit = () => {
+    console.log(form.data());
+
     // If all fields are filled in, submit the form
     axios
         .post(
@@ -451,6 +487,7 @@ const submit = () => {
                 estimated_delivery_date: form.estimated_delivery_date,
                 user_address: form.user_address,
                 cake_recipient: form.cake_recipient,
+                method_delivery: form.method_delivery,
                 chartItems: props.chartItems,
             },
             {

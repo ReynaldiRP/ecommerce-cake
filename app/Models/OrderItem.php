@@ -18,7 +18,7 @@ class OrderItem extends Model
         'price',
         'note'
     ];
-
+    
     /**
      * Get the order that owns the OrderItem
      *

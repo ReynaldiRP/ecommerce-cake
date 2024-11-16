@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AdminDashboard\ShowAllPaymentController;
+use App\Http\Controllers\AdminDashboard\ShowDashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CakeController;
 use App\Http\Controllers\OrderController;
@@ -43,7 +45,8 @@ Route::middleware(['auth'])->group(function () {
     // Admin-specific routes
     Route::middleware(['admin'])->group(function () {
         Route::prefix('admin/dashboard')->group(function () {
-            Route::inertia('/home', 'AdminDashboard/HomeSection')->name('dashboard-home'); // Admin dashboard home
+            // Admin dashboard home
+            Route::get('/home', ShowDashboardController::class)->name('dashboard-home');
 
             // Resource routes for managing cakes
             Route::resource('/cake', CakeController::class)
@@ -72,10 +75,8 @@ Route::middleware(['auth'])->group(function () {
                 Route::patch('/order/{orderId}', 'update')->name('order.update');
             });
 
-            // Routes for managing payments
-            Route::controller(PaymentController::class)->group(function () {
-                Route::get('/payments', 'index')->name('payments.index');
-            });
+            // Routes for showing all payments
+            Route::get('/payments', ShowAllPaymentController::class)->name('payments.index');
         });
     });
 

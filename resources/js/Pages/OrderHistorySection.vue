@@ -127,7 +127,7 @@
                                         />
                                     </div>
                                 </div>
-                                <div class="flex flex-col">
+                                <div class="flex flex-col justify-center">
                                     <p class="text-lg font-bold">
                                         {{ order.cake_name }}
                                         <span v-if="order.cake_size"
