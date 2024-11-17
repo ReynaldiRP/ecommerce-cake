@@ -38,13 +38,13 @@
                     >
                         {{ props.errors.name }}
                     </NotificationBar>
-                    <FormField label="Cake Size">
+                    <FormField label="Cake Category">
                         <FormControl
-                            v-model="form.cake_size_id"
-                            option-label="size"
+                            v-model="form.cake_category"
+                            option-label="name"
                             option-value="id"
-                            option-default="Choose the cake size"
-                            :options="props.cakeSize"
+                            option-default="Choose the cake category"
+                            :options="props.cakeCategory"
                             :icon="mdiCakeVariant"
                             type="select"
                         />
@@ -139,7 +139,7 @@ const props = defineProps({
     cakes: {
         type: Object,
     },
-    cakeSize: {
+    cakeCategory: {
         type: Object,
     },
     errors: {
@@ -167,7 +167,7 @@ const form = useForm({
     name: props.cakes.name,
     base_price: props.cakes.base_price,
     image_url: "",
-    cake_size_id: props.cakes.cake_size_id,
+    cake_category: props.cakes.category_id,
     personalization_type: props.cakes.personalization_type,
 });
 

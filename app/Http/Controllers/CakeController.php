@@ -6,6 +6,7 @@ use App\Http\Requests\Cake\StoreCakeRequest;
 use App\Http\Requests\Cake\UpdateCakeRequest;
 use App\Models\Cake;
 use App\Models\CakeSize;
+use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -21,7 +22,7 @@ class CakeController extends Controller
      */
     public function index(): Response
     {
-        $cake = Cake::with('cakeSize')->paginate(5);
+        $cake = Cake::with('category')->paginate(5);
         return Inertia::render('AdminDashboard/Cake/Index', ['cakes' => $cake]);
     }
 
@@ -33,8 +34,8 @@ class CakeController extends Controller
      */
     public function create(): Response
     {
-        $cakeSize = CakeSize::orderBy('size', 'asc')->get();
-        return Inertia::render('AdminDashboard/Cake/Create', ['sizeCake' => $cakeSize]);
+        $cakeCategory = Category::orderBy('name', 'asc')->get();
+        return Inertia::render('AdminDashboard/Cake/Create', ['cakeCategory' => $cakeCategory]);
     }
 
 
@@ -82,10 +83,10 @@ class CakeController extends Controller
      */
     public function edit(Cake $dashboard_cake): Response
     {
-        $dashboard_cake = $dashboard_cake->load('cakeSize');
-        $cakeSize = CakeSize::orderBy('size', 'asc')->get();
+        $dashboard_cake = $dashboard_cake->load('category');
+        $cakeCategory = Category::orderBy('name', 'asc')->get();
 
-        return Inertia::render('AdminDashboard/Cake/Edit', ['cakes' => $dashboard_cake, 'cakeSize' => $cakeSize]);
+        return Inertia::render('AdminDashboard/Cake/Edit', ['cakes' => $dashboard_cake, 'cakeCategory' => $cakeCategory]);
     }
 
 

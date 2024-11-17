@@ -16,6 +16,17 @@ class Payment extends Model
         'payment_status',
     ];
 
+    /**
+     * Calculate the total revenue from orders with a payment status of 'terbayar'.
+     *
+     * @return float The total revenue from paid orders.
+     */
+    public function totalRevenueOrder()
+    {
+        return Payment::query()->where('payment_status', '=', 'terbayar')
+            ->join('orders', 'payments.order_id', '=', 'orders.id')
+            ->sum('orders.total_price');
+    }
 
     /**
      * Get the order that owns the Payment

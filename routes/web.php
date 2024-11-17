@@ -27,7 +27,6 @@ use App\Http\Controllers\ShoppingChartController;
 
 // Authenticated routes
 Route::middleware(['auth'])->group(function () {
-
     // Routes accessible without additional 'auth' middleware
     Route::withoutMiddleware(['auth'])->group(function () {
         // Frontend controller routes

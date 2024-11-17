@@ -42,7 +42,7 @@
                             <tr>
                                 <th></th>
                                 <th>Cake Name</th>
-                                <th>Cake Size</th>
+                                <th>Cake Category</th>
                                 <th>Cake Price</th>
                                 <th>Cake Description</th>
                                 <th>Cake Image</th>
@@ -59,8 +59,8 @@
                                 <td>{{ cakes.name }}</td>
                                 <td>
                                     {{
-                                        cakes.cake_size_id
-                                            ? cakes.cake_size.size
+                                        cakes.category_id
+                                            ? cakes.category.name
                                             : ""
                                     }}
                                 </td>

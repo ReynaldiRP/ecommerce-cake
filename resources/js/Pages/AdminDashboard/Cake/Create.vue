@@ -43,11 +43,11 @@
                     </NotificationBar>
                     <FormField label="Cake Size">
                         <FormControl
-                            v-model="form.cake_size_id"
-                            :options="props.sizeCake"
-                            option-label="size"
+                            v-model="form.cake_category_id"
+                            :options="props.cakeCategory"
+                            option-label="name"
                             option-value="id"
-                            option-default="Choose the cake size"
+                            option-default="Choose the cake category"
                             :icon="mdiCakeVariant"
                             type="select"
                         />
@@ -153,7 +153,7 @@ import "vue-loading-overlay/dist/css/index.css";
 const isLoading = ref(false);
 
 const props = defineProps({
-    sizeCake: {
+    cakeCategory: {
         type: Object,
     },
     errors: {
@@ -177,7 +177,7 @@ const form = useForm({
     base_price: 0,
     description: null,
     image_url: "",
-    cake_size_id: "",
+    cake_category_id: "",
     personalization_type: "",
 });
 
