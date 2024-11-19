@@ -111,6 +111,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('home/transaction-history/{orderCode}',  'detailTransaction')->name('detail-transaction');
         // Buy again cake order route
         Route::post('home/transaction-history/{orderItem}/buy-again', 'buyAgainCakeOrder')->name('buy-again');
+        // Cancel cake order route
+        Route::post('home/transaction-history/{orderId}/cancel', 'cancelOrder')->name('cancel-order');
     });
 });
 

@@ -244,8 +244,6 @@ const addItemToChart = async () => {
     try {
         const response = await axios.post(route("add-chart-item"), form);
 
-        console.log(response.data);
-
         chartItem.value = response.data.cartItem;
         successMessage.value = response.data.message;
 

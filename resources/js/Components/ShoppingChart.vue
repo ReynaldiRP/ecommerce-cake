@@ -122,8 +122,8 @@ const pageWidth = ref(window.innerWidth);
 /**
  * Updates the shopping chart items by appending new items to the existing list.
  *
- * @param {Array} newCartItems - The new items to be added to the shopping chart.
- * @return {void}
+ * @param event
+ * @param event
  */
 const updateCartItems = (event) => {
     chartItems.value = [...chartItems.value, ...event.detail.cartItems];
@@ -199,11 +199,7 @@ const getToppingNameBasedChartItem = (chartItemId) => {
 const handleRezize = () => {
     pageWidth.value = window.innerWidth;
 
-    if (pageWidth.value <= 640) {
-        isMobileDisplayed.value = true;
-    } else {
-        isMobileDisplayed.value = false;
-    }
+    isMobileDisplayed.value = pageWidth.value <= 640;
 };
 
 /**
@@ -219,7 +215,6 @@ const checkCurrentUrl = (e) => {
     if (currentUrl.includes("detail-chart")) {
         // Prevent default navigation if already on the detail-chart page
         e.preventDefault();
-        return;
     } else {
         // Use Inertia to navigate to the "detail-chart" route
         Inertia.visit(route("detail-chart"));
@@ -227,10 +222,6 @@ const checkCurrentUrl = (e) => {
 };
 
 watch(pageWidth, (newWidth) => {
-    if (newWidth <= 640) {
-        isMobileDisplayed.value = true;
-    } else {
-        isMobileDisplayed.value = false;
-    }
+    isMobileDisplayed.value = newWidth <= 640;
 });
 </script>

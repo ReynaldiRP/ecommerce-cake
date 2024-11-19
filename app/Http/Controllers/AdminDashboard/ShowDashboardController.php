@@ -24,22 +24,27 @@ class ShowDashboardController extends Controller
 
         // Get total revenue cake orders from the payment model
         $totalRevenueCakeOrders = $payment->totalRevenueOrder();
-
         // Get total cake sold
         $totalCakeSold = $orderItem->getTotalCakeSold();
         // Get the most popular cake
         $mostPopularCake = $orderItem->getMostPopularCakes();
+        // Get the most popular cake type
+        $mostPopularCakeType = $orderItem->getMostPopularCakeType();
         // Get the most popular cake category
         $mostPopularCakeCategory = $orderItem->getMostPopularCakeCategory();
+        // Get the growth revenue per month by percentage
+        $growthRevenuePerMonthByPercentage = $order->getGrowthRevenuePerMonthByPercentage('2024');
         // Show chart data for the total revenue of cake orders per month
         $chartData = $order->showAllRevenueForEachMonths('2024');
 
         return Inertia::render('AdminDashboard/HomeSection', [
-            'totalRevenue' => $totalRevenueCakeOrders,
-            'totalCakeSold' => $totalCakeSold,
-            'mostPopularCake' => $mostPopularCake,
-            'mostPopularCakeCategory' => $mostPopularCakeCategory,
-            'chartData' => $chartData
+            'totalRevenue' => $totalRevenueCakeOrders ?? 0,
+            'totalCakeSold' => $totalCakeSold ?? 0,
+            'mostPopularCake' => $mostPopularCake ?? [],
+            'mostPopularCakeType' => $mostPopularCakeType ?? [],
+            'mostPopularCakeCategory' => $mostPopularCakeCategory ?? [],
+            'growthRevenuePerMonthByPercentage' => $growthRevenuePerMonthByPercentage ?? 0,
+            'chartData' => $chartData ?? [],
         ]);
     }
 }

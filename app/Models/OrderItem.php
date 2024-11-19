@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -31,6 +30,9 @@ class OrderItem extends Model
         // Get the most popular cake
         $cakeSales = OrderItem::query()->select('cakes.name as cake_name', 'cakes.image_url as cake_image', DB::raw('SUM(order_items.quantity) as total_sold'))
             ->join('cakes', 'order_items.cake_id', '=', 'cakes.id')
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->join('payments', 'orders.id', '=', 'payments.order_id')
+            ->where('payments.payment_status', '=', 'terbayar')
             ->groupBy('cakes.name', 'cakes.image_url');
 
         // Use a subquery to find the max sold cake
@@ -56,12 +58,33 @@ class OrderItem extends Model
             ->sum('quantity');
     }
 
+    public function getMostPopularCakeType(): ?Model
+    {
+        $cakeTypeSales = OrderItem::query()->select('cakes.personalization_type as cake_type_name', DB::raw('CAST(SUM(order_items.quantity) as SIGNED) as total_sold'))
+            ->join('cakes', 'order_items.cake_id', '=', 'cakes.id')
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->join('payments', 'orders.id', '=', 'payments.order_id')
+            ->where('payments.payment_status', '=', 'terbayar')
+            ->groupBy('cakes.personalization_type');
+
+
+        $maxSold = DB::table(DB::raw("({$cakeTypeSales->toSql()}) as subquery"))
+            ->mergeBindings($cakeTypeSales->getQuery())
+            ->max('total_sold');
+
+
+        return $cakeTypeSales->having('total_sold', '=', $maxSold)->first();
+    }
+
     public function getMostPopularCakeCategory(): ?Model
     {
         // Get the most popular cake
         $categorySales = OrderItem::query()->select('categories.name as category_name', DB::raw('CAST(SUM(order_items.quantity) as SIGNED) as total_sold'))
             ->join('cakes', 'order_items.cake_id', '=', 'cakes.id')
             ->join('categories', 'cakes.category_id', '=', 'categories.id')
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->join('payments', 'orders.id', '=', 'payments.order_id')
+            ->where('payments.payment_status', '=', 'terbayar')
             ->groupBy('categories.name');
 
         // Use a subquery to find the max sold cake
@@ -111,7 +134,7 @@ class OrderItem extends Model
     /**
      * The toppings that belong to the OrderItem
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function cakeTopping(): BelongsToMany
     {

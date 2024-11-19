@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ShoppingChart\StoreShoppingChartRequest;
+use Exception;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Inertia\Inertia;
 use App\Models\Order;
 use Inertia\Response;
@@ -14,6 +17,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Response as HttpResponse;
+use Midtrans\Config;
+use Midtrans\Notification;
 
 class PaymentController extends Controller
 {
@@ -28,12 +33,12 @@ class PaymentController extends Controller
      */
     public function midtransWebhook(): HttpResponse
     {
-        \Midtrans\Config::$serverKey    = config('services.midtrans.serverKey');
-        \Midtrans\Config::$isProduction = config('services.midtrans.isProduction');
+        Config::$serverKey = config('services.midtrans.serverKey');
+        Config::$isProduction = config('services.midtrans.isProduction');
 
 
         try {
-            $notification = new \Midtrans\Notification();
+            $notification = new Notification();
             $transaction_status = $notification->transaction_status;
 
             // Log the parsed notification data
@@ -67,21 +72,53 @@ class PaymentController extends Controller
                 $payment->payment_status = 'terbayar';
             } elseif ($transaction_status == 'expire') {
                 $payment->payment_status = 'pembayaran kedaluwarsa';
+                // set status order to expired
+                $order->status = 'kadaluwarsa';
+                $order->save();
             } elseif ($transaction_status == 'cancel') {
                 $payment->payment_status = 'pembayaran dibatalkan';
+                // set status order to canceled
+                $order->status = 'dibatalkan';
+                $order->save();
             }
 
             // Save the payment (whether new or updated)
             $payment->save();
 
             // Send email notification
-            Mail::to($order->user->email)->send(new PaymentEmail($order, $payment));
+//            Mail::to($order->user->email)->send(new PaymentEmail($order, $payment));
 
             return response('OK', 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::channel('midtrans')->error('Midtrans Notification Error: ' . $e->getMessage());
             return response('Error', 500);
         }
+    }
+
+    /**
+     * Cancel an order by its ID.
+     *
+     * This method sends a POST request to the Midtrans API to cancel an order.
+     * It uses the Guzzle HTTP client to make the request.
+     *
+     * @param string $orderId The ID of the order to be canceled.
+     * @return JsonResponse A JSON response indicating the result of the cancellation.
+     * @throws GuzzleException
+     */
+    public function cancelOrder(string $orderId): JsonResponse
+    {
+        $client = new Client();
+        $response = $client->request('POST', "https://api.sandbox.midtrans.com/v2/$orderId/cancel", [
+            'headers' => [
+                'accept' => 'application/json',
+                'Authorization' => 'Basic ' . base64_encode(config('services.midtrans.serverKey') . ':'),
+            ],
+        ]);
+
+        return response()->json([
+            'message' => 'Order has been canceled successfully.',
+            'data' => json_decode($response->getBody()->getContents()),
+        ]);
     }
 
     /**
@@ -185,6 +222,10 @@ class PaymentController extends Controller
                         $q->where('payment_status', 'terbayar');
                     });
                 }
+                $q->whereHas('payment', function ($q) {
+                    $q->where('payment_status', 'pembayaran dibatalkan')
+                        ->orWhere('payment_status', 'pembayaran kedaluwarsa');
+                });
             }
 
             if ($month) {
@@ -310,31 +351,11 @@ class PaymentController extends Controller
             return response()->json([
                 'message' => 'Buy again cake order successfully.',
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'message' => 'An error occurred while adding items to the cart.',
                 'error' => $e->getMessage()
             ], 500);
         }
-    }
-
-    /**
-     * Update the estimated delivery date for a specific order.
-     *
-     * @param Request $request The HTTP request instance containing the new estimated delivery date.
-     * @param string $orderCode The unique code of the order to update.
-     * @return JsonResponse A JSON response indicating the result of the operation.
-     */
-    public function updateCakeOrderEstimation(Request $request, string $orderCode): JsonResponse
-    {
-        $validated = $request->validate([
-            'estimated_delivery_date' => 'required|date|after:' . now()->addDays(2)->toDateString(),
-        ]);
-
-        $order = Order::query()->where('order_code', $orderCode)->firstOrFail();
-        $order->estimated_delivery_date = $validated['estimated_delivery_date'];
-        $order->save();
-
-        return response()->json(['message' => 'Estimation date updated successfully.']);
     }
 }

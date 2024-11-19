@@ -45,10 +45,6 @@ const props = defineProps({
 const isTotalDataAvailable = computed(() => {
     return props.totalData != null;
 });
-
-watch(model, (newValue) => {
-    console.log(newValue);
-});
 </script>
 
 <style scoped>

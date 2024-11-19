@@ -12,6 +12,15 @@
                     color="text-base-300 dark:text-white"
                 />
                 <CardBoxWidget
+                    :icon="mdiChartBellCurveCumulative"
+                    label="Persentase Pertumbuhan Pendapatan"
+                    suffix="%"
+                    :number="growthRevenuePerMonthByPercentage"
+                    :trend="evaluateTrend(totalRevenue, minimumRevenue)"
+                    :trend-type="evaluateTrend(totalRevenue, minimumRevenue)"
+                    color="text-base-300 dark:text-white"
+                />
+                <CardBoxWidget
                     :icon="mdiCakeVariant"
                     label="Total Kue Terjual"
                     :number="totalCakeSold"
@@ -21,77 +30,140 @@
                 />
                 <CardBox>
                     <section class="flex flex-col gap-4">
-                        <section class="flex items-center justify-between">
+                        <BaseLevel mobile>
+                            <PillTagTrend trend="up" trend-type="up" small />
                             <h3
                                 class="text-lg leading-tight text-gray-500 dark:text-slate-400"
                             >
-                                Kue Paling Populer
+                                Kue Terpopuler
                             </h3>
-                            <BaseIcon :path="mdiCakeLayered" :size="32" />
-                        </section>
-                        <section class="flex items-center gap-2">
-                            <div class="avatar w-fit">
-                                <div class="w-20 rounded-lg">
-                                    <img
-                                        :src="
-                                            mostPopularCake.cake_image
-                                                ? mostPopularCake.cake_image
-                                                : '/assets/image/default-img.jpg'
-                                        "
-                                        alt="Tailwind-CSS-Avatar-component"
-                                    />
+                        </BaseLevel>
+                        <BaseLevel class="mt-3" mobile>
+                            <section class="flex items-center mt-3 gap-2">
+                                <div class="avatar w-fit">
+                                    <div class="w-16 rounded-lg">
+                                        <img
+                                            :src="
+                                                mostPopularCake.image_url ??
+                                                'https://via.placeholder.com/150'
+                                            "
+                                            alt="Tailwind-CSS-Avatar-component"
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <section
-                                class="flex flex-col justify-center relative top-2.5"
-                            >
-                                <h1 class="text-xl leading-tight font-semibold">
-                                    {{ mostPopularCake.cake_name }}
-                                </h1>
-                                <label
-                                    class="text-sm leading-tight text-gray-500 dark:text-slate-400"
+                                <section
+                                    class="flex flex-col justify-center relative top-2.5"
                                 >
-                                    {{ mostPopularCake.total_sold }} terjual
-                                </label>
+                                    <h1
+                                        class="text-xl leading-tight font-semibold"
+                                    >
+                                        {{ mostPopularCake.cake_name ?? "N/A" }}
+                                    </h1>
+                                    <label
+                                        class="text-sm leading-tight text-gray-500 dark:text-slate-400"
+                                    >
+                                        {{ mostPopularCake.total_sold ?? 0 }}
+                                        terjual
+                                    </label>
+                                </section>
                             </section>
-                        </section>
+                            <BaseIcon
+                                :path="mdiCakeVariant"
+                                :size="48"
+                                w=""
+                                h="h-16"
+                                class="text-base-300 dark:text-white"
+                            />
+                        </BaseLevel>
                     </section>
                 </CardBox>
                 <CardBox>
                     <section class="flex flex-col gap-4">
-                        <section class="flex items-center justify-between">
+                        <BaseLevel mobile>
+                            <PillTagTrend trend="up" trend-type="up" small />
                             <h3
                                 class="text-lg leading-tight text-gray-500 dark:text-slate-400"
                             >
-                                Kategori Kue Paling Populer
+                                Tipe Kue Terpopuler
                             </h3>
-                            <BaseIcon :path="mdiCakeVariant" :size="32" />
-                        </section>
-                        <section class="flex items-center gap-2">
-                            <section
-                                class="flex flex-col justify-center relative top-2.5"
-                            >
+                        </BaseLevel>
+                        <BaseLevel class="mt-3" mobile>
+                            <section class="flex flex-col gap-1">
                                 <h1 class="text-xl leading-tight font-semibold">
-                                    {{ mostPopularCakeCategory.category_name }}
+                                    {{
+                                        mostPopularCakeType.cake_type_name ??
+                                        "N/A"
+                                    }}
                                 </h1>
                                 <label
                                     class="text-sm leading-tight text-gray-500 dark:text-slate-400"
                                 >
                                     <NumberDynamic
                                         :value="
-                                            mostPopularCakeCategory.total_sold
+                                            mostPopularCakeType.total_sold ?? 0
                                         "
                                         suffix=" terjual"
                                     />
                                 </label>
                             </section>
-                        </section>
+                            <BaseIcon
+                                :path="mdiCakeVariant"
+                                :size="48"
+                                w=""
+                                h="h-16"
+                                class="text-base-300 dark:text-white"
+                            />
+                        </BaseLevel>
+                    </section>
+                </CardBox>
+                <CardBox>
+                    <section class="flex flex-col gap-4">
+                        <BaseLevel mobile>
+                            <PillTagTrend trend="up" trend-type="up" small />
+                            <h3
+                                class="text-lg leading-tight text-gray-500 dark:text-slate-400"
+                            >
+                                Kategori Kue Terpopuler
+                            </h3>
+                        </BaseLevel>
+                        <BaseLevel class="mt-3" mobile>
+                            <section class="flex flex-col gap-1">
+                                <h1 class="text-xl leading-tight font-semibold">
+                                    {{
+                                        mostPopularCakeCategory.category_name ??
+                                        "N/A"
+                                    }}
+                                </h1>
+                                <label
+                                    class="text-sm leading-tight text-gray-500 dark:text-slate-400"
+                                >
+                                    <NumberDynamic
+                                        :value="
+                                            mostPopularCakeCategory.total_sold ??
+                                            0
+                                        "
+                                        suffix=" terjual"
+                                    />
+                                </label>
+                            </section>
+                            <BaseIcon
+                                :path="mdiCakeVariant"
+                                :size="48"
+                                w=""
+                                h="h-16"
+                                class="text-base-300 dark:text-white"
+                            />
+                        </BaseLevel>
                     </section>
                 </CardBox>
             </section>
-            <CardBox>
-                <LineChart :data="chartData" class="h-96" />
-            </CardBox>
+
+            <section class="flex flex-col gap-4 mt-8">
+                <h1 class="font-bold text-2xl">Grafik Pendapatan Perbulan</h1>
+                <CardBox>
+                    <LineChart :data="chartData" class="h-96" />
+                </CardBox>
+            </section>
         </SectionMain>
     </LayoutAuthenticated>
 </template>
@@ -99,19 +171,23 @@
 <script setup>
 import LayoutAuthenticated from "@/Layouts/Admin.vue";
 import SectionMain from "@/Components/DashboardAdmin/SectionMain.vue";
-import { mdiCakeLayered, mdiCakeVariant, mdiCash } from "@mdi/js";
+import { mdiCakeVariant, mdiCash, mdiChartBellCurveCumulative } from "@mdi/js";
 import CardBoxWidget from "@/Components/DashboardAdmin/CardBoxWidget.vue";
 import CardBox from "@/Components/DashboardAdmin/CardBox.vue";
 import BaseIcon from "@/Components/DashboardAdmin/BaseIcon.vue";
 import LineChart from "@/Components/DashboardAdmin/Charts/LineChart.vue";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import NumberDynamic from "@/Components/DashboardAdmin/NumberDynamic.vue";
+import BaseLevel from "@/Components/DashboardAdmin/BaseLevel.vue";
+import PillTagTrend from "@/Components/DashboardAdmin/PillTagTrend.vue";
 
 const props = defineProps({
     totalRevenue: Number,
     totalCakeSold: Number,
     mostPopularCake: Object,
+    mostPopularCakeType: Object,
     mostPopularCakeCategory: Object,
+    growthRevenuePerMonthByPercentage: Object,
     chartData: Object,
 });
 
@@ -119,27 +195,20 @@ const minimumRevenue = 1000000;
 const minimumCakeSold = 5;
 const chartData = ref({});
 
+const growthRevenuePerMonthByPercentage = computed(() => {
+    return growthRevenuePerMonthByPercentage.length > 0
+        ? growthRevenuePerMonthByPercentage[0].growth_percentage
+        : 0;
+});
+
 // TODO: fix the implementation of extractMonthLabels and totalRevenueEachMonth for the chartData
 
 const sampleChartData = {
-    labels: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Okt",
-        "Nov",
-        "Des",
-    ],
+    labels: props.chartData.map((data) => data.month) ?? [],
     datasets: [
         {
             label: "Pendapatan",
-            data: props.chartData.map((data) => data.total_revenue),
+            data: props.chartData.map((data) => data.total_revenue) ?? [],
             fill: false,
             borderColor: "rgb(75, 192, 192)",
             tension: 0.1,

@@ -107,7 +107,10 @@
                                 {{ order.transaction_id || order.order_code }}
                             </p>
                             <div
-                                class="badge badge-outline badge-info font-medium text-lg"
+                                class="badge badge-outline font-medium text-lg"
+                                :class="
+                                    changeBadgeColorOrderOrPaymentStatus(order)
+                                "
                             >
                                 {{ order.order_status }}
                             </div>
@@ -185,21 +188,37 @@
                                 class="link text-primary-color"
                                 >See Detail Transaction</inertia-link
                             >
-                            <inertia-link
-                                v-if="showPayNowButton(order)"
-                                href="#"
-                                @click="redirectPayment(order.payment_url)"
-                                class="btn btn-outline btn-info font-semibold"
-                            >
-                                Pay Now
-                            </inertia-link>
                             <button
-                                v-else
-                                @click="handleBuyAgain(order.order_item_id)"
-                                class="btn btn-success font-semibold"
+                                v-if="
+                                    order.transaction_status ===
+                                        'menunggu pembayaran' ||
+                                    order.order_status ===
+                                        'pesanan dikonfirmasi'
+                                "
+                                @click="handleCancelOrder(order.transaction_id)"
+                                class="btn btn-outline btn-error font-semibold"
                             >
-                                Buy Again
+                                Batalkan Pesanan
                             </button>
+                            <section
+                                v-if="order.order_status !== 'kadaluwarsa'"
+                            >
+                                <inertia-link
+                                    v-if="showPayNowButton(order)"
+                                    href="#"
+                                    @click="redirectPayment(order.payment_url)"
+                                    class="btn btn-outline btn-info font-semibold"
+                                >
+                                    Bayar Sekarang
+                                </inertia-link>
+                                <button
+                                    v-else
+                                    @click="handleBuyAgain(order.order_item_id)"
+                                    class="btn btn-success font-semibold"
+                                >
+                                    Beli Lagi
+                                </button>
+                            </section>
                         </section>
                     </section>
                 </section>
@@ -230,7 +249,7 @@ const props = defineProps({
 const originalOrderItems = ref([]);
 originalOrderItems.value = props.orderItems.data;
 
-const transactionFilter = ["Semua", "Berjalan", "Sukses"];
+const transactionFilter = ["Semua", "Berjalan", "Sukses", "Gagal"];
 const orderStatus = ["Menunggu konfirmasi", "Pesanan diproses", "Terkirim"];
 const months = [
     "Januari",
@@ -337,11 +356,15 @@ const changeBadgeColorOrderOrPaymentStatus = (order) => {
     const status = checkOrderOrPaymentStatus(order);
 
     const statusMap = {
-        "Menunggu konfirmasi": "badge-info",
-        "Pesanan diproses": "badge-info",
-        Terkirim: "badge-success",
+        "pesanan dikonfirmasi": "badge-info",
+        "pesanan diproses": "badge-info",
+        terkirim: "badge-success",
+        dibatalkan: "badge-error",
+        kadaluwarsa: "badge-error",
         "menunggu pembayaran": "badge-info",
         terbayar: "badge-success",
+        "pembayaran kedaluwarsa": "badge-error",
+        "pembayaran dibatalkan": "badge-error",
     };
 
     return statusMap[status] || "badge-neutral";
@@ -352,19 +375,22 @@ const changeBadgeColorOrderOrPaymentStatus = (order) => {
  * otherwise returns the order status.
  *
  * @param {Object} order - The order object to check.
- * @param {Object} [order.payment] - The payment object associated with the order.
- * @param {string} [order.payment.payment_status] - The status of the payment.
- * @param {string} order.order_status - The status of the order.
  * @returns {string} - The payment status if it exists, otherwise the order status.
  */
-const checkOrderOrPaymentStatus = (order) => {
-    return order.transaction_status || order.order_status;
-};
+const checkOrderOrPaymentStatus = (order) =>
+    order.transaction_status || order.order_status;
 
-// Show the button pay now if the payment status is pending or the order status is order confirmed
+/**
+ * Determines if the "Pay Now" button should be shown based on the order status.
+ *
+ * @param {Object} order - The order object to check.
+ * @returns {boolean} - True if the "Pay Now" button should be shown, otherwise false.
+ */
 const showPayNowButton = (order) => {
     const status = checkOrderOrPaymentStatus(order);
-    return status === "menunggu pembayaran" || status === "Order Confirmed";
+    return (
+        status === "menunggu pembayaran" || status === "pesanan dikonfirmasi"
+    );
 };
 
 onMounted(() => {
@@ -439,6 +465,25 @@ const handleBuyAgain = async (orderItem) => {
         window.location.href = route("detail-chart", response.data);
     } catch (e) {
         console.error("Error buying again:", e);
+    }
+};
+
+const handleCancelOrder = async (orderId) => {
+    try {
+        await axios.post(route("cancel-order", { orderId }), null, {
+            params: {
+                orderId: orderId,
+            },
+        });
+
+        // Update the order items after cancel order
+        originalOrderItems.value.forEach((order) => {
+            if (order.transaction_id === orderId) {
+                order.transaction_status = "pembayaran dibatalkan";
+            }
+        });
+    } catch (e) {
+        console.error("Error cancel order again:", e);
     }
 };
 </script>

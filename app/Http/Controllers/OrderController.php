@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\OrderItem;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\OrderItemTopping;
 use App\Models\ShoppingChartItem;
@@ -38,11 +39,13 @@ class OrderController extends Controller
         $orders = Order::query()->
         orderBy('created_at', 'desc')->paginate(5);
 
-        // Transform order estimates to human-readable format
+
         $orders->getCollection()->transform(function ($order) {
-            $order->estimated_delivery_date = \Carbon\Carbon::parse($order->estimated_delivery_date)->isoFormat('dddd, MMMM Do YYYY');
+            $order->created_at = Carbon::parse($order->created_at)->toIso8601String();
+            $order->estimated_delivery_date = Carbon::parse($order->estimated_delivery_date)->isoFormat('dddd, MMMM Do YYYY');
             return $order;
         });
+
 
         return Inertia::render('AdminDashboard/Order/Index', [
             'orders' => $orders,
@@ -86,7 +89,7 @@ class OrderController extends Controller
             'user_id' => auth()->id(),
             'order_code' => uniqid(),
             'total_price' => 0,
-            'status' => 'Order Confirmed',
+            'status' => 'pesanan dikonfirmasi',
             'user_address' => $data['user_address'],
             'cake_recipient' => $data['cake_recipient'],
             'estimated_delivery_date' => $data['estimated_delivery_date'],

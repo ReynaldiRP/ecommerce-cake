@@ -66,7 +66,7 @@
                             Lanjut Belanja
                         </inertia-link>
                         <inertia-link
-                            :href="route('detail-chart')"
+                            @click="handleClickToDetailShoppingChart"
                             class="btn btn-md text-black bg-primary-color hover:bg-base-300 hover:text-white"
                         >
                             Lihat Keranjang Belanja
@@ -79,6 +79,8 @@
 </template>
 
 <script setup>
+import { Inertia } from "@inertiajs/inertia";
+
 const props = defineProps({
     isPreviewOpen: {
         type: Boolean,
@@ -93,4 +95,17 @@ const props = defineProps({
         default: null,
     },
 });
+
+/**
+ * Handles the click event to navigate to the detail shopping chart page.
+ *
+ * @param {Event} event - The click event object.
+ */
+const handleClickToDetailShoppingChart = (event) => {
+    // Get the chart item ID
+    const chartItemId = props.chart.id;
+
+    // Navigate to the detail chart page
+    Inertia.visit(route("detail-chart", { chartItemId: chartItemId }));
+};
 </script>

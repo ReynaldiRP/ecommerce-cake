@@ -49,7 +49,6 @@
                                 <BaseCheckbox
                                     v-model="selectCake[item.id]"
                                     :value="item.id"
-                                    @change="updateTotalPrice"
                                 />
                                 <div class="flex gap-4">
                                     <div
@@ -216,7 +215,7 @@ import BaseCheckbox from "@/Components/BaseCheckbox.vue";
 import BaseAlert from "@/Components/BaseAlert.vue";
 import EmptyDetailShoppingChart from "@/Components/EmptyDetailShoppingChart.vue";
 import AddNotesOrder from "@/Components/AddNotesOrder.vue";
-import { computed, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 import axios from "axios";
@@ -238,23 +237,40 @@ const cakeQuantity = ref(chartItems.value.map((item) => item.quantity));
 const hiddenNotes = ref(false);
 const notes = ref(chartItems.value.map((item) => item.notes));
 
-const updateTotalPrice = computed(() => {
-    totalPrice.value = chartItems.value
-        .filter((item) => selectCake.value[item.id])
-        .reduce((totalPrice, item) => {
-            const index = chartItems.value.findIndex(
-                (chartItem) => chartItem.id === item.id,
-            );
-
-            return totalPrice + item.price * cakeQuantity.value[index];
-        }, 0);
-
-    // Check if all individual items are selected
-    // If not all are selected, uncheck "Select All"
-    selectAllItem.value = chartItems.value.every(
-        (item) => selectCake.value[item.id],
+onMounted(() => {
+    /**
+     * Retrieves the chart item ID from the URL query parameters and updates the selectCake object.
+     * If a chart item ID is found, it sets the corresponding value in selectCake to true.
+     */
+    const chartItemId = new URLSearchParams(window.location.search).get(
+        "chartItemId",
     );
+
+    if (chartItemId) {
+        selectCake.value[chartItemId] = true;
+        // innate the total price based on the selected item without recalculating the total price with quantity
+        totalPrice.value = chartItems.value
+            .filter((item) => selectCake.value[item.id])
+            .reduce((totalPrice, item) => {
+                return totalPrice + item.price;
+            }, 0);
+    }
 });
+
+watch(
+    [selectCake, cakeQuantity],
+    () => {
+        totalPrice.value = chartItems.value
+            .filter((item) => selectCake.value[item.id])
+            .reduce((totalPrice, item) => {
+                const index = chartItems.value.findIndex(
+                    (chartItem) => chartItem.id === item.id,
+                );
+                return totalPrice + item.price * cakeQuantity.value[index];
+            }, 0);
+    },
+    { deep: true, immediate: true },
+);
 
 /**
  * A computed property that returns the total number of selected cakes in the chart.

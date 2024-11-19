@@ -14,8 +14,9 @@
                                 <th>Alamat Penerima</th>
                                 <th>Penerima Kue</th>
                                 <th>Total Pembayaran</th>
-                                <th>Status Order</th>
-                                <th>Detail Order</th>
+                                <th>Status Pemesanan</th>
+                                <th>Detail Pemesanan</th>
+                                <th>Pesanan Dibuat</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,9 +35,12 @@
                                         :class="{
                                             'btn btn-info btn-outline':
                                                 order.status ===
-                                                'Order Confirmed',
+                                                'pesanan dikonfirmasi',
                                             'btn btn-success btn-outline':
                                                 order.status === 'terbayar',
+                                            'btn btn-error btn-outline':
+                                                order.status === 'dibatalkan' ||
+                                                order.status === 'kadaluwarsa',
                                         }"
                                     >
                                         {{ order.status }}
@@ -50,7 +54,7 @@
                                         Detail Order
                                     </button>
                                 </td>
-                                <td></td>
+                                <td>{{ order.created_at }}</td>
                             </tr>
                         </tbody>
                     </table>
