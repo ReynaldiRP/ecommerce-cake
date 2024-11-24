@@ -76,7 +76,7 @@
                                 <!-- Quantity and Order Price -->
                                 <h1 class="text-xl font-bold">
                                     {{ cakeQuantities[item.id] }} x
-                                    {{ formatPrice(item.price) }}
+                                    {{ formattedTotalPrice[index] }}
                                 </h1>
                             </div>
                         </section>
@@ -89,7 +89,7 @@
                                     >
                                 </h1>
                                 <h1>
-                                    {{ formatPrice(getItemSubtotal(item)) }}
+                                    {{ formattedSubTotal[index] }}
                                 </h1>
                             </article>
                             <article class="flex justify-between">
@@ -378,6 +378,18 @@ const selectedAddress = (address = {}) => {
 };
 
 /**
+ * Calculates the total price of the toppings for a given chart item.
+ *
+ * @param {object} item - The chart item object containing cake topping information
+ * @return {number} The total price of the toppings
+ */
+const getToppingPriceBasedOnChartItems = (item) => {
+    return item.cake_topping
+        ?.map((topping) => topping.price)
+        .reduce((a, b) => a + b, 0);
+};
+
+/**
  * Formats a given price into a currency string using the Indonesian Rupiah currency format.
  *
  * @param {number} price - The price to be formatted.
@@ -391,19 +403,36 @@ const formatPrice = (price = 0) => {
 };
 
 /**
- * Calculates the subtotal of a given item based on its base price, cake size price, and quantity.
+ * Calculates the subtotal for each item in the shopping cart.
  *
- * @param {object} item - The item object containing cake and quantity information
- * @return {number} The calculated subtotal of the item
+ * This function iterates over the `chartItems` array and calculates the subtotal
+ * for each item by summing up the base price of the cake, the price of the selected
+ * flavor, the total price of the selected toppings, and the price of the selected size.
+ *
+ * @returns {number[]} An array of subtotals for each item in the shopping cart.
  */
-const getItemSubtotal = (item) => {
-    const basePrice = item.cake.base_price || 0;
-    const quantity = props.cakeQuantities[item.id] || null;
+const subtotal = () => {
+    return props.chartItems.map((item) => {
+        const cakePrice = item.cake?.base_price;
+        const cakeSizePrice = item.cake_size?.price ?? 0;
 
-    const cakeSizePrice = item.cake.cake_size?.price || 0;
-
-    return (basePrice + cakeSizePrice) * quantity;
+        return (cakePrice + cakeSizePrice) * props.cakeQuantities[item.id];
+    });
 };
+
+const temporaryTotalPrice = () => {
+    return props.chartItems.map((item) => {
+        const cakePrice = item.cake?.base_price;
+        const cakeSizePrice = item.cake_size?.price ?? 0;
+        const cakeFlavourPrice = item.cake_flavour?.price ?? 0;
+        const toppingPrice = getToppingPriceBasedOnChartItems(item);
+
+        return cakePrice + cakeSizePrice + cakeFlavourPrice + toppingPrice;
+    });
+};
+
+const formattedSubTotal = subtotal().map(formatPrice);
+const formattedTotalPrice = temporaryTotalPrice().map(formatPrice);
 
 /**
  * Retrieves the names of the toppings for a given chart item.
@@ -413,18 +442,6 @@ const getItemSubtotal = (item) => {
  */
 const getToppingNameBasedOnChartItems = (item) => {
     return item.cake_topping?.map((topping) => topping.name).join(", ");
-};
-
-/**
- * Calculates the total price of the toppings for a given chart item.
- *
- * @param {object} item - The chart item object containing cake topping information
- * @return {number} The total price of the toppings
- */
-const getToppingPriceBasedOnChartItems = (item) => {
-    return item.cake_topping
-        ?.map((topping) => topping.price)
-        .reduce((a, b) => a + b, 0);
 };
 
 // Form helper for input fields
@@ -489,6 +506,7 @@ const submit = () => {
                 cake_recipient: form.cake_recipient,
                 method_delivery: form.method_delivery,
                 chartItems: props.chartItems,
+                grossAmount: temporaryTotalPrice(),
             },
             {
                 preserveState: true,

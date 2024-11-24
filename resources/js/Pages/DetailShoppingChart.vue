@@ -123,7 +123,7 @@
                                 }"
                             >
                                 <p class="text-lg font-medium lg:ms-auto">
-                                    {{ formatPrice(item.price) }}
+                                    {{ formattedSubTotal[index] }}
                                 </p>
                                 <div
                                     class="flex flex-row-reverse items-center gap-4"
@@ -131,17 +131,17 @@
                                     <div class="join">
                                         <button
                                             class="btn btn-sm btn-outline shadow-lg join-item"
-                                            @click="decrementQuantity(index)"
+                                            @click="decrementQuantity(item)"
                                         >
                                             -
                                         </button>
                                         <input
                                             class="input input-sm input-ghost input-bordered text-center w-10 join-item focus:bg-transparent"
-                                            v-model="cakeQuantity[index]"
+                                            v-model="cakeQuantity[item.id]"
                                         />
                                         <button
                                             class="btn btn-sm btn-outline shadow-lg join-item"
-                                            @click="incrementQuantity(index)"
+                                            @click="incrementQuantity(item)"
                                         >
                                             +
                                         </button>
@@ -151,7 +151,7 @@
                                     </button>
                                     <AddNotesOrder
                                         :hiddenNotes="hiddenNotes"
-                                        v-model:notes="notes[index]"
+                                        v-model:notes="notes[item.id]"
                                         @update:hiddenNotes="
                                             hiddenNotes = $event
                                         "
@@ -233,9 +233,14 @@ const showAlert = ref(false);
 const deleteAnimation = ref(null);
 const messageDelete = ref("");
 const isSubmitting = ref(false);
-const cakeQuantity = ref(chartItems.value.map((item) => item.quantity));
+const cakeQuantity = ref({
+    ...Object.fromEntries(
+        chartItems.value.map((item) => [item.id, item.quantity]),
+    ),
+});
 const hiddenNotes = ref(false);
-const notes = ref(chartItems.value.map((item) => item.notes));
+const notes = ref([]);
+const totalPriceEachItem = ref([]);
 
 onMounted(() => {
     /**
@@ -248,14 +253,51 @@ onMounted(() => {
 
     if (chartItemId) {
         selectCake.value[chartItemId] = true;
-        // innate the total price based on the selected item without recalculating the total price with quantity
-        totalPrice.value = chartItems.value
-            .filter((item) => selectCake.value[item.id])
-            .reduce((totalPrice, item) => {
-                return totalPrice + item.price;
-            }, 0);
+
+        // check if select all item is true
+        selectAllItem.value = chartItems.value.every(
+            (item) => selectCake.value[item.id],
+        );
     }
 });
+
+/**
+ * Calculates the subtotal for each item in the shopping cart.
+ *
+ * This function iterates over the `chartItems` array and calculates the subtotal
+ * for each item by summing up the base price of the cake, the price of the selected
+ * flavor, the total price of the selected toppings, and the price of the selected size.
+ *
+ * @returns {number[]} An array of subtotals for each item in the shopping cart.
+ */
+const subtotal = () => {
+    return chartItems.value.map((item) => {
+        const cakePrice = item.cake?.base_price;
+        const flavourPrice = item.cake_flavour?.price ?? 0;
+        const toppingPrice = item.cake_topping.reduce(
+            (total, topping) => total + topping.price,
+            0,
+        );
+        const cakeSizePrice = item.cake_size?.price ?? 0;
+
+        return cakePrice + flavourPrice + toppingPrice + cakeSizePrice;
+    });
+};
+
+/**
+ * Formats a given price into a currency string using the Indonesian Rupiah currency format.
+ *
+ * @param {number} price - The price to be formatted.
+ * @return {string} The formatted currency string.
+ */
+const formatPrice = (price = 0) => {
+    return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+    }).format(price);
+};
+
+const formattedSubTotal = subtotal().map(formatPrice);
 
 watch(
     [selectCake, cakeQuantity],
@@ -263,13 +305,37 @@ watch(
         totalPrice.value = chartItems.value
             .filter((item) => selectCake.value[item.id])
             .reduce((totalPrice, item) => {
-                const index = chartItems.value.findIndex(
+                const itemIndex = chartItems.value.findIndex(
                     (chartItem) => chartItem.id === item.id,
                 );
-                return totalPrice + item.price * cakeQuantity.value[index];
+
+                return (
+                    totalPrice +
+                    subtotal()[itemIndex] * cakeQuantity.value[item.id]
+                );
             }, 0);
+
+        // FIXME: This is not working as expected, the total price for each item is not updating
+        // Update the total price for each item
+        totalPriceEachItem.value = chartItems.value.reduce((total, item) => {
+            const itemIndex = chartItems.value.findIndex(
+                (chartItem) => chartItem.id === item.id,
+            );
+
+            return {
+                ...total,
+                [item.id]: subtotal()[itemIndex] * cakeQuantity.value[item.id],
+            };
+        }, {});
+
+        // check if select all item is true
+        selectAllItem.value = chartItems.value.every(
+            (item) => selectCake.value[item.id],
+        );
     },
-    { deep: true, immediate: true },
+    {
+        deep: true,
+    },
 );
 
 /**
@@ -290,19 +356,6 @@ const isSelectedAll = () => {
     chartItems.value.forEach((item) => {
         selectCake.value[item.id] = selectAllItem.value;
     });
-};
-
-/**
- * Formats a given price into a currency string using the Indonesian Rupiah currency format.
- *
- * @param {number} price - The price to be formatted.
- * @return {string} The formatted currency string.
- */
-const formatPrice = (price = 0) => {
-    return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-    }).format(price);
 };
 
 /**
@@ -403,6 +456,7 @@ const checkoutItems = (shoppingChartItemsIds = []) => {
                     selectCake: shoppingChartItemsIds,
                     cakeQuantity: cakeQuantity.value,
                     notes: notes.value,
+                    cakesPrice: totalPriceEachItem.value,
                 });
                 isSubmitting.value = false;
             }, 2000);
@@ -416,25 +470,25 @@ const checkoutItems = (shoppingChartItemsIds = []) => {
 
 /**
  * Decrements the quantity of a cake at the specified index.
- * If the quantity is already 1 or less, the function returns false and does not decrement further.
  *
- * @param {number} index - The index of the cake in the cakeQuantity array.
- * @returns {boolean} - Returns false if the quantity is 1 or less, otherwise decrements the quantity.
+ * @param {number} item - The index of the cake item to decrement the quantity.
+ * @returns {void} - Decrements the quantity of the cake.
  */
-const decrementQuantity = (index) => {
-    if (cakeQuantity.value[index] <= 1) {
+const decrementQuantity = (item) => {
+    if (cakeQuantity.value[item.id] <= 1) {
         return false;
     }
 
-    cakeQuantity.value[index]--;
+    cakeQuantity.value[item.id]--;
 };
 
 /**
- * Increments the quantity of a specific cake in the shopping cart.
+ * Increments the quantity of a cake at the specified index.
  *
- * @param {number} index - The index of the cake in the shopping cart array.
+ * @param {object} item - The cake item to increment the quantity.
+ * @returns {void} - Increments the quantity of the cake.
  */
-const incrementQuantity = (index) => {
-    cakeQuantity.value[index]++;
+const incrementQuantity = (item) => {
+    cakeQuantity.value[item.id]++;
 };
 </script>

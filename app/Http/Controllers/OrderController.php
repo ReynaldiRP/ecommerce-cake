@@ -153,8 +153,9 @@ class OrderController extends Controller
                         ]);
                     }
                 }
+
                 // Add the current item's total (price * quantity) to the total order price
-                $totalPrice += $orderItem->price * $orderItem->quantity;
+                $totalPrice += $orderItem->price;
             }
 
             // Update the order's total price after all items are added
@@ -199,6 +200,7 @@ class OrderController extends Controller
             // Get the response data from JsonResponse as an object
             $orderDetails = $orderResponse->getData();
 
+
             if ($orderResponse->status() !== 200) {
                 return response()->json([
                     'message' => 'Order creation failed.',
@@ -209,25 +211,29 @@ class OrderController extends Controller
 
             // Populate items_details array for midtrans
             $items = [];
-            foreach ($orderDetails->data->order->order_items as $orderItem) {
+            $grossAmount = 0;
+            foreach ($orderDetails->data->order->order_items as $index => $orderItem) {
+                $itemTotalPrice = $request->input('grossAmount')[$index];
                 $items[] = [
                     'id' => $orderItem->id,
                     'name' => $orderItem->cake->name,
-                    'price' => $orderItem->price,
+                    'price' => $itemTotalPrice,
                     'category' => $orderItem->cake->personalization_type,
                     'quantity' => $orderItem->quantity,
                 ];
+
+                $grossAmount += $itemTotalPrice;
             }
 
             // Create payload for midtrans
             $payload = [
                 'transaction_details' => [
-                    'order_id'     => $orderDetails->data->order->order_code,
-                    'gross_amount' => $orderDetails->data->order->total_price,
+                    'order_id' => $orderDetails->data->order->order_code,
+                    'gross_amount' => $grossAmount,
                 ],
                 'customer_details' => [
                     'first_name' => $orderDetails->data->order->cake_recipient,
-                    'email'      => auth()->user()->email,
+                    'email' => auth()->user()->email,
                     'phone' => auth()->user()->phone_number,
                     'shipping_address' => [
                         'address' => $orderDetails->data->order->user_address
@@ -235,6 +241,7 @@ class OrderController extends Controller
                 ],
                 'item_details' => $items,
             ];
+
 
             // Get Snap Payment Page URL
             $paymentUrl = \Midtrans\Snap::createTransaction($payload)->redirect_url;

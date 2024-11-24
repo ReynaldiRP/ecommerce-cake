@@ -3,20 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ShoppingChart\StoreShoppingChartRequest;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Payment;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Inertia\Inertia;
-use App\Models\Order;
-use Inertia\Response;
-use App\Models\Payment;
-use App\Models\OrderItem;
-use App\Mail\PaymentEmail;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
+use Inertia\Response;
 use Midtrans\Config;
 use Midtrans\Notification;
 
@@ -221,11 +219,13 @@ class PaymentController extends Controller
                     $q->whereHas('payment', function ($q) {
                         $q->where('payment_status', 'terbayar');
                     });
+                } elseif ($status === 'Gagal') {
+                    $q->whereHas('payment', function ($q) {
+                        $q->where('payment_status', 'pembayaran dibatalkan')
+                            ->orWhere('payment_status', 'pembayaran kedaluwarsa');
+                    });
                 }
-                $q->whereHas('payment', function ($q) {
-                    $q->where('payment_status', 'pembayaran dibatalkan')
-                        ->orWhere('payment_status', 'pembayaran kedaluwarsa');
-                });
+
             }
 
             if ($month) {

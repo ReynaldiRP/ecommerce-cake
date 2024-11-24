@@ -145,27 +145,30 @@ class FrontEndController extends Controller
             // Get the array of shoppingChartItemId from the query parameters
             $shoppingChartItemIds = $request->input('selectCake', []);
 
+
             // Fetch the selected cakes
             $cakes = ShoppingChartItem::with(['cake', 'cakeSize'])->whereIn(
                 'id',
                 $shoppingChartItemIds
             )->get();
 
+
             // update the cake prices, quantities and notes
             $cakePrices = [];
             $cakeQuantities = [];
             $cakeNotes = [];
 
-            foreach ($cakes as $index => $cake) {
-                $quantity = $request->input('cakeQuantity')[$index];
-                $note = $request->input('notes')[$index];
+            // Iterate through each cake in the collection
+            foreach ($cakes as $cake) {
+                $cakeId = $cake->id;
 
-                $cakeQuantities[$cake->id] = $quantity;
-                $cakeNotes[$cake->id] = $note;
-
-                $price = $cake->price * $quantity;
-
-                $cakePrices[$cake->id] = $price;
+                $quantities = $request->input('cakeQuantity', [])[$cakeId] ?? 1;
+                $notes = $request->input('notes', [])[$cakeId] ?? '';
+                $prices = $request->input('cakesPrice', [])[$cakeId];
+                
+                $cakeQuantities[$cakeId] = $quantities;
+                $cakeNotes[$cakeId] = $notes;
+                $cakePrices[$cakeId] = $prices;
             }
 
             // Store cake prices, quantities and notes in the session
@@ -194,6 +197,7 @@ class FrontEndController extends Controller
             'cakeFlavour',
             'cakeTopping'
         ])->whereIn('id', $shoppingChartItemIds)->get();
+
 
         return Inertia::render('CheckoutSection', [
             'chartItems' => $chartItems,

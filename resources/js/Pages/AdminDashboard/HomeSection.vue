@@ -44,7 +44,7 @@
                                     <div class="w-16 rounded-lg">
                                         <img
                                             :src="
-                                                mostPopularCake.image_url ??
+                                                mostPopularCake.cake_image ??
                                                 'https://via.placeholder.com/150'
                                             "
                                             alt="Tailwind-CSS-Avatar-component"
@@ -200,8 +200,6 @@ const growthRevenuePerMonthByPercentage = computed(() => {
         ? growthRevenuePerMonthByPercentage[0].growth_percentage
         : 0;
 });
-
-// TODO: fix the implementation of extractMonthLabels and totalRevenueEachMonth for the chartData
 
 const sampleChartData = {
     labels: props.chartData.map((data) => data.month) ?? [],

@@ -191,9 +191,7 @@
                             <button
                                 v-if="
                                     order.transaction_status ===
-                                        'menunggu pembayaran' ||
-                                    order.order_status ===
-                                        'pesanan dikonfirmasi'
+                                    'menunggu pembayaran'
                                 "
                                 @click="handleCancelOrder(order.transaction_id)"
                                 class="btn btn-outline btn-error font-semibold"
