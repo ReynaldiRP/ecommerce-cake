@@ -139,8 +139,7 @@ class OrderController extends Controller
                     'price' => $cakePrices[$chartItem['id']],
                     'note' => $cakeNotes[$chartItem['id']],
                 ];
-
-
+                
                 $orderItem = OrderItem::create($orderItemData);
 
                 // Insert pivot table data for cake toppings

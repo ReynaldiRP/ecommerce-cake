@@ -62,6 +62,17 @@ class PaymentController extends Controller
                 $payment->payment_method = $notification->payment_type;
             }
 
+            // TODO: Add order status tracking here
+            // Tracking order status
+            $orderStatus = [
+                'pesanan dikonfirmasi' => 'Pesanan Anda dikonfirmasi oleh Dream Dessert.',
+                'pesanan diproses' => 'Pesanan Anda sedang diproses oleh Dream Dessert.',
+                'pesanan dikemas' => 'Pesanan Anda telah dikemas dan siap untuk dikirim atau diambil.',
+                'pesanan dikirim' => 'Pesanan Anda telah dikirim. Silakan tunggu pesanan Anda tiba.',
+                'pesanan diterima' => 'Pesanan Anda telah diterima. Terima kasih telah berbelanja di Dream Dessert.',
+                'pesanan kadaluarsa' => 'Pesanan Anda telah kedaluwarsa. Silakan pesan kembali.',
+                'pesanan dibatalkan' => 'Pesanan Anda telah dibatalkan. Silakan pesan kembali.'
+            ];
 
             // Update the payment status based on the transaction status
             if ($transaction_status == 'pending') {
@@ -71,12 +82,12 @@ class PaymentController extends Controller
             } elseif ($transaction_status == 'expire') {
                 $payment->payment_status = 'pembayaran kedaluwarsa';
                 // set status order to expired
-                $order->status = 'kadaluwarsa';
+                $order->status = 'pesanan kadaluwarsa';
                 $order->save();
             } elseif ($transaction_status == 'cancel') {
                 $payment->payment_status = 'pembayaran dibatalkan';
                 // set status order to canceled
-                $order->status = 'dibatalkan';
+                $order->status = 'pesanan dibatalkan';
                 $order->save();
             }
 
@@ -149,9 +160,13 @@ class PaymentController extends Controller
                 'order_status' => $item->order?->status,
                 'transaction_status' => $item->order?->payment?->payment_status,
                 'cake_name' => $item->cake?->name,
+                'cake_price' => $item->cake?->base_price,
                 'cake_size' => $item->cakeSize?->size,
+                'cake_size_price' => $item->cakeSize?->price,
                 'cake_flavour' => $item->cakeFlavour?->name,
+                'cake_flavour_price' => $item->cakeFlavour?->price,
                 'cake_toppings' => $item->cakeTopping?->pluck('name'),
+                'cake_toppings_price' => $item->cakeTopping?->sum('price'),
                 'quantity' => $item->quantity,
                 'cake_image' => $item->cake?->image_url,
                 'cake_note' => $item->note,
@@ -161,6 +176,7 @@ class PaymentController extends Controller
                 'order_updated_at' => $item->order?->updated_at?->isoFormat('dddd, D MMMM Y')
             ];
         });
+
 
         return Inertia::render('OrderHistorySection', [
             'orderItems' => $orderItems,
@@ -245,9 +261,13 @@ class PaymentController extends Controller
                 'order_status' => $item->order?->status,
                 'transaction_status' => $item->order?->payment?->payment_status,
                 'cake_name' => $item->cake?->name,
+                'cake_price' => $item->cake?->base_price,
                 'cake_size' => $item->cakeSize?->size,
+                'cake_size_price' => $item->cakeSize?->price,
                 'cake_flavour' => $item->cakeFlavour?->name,
+                'cake_flavour_price' => $item->cakeFlavour?->price,
                 'cake_toppings' => $item->cakeTopping?->pluck('name'),
+                'cake_toppings_price' => $item->cakeTopping?->sum('price'),
                 'cake_image' => $item->cake?->image_url,
                 'quantity' => $item->quantity,
                 'price' => $item->price,
@@ -274,6 +294,7 @@ class PaymentController extends Controller
         $orders = Order::with([
             'orderItems',
             'orderItems.cake',
+            'orderItems.cakeSize',
             'orderItems.cakeFlavour',
             'orderItems.cakeTopping',
             'payment'
@@ -281,6 +302,11 @@ class PaymentController extends Controller
 
         // Transform the order items
         $orderItems = $orders->map(function ($order) {
+            // Calculate the total price for each item
+            $totalPriceEachItem = $order->orderItems->map(function ($item) {
+                return $item->cake?->base_price + $item->cakeSize?->price + $item->cakeFlavour?->price + $item->cakeTopping?->sum('price');
+            });
+
             return [
                 'order_code' => $order->order_code,
                 'order_status' => $order->status,
@@ -292,15 +318,15 @@ class PaymentController extends Controller
                 'order_updated_at' => $order->updated_at?->isoFormat('dddd, D MMMM Y'),
                 'estimated_delivery' => \Carbon\Carbon::parse($order->estimated_delivery_date)->isoFormat('dddd, D MMMM Y'),
                 'method_delivery' => $order->method_delivery,
-                'order_items' => $order->orderItems->map(function ($item) {
+                'order_items' => $order->orderItems->map(function ($item) use ($totalPriceEachItem) {
                     return [
                         'cake_name' => $item->cake?->name,
                         'cake_image' => $item->cake?->image_url,
-                        'cake_size' => $item->cake?->cakeSize?->size,
+                        'cake_size' => $item->cakeSize?->size,
                         'cake_flavour' => $item->cakeFlavour?->name,
                         'cake_toppings' => $item->cakeTopping?->pluck('name'),
                         'quantity' => $item->quantity,
-                        'price' => $item->price,
+                        'price' => $totalPriceEachItem,
                     ];
                 })
             ];

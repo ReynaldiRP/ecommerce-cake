@@ -163,16 +163,14 @@
                                         <span v-if="order.cake_size"
                                             >({{ order.cake_size }}Cm)</span
                                         >
-                                        x {{ formatPrice(order.price) }}
+                                        x {{ formattedSubtotal[orderIndex] }}
                                     </p>
                                 </div>
                             </div>
 
                             <div class="flex flex-col text-xl pr-36">
                                 <p>Total Order</p>
-                                <strong>{{
-                                    totalPrice(order.price, order.quantity)
-                                }}</strong>
+                                <strong>{{ formatPrice(order.price) }}</strong>
                             </div>
                         </section>
 
@@ -356,11 +354,12 @@ const changeBadgeColorOrderOrPaymentStatus = (order) => {
     const statusMap = {
         "pesanan dikonfirmasi": "badge-info",
         "pesanan diproses": "badge-info",
-        terkirim: "badge-success",
-        dibatalkan: "badge-error",
-        kadaluwarsa: "badge-error",
+        "pesanan dikemas": "badge-info",
+        "pesanan dikirim": "badge-success",
+        "pesanan dibatalkan": "badge-error",
+        "pesanan kadaluwarsa": "badge-error",
         "menunggu pembayaran": "badge-info",
-        terbayar: "badge-success",
+        "pesanan terbayar": "badge-success",
         "pembayaran kedaluwarsa": "badge-error",
         "pembayaran dibatalkan": "badge-error",
     };
@@ -428,15 +427,26 @@ const formatPrice = (price = 0) => {
 };
 
 /**
- * Calculates the total price of an order by multiplying the price with the quantity.
+ * Calculates the subtotal for each item in the shopping cart.
  *
- * @param {number} price - The price of the item.
- * @param {number} quantity - The quantity of the item.
- * @returns {string} - The total price of the order formatted as a string.
+ * This function iterates over the `chartItems` array and calculates the subtotal
+ * for each item by summing up the base price of the cake, the price of the selected
+ * flavor, the total price of the selected toppings, and the price of the selected size.
+ *
+ * @returns {number[]} An array of subtotals for each item in the shopping cart.
  */
-const totalPrice = (price, quantity) => {
-    return formatPrice(price * quantity);
+const subtotal = () => {
+    return originalOrderItems.value.map((item) => {
+        const cakePrice = item.cake_price ?? 0;
+        const cakeSizePrice = item.cake_size_price ?? 0;
+        const cakeFlavourPrice = item.cake_flavour_price ?? 0;
+        const cakeToppingsPrice = item.cake_toppings_price ?? 0;
+
+        return cakePrice + cakeSizePrice + cakeFlavourPrice + cakeToppingsPrice;
+    });
 };
+
+const formattedSubtotal = subtotal().map(formatPrice);
 
 /**
  * Handles the "Buy Again" action for a given order.
@@ -478,6 +488,7 @@ const handleCancelOrder = async (orderId) => {
         originalOrderItems.value.forEach((order) => {
             if (order.transaction_id === orderId) {
                 order.transaction_status = "pembayaran dibatalkan";
+                order.order_status = "pesanan dibatalkan";
             }
         });
     } catch (e) {

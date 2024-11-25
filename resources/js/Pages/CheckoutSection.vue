@@ -82,12 +82,7 @@
                         </section>
                         <section class="px-2 text-xl font-bold text-white/70">
                             <article class="flex justify-between">
-                                <h1 class="flex items-center gap-2">
-                                    Subtotal
-                                    <small class="text-sm font-light"
-                                        >(Harga Kue x Jumlah Kue)</small
-                                    >
-                                </h1>
+                                <h1 class="flex items-center gap-2">Kue</h1>
                                 <h1>
                                     {{ formattedSubTotal[index] }}
                                 </h1>
@@ -416,7 +411,11 @@ const subtotal = () => {
         const cakePrice = item.cake?.base_price;
         const cakeSizePrice = item.cake_size?.price ?? 0;
 
-        return (cakePrice + cakeSizePrice) * props.cakeQuantities[item.id];
+        console.log(
+            `cakePrice: ${cakePrice} + cake size: ${cakeSizePrice} x ${props.cakeQuantities[item.id]}`,
+        );
+
+        return cakePrice + cakeSizePrice;
     });
 };
 

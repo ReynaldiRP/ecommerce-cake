@@ -2,10 +2,11 @@
     <App>
         <section class="min-h-screen w-full">
             <section
-                v-for="(order, index) in orders"
+                v-for="order in orders"
                 :key="order.order_code"
                 class="min-h-screen flex flex-col py-[132px] lg:py-28 px-10 gap-8"
             >
+                <!-- Order Details -->
                 <div class="flex gap-4">
                     <div class="flex flex-col gap-2 justify-center">
                         <h1 class="text-3xl font-bold w-fit">
@@ -22,15 +23,6 @@
                             <span class="font-bold">{{
                                 order.estimated_delivery
                             }}</span>
-                            <!--                            <EditOrderEstimationDate-->
-                            <!--                                v-model="estimationDate[index]"-->
-                            <!--                                :hidden-edit-order-estimation-date="-->
-                            <!--                                    showEditOrderEstimationDate-->
-                            <!--                                "-->
-                            <!--                                @update:hidden-edit-order-estimation-date="-->
-                            <!--                                    showEditOrderEstimationDate = $event-->
-                            <!--                                "-->
-                            <!--                            />-->
                         </p>
                         <p class="text-sm">
                             Metode Pengiriman:
@@ -46,6 +38,7 @@
                     </div>
                 </div>
 
+                <!-- Order status -->
                 <section class="w-full my-8 flex justify-center items-center">
                     <ul
                         class="timeline timeline-vertical lg:timeline-horizontal"
@@ -68,7 +61,7 @@
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
-                                    class="text-primary h-5 w-5"
+                                    class="text-primary-color h-5 w-5"
                                 >
                                     <path
                                         fill-rule="evenodd"
@@ -77,10 +70,10 @@
                                     />
                                 </svg>
                             </div>
-                            <hr class="bg-primary" />
+                            <hr />
                         </li>
                         <li class="h-[250px] lg:w-[250px]">
-                            <hr class="bg-primary" />
+                            <hr />
                             <div class="timeline-start">
                                 <div
                                     class="flex flex-col gap-1 lg:items-center"
@@ -98,7 +91,7 @@
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
-                                    class="text-primary h-5 w-5"
+                                    class="text-primary-color h-5 w-5"
                                 >
                                     <path
                                         fill-rule="evenodd"
@@ -107,10 +100,10 @@
                                     />
                                 </svg>
                             </div>
-                            <hr class="bg-primary" />
+                            <hr />
                         </li>
                         <li class="h-[250px] lg:w-[250px]">
-                            <hr class="bg-primary" />
+                            <hr />
                             <div class="timeline-end">
                                 <div
                                     class="flex flex-col gap-1 lg:items-center"
@@ -128,7 +121,7 @@
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
-                                    class="text-primary h-5 w-5"
+                                    class="text-primary-color h-5 w-5"
                                 >
                                     <path
                                         fill-rule="evenodd"
@@ -137,10 +130,10 @@
                                     />
                                 </svg>
                             </div>
-                            <hr class="bg-primary" />
+                            <hr />
                         </li>
                         <li>
-                            <hr class="bg-primary" />
+                            <hr />
                             <div class="timeline-start">
                                 <div
                                     class="flex flex-col gap-1 items-end lg:items-center"
@@ -159,7 +152,7 @@
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
-                                    class="text-primary h-5 w-5"
+                                    class="text-primary-color h-5 w-5"
                                 >
                                     <path
                                         fill-rule="evenodd"
@@ -172,6 +165,7 @@
                     </ul>
                 </section>
 
+                <!-- Order Item  -->
                 <div class="flex flex-col gap-4 mt-6">
                     <h1 class="text-2xl font-bold">Item ordered</h1>
                     <div
@@ -229,14 +223,7 @@
                             </div>
                             <p class="text-lg">{{ orderItem.quantity }}</p>
                             <p class="text-lg">
-                                {{
-                                    formatPrice(
-                                        totalPrice(
-                                            orderItem.price,
-                                            orderItem.quantity,
-                                        ),
-                                    )
-                                }}
+                                {{ formatPrice(orderItem.price) }}
                             </p>
                         </div>
                     </div>
@@ -258,8 +245,6 @@
 
 <script setup>
 import App from "@/Layouts/App.vue";
-import EditOrderEstimationDate from "@/Components/EditOrderEstimationDate.vue";
-import { ref } from "vue";
 
 const props = defineProps({
     orders: {
@@ -267,12 +252,6 @@ const props = defineProps({
         default: () => [],
     },
 });
-
-const estimationDate = ref(
-    props.orders.map((order) => order.estimated_delivery),
-);
-
-const showEditOrderEstimationDate = ref(false);
 
 /**
  * Formats the price of an item by multiplying the price with the quantity.
@@ -285,16 +264,5 @@ const formatPrice = (price = 0) => {
         style: "currency",
         currency: "IDR",
     }).format(price);
-};
-
-/**
- * Calculates the total price of an order by multiplying the price with the quantity.
- *
- * @param {number} price - The price of the item.
- * @param {number} quantity - The quantity of the item.
- * @returns {number} - The total price of the order.
- */
-const totalPrice = (price, quantity) => {
-    return price * quantity;
 };
 </script>
