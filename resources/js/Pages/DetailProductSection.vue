@@ -65,6 +65,7 @@
                     v-model="form.cake_size_id"
                     :cake-size="props.size"
                     :error-responses="errorResponses"
+                    :format-price="formatPrice"
                     @update-cake-size-price="handleUpdateCakeSizePrice"
                 />
                 <ProductQuantity

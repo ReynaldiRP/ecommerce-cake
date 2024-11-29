@@ -38,7 +38,7 @@ class Order extends Model
     {
         $totalRevenuePerMonth = $this->selectRaw('MONTH(orders.created_at) as month, SUM(total_price) as total_revenue')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
-            ->where('payments.payment_status', '=', 'terbayar')
+            ->where('payments.payment_status', '=', 'pesanan terbayar')
             ->whereYear('orders.created_at', $year)
             ->groupBy('month')
             ->orderBy('month')

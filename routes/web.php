@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AdminDashboard\OrderStatus\EditOrderStatus;
+use App\Http\Controllers\AdminDashboard\OrderStatus\UpdateOrderStatus;
 use App\Http\Controllers\AdminDashboard\ShowAllPaymentController;
 use App\Http\Controllers\AdminDashboard\ShowDashboardController;
 use Illuminate\Support\Facades\Route;
@@ -76,6 +78,10 @@ Route::middleware(['auth'])->group(function () {
 
             // Routes for showing all payments
             Route::get('/payments', ShowAllPaymentController::class)->name('payments.index');
+
+            // Route for edit and update order status
+            Route::get('/orders/edit-status/{order}', EditOrderStatus::class)->name('order.edit-status');
+            Route::patch('/orders/edit-status/{orderId}', UpdateOrderStatus::class)->name('order.update-status');
         });
     });
 

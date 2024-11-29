@@ -13,11 +13,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
+use Midtrans\Snap;
 
 
 class OrderController extends Controller
 {
-
     /**
      * Setup Midtrans configuration.
      *
@@ -34,6 +34,10 @@ class OrderController extends Controller
     }
 
 
+    /**
+     * Display a paginated list of orders in admin dashboard.
+     * @return Response The Inertia response containing the paginated orders.
+     */
     public function index(): Response
     {
         $orders = Order::query()->
@@ -89,7 +93,7 @@ class OrderController extends Controller
             'user_id' => auth()->id(),
             'order_code' => uniqid(),
             'total_price' => 0,
-            'status' => 'pesanan dikonfirmasi',
+            'status' => 'Pesanan dikonfirmasi',
             'user_address' => $data['user_address'],
             'cake_recipient' => $data['cake_recipient'],
             'estimated_delivery_date' => $data['estimated_delivery_date'],
@@ -110,7 +114,7 @@ class OrderController extends Controller
         try {
             // Validate the request data
             $orderData = $request->validate([
-                'estimated_delivery_date' => 'required|date|after:' . now()->addDays(2)->toDateString(),
+                'estimated_delivery_date' => 'required|date|after:' . now()->addDays(1)->toDateString(),
                 'user_address' => 'required|string|max:255',
                 'cake_recipient' => 'required|string|regex:/^[a-zA-Z\s]+$/|min:3|max:100',
                 'method_delivery' => 'required',
@@ -130,16 +134,18 @@ class OrderController extends Controller
             $totalPrice = 0;// Loop through each chart item and create an order item
 
             foreach ($chartItems as $chartItem) {
+                $cakePrice = $cakePrices[$chartItem['id']] / $cakeQuantities[$chartItem['id']];
+
                 $orderItemData = [
                     'order_id' => $order->id,
                     'cake_id' => $chartItem['cake_id'],
                     'cake_size_id' => $chartItem['cake_size_id'] ?? null,
                     'cake_flavour_id' => $chartItem['cake_flavour_id'] ?? null,
                     'quantity' => $cakeQuantities[$chartItem['id']],
-                    'price' => $cakePrices[$chartItem['id']],
+                    'price' => $cakePrice,
                     'note' => $cakeNotes[$chartItem['id']],
                 ];
-                
+
                 $orderItem = OrderItem::create($orderItemData);
 
                 // Insert pivot table data for cake toppings
@@ -154,8 +160,9 @@ class OrderController extends Controller
                 }
 
                 // Add the current item's total (price * quantity) to the total order price
-                $totalPrice += $orderItem->price;
+                $totalPrice += $orderItem->price * $orderItem->quantity;
             }
+
 
             // Update the order's total price after all items are added
             $order->update(['total_price' => $totalPrice]); // Extract ids from chartItems and delete the shopping chart items
@@ -164,7 +171,7 @@ class OrderController extends Controller
             ShoppingChartItem::query()->whereIn('id', $chartItemIds)->delete(); // Prepare response data
 
             $responseData = [
-                'order' => $order->load(['orderItems.cake', 'orderItems.cakeFlavour']),
+                'order' => $order->load(['orderItems.cake', 'orderItems.cakeFlavour', 'orderItems.cakeTopping', 'orderItems.cakeSize', 'orderItems.cake.category']),
             ];
 
             return response()->json([
@@ -208,27 +215,11 @@ class OrderController extends Controller
                 ], 400);
             }
 
-            // Populate items_details array for midtrans
-            $items = [];
-            $grossAmount = 0;
-            foreach ($orderDetails->data->order->order_items as $index => $orderItem) {
-                $itemTotalPrice = $request->input('grossAmount')[$index];
-                $items[] = [
-                    'id' => $orderItem->id,
-                    'name' => $orderItem->cake->name,
-                    'price' => $itemTotalPrice,
-                    'category' => $orderItem->cake->personalization_type,
-                    'quantity' => $orderItem->quantity,
-                ];
-
-                $grossAmount += $itemTotalPrice;
-            }
-
             // Create payload for midtrans
             $payload = [
                 'transaction_details' => [
                     'order_id' => $orderDetails->data->order->order_code,
-                    'gross_amount' => $grossAmount,
+                    'gross_amount' => $orderDetails->data->order->total_price,
                 ],
                 'customer_details' => [
                     'first_name' => $orderDetails->data->order->cake_recipient,
@@ -238,12 +229,22 @@ class OrderController extends Controller
                         'address' => $orderDetails->data->order->user_address
                     ]
                 ],
-                'item_details' => $items,
+                'item_details' => [],
             ];
 
 
+            foreach ($orderDetails->data->order->order_items as $orderItem) {
+                $payload['item_details'][] = [
+                    'id' => $orderItem->id,
+                    'price' => $orderItem->price,
+                    'quantity' => $orderItem->quantity,
+                    'name' => $orderItem->cake->name,
+                    'category' => $orderItem->cake->category?->name,
+                ];
+            }
+
             // Get Snap Payment Page URL
-            $paymentUrl = \Midtrans\Snap::createTransaction($payload)->redirect_url;
+            $paymentUrl = Snap::createTransaction($payload)->redirect_url;
 
             // Add payment URL to the order
             $order = Order::query()->findOrFail($orderDetails->data->order->id);
@@ -255,7 +256,8 @@ class OrderController extends Controller
             // Return the payment page URL
             return response()->json([
                 'success' => true,
-                'paymentUrl' => $paymentUrl
+                'paymentUrl' => $paymentUrl,
+                'payload' => $payload
             ]);
         } catch (\Throwable $th) {
             // Return error response

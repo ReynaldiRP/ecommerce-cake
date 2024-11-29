@@ -40,8 +40,9 @@
                                                 'menunggu pembayaran',
                                             'btn btn-success btn-outline':
                                                 payment.payment_status ===
-                                                'terbayar',
+                                                'pesanan terbayar',
                                         }"
+                                        @click="modalActive = true"
                                     >
                                         {{ payment.payment_status }}
                                     </div>

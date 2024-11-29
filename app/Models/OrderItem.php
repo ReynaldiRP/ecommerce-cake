@@ -33,7 +33,7 @@ class OrderItem extends Model
             ->join('cakes', 'order_items.cake_id', '=', 'cakes.id')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
-            ->where('payments.payment_status', '=', 'terbayar')
+            ->where('payments.payment_status', '=', 'pesanan terbayar')
             ->groupBy('cakes.name', 'cakes.image_url');
 
         // Use a subquery to find the max sold cake
@@ -46,7 +46,7 @@ class OrderItem extends Model
     }
 
     /**
-     * Get the total quantity of cakes sold for orders with a payment status of 'terbayar'.
+     * Get the total quantity of cakes sold for orders with a payment status of 'pesanan terbayar'.
      *
      * @return int The total quantity of cakes sold.
      */
@@ -54,7 +54,7 @@ class OrderItem extends Model
     {
         return (int)OrderItem::with('order', 'order.payment')
             ->whereHas('order.payment', function ($query) {
-                $query->where('payment_status', '=', 'terbayar');
+                $query->where('payment_status', '=', 'pesanan terbayar');
             })
             ->sum('quantity');
     }
@@ -65,7 +65,7 @@ class OrderItem extends Model
             ->join('cakes', 'order_items.cake_id', '=', 'cakes.id')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
-            ->where('payments.payment_status', '=', 'terbayar')
+            ->where('payments.payment_status', '=', 'pesanan terbayar')
             ->groupBy('cakes.personalization_type');
 
 
@@ -85,7 +85,7 @@ class OrderItem extends Model
             ->join('categories', 'cakes.category_id', '=', 'categories.id')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
-            ->where('payments.payment_status', '=', 'terbayar')
+            ->where('payments.payment_status', '=', 'pesanan terbayar')
             ->groupBy('categories.name');
 
         // Use a subquery to find the max sold cake

@@ -1,7 +1,13 @@
 <template>
     <section class="flex flex-col gap-4">
         <section class="flex justify-between">
-            <h2 class="text-2xl font-bold">Ukuran Kue</h2>
+            <div class="flex flex-col gap-1">
+                <h2 class="text-2xl font-bold">Ukuran Kue</h2>
+                <small class="text-primary-color font-medium"
+                    >Ukuran kue harus dipilih
+                    <span class="text-neutral-content">. Pilih 1</span></small
+                >
+            </div>
             <BaseAlert
                 v-if="errorResponses.cake_size_id"
                 class="w-fit"
@@ -16,7 +22,9 @@
                 :key="index"
                 :value="cake_size.id"
             >
-                {{ cake_size.size }} Cm
+                {{ cake_size.size }} Cm ({{
+                    props.formatPrice(cake_size.price)
+                }})
             </option>
         </select>
     </section>
@@ -29,6 +37,10 @@ import BaseAlert from "@/Components/BaseAlert.vue";
 const props = defineProps({
     cakeSize: {
         type: Array,
+        required: true,
+    },
+    formatPrice: {
+        type: Function,
         required: true,
     },
     errorResponses: {

@@ -411,10 +411,6 @@ const subtotal = () => {
         const cakePrice = item.cake?.base_price;
         const cakeSizePrice = item.cake_size?.price ?? 0;
 
-        console.log(
-            `cakePrice: ${cakePrice} + cake size: ${cakeSizePrice} x ${props.cakeQuantities[item.id]}`,
-        );
-
         return cakePrice + cakeSizePrice;
     });
 };
@@ -505,7 +501,6 @@ const submit = () => {
                 cake_recipient: form.cake_recipient,
                 method_delivery: form.method_delivery,
                 chartItems: props.chartItems,
-                grossAmount: temporaryTotalPrice(),
             },
             {
                 preserveState: true,
@@ -514,6 +509,7 @@ const submit = () => {
         )
         .then((response) => {
             if (response.data.success) {
+                console.log(response.data);
                 // Redirect to Midtrans payment page
                 window.location.href = response.data.paymentUrl;
             } else {
@@ -523,7 +519,7 @@ const submit = () => {
         })
         .catch((error) => {
             // Get only the first error message
-            const errors = error.response.data.errors;
+            const errors = error.response.data.error;
             errorResponses.value = Object.values(errors)[0][0];
         });
 };

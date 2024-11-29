@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ShoppingChart\StoreShoppingChartRequest;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\OrderStatusHistory;
 use App\Models\Payment;
+use App\Models\PaymentStatusHistory;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -62,37 +64,40 @@ class PaymentController extends Controller
                 $payment->payment_method = $notification->payment_type;
             }
 
-            // TODO: Add order status tracking here
-            // Tracking order status
-            $orderStatus = [
-                'pesanan dikonfirmasi' => 'Pesanan Anda dikonfirmasi oleh Dream Dessert.',
-                'pesanan diproses' => 'Pesanan Anda sedang diproses oleh Dream Dessert.',
-                'pesanan dikemas' => 'Pesanan Anda telah dikemas dan siap untuk dikirim atau diambil.',
-                'pesanan dikirim' => 'Pesanan Anda telah dikirim. Silakan tunggu pesanan Anda tiba.',
-                'pesanan diterima' => 'Pesanan Anda telah diterima. Terima kasih telah berbelanja di Dream Dessert.',
-                'pesanan kadaluarsa' => 'Pesanan Anda telah kedaluwarsa. Silakan pesan kembali.',
-                'pesanan dibatalkan' => 'Pesanan Anda telah dibatalkan. Silakan pesan kembali.'
+
+            $paymentStatus = [
+                'menunggu pembayaran' => 'Sistem sedang menunggu pembayaran dari pembeli',
+                'pesanan terbayar' => 'Pembayaran telah diterima oleh sistem',
+                'pembayaran kedaluwarsa' => 'Pembayaran tidak diterima oleh sistem dalam waktu yang ditentukan',
+                'pembayaran dibatalkan' => 'Pembayaran dibatalkan oleh pembeli',
             ];
 
             // Update the payment status based on the transaction status
             if ($transaction_status == 'pending') {
-                $payment->payment_status = 'menunggu pembayaran';
+                $payment->payment_status = 'Menunggu pembayaran';
             } elseif ($transaction_status == 'settlement') {
-                $payment->payment_status = 'terbayar';
+                $payment->payment_status = 'Pesanan terbayar';
             } elseif ($transaction_status == 'expire') {
-                $payment->payment_status = 'pembayaran kedaluwarsa';
+                $payment->payment_status = 'Pembayaran kedaluwarsa';
                 // set status order to expired
-                $order->status = 'pesanan kadaluwarsa';
+                $order->status = 'Pesanan kadaluwarsa';
                 $order->save();
             } elseif ($transaction_status == 'cancel') {
-                $payment->payment_status = 'pembayaran dibatalkan';
+                $payment->payment_status = 'Pembayaran dibatalkan';
                 // set status order to canceled
-                $order->status = 'pesanan dibatalkan';
+                $order->status = 'Pesanan dibatalkan';
                 $order->save();
             }
 
             // Save the payment (whether new or updated)
             $payment->save();
+
+            // Save the payment status history
+            $paymentStatusHistory = PaymentStatusHistory::create([
+                'payment_id' => $payment->id,
+                'status' => $payment->payment_status,
+                'description' => $paymentStatus[$payment->payment_status]
+            ]);
 
             // Send email notification
 //            Mail::to($order->user->email)->send(new PaymentEmail($order, $payment));

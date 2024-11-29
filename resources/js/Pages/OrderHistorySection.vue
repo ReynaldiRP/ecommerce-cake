@@ -352,16 +352,16 @@ const changeBadgeColorOrderOrPaymentStatus = (order) => {
     const status = checkOrderOrPaymentStatus(order);
 
     const statusMap = {
-        "pesanan dikonfirmasi": "badge-info",
-        "pesanan diproses": "badge-info",
-        "pesanan dikemas": "badge-info",
-        "pesanan dikirim": "badge-success",
-        "pesanan dibatalkan": "badge-error",
-        "pesanan kadaluwarsa": "badge-error",
-        "menunggu pembayaran": "badge-info",
-        "pesanan terbayar": "badge-success",
-        "pembayaran kedaluwarsa": "badge-error",
-        "pembayaran dibatalkan": "badge-error",
+        "Pesanan dikonfirmasi": "badge-info",
+        "Pesanan diproses": "badge-info",
+        "Pesanan dikemas": "badge-info",
+        "Pesanan dikirim": "badge-success",
+        "Pesanan dibatalkan": "badge-error",
+        "Pesanan kadaluwarsa": "badge-error",
+        "Menunggu pembayaran": "badge-info",
+        "Pesanan terbayar": "badge-success",
+        "Pembayaran kedaluwarsa": "badge-error",
+        "Pembayaran dibatalkan": "badge-error",
     };
 
     return statusMap[status] || "badge-neutral";
