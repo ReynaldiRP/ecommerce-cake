@@ -1,7 +1,24 @@
 <template>
+    <loading
+        v-model:active="isLoading"
+        :can-cancel="true"
+        color="#EBA9AE"
+        background-color="#B2BEB5"
+    />
+
     <LayoutAuthenticated>
         <SectionMain class="flex flex-col gap-4">
-            <h1 class="font-bold text-2xl">Tabel Order</h1>
+            <section class="flex items-center justify-between">
+                <h1 class="font-bold text-2xl">Tabel Order</h1>
+                <NotificationBar
+                    class="w-[30%]"
+                    v-if="message"
+                    color="success"
+                    :icon="mdiCheckCircle"
+                >
+                    {{ message }}
+                </NotificationBar>
+            </section>
 
             <CardBox title="Daftar Pesanan">
                 <div class="overflow-x-auto">
@@ -59,7 +76,7 @@
                                                     >
                                                 </div>
                                                 <select
-                                                    class="select select-ghost"
+                                                    class="select select-ghost select-bordered"
                                                     v-model="currentOrderStatus"
                                                 >
                                                     <option disabled>
@@ -74,6 +91,23 @@
                                                         {{ status.name }}
                                                     </option>
                                                 </select>
+                                            </label>
+                                            <label
+                                                v-show="
+                                                    currentOrderStatus ===
+                                                    'Pesanan diterima'
+                                                "
+                                                class="form-control w-full max-w-xs"
+                                            >
+                                                <div class="label">
+                                                    <span class="label-text">
+                                                        Bukti penerimaan pesanan
+                                                    </span>
+                                                </div>
+                                                <input
+                                                    type="file"
+                                                    class="file-input file-input-ghost file-input-bordered w-full max-w-xs"
+                                                />
                                             </label>
                                         </div>
                                     </CardBoxModal>
@@ -119,6 +153,10 @@ import CardBox from "@/Components/DashboardAdmin/CardBox.vue";
 import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
 import { computed, ref } from "vue";
 import axios from "axios";
+import Loading from "vue-loading-overlay";
+import { mdiCheckCircle } from "@mdi/js";
+import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
+import "vue-loading-overlay/dist/css/index.css";
 
 const props = defineProps({
     orders: Object,
@@ -128,6 +166,8 @@ const modalActive = ref(false);
 const ordersData = ref(props.orders.data);
 const orderId = ref("");
 const currentOrderStatus = ref("");
+const isLoading = ref(false);
+const message = ref("");
 
 const orderStatus = [
     {
@@ -170,9 +210,7 @@ const orderStatusColor = computed(() => {
  * @returns {Array} An array of order statuses excluding the current status.
  */
 const orderStatusFiltered = (order) => {
-    return orderStatus.filter(
-        (statusOrder, index) => statusOrder.name !== order.status[index],
-    );
+    return orderStatus.filter((status) => status.name !== order.status);
 };
 
 /**
@@ -216,8 +254,14 @@ const updateOrderStatus = async (order) => {
             (order) => order.id === response.data.order.id,
         );
 
-        ordersData.value[index].status = response.data.order.status;
-        modalActive.value = false;
+        isLoading.value = true;
+
+        setTimeout(() => {
+            isLoading.value = false;
+            modalActive.value = false;
+            ordersData.value[index].status = response.data.order.status;
+            message.value = response.data.message;
+        }, 2000);
     } catch (e) {
         console.error(e);
     }

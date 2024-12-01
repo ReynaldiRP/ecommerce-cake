@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminDashboard\OrderStatus\EditOrderStatus;
 use App\Http\Controllers\AdminDashboard\OrderStatus\UpdateOrderStatus;
 use App\Http\Controllers\AdminDashboard\ShowAllPaymentController;
 use App\Http\Controllers\AdminDashboard\ShowDashboardController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CakeController;
 use App\Http\Controllers\OrderController;
@@ -53,6 +54,11 @@ Route::middleware(['auth'])->group(function () {
             Route::resource('/cake', CakeController::class)
                 ->parameter('cake', 'dashboard_cake')
                 ->except('show'); // Cake management (excluding show)
+
+            // Resource routes for managing categories
+            Route::resource('/category', CategoryController::class)
+                ->parameter('category', 'dashboard_category')
+                ->except(['create', 'show']); // Category management (excluding show, create)
 
             // Resource routes for managing flavours
             Route::resource('/flavour', FlavourController::class)

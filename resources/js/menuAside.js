@@ -15,6 +15,10 @@ export default [
                 label: "Cake",
             },
             {
+                route: "category.index",
+                label: "Cake Category",
+            },
+            {
                 route: "size.index",
                 label: "Cake Size",
             },

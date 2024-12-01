@@ -45,12 +45,12 @@ class OrderController extends Controller
 
 
         $orders->getCollection()->transform(function ($order) {
-            $order->created_at = Carbon::parse($order->created_at)->toIso8601String();
-            $order->estimated_delivery_date = Carbon::parse($order->estimated_delivery_date)->isoFormat('dddd, MMMM Do YYYY');
+            // FIXME: fix the date format for the created_at
+            $order->created_at = Carbon::createFromFormat('Y-m-d H:i:s', $order->created_at);
+            $order->estimated_delivery_date = Carbon::parse($order->estimated_delivery_date)->isoFormat('dddd, Do MMMM YYYY');
             return $order;
         });
-
-
+        
         return Inertia::render('AdminDashboard/Order/Index', [
             'orders' => $orders,
         ]);
