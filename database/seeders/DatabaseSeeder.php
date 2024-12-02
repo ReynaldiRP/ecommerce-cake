@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use App\Models\Cake;
 use App\Models\Category;
+use App\Models\Discount;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Flavour;
@@ -43,5 +44,6 @@ class DatabaseSeeder extends Seeder
         CakeSize::factory(6)->create();
         Topping::factory(8)->create();
         Category::factory(6)->create();
+        Discount::factory(3)->create();
     }
 }

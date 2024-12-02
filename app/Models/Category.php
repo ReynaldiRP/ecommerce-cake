@@ -20,6 +20,6 @@ class Category extends Model
      */
     public function cake(): HasMany
     {
-        return $this->hasMany(Cake::class);
+        return $this->hasMany(Cake::class, 'category_id');
     }
 }

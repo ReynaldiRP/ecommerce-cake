@@ -21,6 +21,14 @@ return new class extends Migration
                     indexName: 'cakes_category_id_index',
                 )
                 ->onDelete('cascade');
+            $table->foreignId('discount_id')
+                ->nullable()
+                ->constrained(
+                    table: 'discounts',
+                    column: 'id',
+                    indexName: 'cakes_discount_id_index',
+                )
+                ->onDelete('set null');
             $table->string('image_url', 255)->nullable();
             $table->double('base_price', 8, 2);
             $table->text('description')->nullable();

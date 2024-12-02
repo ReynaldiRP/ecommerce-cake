@@ -1,4 +1,11 @@
 <template>
+    <loading
+        v-model:active="isLoading"
+        :can-cancel="true"
+        color="#EBA9AE"
+        background-color="#B2BEB5"
+    />
+
     <LayoutAuthenticated>
         <SectionMain class="flex flex-col gap-6">
             <div class="grid grid-cols-12">
@@ -167,6 +174,8 @@ import FormField from "@/Components/DashboardAdmin/FormField.vue";
 import { useForm } from "@inertiajs/inertia-vue3";
 import Pagination from "@/Components/Pagination.vue";
 import axios from "axios";
+import Loading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/css/index.css";
 
 const props = defineProps({
     cakeCategory: Object,
@@ -182,6 +191,7 @@ const categoryData = ref(props.cakeCategory.data);
 const modalActive = ref(false);
 const modalCreateActive = ref(false);
 const modalEditActive = ref(false);
+const isLoading = ref(false);
 
 /**
  * Open modal to create new cake category
@@ -203,8 +213,13 @@ const submit = () => {
         form.post(route("category.store"), {
             data: form.name,
             onSuccess: () => {
-                modalCreateActive.value = false;
-                form.reset("name");
+                isLoading.value = true;
+
+                setTimeout(() => {
+                    isLoading.value = false;
+                    modalCreateActive.value = false;
+                    form.reset("name");
+                }, 2000);
             },
         });
     } catch (error) {
@@ -251,10 +266,14 @@ const update = async (category) => {
         const itemIndex = categoryData.value.findIndex(
             (item) => item.id === response.data.category.id,
         );
+        isLoading.value = true;
 
-        categoryData.value[itemIndex].name = response.data.category.name;
-        form.reset("name");
-        modalEditActive.value = false;
+        setTimeout(() => {
+            isLoading.value = false;
+            modalEditActive.value = false;
+            categoryData.value[itemIndex].name = response.data.category.name;
+            form.reset("name");
+        }, 2000);
     } catch (error) {
         console.error(error);
     }

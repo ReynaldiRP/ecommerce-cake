@@ -137,6 +137,7 @@ class CakeFactory extends Factory
                     ->first()
                     ->id;
             },
+            'discount_id' => $this->faker->optional(0.2, null)->numberBetween(1, 3),
             'image_url' => function (array $attributes) use ($cakeImageUrl) {
                 $cakeName = $attributes['name'];
 

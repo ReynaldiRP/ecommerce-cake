@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Flavour;
 use App\Models\ShoppingChartItem;
 use App\Models\Topping;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -55,14 +56,15 @@ class FrontEndController extends Controller
     /**
      * Show the product page of the application.
      *
+     * @param Request $request The incoming HTTP request containing the query parameters.
      * @return Response
      */
     public function products(Request $request): Response
     {
-        $cakes = Cake::with('category');
+        $cakes = Cake::with(['category', 'discount']);
         $cakeCategories = Category::all();
 
-        // Check the filtered cake based on cake personalization type and cake size
+        // Check the filtered cake based on cake personalization type and cake category
         if ($request->has('personalization_type')) {
             $cakes->where('personalization_type', $request->personalization_type);
         }
@@ -77,7 +79,22 @@ class FrontEndController extends Controller
             $cakes->whereIn('category_id', $cakeCategoryIds);
         }
 
+
         $cakes = $cakes->paginate(12);
+
+        // transform the cake data to add discounted price
+        foreach ($cakes->items() as $cake) {
+            if ($cake->discount) {
+                $formattedEndDate = Carbon::parse($cake->discount->end_date)->isoFormat('dddd, Do MMMM YYYY');
+                $discountedPrice = $cake->base_price * (1 - ($cake->discount->discount_percentage / 100));
+
+                $cake->discounted_price = round($discountedPrice, 2);
+                $cake->discount->end_date = $formattedEndDate;
+            } else {
+                $cake->discounted_price = 0;
+            }
+        }
+
 
         // Show image with base url
         foreach ($cakes->items() as $cake) {
@@ -165,7 +182,7 @@ class FrontEndController extends Controller
                 $quantities = $request->input('cakeQuantity', [])[$cakeId] ?? 1;
                 $notes = $request->input('notes', [])[$cakeId] ?? '';
                 $prices = $request->input('cakesPrice', [])[$cakeId];
-                
+
                 $cakeQuantities[$cakeId] = $quantities;
                 $cakeNotes[$cakeId] = $notes;
                 $cakePrices[$cakeId] = $prices;

@@ -145,19 +145,13 @@
                         class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-11 place-items-center gap-4"
                     >
                         <CardLayout
-                            v-for="cakes in props.cakes.data"
+                            v-for="(cakes, index) in props.cakes.data"
                             :key="cakes.id"
                             class="col-span-2"
                         >
                             <CardItem
-                                :cake-id="cakes.id"
-                                :cake-name="cakes.name"
-                                :cake-category="cakes.category.name"
-                                :cake-price="formatPrice(cakes.base_price)"
-                                :image-url="cakes.image_url"
-                                :cake-personalization-type="
-                                    cakes.personalization_type
-                                "
+                                :cakes="cakes"
+                                :format-price="formatPrice"
                             />
                         </CardLayout>
                     </section>
