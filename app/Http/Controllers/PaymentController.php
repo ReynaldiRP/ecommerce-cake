@@ -121,18 +121,48 @@ class PaymentController extends Controller
      */
     public function cancelOrder(string $orderId): JsonResponse
     {
-        $client = new Client();
-        $response = $client->request('POST', "https://api.sandbox.midtrans.com/v2/$orderId/cancel", [
-            'headers' => [
-                'accept' => 'application/json',
-                'Authorization' => 'Basic ' . base64_encode(config('services.midtrans.serverKey') . ':'),
-            ],
-        ]);
+        try {
+            $client = new Client();
+            $response = $client->request('POST', "https://api.sandbox.midtrans.com/v2/$orderId/cancel", [
+                'headers' => [
+                    'accept' => 'application/json',
+                    'Authorization' => 'Basic ' . base64_encode(config('services.midtrans.serverKey') . ':'),
+                ],
+            ]);
 
-        return response()->json([
-            'message' => 'Order has been canceled successfully.',
-            'data' => json_decode($response->getBody()->getContents()),
-        ]);
+            $responseBody = json_decode($response->getBody()->getContents());
+
+            // Check if user canceled the order before choose payment method
+            if ($responseBody->status_code == '404') {
+                // Manually set order status to cancel
+                $order = Order::query()->where('order_code', $orderId)->firstOrFail();
+
+                if (!$order) {
+                    return response()->json([
+                        'message' => 'Order not found.',
+                    ], 404);
+                }
+
+                $order->status = 'Pesanan dibatalkan';
+                $order->save();
+
+                return response()->json([
+                    'message' => 'Order has been canceled successfully.',
+                    'data' => $order,
+                ]);
+            } else {
+                return response()->json([
+                    'message' => 'Order has been canceled successfully.',
+                    'data' => $responseBody,
+                ]);
+            }
+
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while canceling the order.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

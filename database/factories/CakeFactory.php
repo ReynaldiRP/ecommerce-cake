@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Cake;
 use App\Models\Category;
+use App\Models\Discount;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Log;
 
@@ -171,6 +172,19 @@ class CakeFactory extends Factory
                 }
 
                 return null;
+            },
+            'discounted_price' => function (array $attributes) {
+                if ($attributes['discount_id'] === null) {
+                    return 0;
+                }
+
+                $discountPercentage = Discount::query()
+                    ->where('id', '=', $attributes['discount_id'])
+                    ->first()
+                    ->discount_percentage;
+
+                return $attributes['base_price'] * (1 - $discountPercentage / 100);
+
             },
             'description' => function (array $attributes) use ($cakeDescription) {
                 $cakeName = $attributes['name'];

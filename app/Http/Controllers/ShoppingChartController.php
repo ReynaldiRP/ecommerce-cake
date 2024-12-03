@@ -65,13 +65,12 @@ class ShoppingChartController extends Controller
             // transform the cart item with discounted price
             $cartItemWithRelations = $cartItemWithRelations->get()->transform(function ($item) {
                 if ($item->cake->discount) {
-                    $item->discounted_price = $item->price - ($item->price * $item->cake->discount->discount_percentage / 100);
+                    $item->discounted_price = $item->cake->price - ($item->cake->price * $item->cake->discount->discount_percentage / 100);
                 }
 
                 return $item;
             })->find($cartItem->id);
 
-            dd($cartItemWithRelations);
 
             return response()->json([
                 'cartItem' => [

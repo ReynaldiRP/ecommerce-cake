@@ -189,15 +189,19 @@
                             <button
                                 v-if="
                                     order.transaction_status ===
-                                    'menunggu pembayaran'
+                                        'Menunggu pembayaran' ||
+                                    order.order_status ===
+                                        'Pesanan dikonfirmasi'
                                 "
-                                @click="handleCancelOrder(order.transaction_id)"
+                                @click="handleCancelOrder(order.order_code)"
                                 class="btn btn-outline btn-error font-semibold"
                             >
                                 Batalkan Pesanan
                             </button>
                             <section
-                                v-if="order.order_status !== 'kadaluwarsa'"
+                                v-if="
+                                    order.order_status !== 'Pesanan kadaluwarsa'
+                                "
                             >
                                 <inertia-link
                                     v-if="showPayNowButton(order)"
@@ -386,7 +390,7 @@ const checkOrderOrPaymentStatus = (order) =>
 const showPayNowButton = (order) => {
     const status = checkOrderOrPaymentStatus(order);
     return (
-        status === "menunggu pembayaran" || status === "pesanan dikonfirmasi"
+        status === "Menunggu pembayaran" || status === "Pesanan dikonfirmasi"
     );
 };
 
@@ -486,10 +490,10 @@ const handleCancelOrder = async (orderId) => {
 
         // Update the order items after cancel order
         originalOrderItems.value.forEach((order) => {
-            if (order.transaction_id === orderId) {
-                order.transaction_status = "pembayaran dibatalkan";
-                order.order_status = "pesanan dibatalkan";
-            }
+            order.order_status = "Pesanan dibatalkan";
+            order.transaction_status != null
+                ? (order.transaction_status = "Pembayaran dibatalkan")
+                : null;
         });
     } catch (e) {
         console.error("Error cancel order again:", e);

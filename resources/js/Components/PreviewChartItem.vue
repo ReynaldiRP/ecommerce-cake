@@ -96,6 +96,8 @@ const props = defineProps({
     },
 });
 
+console.log(props.chart);
+
 /**
  * Handles the click event to navigate to the detail shopping chart page.
  *

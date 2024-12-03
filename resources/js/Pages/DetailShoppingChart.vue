@@ -127,11 +127,7 @@
                                         <p
                                             class="text-lg font-medium text-primary-color"
                                         >
-                                            {{
-                                                formatPrice(
-                                                    totalPriceEachItem[item.id],
-                                                )
-                                            }}
+                                            {{ formattedSubTotal[index] }}
                                         </p>
                                         <section class="flex gap-2">
                                             <p
@@ -260,8 +256,6 @@ const page = usePage();
 const chartItems = ref(
     page.props.value.shoppingChartItems?.original.cart ?? [],
 );
-
-console.log(chartItems.value);
 
 const selectAllItem = ref(false);
 const selectCake = ref({});

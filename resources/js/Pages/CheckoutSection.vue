@@ -408,8 +408,15 @@ const formatPrice = (price = 0) => {
  */
 const subtotal = () => {
     return props.chartItems.map((item) => {
-        const cakePrice = item.cake?.base_price;
+        let cakePrice = item.cake?.base_price;
         const cakeSizePrice = item.cake_size?.price ?? 0;
+
+        // check if the cake has a discount
+        if (item.cake?.discount) {
+            const discount = item.cake.discount?.discount_percentage;
+            const discountPrice = (cakePrice * discount) / 100;
+            cakePrice -= discountPrice;
+        }
 
         return cakePrice + cakeSizePrice;
     });
@@ -417,10 +424,16 @@ const subtotal = () => {
 
 const temporaryTotalPrice = () => {
     return props.chartItems.map((item) => {
-        const cakePrice = item.cake?.base_price;
+        let cakePrice = item.cake?.base_price;
         const cakeSizePrice = item.cake_size?.price ?? 0;
         const cakeFlavourPrice = item.cake_flavour?.price ?? 0;
         const toppingPrice = getToppingPriceBasedOnChartItems(item);
+
+        if (item.cake?.discount) {
+            const discount = item.cake.discount?.discount_percentage;
+            const discountPrice = (cakePrice * discount) / 100;
+            cakePrice -= discountPrice;
+        }
 
         return cakePrice + cakeSizePrice + cakeFlavourPrice + toppingPrice;
     });

@@ -182,12 +182,17 @@ const handleUpdateCakeSizePrice = (size) => {
  * @return {object} An object containing the cake details and the calculated total price
  */
 const totalPrice = computed(() => {
-    const totalCakePrice =
-        (props.cake.base_price +
-            sizePrice.value +
-            flavourPrice.value +
-            toppingPrice.value) *
-        quantityPrice.value;
+    if (!props.cake.discount) {
+        return {
+            ...props.cake,
+            totalCakePrice:
+                (props.cake.base_price +
+                    sizePrice.value +
+                    flavourPrice.value +
+                    toppingPrice.value) *
+                quantityPrice.value,
+        };
+    }
 
     const totalDiscountedPrice =
         (props.cake.discounted_price +
@@ -210,6 +215,13 @@ const form = useForm({
     price: totalPrice.value.totalCakePrice,
     cake_size_id: selected.size,
 });
+
+watch(
+    () => totalPrice.value.totalCakePrice,
+    (newPrice) => {
+        form.price = newPrice;
+    },
+);
 
 const isCakeCustomized = computed(() => {
     return props.cake?.personalization_type === "customized";
@@ -243,7 +255,6 @@ const formatPrice = (price = 0) => {
  * @return {Promise<void>}
  */
 const addItemToChart = async () => {
-    console.log(form.data());
     try {
         const response = await axios.post(route("add-chart-item"), form);
 

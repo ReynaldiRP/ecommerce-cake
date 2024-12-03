@@ -179,7 +179,7 @@ class FrontEndController extends Controller
 
 
             // Fetch the selected cakes
-            $cakes = ShoppingChartItem::with(['cake', 'cakeSize'])->whereIn(
+            $cakes = ShoppingChartItem::with(['cake', 'cake.discount', 'cakeSize'])->whereIn(
                 'id',
                 $shoppingChartItemIds
             )->get();
@@ -191,16 +191,18 @@ class FrontEndController extends Controller
             $cakeNotes = [];
 
             // Iterate through each cake in the collection
-            foreach ($cakes as $cake) {
+            foreach ($cakes as $index => $cake) {
                 $cakeId = $cake->id;
 
                 $quantities = $request->input('cakeQuantity', [])[$cakeId] ?? 1;
                 $notes = $request->input('notes', [])[$cakeId] ?? '';
                 $prices = $request->input('cakesPrice', [])[$cakeId];
 
+
                 $cakeQuantities[$cakeId] = $quantities;
                 $cakeNotes[$cakeId] = $notes;
                 $cakePrices[$cakeId] = $prices;
+
             }
 
             // Store cake prices, quantities and notes in the session
@@ -221,10 +223,12 @@ class FrontEndController extends Controller
         $cakeQuantities = $request->session()->get('cakeQuantities', []);
         $cakeNotes = $request->session()->get('cakeNotes', []);
 
+
         // Fetch chart items by the given array of IDs
         $chartItems = ShoppingChartItem::with([
             'cart',
             'cake',
+            'cake.discount',
             'cakeSize',
             'cakeFlavour',
             'cakeTopping'
