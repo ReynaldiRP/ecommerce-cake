@@ -97,9 +97,7 @@
                             <div
                                 v-if="order.transaction_status"
                                 class="badge badge-outline font-medium text-lg"
-                                :class="
-                                    changeBadgeColorOrderOrPaymentStatus(order)
-                                "
+                                :class="changeBadgeColorPaymentStatus(order)"
                             >
                                 {{ order.transaction_status ?? "" }}
                             </div>
@@ -108,9 +106,7 @@
                             </p>
                             <div
                                 class="badge badge-outline font-medium text-lg"
-                                :class="
-                                    changeBadgeColorOrderOrPaymentStatus(order)
-                                "
+                                :class="changeBadgeColorOrderStatus(order)"
                             >
                                 {{ order.order_status }}
                             </div>
@@ -190,8 +186,9 @@
                                 v-if="
                                     order.transaction_status ===
                                         'Menunggu pembayaran' ||
-                                    order.order_status ===
-                                        'Pesanan dikonfirmasi'
+                                    (order.order_status ===
+                                        'Pesanan dikonfirmasi' &&
+                                        order.transaction_status === null)
                                 "
                                 @click="handleCancelOrder(order.order_code)"
                                 class="btn btn-outline btn-error font-semibold"
@@ -346,29 +343,39 @@ const fetchFilteredData = async () => {
 watch([selectedTransactionStatus, selectedTransactionDate], fetchFilteredData);
 
 /**
- * Changes the badge color based on the order or payment status.
+ * Changes the badge color based on the order status.
  *
- * @param {Object} order - The order object to check the status of.
- * @returns {string} - The corresponding badge color class.
- *
+ * @param {Object} order - The order object to check.
+ * @returns {string} - The class name for the badge color.
  */
-const changeBadgeColorOrderOrPaymentStatus = (order) => {
-    const status = checkOrderOrPaymentStatus(order);
-
-    const statusMap = {
+const changeBadgeColorOrderStatus = (order) => {
+    const orderStatusMap = {
         "Pesanan dikonfirmasi": "badge-info",
         "Pesanan diproses": "badge-info",
         "Pesanan dikemas": "badge-info",
         "Pesanan dikirim": "badge-success",
         "Pesanan dibatalkan": "badge-error",
         "Pesanan kadaluwarsa": "badge-error",
+    };
+
+    return orderStatusMap[order.order_status] || "badge-neutral";
+};
+
+/**
+ * Changes the badge color based on the payment status.
+ *
+ * @param {Object} order - The order object to check.
+ * @returns {string} - The class name for the badge color.
+ */
+const changeBadgeColorPaymentStatus = (order) => {
+    const paymentStatusMap = {
         "Menunggu pembayaran": "badge-info",
         "Pesanan terbayar": "badge-success",
         "Pembayaran kedaluwarsa": "badge-error",
         "Pembayaran dibatalkan": "badge-error",
     };
 
-    return statusMap[status] || "badge-neutral";
+    return paymentStatusMap[order.transaction_status] || "badge-neutral";
 };
 
 /**

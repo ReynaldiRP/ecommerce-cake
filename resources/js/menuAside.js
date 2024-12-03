@@ -11,12 +11,16 @@ export default [
         icon: mdiViewList,
         menu: [
             {
-                route: "cake.index",
-                label: "Cake",
-            },
-            {
                 route: "category.index",
                 label: "Cake Category",
+            },
+            {
+                route: "discount.index",
+                label: "Cake Discount",
+            },
+            {
+                route: "cake.index",
+                label: "Cake",
             },
             {
                 route: "size.index",

@@ -16,9 +16,6 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('local')) {
             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
             $this->app->register(TelescopeServiceProvider::class);
-
-            config(['app.locale' => 'id']);
-            Carbon::setLocale('id');
         }
 
     }
@@ -28,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        config(['app.locale' => 'id']);
+        Carbon::setLocale('id');
         if (env('APP_ENV') !== 'local') {
             URL::forceScheme('https');
         }

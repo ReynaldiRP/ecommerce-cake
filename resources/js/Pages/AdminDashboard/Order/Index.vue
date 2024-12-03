@@ -46,7 +46,7 @@
                                 <td>{{ order.estimated_delivery_date }}</td>
                                 <td>{{ order.user_address }}</td>
                                 <td>{{ order.cake_recipient }}</td>
-                                <td>{{ order.total_price }}</td>
+                                <td>{{ formatPrice(order.total_price) }}</td>
                                 <td>
                                     <div
                                         class="btn btn-outline"
@@ -157,11 +157,13 @@ import Loading from "vue-loading-overlay";
 import { mdiCheckCircle } from "@mdi/js";
 import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import "vue-loading-overlay/dist/css/index.css";
+import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
 
 const props = defineProps({
     orders: Object,
 });
 
+const { formatPrice } = useAdminDashboardStore();
 const modalActive = ref(false);
 const ordersData = ref(props.orders.data);
 const orderId = ref("");

@@ -34,14 +34,12 @@
                                 <td>{{ payment.payment_method }}</td>
                                 <td>
                                     <div
-                                        :class="{
-                                            'btn btn-info btn-outline':
-                                                payment.payment_status ===
-                                                'menunggu pembayaran',
-                                            'btn btn-success btn-outline':
-                                                payment.payment_status ===
-                                                'pesanan terbayar',
-                                        }"
+                                        class="btn btn-outline"
+                                        :class="
+                                            changeTransactionStatusColor[
+                                                payment.payment_status
+                                            ]
+                                        "
                                         @click="modalActive = true"
                                     >
                                         {{ payment.payment_status }}
@@ -82,8 +80,17 @@ import LayoutAuthenticated from "@/Layouts/Admin.vue";
 import SectionMain from "@/Components/DashboardAdmin/SectionMain.vue";
 import CardBox from "@/Components/DashboardAdmin/CardBox.vue";
 import Pagination from "@/Components/Pagination.vue";
+import { computed } from "vue";
 
 const props = defineProps({
     payments: Object,
+});
+
+const changeTransactionStatusColor = computed(() => {
+    return {
+        "Menunggu pembayaran": "btn-info",
+        "Pembayaran dibatalkan": "btn-error",
+        "Pesanan terbayar": "btn-success",
+    };
 });
 </script>

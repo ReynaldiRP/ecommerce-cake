@@ -66,10 +66,10 @@ class PaymentController extends Controller
 
 
             $paymentStatus = [
-                'menunggu pembayaran' => 'Sistem sedang menunggu pembayaran dari pembeli',
-                'pesanan terbayar' => 'Pembayaran telah diterima oleh sistem',
-                'pembayaran kedaluwarsa' => 'Pembayaran tidak diterima oleh sistem dalam waktu yang ditentukan',
-                'pembayaran dibatalkan' => 'Pembayaran dibatalkan oleh pembeli',
+                'Menunggu pembayaran' => 'Sistem sedang menunggu pembayaran dari pembeli',
+                'Pesanan terbayar' => 'Pembayaran telah diterima oleh sistem',
+                'Pembayaran kedaluwarsa' => 'Pembayaran tidak diterima oleh sistem dalam waktu yang ditentukan',
+                'Pembayaran dibatalkan' => 'Pembayaran dibatalkan oleh pembeli',
             ];
 
             // Update the payment status based on the transaction status

@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminDashboard\OrderStatus\UpdateOrderStatus;
 use App\Http\Controllers\AdminDashboard\ShowAllPaymentController;
 use App\Http\Controllers\AdminDashboard\ShowDashboardController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DiscountController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CakeController;
 use App\Http\Controllers\OrderController;
@@ -60,6 +61,11 @@ Route::middleware(['auth'])->group(function () {
                 ->parameter('category', 'dashboard_category')
                 ->except(['create', 'show']); // Category management (excluding show, create)
 
+            // Resources for managing discounts
+            Route::resource('/discount', DiscountController::class)
+                ->parameter('discount', 'dashboard_discount')
+                ->except('show'); // Discount management (excluding show)
+
             // Resource routes for managing flavours
             Route::resource('/flavour', FlavourController::class)
                 ->parameter('flavour', 'dashboard_flavour')
@@ -74,6 +80,7 @@ Route::middleware(['auth'])->group(function () {
             Route::resource('/topping', ToppingController::class)
                 ->parameter('topping', 'dashboard_topping')
                 ->except('show'); // Topping management (excluding show)
+
 
             // Routes for managing orders
             Route::controller(OrderController::class)->group(function () {

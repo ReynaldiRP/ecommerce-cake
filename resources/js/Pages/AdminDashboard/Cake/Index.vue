@@ -152,8 +152,8 @@ import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
 import Pagination from "@/Components/Pagination.vue";
 import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import VueEasyLightbox from "vue-easy-lightbox";
-import { mdiPlus, mdiCheckCircle } from "@mdi/js";
-import { ref, computed } from "vue";
+import { mdiCheckCircle, mdiPlus } from "@mdi/js";
+import { ref } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
 
 import Loading from "vue-loading-overlay";

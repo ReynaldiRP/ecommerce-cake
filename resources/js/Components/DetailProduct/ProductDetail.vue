@@ -17,7 +17,7 @@
                     >
                 </div>
             </section>
-            <p v-else class="text-lg font-bold">
+            <p v-else class="text-2xl font-bold">
                 {{ formatPrice(cake.totalCakePrice) }}
             </p>
         </section>

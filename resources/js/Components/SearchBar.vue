@@ -159,7 +159,6 @@ onBeforeUnmount(() => {
  * Formats the price of an item by multiplying the price with the quantity.
  *
  * @param {number} price - The price of the item.
- * @param {number} quantity - The quantity of the item.
  * @returns {string} - The formatted price.
  */
 const formatPrice = (price = 0) => {

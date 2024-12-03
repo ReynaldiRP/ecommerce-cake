@@ -1,0 +1,162 @@
+<template>
+    <loading
+        v-model:active="isLoading"
+        :can-cancel="true"
+        color="#EBA9AE"
+        background-color="#B2BEB5"
+    />
+
+    <LayoutAuthenticated>
+        <SectionMain class="flex flex-col gap-6">
+            <div class="grid grid-cols-12">
+                <div class="col-span-4 flex items-center gap-2">
+                    <h1 class="font-bold text-2xl">Tabel Diskon</h1>
+                    <BaseButton
+                        color="success"
+                        :href="route('discount.create')"
+                        :icon="mdiPlus"
+                        :icon-size="16"
+                    />
+                </div>
+                <NotificationBar
+                    class="lg:col-span-8"
+                    v-if="$page.props.flash.success"
+                    color="success"
+                    :icon="mdiCheckCircle"
+                >
+                    {{ $page.props.flash.success }}
+                </NotificationBar>
+            </div>
+            <CardBox>
+                <div class="overflow-x-auto">
+                    <table class="table table-lg">
+                        <!-- head -->
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Nama Diskon</th>
+                                <th>Total Diskon</th>
+                                <th>Tanggal Mulai Diskon</th>
+                                <th>Tanggal Berakhir Diskon</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="(discount, index) in props.discounts
+                                    .data"
+                                :key="discount.id"
+                            >
+                                <th>{{ index + 1 }}</th>
+                                <td>
+                                    {{ discount.name }}
+                                </td>
+                                <td>
+                                    {{
+                                        formatDiscount(
+                                            discount.discount_percentage,
+                                        )
+                                    }}
+                                </td>
+                                <td>{{ discount.start_date }}</td>
+                                <td>{{ discount.end_date }}</td>
+                                <td
+                                    class="flex lg:justify-start justify-end gap-2"
+                                >
+                                    <inertia-link
+                                        :href="
+                                            route('discount.edit', discount.id)
+                                        "
+                                        class="btn btn-info"
+                                        >Edit</inertia-link
+                                    >
+                                    <button
+                                        class="btn btn-error"
+                                        @click="modalActive = true"
+                                    >
+                                        Delete
+                                    </button>
+                                    <CardBoxModal
+                                        v-model="modalActive"
+                                        class="backdrop-contrast-50 text-start"
+                                        title="Cakes"
+                                        button="danger"
+                                        button-label="Confirm"
+                                        :click-handler="
+                                            () => deleteHandler(discount.id)
+                                        "
+                                        has-cancel
+                                    >
+                                        <p>
+                                            Apakah kamu yakin untuk menghapus
+                                            data diskon ini?
+                                        </p>
+                                    </CardBoxModal>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <template #footer>
+                    <div class="flex justify-between items-center">
+                        <Pagination
+                            class="btn-outline"
+                            :links="props.discounts.links"
+                            :next-page-url="props.discounts.next_page_url"
+                            :previous-page-url="props.discounts.prev_page_url"
+                        />
+                        <p>
+                            Page
+                            <span>{{ props.discounts.current_page }}</span> of
+                            <span>{{ props.discounts.last_page }}</span>
+                        </p>
+                    </div>
+                </template>
+            </CardBox>
+        </SectionMain>
+    </LayoutAuthenticated>
+</template>
+
+<script setup>
+import CardBox from "@/Components/DashboardAdmin/CardBox.vue";
+import SectionMain from "@/Components/DashboardAdmin/SectionMain.vue";
+import Pagination from "@/Components/Pagination.vue";
+import LayoutAuthenticated from "@/Layouts/Admin.vue";
+import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
+import { ref } from "vue";
+import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
+import { mdiCheckCircle, mdiPlus } from "@mdi/js";
+import BaseButton from "@/Components/DashboardAdmin/BaseButton.vue";
+import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
+import { Inertia } from "@inertiajs/inertia";
+import Loading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/css/index.css";
+
+const props = defineProps({
+    discounts: Object,
+});
+const { formatDiscount } = useAdminDashboardStore();
+
+const modalActive = ref(false);
+const isLoading = ref(false);
+
+/**
+ * Delete handler for deleting discount data
+ *
+ * @param {number} id
+ * @returns {void}
+ */
+const deleteHandler = (id) => {
+    try {
+        isLoading.value = true;
+
+        setTimeout(() => {
+            Inertia.delete(route("discount.destroy", id));
+            modalActive.value = false;
+            isLoading.value = false;
+        }, 2000);
+    } catch (e) {
+        console.error(e);
+    }
+};
+</script>
