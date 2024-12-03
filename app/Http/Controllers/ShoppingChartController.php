@@ -59,8 +59,19 @@ class ShoppingChartController extends Controller
                 }
             }
 
-            $cartItemWithRelations = ShoppingChartItem::with('cart', 'cake', 'cakeFlavour', 'cakeTopping')
-                ->find($cartItem->id);
+            $cartItemWithRelations = ShoppingChartItem::with('cart', 'cake', 'cake.discount', 'cakeFlavour', 'cakeTopping');
+
+            // TODO: Implement the discount logic here
+            // transform the cart item with discounted price
+            $cartItemWithRelations = $cartItemWithRelations->get()->transform(function ($item) {
+                if ($item->cake->discount) {
+                    $item->discounted_price = $item->price - ($item->price * $item->cake->discount->discount_percentage / 100);
+                }
+
+                return $item;
+            })->find($cartItem->id);
+
+            dd($cartItemWithRelations);
 
             return response()->json([
                 'cartItem' => [
@@ -115,7 +126,7 @@ class ShoppingChartController extends Controller
             ]);
         }
 
-        $cartItem = ShoppingChartItem::with('cart', 'cake', 'cakeSize', 'cakeFlavour', 'cakeTopping')->where('shopping_chart_id', '=', $cart->first()->id)->get();
+        $cartItem = ShoppingChartItem::with('cart', 'cake', 'cake.discount', 'cakeSize', 'cakeFlavour', 'cakeTopping')->where('shopping_chart_id', '=', $cart->first()->id)->get();
 
         return response()->json([
             'cart' => $cartItem,

@@ -34,7 +34,23 @@
                                 Filter
                             </div>
                             <div class="collapse-content">
-                                <FilterItem filtering-name="Tipe Kue">
+                                <FilterItem filtering-name="Penawaran">
+                                    <BaseRadio
+                                        v-for="(promo, index) in cakePromoType"
+                                        v-model="filteredData.selectedPromoId"
+                                        :key="index"
+                                        :label="promo.name"
+                                        :id="promo.id"
+                                        :total-data="
+                                            geTotalCakeWithDiscount[promo.name]
+                                        "
+                                    />
+                                </FilterItem>
+
+                                <FilterItem
+                                    class="my-4"
+                                    filtering-name="Tipe Kue"
+                                >
                                     <BaseRadio
                                         v-for="(
                                             cakePersonalizationType, index
@@ -52,6 +68,7 @@
                                         "
                                     />
                                 </FilterItem>
+
                                 <FilterItem
                                     class="my-4"
                                     filtering-name="Kategori Kue"
@@ -91,6 +108,19 @@
                     </section>
 
                     <FilterLayout class="hidden lg:flex">
+                        <FilterItem filtering-name="Penawaran">
+                            <BaseRadio
+                                v-for="(promo, index) in cakePromoType"
+                                v-model="filteredData.selectedPromoId"
+                                :key="index"
+                                :label="promo.name"
+                                :id="promo.id"
+                                :total-data="
+                                    geTotalCakeWithDiscount[promo.name]
+                                "
+                            />
+                        </FilterItem>
+
                         <FilterItem filtering-name="Tipe Kue">
                             <BaseRadio
                                 v-for="(
@@ -145,7 +175,7 @@
                         class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-11 place-items-center gap-4"
                     >
                         <CardLayout
-                            v-for="(cakes, index) in props.cakes.data"
+                            v-for="cakes in props.cakes.data"
                             :key="cakes.id"
                             class="col-span-2"
                         >
@@ -258,6 +288,25 @@ const totalCakeCategory = computed(() => {
     return counts;
 });
 
+const geTotalCakeWithDiscount = computed(() => {
+    const counts = {
+        discount: 0,
+        "non-discount": 0,
+    };
+
+    props.cakes.data.filter((cake) => {
+        const cakePromoType = cake.discount ? "discount" : "non-discount";
+
+        if (cakePromoType && counts.hasOwnProperty(cakePromoType)) {
+            counts[cakePromoType]++;
+        }
+
+        return cakePromoType;
+    });
+
+    return counts;
+});
+
 /**
  * Formats a given price into a currency string using the Indonesian Rupiah currency format.
  *
@@ -282,6 +331,17 @@ const cakePersonalizationType = reactive([
     },
 ]);
 
+const cakePromoType = reactive([
+    {
+        id: 1,
+        name: "discount",
+    },
+    {
+        id: 2,
+        name: "non-discount",
+    },
+]);
+
 /**
  * Retrieves the total data for a specific cake type.
  *
@@ -296,6 +356,7 @@ const getTotalDataCakeType = (name) => {
 
 let filteredData = reactive({
     selectedPersonalizationId: null,
+    selectedPromoId: null,
     selectedCakeCategoryId: [],
 });
 
@@ -309,10 +370,18 @@ const applyFilters = () => {
         (item) => item.id === filteredData.selectedPersonalizationId,
     );
 
+    const selectedPromo = cakePromoType.find(
+        (item) => item.id === filteredData.selectedPromoId,
+    );
+
     const params = {};
 
     if (selectedPersonalization) {
         params.personalization_type = selectedPersonalization.name;
+    }
+
+    if (selectedPromo) {
+        params.discount = selectedPromo.name;
     }
 
     if (filteredData.selectedCakeCategoryId.length > 0) {
@@ -337,6 +406,7 @@ const applyFilters = () => {
  */
 const clearFilters = () => {
     filteredData.selectedPersonalizationId = null;
+    filteredData.selectedPromoId = null;
     filteredData.selectedCakeCategoryId = [];
 
     Inertia.get(

@@ -31,6 +31,7 @@ return new class extends Migration
                 ->onDelete('set null');
             $table->string('image_url', 255)->nullable();
             $table->double('base_price', 8, 2);
+            $table->double('discounted_price', 8, 2)->default(0);
             $table->text('description')->nullable();
             $table->enum('personalization_type', ['customized', 'non-customized']);
             $table->timestamps();

@@ -3,7 +3,6 @@
         <label class="flex items-center gap-2 cursor-pointer">
             <input
                 type="radio"
-                name="radio-1"
                 v-model="model"
                 :value="id"
                 class="radio btn-outline checked:bg-pink-400 checked:outline-white"

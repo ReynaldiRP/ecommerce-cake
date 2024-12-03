@@ -64,7 +64,7 @@ class FrontEndController extends Controller
         $cakes = Cake::with(['category', 'discount']);
         $cakeCategories = Category::all();
 
-        // Check the filtered cake based on cake personalization type and cake category
+        // Check the filtered cake based on cake personalization type, cake category and cake discount
         if ($request->has('personalization_type')) {
             $cakes->where('personalization_type', $request->personalization_type);
         }
@@ -79,6 +79,11 @@ class FrontEndController extends Controller
             $cakes->whereIn('category_id', $cakeCategoryIds);
         }
 
+        if ($request->input('discount') === 'discount') {
+            $cakes->where('discount_id', '!=', null);
+        } elseif ($request->input('discount') === 'non-discount') {
+            $cakes->where('discount_id', '=', null);
+        }
 
         $cakes = $cakes->paginate(12);
 
@@ -120,7 +125,18 @@ class FrontEndController extends Controller
      */
     public function detailProduct($cakeId): Response
     {
-        $cake = Cake::with('category')->findOrFail($cakeId);
+        $cake = Cake::with(['category', 'discount'])->findOrFail($cakeId);
+
+        // Transform the cake data to add discounted price
+        if ($cake->discount) {
+            $formattedEndDate = Carbon::parse($cake->discount->end_date)->isoFormat('dddd, Do MMMM YYYY');
+            $discountedPrice = $cake->base_price * (1 - ($cake->discount->discount_percentage / 100));
+
+            $cake->discounted_price = round($discountedPrice, 2);
+            $cake->discount->end_date = $formattedEndDate;
+        } else {
+            $cake->discounted_price = 0;
+        }
 
         if ($cake->image_url) {
             $cake->image_url = asset($cake->image_url);
@@ -131,7 +147,6 @@ class FrontEndController extends Controller
         $cakeSize = CakeSize::query()->orderBy('size')->get();
         $topping = Topping::all();
         $flavour = Flavour::all();
-
 
 
         return Inertia::render('DetailProductSection', [

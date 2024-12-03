@@ -1,14 +1,26 @@
 <template>
     <section class="flex flex-col gap-2">
         <h1 class="text-3xl font-bold">
-            {{ cake.name
-            }}<span v-show="cake.cake_size?.size">
-                ({{ cake.cake_size?.size }}Cm)</span
-            >
+            {{ cake.name }}
         </h1>
-        <h2 class="text-2xl font-bold">
-            {{ formatPrice(cake.totalCakePrice) }}
-        </h2>
+        <section>
+            <section v-if="cake.discount">
+                <p class="text-2xl font-bold text-red-500">
+                    {{ formatPrice(cake.totalCakePrice) }}
+                </p>
+                <div class="flex gap-1 items-center">
+                    <p class="text-xl font-light line-through">
+                        {{ formatPrice(cake.base_price) }}
+                    </p>
+                    <span class="text-lg text-red-400"
+                        >({{ cake.discount.discount_percentage }}%)</span
+                    >
+                </div>
+            </section>
+            <p v-else class="text-lg font-bold">
+                {{ formatPrice(cake.totalCakePrice) }}
+            </p>
+        </section>
         <p class="text-lg text-justify">
             {{ cake.description }}
         </p>

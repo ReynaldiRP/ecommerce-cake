@@ -122,9 +122,44 @@
                                         item.cake_topping.length >= 1,
                                 }"
                             >
-                                <p class="text-lg font-medium lg:ms-auto">
-                                    {{ formattedSubTotal[index] }}
-                                </p>
+                                <section>
+                                    <section v-if="item.cake.discount">
+                                        <p
+                                            class="text-lg font-medium text-primary-color"
+                                        >
+                                            {{
+                                                formatPrice(
+                                                    totalPriceEachItem[item.id],
+                                                )
+                                            }}
+                                        </p>
+                                        <section class="flex gap-2">
+                                            <p
+                                                class="text-lg font-medium line-through"
+                                            >
+                                                {{
+                                                    formatPrice(
+                                                        item.cake.base_price,
+                                                    )
+                                                }}
+                                            </p>
+                                            <p
+                                                class="text-lg font-medium text-primary-color"
+                                            >
+                                                ({{
+                                                    item.cake.discount
+                                                        .discount_percentage
+                                                }}%)
+                                            </p>
+                                        </section>
+                                    </section>
+                                    <p
+                                        v-else
+                                        class="text-lg font-medium lg:ms-auto"
+                                    >
+                                        {{ formattedSubTotal[index] }}
+                                    </p>
+                                </section>
                                 <div
                                     class="flex flex-row-reverse items-center gap-4"
                                 >
@@ -226,6 +261,8 @@ const chartItems = ref(
     page.props.value.shoppingChartItems?.original.cart ?? [],
 );
 
+console.log(chartItems.value);
+
 const selectAllItem = ref(false);
 const selectCake = ref({});
 const totalPrice = ref(0);
@@ -272,7 +309,6 @@ onMounted(() => {
  */
 const subtotal = () => {
     return chartItems.value.map((item) => {
-        const cakePrice = item.cake?.base_price;
         const flavourPrice = item.cake_flavour?.price ?? 0;
         const toppingPrice = item.cake_topping.reduce(
             (total, topping) => total + topping.price,
@@ -280,7 +316,23 @@ const subtotal = () => {
         );
         const cakeSizePrice = item.cake_size?.price ?? 0;
 
-        return cakePrice + flavourPrice + toppingPrice + cakeSizePrice;
+        // check if cake has discount
+        if (!item.cake.discount) {
+            const cakePrice = item.cake?.base_price;
+
+            return cakePrice + flavourPrice + toppingPrice + cakeSizePrice;
+        } else {
+            const discountedCakePrice =
+                item.cake?.base_price *
+                (1 - item.cake.discount.discount_percentage / 100);
+
+            return (
+                discountedCakePrice +
+                flavourPrice +
+                toppingPrice +
+                cakeSizePrice
+            );
+        }
     });
 };
 
@@ -315,8 +367,6 @@ watch(
                 );
             }, 0);
 
-        // FIXME: This is not working as expected, the total price for each item is not updating
-        // Update the total price for each item
         totalPriceEachItem.value = chartItems.value.reduce((total, item) => {
             const itemIndex = chartItems.value.findIndex(
                 (chartItem) => chartItem.id === item.id,

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
@@ -15,7 +16,11 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('local')) {
             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
             $this->app->register(TelescopeServiceProvider::class);
+
+            config(['app.locale' => 'id']);
+            Carbon::setLocale('id');
         }
+
     }
 
     /**

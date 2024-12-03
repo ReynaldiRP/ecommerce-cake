@@ -92,7 +92,7 @@
                     <div class="flex items-center gap-1 me-2 font-bold">
                         <p>{{ items.quantity }}</p>
                         <p>x</p>
-                        <p>Rp{{ items.price }}</p>
+                        <p>{{ formatPrice(items.price) }}</p>
                     </div>
                 </inertia-link>
             </div>
@@ -224,4 +224,17 @@ const checkCurrentUrl = (e) => {
 watch(pageWidth, (newWidth) => {
     isMobileDisplayed.value = newWidth <= 640;
 });
+
+/**
+ * Formats a given price into a currency string using the Indonesian Rupiah currency format.
+ *
+ * @param {number} price - The price to be formatted.
+ * @return {string} The formatted currency string.
+ */
+const formatPrice = (price = 0) => {
+    return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+    }).format(price);
+};
 </script>
