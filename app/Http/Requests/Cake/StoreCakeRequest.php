@@ -23,7 +23,8 @@ class StoreCakeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cake_size_id' => 'nullable',
+            'category_id' => 'nullable',
+            'discount_id' => 'nullable',
             'name' => 'required|regex:/^[a-zA-Z\s\-]+$/|min:3|max:255',
             'base_price' => 'required|numeric|min:1|max:1000000',
             'description' => 'nullable',

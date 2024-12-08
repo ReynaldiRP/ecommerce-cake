@@ -90,7 +90,7 @@ class FrontEndController extends Controller
         // transform the cake data to add discounted price
         foreach ($cakes->items() as $cake) {
             if ($cake->discount) {
-                $formattedEndDate = Carbon::parse($cake->discount->end_date)->isoFormat('dddd, Do MMMM YYYY');
+                $formattedEndDate = Carbon::parse($cake->discount->end_date)->format('d F Y');
                 $discountedPrice = $cake->base_price * (1 - ($cake->discount->discount_percentage / 100));
 
                 $cake->discounted_price = round($discountedPrice, 2);

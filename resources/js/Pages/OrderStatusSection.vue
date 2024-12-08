@@ -38,112 +38,36 @@
                     </div>
                 </div>
 
+                <!--   TODO: Implement the order and payment status history in timeline   -->
                 <!-- Order status -->
                 <section class="w-full my-8 flex justify-center items-center">
                     <ul
                         class="timeline timeline-vertical lg:timeline-horizontal"
                     >
-                        <li class="h-[250px] lg:w-[250px]">
-                            <div class="timeline-end lg:timeline-start">
-                                <div
-                                    class="flex flex-col gap-1 lg:items-center"
-                                >
-                                    <span class="text-lg font-medium"
-                                        >Order Confirmed</span
-                                    >
-                                    <span class="text-sm font-light"
-                                        >08.00, 24 February 2024</span
-                                    >
-                                </div>
-                            </div>
-                            <div class="timeline-middle">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20"
-                                    fill="currentColor"
-                                    class="text-primary-color h-5 w-5"
-                                >
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                                        clip-rule="evenodd"
-                                    />
-                                </svg>
-                            </div>
-                            <hr />
-                        </li>
-                        <li class="h-[250px] lg:w-[250px]">
-                            <hr />
-                            <div class="timeline-start">
-                                <div
-                                    class="flex flex-col gap-1 lg:items-center"
-                                >
-                                    <span class="text-lg font-medium"
-                                        >Order Process</span
-                                    >
-                                    <span class="text-sm font-light"
-                                        >08.00, 24 February 2024</span
-                                    >
-                                </div>
-                            </div>
-                            <div class="timeline-middle">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20"
-                                    fill="currentColor"
-                                    class="text-primary-color h-5 w-5"
-                                >
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                                        clip-rule="evenodd"
-                                    />
-                                </svg>
-                            </div>
-                            <hr />
-                        </li>
-                        <li class="h-[250px] lg:w-[250px]">
-                            <hr />
-                            <div class="timeline-end">
-                                <div
-                                    class="flex flex-col gap-1 lg:items-center"
-                                >
-                                    <span class="text-lg font-medium"
-                                        >Order Packaging</span
-                                    >
-                                    <span class="text-sm font-light"
-                                        >08.00, 24 February 2024</span
-                                    >
-                                </div>
-                            </div>
-                            <div class="timeline-middle">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20"
-                                    fill="currentColor"
-                                    class="text-primary-color h-5 w-5"
-                                >
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                                        clip-rule="evenodd"
-                                    />
-                                </svg>
-                            </div>
-                            <hr />
-                        </li>
-                        <li>
-                            <hr />
-                            <div class="timeline-start">
-                                <div
-                                    class="flex flex-col gap-1 items-end lg:items-center"
-                                >
+                        <li
+                            v-for="(status, index) in combinedStatusHistory"
+                            :key="`${status.history_status}-${status.id}`"
+                            class="h-[250px] lg:w-[250px]"
+                        >
+                            <hr v-if="combinedStatusHistory[index - 1]" />
+                            <div
+                                :class="
+                                    index % 2 !== 0
+                                        ? 'timeline-start'
+                                        : 'timeline-end'
+                                "
+                            >
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-lg font-medium">{{
+                                        status.status
+                                    }}</span>
                                     <span
-                                        class="text-lg text-end lg:text-center font-medium"
-                                        >Order Ready for Pickup/Delivery</span
+                                        class="text-sm text-justify font-light"
+                                        >{{ status.description }}</span
                                     >
-                                    <span class="text-sm font-light"
-                                        >08.00, 24 February 2024</span
+                                    <span
+                                        class="text-sm text-start font-light"
+                                        >{{ status.created_at }}</span
                                     >
                                 </div>
                             </div>
@@ -161,6 +85,7 @@
                                     />
                                 </svg>
                             </div>
+                            <hr v-if="combinedStatusHistory[index + 1]" />
                         </li>
                     </ul>
                 </section>
@@ -245,13 +170,63 @@
 
 <script setup>
 import App from "@/Layouts/App.vue";
+import { computed } from "vue";
 
 const props = defineProps({
     orders: {
         type: Array,
         default: () => [],
     },
+    statusHistory: Object,
 });
+
+const parsedDate = (dateString) => {
+    const [time, date] = dateString.split(", ");
+    const [hourMinute, second] = time.split(":");
+    const [hour, minute] = hourMinute.split(".").map(Number);
+
+    const months = {
+        Januari: 0,
+        Februari: 1,
+        Maret: 2,
+        April: 3,
+        Mei: 4,
+        Juni: 5,
+        Juli: 6,
+        Agustus: 7,
+        September: 8,
+        Oktober: 9,
+        November: 10,
+        Desember: 11,
+    };
+
+    const [day, monthName, year] = date.split(" ");
+    const month = months[monthName];
+
+    return new Date(year, month, day, hour, minute, Number(second));
+};
+
+const combinedStatusHistory = computed(() => {
+    const paymentStatuses = props.statusHistory.map((status) =>
+        status.payment_statuses.map((paymentStatus) => ({
+            ...paymentStatus,
+            history_status: "payment_status",
+        })),
+    );
+
+    const orderStatuses = props.statusHistory.map((status) =>
+        status.order_statuses.map((orderStatus) => ({
+            ...orderStatus,
+            history_status: "order_status",
+        })),
+    );
+
+    return [...paymentStatuses, ...orderStatuses].flat().sort((a, b) => {
+        return parsedDate(a.created_at) - parsedDate(b.created_at);
+    });
+});
+
+console.log(combinedStatusHistory.value);
 
 /**
  * Formats the price of an item by multiplying the price with the quantity.

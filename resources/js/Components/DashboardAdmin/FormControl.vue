@@ -45,7 +45,7 @@ const props = defineProps({
         default: "",
     },
     optionLabel: {
-        type: String,
+        type: String || Number,
         default: null,
     },
     optionValue: {

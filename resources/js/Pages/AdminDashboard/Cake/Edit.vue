@@ -40,7 +40,7 @@
                     </NotificationBar>
                     <FormField label="Cake Category">
                         <FormControl
-                            v-model="form.cake_category"
+                            v-model="form.category_id"
                             option-label="name"
                             option-value="id"
                             option-default="Choose the cake category"
@@ -50,11 +50,29 @@
                         />
                     </FormField>
                     <NotificationBar
-                        v-if="props.errors.size"
+                        v-if="props.errors.category_id"
                         color="danger"
                         :icon="mdiAlertCircle"
                     >
-                        {{ props.errors.size }}
+                        {{ props.errors.category_id }}
+                    </NotificationBar>
+                    <FormField label="Cake Discount">
+                        <FormControl
+                            v-model="form.discount_id"
+                            option-label="discount_percentage"
+                            option-value="id"
+                            option-default="Pilih diskon kue"
+                            :options="props.discounts"
+                            :icon="mdiCakeVariant"
+                            type="select"
+                        />
+                    </FormField>
+                    <NotificationBar
+                        v-if="props.errors.discount_id"
+                        color="danger"
+                        :icon="mdiAlertCircle"
+                    >
+                        {{ props.errors.discount_id }}
                     </NotificationBar>
                     <FormField label="Cake Base Price">
                         <FormControl
@@ -142,6 +160,9 @@ const props = defineProps({
     cakeCategory: {
         type: Object,
     },
+    discounts: {
+        type: Object,
+    },
     errors: {
         type: Object,
     },
@@ -167,7 +188,8 @@ const form = useForm({
     name: props.cakes.name,
     base_price: props.cakes.base_price,
     image_url: "",
-    cake_category: props.cakes.category_id,
+    category_id: props.cakes.category_id,
+    discount_id: props.cakes.discount_id,
     personalization_type: props.cakes.personalization_type,
 });
 
@@ -181,7 +203,8 @@ const submit = () => {
             name: form.name,
             base_price: form.base_price,
             image_url: form.image_url,
-            cake_size_id: form.cake_size_id,
+            category_id: form.category_id,
+            discount_id: form.discount_id,
             personalization_type: form.personalization_type,
         });
     }, 3000);

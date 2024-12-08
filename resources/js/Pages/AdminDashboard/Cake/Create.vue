@@ -27,7 +27,7 @@
             </div>
             <form @submit.prevent="submit">
                 <CardBox>
-                    <FormField label="Cake Name">
+                    <FormField label="Nama Kue">
                         <FormControl
                             v-model="form.name"
                             placeholder="Base Cake"
@@ -41,9 +41,9 @@
                     >
                         {{ props.errors.name }}
                     </NotificationBar>
-                    <FormField label="Cake Size">
+                    <FormField label="Kategori Kue">
                         <FormControl
-                            v-model="form.cake_category_id"
+                            v-model="form.category_id"
                             :options="props.cakeCategory"
                             option-label="name"
                             option-value="id"
@@ -53,13 +53,31 @@
                         />
                     </FormField>
                     <NotificationBar
-                        v-if="props.errors.size"
+                        v-if="props.errors.category_id"
                         color="danger"
                         :icon="mdiAlertCircle"
                     >
-                        {{ props.errors.size }}
+                        {{ props.errors.category_id }}
                     </NotificationBar>
-                    <FormField label="Cake Base Price">
+                    <FormField label="Diskon Kue">
+                        <FormControl
+                            v-model="form.discount_id"
+                            :options="props.discounts"
+                            option-label="discount_percentage"
+                            option-value="id"
+                            option-default="Choose cake discount"
+                            :icon="mdiCakeVariant"
+                            type="select"
+                        />
+                    </FormField>
+                    <NotificationBar
+                        v-if="props.errors.discount_id"
+                        color="danger"
+                        :icon="mdiAlertCircle"
+                    >
+                        {{ props.errors.discount_id }}
+                    </NotificationBar>
+                    <FormField label="Harga Kue">
                         <FormControl
                             v-model="form.base_price"
                             placeholder="Rp5000"
@@ -74,7 +92,7 @@
                     >
                         {{ props.errors.base_price }}
                     </NotificationBar>
-                    <FormField label="Cake Base Price">
+                    <FormField label="Deskripsi Kue">
                         <FormControl
                             v-model="form.description"
                             placeholder="Cakes description"
@@ -88,7 +106,7 @@
                     >
                         {{ props.errors.description }}
                     </NotificationBar>
-                    <FormField label="Cake Image">
+                    <FormField label="Foto Kue">
                         <FormControl
                             v-model="form.image_url"
                             @input="form.image_url = $event.target.files[0]"
@@ -103,7 +121,7 @@
                     >
                         {{ props.errors.image_url }}
                     </NotificationBar>
-                    <FormField label="Cake Personalization Type">
+                    <FormField label="Jenis Kue">
                         <FormControl
                             v-model="form.personalization_type"
                             :options="cakePersonalizationType"
@@ -146,20 +164,26 @@ import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import { ref } from "vue";
 import { mdiCakeVariant, mdiImageArea, mdiCash, mdiAlertCircle } from "@mdi/js";
 import { useForm } from "@inertiajs/inertia-vue3";
-
+import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
 
 const isLoading = ref(false);
+const { formatDiscount } = useAdminDashboardStore();
 
 const props = defineProps({
     cakeCategory: {
+        type: Object,
+    },
+    discounts: {
         type: Object,
     },
     errors: {
         type: Object,
     },
 });
+
+console.log(props.discounts);
 
 const cakePersonalizationType = [
     {
@@ -177,7 +201,8 @@ const form = useForm({
     base_price: 0,
     description: null,
     image_url: "",
-    cake_category_id: "",
+    category_id: "",
+    discount_id: "",
     personalization_type: "",
 });
 

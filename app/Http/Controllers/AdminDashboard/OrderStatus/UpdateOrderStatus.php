@@ -28,7 +28,6 @@ class UpdateOrderStatus extends Controller
             $order->update($data);
 
             $orderStatus = [
-                'Pesanan dikonfirmasi' => 'Pesanan telah dikonfirmasi oleh penjual',
                 'Pesanan diproses' => 'Pesanan sedang diproses oleh penjual',
                 'Pesanan dikemas' => 'Pesanan sedang dikemas oleh penjual untuk dikirim atau diambil',
                 'Pesanan dikirim' => 'Pesanan sedang dalam perjalanan menuju tujuan',

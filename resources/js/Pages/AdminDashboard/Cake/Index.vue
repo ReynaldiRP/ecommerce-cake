@@ -44,6 +44,7 @@
                                 <th>Cake Name</th>
                                 <th>Cake Category</th>
                                 <th>Cake Price</th>
+                                <th>Cake Discount</th>
                                 <th>Cake Description</th>
                                 <th>Cake Image</th>
                                 <th>Cake Personalization Type</th>
@@ -64,7 +65,16 @@
                                             : ""
                                     }}
                                 </td>
-                                <td>{{ cakes.base_price }}</td>
+                                <td>
+                                    {{ store.formatPrice(cakes.base_price) }}
+                                </td>
+                                <td>
+                                    {{
+                                        store.formatDiscount(
+                                            cakes.discount?.discount_percentage,
+                                        )
+                                    }}
+                                </td>
                                 <td>
                                     {{ descriptionLength(cakes.description) }}
                                 </td>
@@ -155,6 +165,7 @@ import VueEasyLightbox from "vue-easy-lightbox";
 import { mdiCheckCircle, mdiPlus } from "@mdi/js";
 import { ref } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
+import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
 
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
@@ -165,6 +176,7 @@ const props = defineProps({
     },
 });
 
+const store = useAdminDashboardStore();
 const isLoading = ref(false);
 const modalActive = ref(false);
 const visibleRef = ref(false);

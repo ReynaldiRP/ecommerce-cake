@@ -12,6 +12,7 @@ class Cake extends Model
     use HasFactory;
     protected $fillable = [
         'category_id',
+        'discount_id',
         'name',
         'image_url',
         'base_price',

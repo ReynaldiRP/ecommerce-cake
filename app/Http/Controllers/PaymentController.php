@@ -8,6 +8,7 @@ use App\Models\OrderItem;
 use App\Models\OrderStatusHistory;
 use App\Models\Payment;
 use App\Models\PaymentStatusHistory;
+use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -335,6 +336,7 @@ class PaymentController extends Controller
             'payment'
         ])->where('order_code', $orderCode)->get();
 
+
         // Transform the order items
         $orderItems = $orders->map(function ($order) {
             // Calculate the total price for each item
@@ -343,6 +345,8 @@ class PaymentController extends Controller
             });
 
             return [
+                'order_id' => $order->id,
+                'payment_id' => $order->payment?->id,
                 'order_code' => $order->order_code,
                 'order_status' => $order->status,
                 'transaction_status' => $order->payment?->payment_status,
@@ -367,8 +371,39 @@ class PaymentController extends Controller
             ];
         });
 
+        // get id payment
+        $paymentId = $orderItems->first()['payment_id'];
+
+        // Get the payment and order status history
+        $statusHistory = Payment::with(['paymentStatusHistories', 'order', 'order.orderStatusHistories'])
+            ->where('id', $paymentId)
+            ->get();
+
+
+        // Mapping the payment and order status history
+        $statusHistory = $statusHistory->map(function ($status) {
+            return [
+                'payment_statuses' => $status->paymentStatusHistories->map(function ($item) {
+                    return [
+                        'status' => $item->status,
+                        'description' => $item->description,
+                        'created_at' => Carbon::parse($item->created_at)->translatedFormat('H.i:s, d F Y'),
+                    ];
+                }),
+                'order_statuses' => $status->order->orderStatusHistories->map(function ($item) {
+                    return [
+                        'status' => $item->status,
+                        'description' => $item->description,
+                        'created_at' => Carbon::parse($item->created_at)->translatedFormat('H.i:s, d F Y'),
+                    ];
+                }),
+            ];
+        });
+
+
         return Inertia::render('OrderStatusSection', [
             'orders' => $orderItems,
+            'statusHistory' => $statusHistory,
         ]);
     }
 
