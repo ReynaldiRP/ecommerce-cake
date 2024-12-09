@@ -120,7 +120,7 @@
                                         Detail order
                                     </button>
                                 </td>
-                                <td>{{ order.created_at }}</td>
+                                <td>{{ formattedDate(order.created_at) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -163,7 +163,7 @@ const props = defineProps({
     orders: Object,
 });
 
-const { formatPrice } = useAdminDashboardStore();
+const { formatPrice, formattedDate } = useAdminDashboardStore();
 const modalActive = ref(false);
 const ordersData = ref(props.orders.data);
 const orderId = ref("");
@@ -238,6 +238,11 @@ const editOrderStatus = async (order) => {
     }
 };
 
+/**
+ * Updates the status of the given order.
+ *
+ * @param {Object} order - The order object containing the order ID.
+ */
 const updateOrderStatus = async (order) => {
     try {
         const response = await axios.patch(

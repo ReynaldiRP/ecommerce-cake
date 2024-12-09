@@ -207,19 +207,23 @@ const parsedDate = (dateString) => {
 };
 
 const combinedStatusHistory = computed(() => {
-    const paymentStatuses = props.statusHistory.map((status) =>
-        status.payment_statuses.map((paymentStatus) => ({
-            ...paymentStatus,
-            history_status: "payment_status",
-        })),
-    );
-
     const orderStatuses = props.statusHistory.map((status) =>
         status.order_statuses.map((orderStatus) => ({
             ...orderStatus,
             history_status: "order_status",
         })),
     );
+
+    const paymentStatuses = props.statusHistory.map((status) => {
+        if (status.payment_status) {
+            return status.payment_status.map((paymentStatus) => ({
+                ...paymentStatus,
+                history_status: "payment_status",
+            }));
+        }
+
+        return [];
+    });
 
     return [...paymentStatuses, ...orderStatuses].flat().sort((a, b) => {
         return parsedDate(a.created_at) - parsedDate(b.created_at);

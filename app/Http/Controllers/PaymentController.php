@@ -147,11 +147,30 @@ class PaymentController extends Controller
                 $order->status = 'Pesanan dibatalkan';
                 $order->save();
 
+                // Save the order status history
+                OrderStatusHistory::create([
+                    'order_id' => $order->id,
+                    'status' => $order->status,
+                    'description' => 'Pesanan dibatalkan oleh pembeli'
+                ]);
+
                 return response()->json([
                     'message' => 'Order has been canceled successfully.',
                     'data' => $order,
                 ]);
             } else {
+                // save the order status to canceled
+                $order = Order::query()->where('order_code', $orderId)->firstOrFail();
+                $order->status = 'Pesanan dibatalkan';
+                $order->save();
+
+                // Save the order status history
+                OrderStatusHistory::create([
+                    'order_id' => $order->id,
+                    'status' => $order->status,
+                    'description' => 'Pesanan dibatalkan oleh pembeli'
+                ]);
+
                 return response()->json([
                     'message' => 'Order has been canceled successfully.',
                     'data' => $responseBody,
@@ -371,26 +390,26 @@ class PaymentController extends Controller
             ];
         });
 
-        // get id payment
-        $paymentId = $orderItems->first()['payment_id'];
+        // get id order
+        $orderId = $orderItems->first()['order_id'];
 
         // Get the payment and order status history
-        $statusHistory = Payment::with(['paymentStatusHistories', 'order', 'order.orderStatusHistories'])
-            ->where('id', $paymentId)
+        $statusHistory = Order::with(['payment', 'payment.paymentStatusHistories', 'orderStatusHistories'])
+            ->where('id', $orderId)
             ->get();
 
 
         // Mapping the payment and order status history
         $statusHistory = $statusHistory->map(function ($status) {
             return [
-                'payment_statuses' => $status->paymentStatusHistories->map(function ($item) {
+                'order_statuses' => $status->orderStatusHistories->map(function ($item) {
                     return [
                         'status' => $item->status,
                         'description' => $item->description,
                         'created_at' => Carbon::parse($item->created_at)->translatedFormat('H.i:s, d F Y'),
                     ];
                 }),
-                'order_statuses' => $status->order->orderStatusHistories->map(function ($item) {
+                'payment_statuses' => $status->payment?->paymentStatusHistories->map(function ($item) {
                     return [
                         'status' => $item->status,
                         'description' => $item->description,

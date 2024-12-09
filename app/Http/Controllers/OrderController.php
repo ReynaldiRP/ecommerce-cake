@@ -44,12 +44,9 @@ class OrderController extends Controller
         orderBy('created_at', 'desc')->paginate(5);
 
 
-        $orders->getCollection()->transform(function ($order) {
-            // FIXME: fix the date format for the created_at
-            $order->created_at = Carbon::createFromFormat('Y-m-d H:i:s', $order->created_at)->format('d F Y, H:i:s');
+        foreach ($orders as $order) {
             $order->estimated_delivery_date = Carbon::parse($order->estimated_delivery_date)->isoFormat('dddd, Do MMMM YYYY');
-            return $order;
-        });
+        }
 
 
         return Inertia::render('AdminDashboard/Order/Index', [
@@ -128,7 +125,7 @@ class OrderController extends Controller
             ]);
 
             $order = $this->createOrder($orderData);
-            
+
             // create order status history
             $order->orderStatusHistories()->create([
                 'order_id' => $order->id,
