@@ -27,7 +27,6 @@ class UserFactory extends Factory
         $gender = ['M', 'F'];
 
         return [
-            'role_id' => fake()->randomElement(Role::pluck('id')),
             'username' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'password' => static::$password ??= Hash::make('12345678'),
