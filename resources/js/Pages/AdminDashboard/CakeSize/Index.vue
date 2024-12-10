@@ -47,7 +47,7 @@
                             >
                                 <th>{{ index + 1 }}</th>
                                 <td>{{ cakeSize.size }}(Cm)</td>
-                                <td>Rp{{ cakeSize.price }}</td>
+                                <td>{{ formatPrice(cakeSize.price) }}</td>
                                 <td
                                     class="flex lg:justify-start justify-end gap-2"
                                 >
@@ -113,6 +113,7 @@ import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
 import { ref } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
+import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
 
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
@@ -127,6 +128,8 @@ const props = defineProps({
         type: Object,
     },
 });
+
+const { formatPrice } = useAdminDashboardStore();
 
 const deleteHandler = (cakeSizeId) => {
     isLoading.value = true;

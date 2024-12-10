@@ -1,9 +1,8 @@
 <script setup>
-import { ref, computed } from "vue";
-import { Link } from "@inertiajs/inertia-vue3";
+import { computed, ref } from "vue";
+import { Link, usePage } from "@inertiajs/inertia-vue3";
 import { mdiMinus, mdiPlus } from "@mdi/js";
 import { getButtonColor } from "@/colors.js";
-import { useDarkModeStore } from "../../Stores/darkMode";
 import BaseIcon from "@/Components/DashboardAdmin/BaseIcon.vue";
 import AsideMenuList from "@/Components/DashboardAdmin/AsideMenuList.vue";
 
@@ -14,6 +13,9 @@ const props = defineProps({
     },
     isDropdownList: Boolean,
 });
+
+const page = usePage();
+const currentUserRole = page.props.value.user.role;
 
 const itemHref = computed(() =>
     props.item.route ? route(props.item.route) : props.item.href,
@@ -34,6 +36,23 @@ const asideMenuItemActiveStyle = computed(() =>
 );
 
 const isDropdownActive = ref(false);
+
+/**
+ * Check if the user has permission to access the menu item
+ *
+ * @type {ComputedRef<*|boolean>}
+ */
+const checkRolePermission = computed(() => {
+    if (props.item.role) {
+        return props.item.role.includes(currentUserRole);
+    }
+
+    return true;
+});
+
+console.log(
+    `User with role ${currentUserRole} has permission to access the menu item ${props.item.label}: ${checkRolePermission.value}`,
+);
 
 const componentClass = computed(() => [
     props.isDropdownList ? "py-3 px-6 text-sm" : "py-3",
@@ -57,6 +76,7 @@ const menuClick = (event) => {
     <li>
         <component
             :is="item.route ? Link : 'a'"
+            v-if="checkRolePermission"
             :href="itemHref"
             :target="item.target ?? null"
             class="flex cursor-pointer"

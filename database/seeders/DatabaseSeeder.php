@@ -12,6 +12,7 @@ use App\Models\Topping;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -39,6 +40,10 @@ class DatabaseSeeder extends Seeder
         'read-role',
         'update-role',
         'delete-role',
+        'create-permission',
+        'read-permission',
+        'update-permission',
+        'delete-permission',
         'create-size',
         'read-size',
         'update-size',
@@ -57,11 +62,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        foreach ($this->permissions as $permission) {
-            Permission::create(['name' => $permission]);
-        }
 
         User::factory()->createMany([
+            [
+                'username' => 'owner',
+                'email' => 'owner@example.com',
+                'password' => Hash::make('12345678'),
+            ],
             [
                 'username' => 'admin',
                 'email' => 'admin@example.com',
@@ -74,20 +81,38 @@ class DatabaseSeeder extends Seeder
             ]
         ]);
 
+        Role::create(['name' => 'owner']);
         Role::create(['name' => 'admin']);
         Role::create(['name' => 'user']);
 
         // create permissions based on the permissions array
         foreach ($this->permissions as $permission) {
-            $permissions = Permission::where('name', $permission)->first();
-            if ($permissions) {
-                $role = Role::where('name', 'admin')->first();
-                $role->givePermissionTo($permissions);
-            }
+            Permission::create(['name' => $permission]);
         }
 
-        $userAssignRole = User::where('username', 'admin')->first();
-        $userAssignRole->assignRole('admin');
+        // assign permissions to roles
+        $ownerPermissions = Permission::query()->where('name', 'LIKE', '%role')
+            ->orWhere('name', 'LIKE', '%permission')->get();
+
+        $adminPermissions = Permission::query()->where('name', 'LIKE', '%cake')
+            ->orWhere('name', 'LIKE', '%category')
+            ->orWhere('name', 'LIKE', '%discount')
+            ->orWhere('name', 'LIKE', '%flavour')
+            ->orWhere('name', 'LIKE', '%size')
+            ->orWhere('name', 'LIKE', '%topping')
+            ->orWhere('name', 'LIKE', '%order-status')->get();
+
+        if ($ownerPermissions) {
+            // assign permissions to roles
+            collect(['owner', 'admin'])->each(function ($role) use ($ownerPermissions, $adminPermissions) {
+                Role::query()->where('name', $role)->first()->syncPermissions($role === 'owner' ? $ownerPermissions : $adminPermissions);
+            });
+        }
+
+        // assign user roles
+        collect(['admin', 'user', 'owner'])->each(function ($role) {
+            User::query()->where('username', $role)->first()->assignRole($role);
+        });
 
 
         Flavour::factory(8)->create();

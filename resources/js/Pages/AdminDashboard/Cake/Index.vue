@@ -96,39 +96,40 @@
                                     </button>
                                 </td>
                                 <td>{{ cakes.personalization_type }}</td>
-                                <td
-                                    class="flex lg:justify-start justify-end gap-2"
-                                >
-                                    <inertia-link
-                                        :href="
-                                            route('cake.edit', {
-                                                dashboard_cake: cakes.id,
-                                            })
-                                        "
-                                        class="btn btn-info"
-                                        >Edit</inertia-link
-                                    >
-                                    <button
-                                        class="btn btn-error"
-                                        @click="modalActive = true"
-                                    >
-                                        Delete
-                                    </button>
-                                    <CardBoxModal
-                                        v-model="modalActive"
-                                        class="backdrop-contrast-50"
-                                        title="Cakes"
-                                        button="danger"
-                                        button-label="Confirm"
-                                        :click-handler="
-                                            () => deleteHandler(cakes.id)
-                                        "
-                                        has-cancel
-                                    >
-                                        <p>
-                                            Are you sure want to delete Cake ?
-                                        </p>
-                                    </CardBoxModal>
+                                <td>
+                                    <div class="flex justify-end gap-2">
+                                        <inertia-link
+                                            :href="
+                                                route('cake.edit', {
+                                                    dashboard_cake: cakes.id,
+                                                })
+                                            "
+                                            class="btn btn-info"
+                                            >Edit</inertia-link
+                                        >
+                                        <button
+                                            class="btn btn-error"
+                                            @click="modalActive = true"
+                                        >
+                                            Delete
+                                        </button>
+                                        <CardBoxModal
+                                            v-model="modalActive"
+                                            class="backdrop-contrast-50"
+                                            title="Cakes"
+                                            button="danger"
+                                            button-label="Confirm"
+                                            :click-handler="
+                                                () => deleteHandler(cakes.id)
+                                            "
+                                            has-cancel
+                                        >
+                                            <p>
+                                                Are you sure want to delete Cake
+                                                ?
+                                            </p>
+                                        </CardBoxModal>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>

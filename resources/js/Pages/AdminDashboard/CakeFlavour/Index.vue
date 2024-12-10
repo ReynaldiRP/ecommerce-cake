@@ -54,7 +54,7 @@
                             >
                                 <th>{{ index + 1 }}</th>
                                 <td>{{ flavour.name }}</td>
-                                <td>Rp{{ flavour.price }}</td>
+                                <td>{{ formatPrice(flavour.price) }}</td>
                                 <td>
                                     <button
                                         @click="
@@ -133,15 +133,14 @@ import Pagination from "@/Components/Pagination.vue";
 import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
 import VueEasyLightbox from "vue-easy-lightbox";
-
+import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
 import { ref } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
-
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
+import { mdiCheckCircle, mdiPlus } from "@mdi/js";
 
-import { mdiPlus, mdiCheckCircle } from "@mdi/js";
-
+const { formatPrice } = useAdminDashboardStore();
 const isLoading = ref(false);
 const modalActive = ref(false);
 const visibleRef = ref(false);

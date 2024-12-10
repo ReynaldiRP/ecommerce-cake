@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use App\Http\Controllers\FrontEndController;
 use App\Http\Controllers\ShoppingChartController;
 use App\Models\Cake;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
 use Illuminate\Http\Request;
 
@@ -41,9 +43,11 @@ class HandleInertiaRequests extends Middleware
 
         $searchData = $this->getSearchResults($request);
         $cartItems = $this->getShoppingChartItems();
+        $getCurrentUserRole = Auth::user()->roles->pluck('name')->first();
 
         return array_merge(parent::share($request), [
             'auth.user' => fn() => $request->user(),
+            'user.role' => fn() => $getCurrentUserRole,
             'flash' => [
                 'success' => fn() => $request->session()->get('success'),
             ],

@@ -131,6 +131,11 @@ return [
             'path' => storage_path('logs/midtrans.log'),
             'level' => 'debug',
         ],
+        'seeder' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/seeder.log'),
+            'level' => 'debug',
+        ],
     ],
 
 ];

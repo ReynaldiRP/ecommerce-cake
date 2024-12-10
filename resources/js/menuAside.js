@@ -5,6 +5,7 @@ export default [
         route: "dashboard-home",
         icon: mdiMonitor,
         label: "Dashboard",
+        role: "admin",
     },
     {
         label: "Products",

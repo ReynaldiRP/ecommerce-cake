@@ -16,7 +16,7 @@ class Admin
     public function handle(Request $request, Closure $next): Response
     {
         // Check if the user is an admin
-        if ($request->user()->hasRole('admin')) {
+        if ($request->user()->hasRole('admin') || $request->user()->hasRole('owner')) {
 
 
             // Allow the request to proceed if the route belongs to the admin section
