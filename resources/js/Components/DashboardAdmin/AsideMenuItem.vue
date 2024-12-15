@@ -17,6 +17,19 @@ const props = defineProps({
 const page = usePage();
 const currentUserRole = page.props.value.user.role;
 
+/**
+ * Check if the user has permission to access the menu item
+ *
+ * @type {ComputedRef<*|boolean>}
+ */
+const checkRolePermission = computed(() => {
+    if (props.item.role) {
+        return props.item.role.includes(currentUserRole);
+    }
+
+    return true;
+});
+
 const itemHref = computed(() =>
     props.item.route ? route(props.item.route) : props.item.href,
 );
@@ -36,23 +49,6 @@ const asideMenuItemActiveStyle = computed(() =>
 );
 
 const isDropdownActive = ref(false);
-
-/**
- * Check if the user has permission to access the menu item
- *
- * @type {ComputedRef<*|boolean>}
- */
-const checkRolePermission = computed(() => {
-    if (props.item.role) {
-        return props.item.role.includes(currentUserRole);
-    }
-
-    return true;
-});
-
-console.log(
-    `User with role ${currentUserRole} has permission to access the menu item ${props.item.label}: ${checkRolePermission.value}`,
-);
 
 const componentClass = computed(() => [
     props.isDropdownList ? "py-3 px-6 text-sm" : "py-3",
@@ -74,8 +70,7 @@ const menuClick = (event) => {
 
 <template>
     <li>
-        <component
-            :is="item.route ? Link : 'a'"
+        <a
             v-if="checkRolePermission"
             :href="itemHref"
             :target="item.target ?? null"
@@ -103,7 +98,7 @@ const menuClick = (event) => {
                 :class="activeInactiveStyle"
                 w="w-12"
             />
-        </component>
+        </a>
         <AsideMenuList
             v-if="hasDropdown"
             :menu="item.menu"

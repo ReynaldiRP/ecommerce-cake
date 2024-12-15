@@ -1,11 +1,16 @@
-import { mdiAccountCash, mdiMonitor, mdiShopping, mdiViewList } from "@mdi/js";
+import {
+    mdiAccountCash,
+    mdiMonitor,
+    mdiNoteCheckOutline,
+    mdiShopping,
+    mdiViewList,
+} from "@mdi/js";
 
 export default [
     {
         route: "dashboard-home",
         icon: mdiMonitor,
         label: "Dashboard",
-        role: "admin",
     },
     {
         label: "Products",
@@ -46,5 +51,11 @@ export default [
         label: "Payments",
         icon: mdiAccountCash,
         route: "payments.index",
+    },
+    {
+        label: "Approval",
+        icon: mdiNoteCheckOutline,
+        route: "approvals.index",
+        role: "owner",
     },
 ];

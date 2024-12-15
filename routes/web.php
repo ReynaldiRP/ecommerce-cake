@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\AdminDashboard\Approval\ShowAllApprovalController;
 use App\Http\Controllers\AdminDashboard\OrderStatus\EditOrderStatus;
 use App\Http\Controllers\AdminDashboard\OrderStatus\UpdateOrderStatus;
 use App\Http\Controllers\AdminDashboard\ShowAllPaymentController;
 use App\Http\Controllers\AdminDashboard\ShowDashboardController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\GetNotificationOrderStatusController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CakeController;
 use App\Http\Controllers\OrderController;
@@ -95,6 +97,9 @@ Route::middleware(['auth'])->group(function () {
             // Route for edit and update order status
             Route::get('/orders/edit-status/{order}', EditOrderStatus::class)->name('order.edit-status');
             Route::patch('/orders/edit-status/{orderId}', UpdateOrderStatus::class)->name('order.update-status');
+
+            // Route for showing all approvals and updating approval status
+            Route::get('/approvals', ShowAllApprovalController::class)->name('approvals.index');
         });
     });
 
@@ -133,6 +138,9 @@ Route::middleware(['auth'])->group(function () {
         // Cancel cake order route
         Route::post('home/transaction-history/{orderId}/cancel', 'cancelOrder')->name('cancel-order');
     });
+
+    //    Notification for order and payment status
+    Route::get('/notification-order-status', GetNotificationOrderStatusController::class)->name('notification-order-status');
 });
 
 // Guest routes

@@ -419,6 +419,8 @@ class PaymentController extends Controller
             ];
         });
 
+//        dd($statusHistory);
+
 
         return Inertia::render('OrderStatusSection', [
             'orders' => $orderItems,
@@ -439,10 +441,12 @@ class PaymentController extends Controller
         try {
             $orderItem = OrderItem::query()->where('id', $orderItem)->firstOrFail();
 
+
             $orderItems = collect([$orderItem])->map(function ($item) {
                 return [
                     'cake_id' => $item->cake_id,
                     'cake_flavour_id' => $item->cake_flavour_id,
+                    'cake_size_id' => $item->cake_size_id,
                     'toppings' => $item->cakeTopping->pluck('id')->toArray(),
                     'quantity' => $item->quantity,
                     'price' => $item->price,

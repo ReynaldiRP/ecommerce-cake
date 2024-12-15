@@ -18,6 +18,7 @@
                 <div class="col-span-4 flex items-center gap-2">
                     <h1 class="font-bold text-2xl">Topping Table</h1>
                     <BaseButton
+                        v-if="checkRolePermission"
                         color="success"
                         :href="route('topping.create')"
                         :icon="mdiPlus"
@@ -44,7 +45,7 @@
                                 <th>Topping Name</th>
                                 <th>Topping Price</th>
                                 <th>Toppping Image</th>
-                                <th>Action</th>
+                                <th v-if="checkRolePermission">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -54,7 +55,7 @@
                             >
                                 <th>{{ index + 1 }}</th>
                                 <td>{{ topping.name }}</td>
-                                <td>{{ formatPrice(topping.price) }}</td>
+                                <td>{{ store.formatPrice(topping.price) }}</td>
                                 <td>
                                     <button
                                         @click="
@@ -68,6 +69,7 @@
                                     </button>
                                 </td>
                                 <td
+                                    v-if="checkRolePermission"
                                     class="flex lg:justify-start justify-end gap-2"
                                 >
                                     <inertia-link
@@ -134,13 +136,20 @@ import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
 import VueEasyLightbox from "vue-easy-lightbox";
 import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
 import { mdiPlus, mdiCheckCircle } from "@mdi/js";
+import { storeToRefs } from "pinia";
 
-const { formatPrice } = useAdminDashboardStore();
+const store = useAdminDashboardStore();
+const { userRolePermission, checkRolePermission } = storeToRefs(store);
+
+onMounted(() => {
+    userRolePermission.value = "admin";
+});
+
 const isLoading = ref(false);
 const modalActive = ref(false);
 const visibleRef = ref(false);

@@ -43,11 +43,11 @@ class HandleInertiaRequests extends Middleware
 
         $searchData = $this->getSearchResults($request);
         $cartItems = $this->getShoppingChartItems();
-        $getCurrentUserRole = Auth::user()->roles->pluck('name')->first();
+
 
         return array_merge(parent::share($request), [
             'auth.user' => fn() => $request->user(),
-            'user.role' => fn() => $getCurrentUserRole,
+            'user.role' => fn() => $request->user()?->roles->pluck('name')->first() ?? 'user',
             'flash' => [
                 'success' => fn() => $request->session()->get('success'),
             ],

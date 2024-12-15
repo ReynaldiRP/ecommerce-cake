@@ -215,8 +215,8 @@ const combinedStatusHistory = computed(() => {
     );
 
     const paymentStatuses = props.statusHistory.map((status) => {
-        if (status.payment_status) {
-            return status.payment_status.map((paymentStatus) => ({
+        if (status.payment_statuses) {
+            return status.payment_statuses.map((paymentStatus) => ({
                 ...paymentStatus,
                 history_status: "payment_status",
             }));
@@ -229,8 +229,6 @@ const combinedStatusHistory = computed(() => {
         return parsedDate(a.created_at) - parsedDate(b.created_at);
     });
 });
-
-console.log(combinedStatusHistory.value);
 
 /**
  * Formats the price of an item by multiplying the price with the quantity.

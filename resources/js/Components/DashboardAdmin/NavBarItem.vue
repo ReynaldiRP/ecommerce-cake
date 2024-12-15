@@ -7,6 +7,7 @@ import BaseIcon from "@/Components/DashboardAdmin/BaseIcon.vue";
 import UserAvatarCurrentUser from "@/Components/DashboardAdmin/UserAvatarCurrentUser.vue";
 import NavBarMenuList from "@/Components/DashboardAdmin/NavBarMenuList.vue";
 import BaseDivider from "@/Components/DashboardAdmin/BaseDivider.vue";
+import { usePage } from "@inertiajs/inertia-vue3";
 
 const itemHref = computed(() =>
     props.item.route ? route(props.item.route) : props.item.href,
@@ -20,6 +21,10 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["menu-click"]);
+const page = usePage();
+const username =
+    page.props.value.auth.user.username.charAt(0).toUpperCase() +
+    page.props.value.auth.user.username.slice(1);
 
 const is = computed(() => {
     if (props.item.href) {
@@ -49,7 +54,7 @@ const componentClass = computed(() => {
 });
 
 const itemLabel = computed(() =>
-    props.item.isCurrentUser ? useMainStore().userName : props.item.label,
+    props.item.isCurrentUser ? username : props.item.label,
 );
 
 const isDropdownActive = ref(false);

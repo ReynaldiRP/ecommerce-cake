@@ -1,6 +1,19 @@
 import { defineStore } from "pinia";
+import { computed, ref } from "vue";
+import { usePage } from "@inertiajs/inertia-vue3";
 
 export const useAdminDashboardStore = defineStore("adminDashboard", () => {
+    // TODO: add user role permission
+    const page = usePage();
+    const userRole = page.props.value.user.role;
+    const userRolePermission = ref("");
+
+    console.log(userRole);
+
+    const checkRolePermission = computed(() => {
+        return userRole === userRolePermission.value;
+    });
+
     /**
      * format price to indonesia currency
      *
@@ -44,5 +57,8 @@ export const useAdminDashboardStore = defineStore("adminDashboard", () => {
         formatPrice,
         formatDiscount,
         formattedDate,
+        userRolePermission,
+        checkRolePermission,
+        userRole,
     };
 });

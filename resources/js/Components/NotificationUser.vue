@@ -18,7 +18,7 @@
         </div>
         <div
             tabindex="0"
-            class="z-[1] card card-compact dropdown-content w-96 bg-base-100 shadow-xl p-3"
+            class="z-[1] card card-compact dropdown-content w-96 max-h-96 bg-base-100 shadow-xl p-3 overflow-auto"
         >
             <div
                 class="flex justify-between items-center text-base font-medium py-2"
@@ -44,22 +44,27 @@
 
             <inertia-link
                 class="card-body flex-row gap-4 mt-2 rounded-lg bg-neutral"
-                v-for="(notif, index) in notification"
+                v-for="(notification, index) in combinedStatusHistory"
                 :key="index"
                 :href="link"
             >
                 <div class="avatar">
                     <div class="w-16 rounded-lg bg-primary-color">
-                        <img :src="notif.cakeImageUrl" alt="" />
+                        <img src="/assets/image/pastry.png" alt="" />
                     </div>
                 </div>
-                <div class="flex flex-col justify-center gap-1 m-0 p-0">
-                    <span class="text-base text-justify">
-                        {{ notif.message }}
-                    </span>
-                    <span class="text-sm font-light">
-                        {{ notif.timestamp }}
-                    </span>
+                <div class="flex flex-col gap-1">
+                    <div class="flex flex-col">
+                        <p class="text-base text-justify">
+                            {{ notification.status }}
+                        </p>
+                        <p class="text-sm font-light">
+                            {{ notification.description }}
+                        </p>
+                    </div>
+                    <p class="text-sm font-light">
+                        {{ notification.created_at }}
+                    </p>
                 </div>
             </inertia-link>
             <div class="card-actions my-2">
@@ -75,25 +80,16 @@
 </template>
 
 <script setup>
+import axios from "axios";
+import { computed, onMounted, ref } from "vue";
+
 const props = defineProps({
     link: {
         type: String,
     },
 });
 
-const notification = [
-    {
-        cakeImageUrl: "/assets/image/pastry.png",
-        message: `Your Order Has Been Process.`,
-        timestamp: `1 minutes ago`,
-    },
-    {
-        cakeImageUrl: "/assets/image/pastry.png",
-        message: `Your Order Has Been Packing.`,
-        timestamp: `1 minutes ago`,
-    },
-];
-
+const notificationData = ref([]);
 const orderStatus = [
     {
         icon: "fa-solid fa-clock fa-lg",
@@ -112,4 +108,50 @@ const orderStatus = [
         name: "Order Complete",
     },
 ];
+
+/**
+ * Get the order and payment status history
+ *
+ * @return {Promise}
+ */
+const getStatusHistory = async () => {
+    try {
+        const response = await axios.get(route("notification-order-status"));
+        notificationData.value = response.data;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+onMounted(async () => {
+    await getStatusHistory();
+});
+
+// FIXME: fix the sorting of notification data based on created_at
+const combinedStatusHistory = computed(() => {
+    const orderStatuses = notificationData.value.map((status) =>
+        status.order_statuses.map((orderStatus) => ({
+            ...orderStatus,
+            history_status: "order_status",
+        })),
+    );
+
+    const paymentStatuses = notificationData.value.map((status) => {
+        if (status.payment_statuses) {
+            return status.payment_statuses.map((paymentStatus) => ({
+                ...paymentStatus,
+                history_status: "payment_status",
+            }));
+        }
+
+        return [];
+    });
+
+    return [...paymentStatuses, ...orderStatuses]
+        .flat()
+        .splice(5, 5)
+        .sort((a, b) => {
+            return a.created_at - b.created_at;
+        });
+});
 </script>

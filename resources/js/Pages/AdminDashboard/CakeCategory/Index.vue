@@ -12,6 +12,7 @@
                 <div class="col-span-4 flex items-center gap-2">
                     <h1 class="font-bold text-2xl">Tabel Kategori Kue</h1>
                     <BaseButton
+                        v-if="checkRolePermission"
                         color="success"
                         :icon="mdiPlus"
                         :icon-size="16"
@@ -61,7 +62,7 @@
                             <tr>
                                 <th></th>
                                 <th>Kategori Kue</th>
-                                <th>Action</th>
+                                <th v-if="checkRolePermission">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -72,6 +73,7 @@
                                 <th>{{ index + 1 }}</th>
                                 <td>{{ category.name }}</td>
                                 <td
+                                    v-if="checkRolePermission"
                                     class="flex lg:justify-start justify-end gap-2"
                                 >
                                     <button
@@ -168,7 +170,7 @@ import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import BaseButton from "@/Components/DashboardAdmin/BaseButton.vue";
 import CardBox from "@/Components/DashboardAdmin/CardBox.vue";
 import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
-import { ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import FormControl from "@/Components/DashboardAdmin/FormControl.vue";
 import FormField from "@/Components/DashboardAdmin/FormField.vue";
 import { useForm } from "@inertiajs/inertia-vue3";
@@ -176,10 +178,19 @@ import Pagination from "@/Components/Pagination.vue";
 import axios from "axios";
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
+import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
+import { storeToRefs } from "pinia";
 
 const props = defineProps({
     cakeCategory: Object,
     error: String,
+});
+
+const store = useAdminDashboardStore();
+const { userRolePermission, checkRolePermission } = storeToRefs(store);
+
+onMounted(() => {
+    userRolePermission.value = "admin";
 });
 
 const form = useForm({

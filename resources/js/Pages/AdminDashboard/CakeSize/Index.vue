@@ -12,6 +12,7 @@
                 <div class="col-span-4 flex items-center gap-2">
                     <h1 class="font-bold text-2xl">Cake Size Table</h1>
                     <BaseButton
+                        v-if="checkRolePermission"
                         color="success"
                         :href="route('size.create')"
                         :icon="mdiPlus"
@@ -37,7 +38,7 @@
                                 <th></th>
                                 <th>Cake Size</th>
                                 <th>Price</th>
-                                <th>Action</th>
+                                <th v-if="checkRolePermission">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -47,8 +48,9 @@
                             >
                                 <th>{{ index + 1 }}</th>
                                 <td>{{ cakeSize.size }}(Cm)</td>
-                                <td>{{ formatPrice(cakeSize.price) }}</td>
+                                <td>{{ store.formatPrice(cakeSize.price) }}</td>
                                 <td
+                                    v-if="checkRolePermission"
                                     class="flex lg:justify-start justify-end gap-2"
                                 >
                                     <inertia-link
@@ -111,7 +113,7 @@ import SectionMain from "@/Components/DashboardAdmin/SectionMain.vue";
 import Pagination from "@/Components/Pagination.vue";
 import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
 import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
 
@@ -119,6 +121,7 @@ import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
 
 import { mdiPlus, mdiCheckCircle } from "@mdi/js";
+import { storeToRefs } from "pinia";
 
 const isLoading = ref(false);
 const modalActive = ref(false);
@@ -129,7 +132,12 @@ const props = defineProps({
     },
 });
 
-const { formatPrice } = useAdminDashboardStore();
+const store = useAdminDashboardStore();
+const { userRolePermission, checkRolePermission } = storeToRefs(store);
+
+onMounted(() => {
+    userRolePermission.value = "admin";
+});
 
 const deleteHandler = (cakeSizeId) => {
     isLoading.value = true;

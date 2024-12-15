@@ -18,6 +18,7 @@
                 <div class="col-span-4 flex items-center gap-2">
                     <h1 class="font-bold text-2xl">Cakes Table</h1>
                     <BaseButton
+                        v-if="checkRolePermission"
                         color="success"
                         :href="route('cake.create')"
                         :icon="mdiPlus"
@@ -48,7 +49,7 @@
                                 <th>Cake Description</th>
                                 <th>Cake Image</th>
                                 <th>Cake Personalization Type</th>
-                                <th>Action</th>
+                                <th v-if="checkRolePermission">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -96,7 +97,7 @@
                                     </button>
                                 </td>
                                 <td>{{ cakes.personalization_type }}</td>
-                                <td>
+                                <td v-if="checkRolePermission">
                                     <div class="flex justify-end gap-2">
                                         <inertia-link
                                             :href="
@@ -164,12 +165,13 @@ import Pagination from "@/Components/Pagination.vue";
 import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import VueEasyLightbox from "vue-easy-lightbox";
 import { mdiCheckCircle, mdiPlus } from "@mdi/js";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
 import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
 
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
+import { storeToRefs } from "pinia";
 
 const props = defineProps({
     cakes: {
@@ -182,6 +184,12 @@ const isLoading = ref(false);
 const modalActive = ref(false);
 const visibleRef = ref(false);
 const imgsRef = ref([]);
+
+const { userRolePermission, checkRolePermission } = storeToRefs(store);
+
+onMounted(() => {
+    userRolePermission.value = "admin";
+});
 
 const showImage = (imageUrl) => {
     imgsRef.value = [imageUrl];

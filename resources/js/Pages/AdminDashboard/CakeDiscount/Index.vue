@@ -12,6 +12,7 @@
                 <div class="col-span-4 flex items-center gap-2">
                     <h1 class="font-bold text-2xl">Tabel Diskon</h1>
                     <BaseButton
+                        v-if="checkRolePermission"
                         color="success"
                         :href="route('discount.create')"
                         :icon="mdiPlus"
@@ -38,7 +39,7 @@
                                 <th>Total Diskon</th>
                                 <th>Tanggal Mulai Diskon</th>
                                 <th>Tanggal Berakhir Diskon</th>
-                                <th>Aksi</th>
+                                <th v-if="checkRolePermission">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -53,7 +54,7 @@
                                 </td>
                                 <td>
                                     {{
-                                        formatDiscount(
+                                        store.formatDiscount(
                                             discount.discount_percentage,
                                         )
                                     }}
@@ -61,6 +62,7 @@
                                 <td>{{ discount.start_date }}</td>
                                 <td>{{ discount.end_date }}</td>
                                 <td
+                                    v-if="checkRolePermission"
                                     class="flex lg:justify-start justify-end gap-2"
                                 >
                                     <inertia-link
@@ -123,7 +125,7 @@ import SectionMain from "@/Components/DashboardAdmin/SectionMain.vue";
 import Pagination from "@/Components/Pagination.vue";
 import LayoutAuthenticated from "@/Layouts/Admin.vue";
 import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
 import { mdiCheckCircle, mdiPlus } from "@mdi/js";
 import BaseButton from "@/Components/DashboardAdmin/BaseButton.vue";
@@ -131,11 +133,18 @@ import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import { Inertia } from "@inertiajs/inertia";
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
+import { storeToRefs } from "pinia";
 
 const props = defineProps({
     discounts: Object,
 });
-const { formatDiscount } = useAdminDashboardStore();
+
+const store = useAdminDashboardStore();
+const { userRolePermission, checkRolePermission } = storeToRefs(store);
+
+onMounted(() => {
+    userRolePermission.value = "admin";
+});
 
 const modalActive = ref(false);
 const isLoading = ref(false);
