@@ -123,11 +123,37 @@ const getStatusHistory = async () => {
     }
 };
 
+/**
+ * Parses a relative time string (e.g., "10 jam yang lalu") and converts it to a Date object.
+ *
+ * @param {string} dateString - The relative time string to parse.
+ * @returns {Date} - The Date object representing the parsed time.
+ */
+const parsedDate = (dateString) => {
+    const timeUnits = {
+        menit: 1,
+        jam: 60,
+        hari: 1440, // 24 * 60
+        minggu: 10080, // 7 * 24 * 60
+    };
+
+    const parts = dateString.split(" ");
+    const value = parseInt(parts[0]);
+    const unit = parts[1];
+
+    if (timeUnits[unit]) {
+        const minutesAgo = value * timeUnits[unit];
+        return new Date(Date.now() - minutesAgo * 60 * 1000); // Convert minutes to milliseconds
+    }
+
+    return new Date();
+};
+
 onMounted(async () => {
     await getStatusHistory();
+    console.log(combinedStatusHistory.value);
 });
 
-// FIXME: fix the sorting of notification data based on created_at
 const combinedStatusHistory = computed(() => {
     const orderStatuses = notificationData.value.map((status) =>
         status.order_statuses.map((orderStatus) => ({
@@ -147,11 +173,8 @@ const combinedStatusHistory = computed(() => {
         return [];
     });
 
-    return [...paymentStatuses, ...orderStatuses]
-        .flat()
-        .splice(5, 5)
-        .sort((a, b) => {
-            return a.created_at - b.created_at;
-        });
+    return [...paymentStatuses, ...orderStatuses].flat().sort((a, b) => {
+        return parsedDate(b.created_at) - parsedDate(a.created_at);
+    });
 });
 </script>
