@@ -1,8 +1,14 @@
 <template>
     <LayoutAuthenticated>
-        <SectionMain>
-            <CardBox class="flex flex-col gap-6">
-                <h1 class="font-bold text-2xl">Tabel Persetujuan Perubahan</h1>
+        <SectionMain class="flex flex-col gap-6">
+            <h1 class="font-bold text-2xl">Tabel Persetujuan Perubahan</h1>
+            <CardBox>
+                <section class="overflow-x-auto">
+                    <table class="table table-lg">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </section>
             </CardBox>
         </SectionMain>
     </LayoutAuthenticated>

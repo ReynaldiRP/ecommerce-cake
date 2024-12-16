@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Approval;
 use App\Models\Category;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -67,8 +68,8 @@ class CategoryController extends Controller
         $dashboard_category->update($data);
 
         return response()->json([
-            'message' => 'The Cake Category has been updated',
-            'category' => $dashboard_category
+            'message' => 'The Cake Category has been changed',
+            'category' => $dashboard_category,
         ]);
     }
 

@@ -50,6 +50,7 @@ class HandleInertiaRequests extends Middleware
             'user.role' => fn() => $request->user()?->roles->pluck('name')->first() ?? 'user',
             'flash' => [
                 'success' => fn() => $request->session()->get('success'),
+                'info' => fn() => $request->session()->get('info'),
             ],
             'search' => $searchData,
             'shoppingChartItems' => $cartItems,

@@ -18,13 +18,18 @@ class Payment extends Model
     ];
 
     /**
-     * Calculate the total revenue from orders with a payment status of 'pesanan terbayar'.
+     * Calculate the total revenue from orders that have been paid.
      *
-     * @return float The total revenue from paid orders.
+     * @param string|null $pastMonth The start date for the date range filter (optional).
+     * @param string|null $currentMonth The end date for the date range filter (optional).
+     * @return float The total revenue from orders within the specified date range.
      */
-    public function totalRevenueOrder()
+    public function totalRevenueOrder(string $pastMonth = null, string $currentMonth = null): float
     {
         return Payment::query()->where('payment_status', '=', 'pesanan terbayar')
+            ->when($pastMonth && $currentMonth, function ($query) use ($pastMonth, $currentMonth) {
+                return $query->whereBetween('payments.created_at', [$pastMonth, $currentMonth]);
+            })
             ->join('orders', 'payments.order_id', '=', 'orders.id')
             ->sum('orders.total_price');
     }

@@ -52,10 +52,10 @@ export default [
         icon: mdiAccountCash,
         route: "payments.index",
     },
-    {
-        label: "Approval",
-        icon: mdiNoteCheckOutline,
-        route: "approvals.index",
-        role: "owner",
-    },
+    // {
+    //     label: "Approval",
+    //     icon: mdiNoteCheckOutline,
+    //     route: "approvals.index",
+    //     role: "owner",
+    // },
 ];

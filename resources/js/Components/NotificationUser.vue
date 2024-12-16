@@ -131,6 +131,7 @@ const getStatusHistory = async () => {
  */
 const parsedDate = (dateString) => {
     const timeUnits = {
+        detik: 1 / 60,
         menit: 1,
         jam: 60,
         hari: 1440, // 24 * 60

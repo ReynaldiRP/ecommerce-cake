@@ -8,8 +8,6 @@ export const useAdminDashboardStore = defineStore("adminDashboard", () => {
     const userRole = page.props.value.user.role;
     const userRolePermission = ref("");
 
-    console.log(userRole);
-
     const checkRolePermission = computed(() => {
         return userRole === userRolePermission.value;
     });

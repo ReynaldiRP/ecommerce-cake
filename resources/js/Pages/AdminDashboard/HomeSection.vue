@@ -1,7 +1,12 @@
 <template>
     <LayoutAuthenticated>
         <SectionMain class="flex flex-col gap-6">
-            <h1 class="font-bold text-2xl">Dashboard Home</h1>
+            <div class="flex flex-col">
+                <h1 class="font-bold text-2xl">Dashboard Home</h1>
+                <small class="text-lg"
+                    >Data pemesanan dalam kurun waktu 3 bulan terkahir</small
+                >
+            </div>
             <section class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <CardBoxWidget
                     :icon="mdiCash"
@@ -16,8 +21,10 @@
                     label="Persentase Pertumbuhan Pendapatan"
                     suffix="%"
                     :number="growthRevenuePerMonthByPercentage"
-                    :trend="evaluateTrend(totalRevenue, minimumRevenue)"
-                    :trend-type="evaluateTrend(totalRevenue, minimumRevenue)"
+                    :trend="evaluateTrend(growthRevenuePerMonthByPercentage, 0)"
+                    :trend-type="
+                        evaluateTrend(growthRevenuePerMonthByPercentage, 0)
+                    "
                     color="text-base-300 dark:text-white"
                 />
                 <CardBoxWidget
@@ -195,9 +202,11 @@ const minimumRevenue = 1000000;
 const minimumCakeSold = 5;
 const chartData = ref({});
 
+console.log(props.growthRevenuePerMonthByPercentage);
+
 const growthRevenuePerMonthByPercentage = computed(() => {
-    return growthRevenuePerMonthByPercentage.length > 0
-        ? growthRevenuePerMonthByPercentage[0].growth_percentage
+    return props.growthRevenuePerMonthByPercentage !== 0
+        ? Math.round(props.growthRevenuePerMonthByPercentage)
         : 0;
 });
 

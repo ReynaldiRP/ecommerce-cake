@@ -8,6 +8,9 @@ use Inertia\Inertia;
 
 class ShowAllApprovalController extends Controller
 {
+
+    // TODO: Show all approval data in admin dashboard
+
     /**
      * Handle the incoming request.
      */

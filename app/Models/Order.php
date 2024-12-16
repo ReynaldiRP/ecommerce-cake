@@ -55,23 +55,26 @@ class Order extends Model
         return $totalRevenuePerMonth;
     }
 
-    public function getGrowthRevenuePerMonthByPercentage($year)
+    // FIXME: This method is not working as expected. It should return the growth percentage cake sold within the specified date range.
+    public function getGrowthRevenueRangeThreeMonthByPercentage(): float|int
     {
-        $totalRevenuePerMonth = $this->showAllRevenueForEachMonths($year);
+        $totalRevenuePastThreeMonths = $this->selectRaw('SUM(total_price) as total_revenue')
+            ->join('payments', 'orders.id', '=', 'payments.order_id')
+            ->where('payments.payment_status', '=', 'pesanan terbayar')
+            ->whereBetween('orders.created_at', [Carbon::now()->subMonths(3), Carbon::now()->subMonth()->endOfMonth()])
+            ->first();
 
-        $totalRevenuePerMonth->transform(function ($item, $key) use ($totalRevenuePerMonth) {
-            if ($key === 0) {
-                $item['growth'] = 0;
-            } else {
-                $previousMonthRevenue = $totalRevenuePerMonth[$key - 1]['total_revenue'];
-                $currentMonthRevenue = $item['total_revenue'];
-                $item['growth'] = (($currentMonthRevenue - $previousMonthRevenue) / $previousMonthRevenue) * 100;
-            }
 
-            return $item;
-        });
+        $totalRevenueCurrentMonth = $this->selectRaw('SUM(total_price) as total_revenue')
+            ->join('payments', 'orders.id', '=', 'payments.order_id')
+            ->where('payments.payment_status', '=', 'pesanan terbayar')
+            ->whereMonth('orders.created_at', Carbon::now()->month)
+            ->first();
 
-        return $totalRevenuePerMonth;
+
+        return $totalRevenuePastThreeMonths->total_revenue != 0
+            ? ($totalRevenueCurrentMonth->total_revenue - $totalRevenuePastThreeMonths->total_revenue) / $totalRevenuePastThreeMonths->total_revenue * 100
+            : 0;
     }
 
 

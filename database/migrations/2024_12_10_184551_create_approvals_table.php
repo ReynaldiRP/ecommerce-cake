@@ -18,8 +18,12 @@ return new class extends Migration
                 column: 'id',
                 indexName: 'approvals_user_id_index',
             )->cascadeOnDelete();
-            $table->string('data_type', 255);
-            $table->string('data_id', 255);
+            $table->string('model');
+            $table->json('current_data');
+            $table->json('proposed_data');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->timestamp('approved_at')->nullable();
+            $table->timestamp('rejected_at')->nullable();
             $table->timestamps();
         });
     }

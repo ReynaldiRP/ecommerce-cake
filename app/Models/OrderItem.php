@@ -22,11 +22,13 @@ class OrderItem extends Model
     ];
 
     /**
-     * Get the most popular cakes based on the total quantity sold.
+     * Get the most popular cake based on the total quantity sold.
      *
+     * @param string|null $currentMonth The end date for the date range filter (optional).
+     * @param string|null $pastMonth The start date for the date range filter (optional).
      * @return Model|null The most popular cake with its name, image, and total quantity sold.
      */
-    public function getMostPopularCakes(): ?Model
+    public function getMostPopularCakes(string $currentMonth = null, string $pastMonth = null): ?Model
     {
         // Get the most popular cake
         $cakeSales = OrderItem::query()->select('cakes.name as cake_name', 'cakes.image_url as cake_image', DB::raw('SUM(order_items.quantity) as total_sold'))
@@ -34,6 +36,9 @@ class OrderItem extends Model
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
             ->where('payments.payment_status', '=', 'pesanan terbayar')
+            ->when($pastMonth && $currentMonth, function ($query) use ($pastMonth, $currentMonth) {
+                return $query->whereBetween('order_items.created_at', [$pastMonth, $currentMonth]);
+            })
             ->groupBy('cakes.name', 'cakes.image_url');
 
         // Use a subquery to find the max sold cake
@@ -46,26 +51,41 @@ class OrderItem extends Model
     }
 
     /**
-     * Get the total quantity of cakes sold for orders with a payment status of 'pesanan terbayar'.
+     * Calculate the total quantity of cakes sold.
      *
-     * @return int The total quantity of cakes sold.
+     * @param string|null $pastMonth The start date for the date range filter (optional).
+     * @param string|null $currentMonth The end date for the date range filter (optional).
+     * @return int The total quantity of cakes sold within the specified date range.
      */
-    public function getTotalCakeSold(): int
+    public function getTotalCakeSold(string $pastMonth = null, string $currentMonth = null): int
     {
         return (int)OrderItem::with('order', 'order.payment')
             ->whereHas('order.payment', function ($query) {
                 $query->where('payment_status', '=', 'pesanan terbayar');
             })
+            ->when($pastMonth && $currentMonth, function ($query) use ($pastMonth, $currentMonth) {
+                return $query->whereBetween('order_items.created_at', [$pastMonth, $currentMonth]);
+            })
             ->sum('quantity');
     }
 
-    public function getMostPopularCakeType(): ?Model
+    /**
+     * Get the most popular cake type based on the total quantity sold.
+     *
+     * @param string|null $pastMonth The start date for the date range filter (optional).
+     * @param string|null $currentMonth The end date for the date range filter (optional).
+     * @return Model|null The most popular cake type with its name and total quantity sold.
+     */
+    public function getMostPopularCakeType(string $pastMonth = null, string $currentMonth = null): ?Model
     {
         $cakeTypeSales = OrderItem::query()->select('cakes.personalization_type as cake_type_name', DB::raw('CAST(SUM(order_items.quantity) as SIGNED) as total_sold'))
             ->join('cakes', 'order_items.cake_id', '=', 'cakes.id')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
             ->where('payments.payment_status', '=', 'pesanan terbayar')
+            ->when($pastMonth && $currentMonth, function ($query) use ($pastMonth, $currentMonth) {
+                return $query->whereBetween('order_items.created_at', [$pastMonth, $currentMonth]);
+            })
             ->groupBy('cakes.personalization_type');
 
 
@@ -77,7 +97,14 @@ class OrderItem extends Model
         return $cakeTypeSales->having('total_sold', '=', $maxSold)->first();
     }
 
-    public function getMostPopularCakeCategory(): ?Model
+    /**
+     * Get the most popular cake category based on the total quantity sold.
+     *
+     * @param string|null $pastMonth The start date for the date range filter (optional).
+     * @param string|null $currentMonth The end date for the date range filter (optional).
+     * @return Model|null The most popular cake category with its name and total quantity sold.
+     */
+    public function getMostPopularCakeCategory(string $pastMonth = null, string $currentMonth = null): ?Model
     {
         // Get the most popular cake
         $categorySales = OrderItem::query()->select('categories.name as category_name', DB::raw('CAST(SUM(order_items.quantity) as SIGNED) as total_sold'))
@@ -86,6 +113,9 @@ class OrderItem extends Model
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
             ->where('payments.payment_status', '=', 'pesanan terbayar')
+            ->when($pastMonth && $currentMonth, function ($query) use ($pastMonth, $currentMonth) {
+                return $query->whereBetween('order_items.created_at', [$pastMonth, $currentMonth]);
+            })
             ->groupBy('categories.name');
 
         // Use a subquery to find the max sold cake
