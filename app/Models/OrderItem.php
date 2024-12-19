@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\DB;
+use mysql_xdevapi\Collection;
 
 class OrderItem extends Model
 {
@@ -20,6 +21,31 @@ class OrderItem extends Model
         'price',
         'note'
     ];
+
+    /**
+     * Get all the cake sold within the specified date range.
+     *
+     * @param string|null $currentMonth The end date for the date range filter (optional).
+     * @param string|null $pastMonth The start date for the date range filter (optional).
+     *
+     * @return array|\Illuminate\Database\Eloquent\Collection
+     */
+    public function getAllCakeSold(string $currentMonth = null, string $pastMonth = null): array|\Illuminate\Database\Eloquent\Collection
+    {
+        $query = OrderItem::query()->select('cakes.name as cake_name', 'order_items.quantity as sold_quantity')
+            ->join('cakes', 'order_items.cake_id', '=', 'cakes.id')
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->join('payments', 'orders.id', '=', 'payments.order_id')
+            ->where('payments.payment_status', '=', 'Pesanan terbayar')
+            ->when($pastMonth && $currentMonth, function ($query) use ($pastMonth, $currentMonth) {
+                return $query->whereBetween('orders.created_at', [$pastMonth, $currentMonth]);
+            });
+
+        \Log::info($query->toSql(), $query->getBindings());
+
+        return $query->get();
+    }
+
 
     /**
      * Get the most popular cake based on the total quantity sold.
@@ -126,6 +152,7 @@ class OrderItem extends Model
         // Fetch the most popular cake
         return $categorySales->having('total_sold', '=', $maxSold)->first();
     }
+
 
     /**
      * Get the order that owns the OrderItem

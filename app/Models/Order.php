@@ -55,7 +55,6 @@ class Order extends Model
         return $totalRevenuePerMonth;
     }
 
-    // FIXME: This method is not working as expected. It should return the growth percentage cake sold within the specified date range.
     public function getGrowthRevenueRangeThreeMonthByPercentage(): float|int
     {
         $totalRevenuePastThreeMonths = $this->selectRaw('SUM(total_price) as total_revenue')
@@ -75,6 +74,32 @@ class Order extends Model
         return $totalRevenuePastThreeMonths->total_revenue != 0
             ? ($totalRevenueCurrentMonth->total_revenue - $totalRevenuePastThreeMonths->total_revenue) / $totalRevenuePastThreeMonths->total_revenue * 100
             : 0;
+    }
+
+    /**
+     * Get total transaction for each month based on selected year.
+     *
+     * @param int $year The year for which to retrieve the total transaction per month.
+     * @return Collection A collection of total transaction per month with month names.
+     */
+    public function showAllTransactionForEachMonths(int $year): Collection
+    {
+        $totalTransactionPerMonth = $this->selectRaw('MONTH(orders.created_at) as month, COUNT(orders.id) as total_transaction')
+            ->join('payments', 'orders.id', '=', 'payments.order_id')
+            ->where('payments.payment_status', '=', 'pesanan terbayar')
+            ->whereYear('orders.created_at', $year)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+
+        $totalTransactionPerMonth->transform(function ($item) {
+            return [
+                'month' => Carbon::createFromDate(null, $item->month)->isoFormat('MMMM'),
+                'total_transaction' => $item->total_transaction
+            ];
+        });
+
+        return $totalTransactionPerMonth;
     }
 
 

@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\AdminDashboard\Approval\ShowAllApprovalController;
+use App\Http\Controllers\AdminDashboard\FetchDataDashboardReport;
 use App\Http\Controllers\AdminDashboard\OrderStatus\EditOrderStatus;
 use App\Http\Controllers\AdminDashboard\OrderStatus\UpdateOrderStatus;
 use App\Http\Controllers\AdminDashboard\ShowAllPaymentController;
 use App\Http\Controllers\AdminDashboard\ShowDashboardController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\GetNotificationOrderStatusController;
 use Illuminate\Support\Facades\Route;
@@ -52,6 +54,7 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('admin/dashboard')->group(function () {
             // Admin dashboard home
             Route::get('/home', ShowDashboardController::class)->name('dashboard-home');
+            Route::post('/home', [DashboardController::class, 'index'])->name('dashboard-home');
 
             // Resource routes for managing cakes
             Route::resource('/cake', CakeController::class)

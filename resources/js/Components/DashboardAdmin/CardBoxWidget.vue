@@ -12,6 +12,10 @@ defineProps({
         type: Number,
         default: 0,
     },
+    value: {
+        type: String,
+        default: null,
+    },
     icon: {
         type: String,
         default: null,
@@ -64,10 +68,12 @@ defineProps({
                 </h3>
                 <h1 class="text-3xl leading-tight font-semibold">
                     <NumberDynamic
+                        v-if="number"
                         :value="number"
                         :prefix="prefix"
                         :suffix="suffix"
                     />
+                    <span class="text-2xl" v-else>{{ value }}</span>
                 </h1>
             </div>
             <BaseIcon

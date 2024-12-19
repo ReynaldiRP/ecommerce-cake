@@ -34,6 +34,24 @@ class Payment extends Model
             ->sum('orders.total_price');
     }
 
+
+    /**
+     * Calculate the total number of transactions that have been paid.
+     *
+     * @param string|null $pastMonth The start date for the date range filter (optional).
+     * @param string|null $currentMonth The end date for the date range filter (optional).
+     * @return int The total number of transactions within the specified date range.
+     */
+    public function getTotalTransaction(string $pastMonth = null, string $currentMonth = null): int
+    {
+        return Payment::query()->where('payment_status', '=', 'pesanan terbayar')
+            ->when($pastMonth && $currentMonth, function ($query) use ($pastMonth, $currentMonth) {
+                return $query->whereBetween('payments.created_at', [$pastMonth, $currentMonth]);
+            })
+            ->join('orders', 'payments.order_id', '=', 'orders.id')
+            ->count();
+    }
+
     /**
      * Get the order that owns the Payment
      *

@@ -22,6 +22,8 @@ class ShowDashboardController extends Controller
         $orderItem = new OrderItem();
 
 
+        // FIXME: the date range is still not working properly
+        $getAllCakeSold = $orderItem->getAllCakeSold();
         // Get total revenue cake orders from the payment model
         $totalRevenueCakeOrders = $payment->totalRevenueOrder('2024-09-01', '2024-12-31');
         // Get total cake sold
@@ -32,20 +34,26 @@ class ShowDashboardController extends Controller
         $mostPopularCakeType = $orderItem->getMostPopularCakeType();
         // Get the most popular cake category
         $mostPopularCakeCategory = $orderItem->getMostPopularCakeCategory();
+        // Get the total transaction
+        $totalTransaction = $payment->getTotalTransaction('2024-01-01', '2024-12-31');
         // Get the growth revenue per month by percentage
         $growthRevenuePerMonthByPercentage = $order->getGrowthRevenueRangeThreeMonthByPercentage();
         // Show chart data for the total revenue of cake orders per month
         $chartData = $order->showAllRevenueForEachMonths('2024');
-
+        // Show total transaction per month for the last 12 months based on selected year
+        $chartDataTotalTransaction = $order->showAllTransactionForEachMonths('2024');
 
         return Inertia::render('AdminDashboard/HomeSection', [
-            'totalRevenue' => $totalRevenueCakeOrders ?? 0,
-            'totalCakeSold' => $totalCakeSold ?? 0,
-            'mostPopularCake' => $mostPopularCake ?? [],
-            'mostPopularCakeType' => $mostPopularCakeType ?? [],
-            'mostPopularCakeCategory' => $mostPopularCakeCategory ?? [],
-            'growthRevenuePerMonthByPercentage' => $growthRevenuePerMonthByPercentage ?? 0,
-            'chartData' => $chartData ?? [],
+            'totalRevenue' => $totalRevenueCakeOrders,
+            'totalCakeSold' => $totalCakeSold,
+            'mostPopularCake' => $mostPopularCake,
+            'mostPopularCakeType' => $mostPopularCakeType,
+            'mostPopularCakeCategory' => $mostPopularCakeCategory,
+            'growthRevenuePerMonthByPercentage' => $growthRevenuePerMonthByPercentage,
+            'totalTransaction' => $totalTransaction,
+            'chartData' => $chartData,
+            'chartDataCakeSold' => $getAllCakeSold,
+            'chartDataTotalTransaction' => $chartDataTotalTransaction,
         ]);
     }
 }
