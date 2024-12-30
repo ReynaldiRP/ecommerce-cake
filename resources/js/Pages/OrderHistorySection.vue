@@ -11,7 +11,7 @@
                     </li>
                     <li>
                         <inertia-link :href="route('order.history')"
-                            >Histori Transaksi
+                            >Riwayat Transaksi
                         </inertia-link>
                     </li>
                 </ul>
@@ -44,22 +44,22 @@
                         >
                     </div>
 
-                    <div
-                        v-if="transactionTabsClicked[1]"
-                        role="tablist"
-                        class="tabs tabs-boxed font-medium"
-                    >
-                        <a
-                            v-for="(status, index) in orderStatus"
-                            role="tab"
-                            class="tab"
-                            :class="{
-                                'tab-active': orderStatusTabsClicked[index],
-                            }"
-                            @click="handleOrderStatusTabClick(index)"
-                            >{{ status }}</a
-                        >
-                    </div>
+                    <!--                    <div-->
+                    <!--                        v-if="transactionTabsClicked[1]"-->
+                    <!--                        role="tablist"-->
+                    <!--                        class="tabs tabs-boxed font-medium"-->
+                    <!--                    >-->
+                    <!--                        <a-->
+                    <!--                            v-for="(status, index) in orderStatus"-->
+                    <!--                            role="tab"-->
+                    <!--                            class="tab"-->
+                    <!--                            :class="{-->
+                    <!--                                'tab-active': orderStatusTabsClicked[index],-->
+                    <!--                            }"-->
+                    <!--                            @click="handleOrderStatusTabClick(index)"-->
+                    <!--                            >{{ status }}</a-->
+                    <!--                        >-->
+                    <!--                    </div>-->
                 </section>
 
                 <select
@@ -227,6 +227,22 @@
                     </p>
                 </section>
             </section>
+
+            <footer class="mt-2">
+                <div class="flex justify-between items-center">
+                    <Pagination
+                        class="btn-outline"
+                        :links="props.orderItems.links"
+                        :next-page-url="props.orderItems.next_page_url"
+                        :previous-page-url="props.orderItems.prev_page_url"
+                    />
+                    <p>
+                        Page
+                        <span>{{ props.orderItems.current_page }}</span> of
+                        <span>{{ props.orderItems.last_page }}</span>
+                    </p>
+                </div>
+            </footer>
         </section>
     </App>
 </template>
@@ -235,6 +251,7 @@
 import App from "@/Layouts/App.vue";
 import axios from "axios";
 import { ref, onMounted, onUnmounted, watch } from "vue";
+import Pagination from "@/Components/Pagination.vue";
 
 const props = defineProps({
     orderItems: {
@@ -242,6 +259,8 @@ const props = defineProps({
         default: () => ({}),
     },
 });
+
+console.log(props.orderItems);
 
 const originalOrderItems = ref([]);
 originalOrderItems.value = props.orderItems.data;

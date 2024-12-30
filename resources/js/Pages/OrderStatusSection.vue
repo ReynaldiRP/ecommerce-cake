@@ -148,7 +148,7 @@
                             </div>
                             <p class="text-lg">{{ orderItem.quantity }}</p>
                             <p class="text-lg">
-                                {{ formatPrice(orderItem.price) }}
+                                {{ formatPrice(orderItem.price[index]) }}
                             </p>
                         </div>
                     </div>
@@ -206,6 +206,12 @@ const parsedDate = (dateString) => {
     return new Date(year, month, day, hour, minute, Number(second));
 };
 
+/**
+ * Combines the order and payment status history into a single array and sorts them by the created_at date.
+ *
+ *
+ * @returns {Array} - The combined status history of the order and payment.
+ */
 const combinedStatusHistory = computed(() => {
     const orderStatuses = props.statusHistory.map((status) =>
         status.order_statuses.map((orderStatus) => ({

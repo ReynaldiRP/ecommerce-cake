@@ -101,7 +101,7 @@ class PaymentController extends Controller
             ]);
 
             // Send email notification
-//            Mail::to($order->user->email)->send(new PaymentEmail($order, $payment));
+            //            Mail::to($order->user->email)->send(new PaymentEmail($order, $payment));
 
             return response('OK', 200);
         } catch (Exception $e) {
@@ -176,7 +176,6 @@ class PaymentController extends Controller
                     'data' => $responseBody,
                 ]);
             }
-
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'An error occurred while canceling the order.',
@@ -205,6 +204,7 @@ class PaymentController extends Controller
             })
             ->orderBy('created_at', 'desc')
             ->paginate(5);
+
 
         // Transform the order items
         $orderItems->getCollection()->transform(function ($item) {
@@ -288,7 +288,7 @@ class PaymentController extends Controller
                     });
                 } elseif ($status === 'Sukses') {
                     $q->whereHas('payment', function ($q) {
-                        $q->where('payment_status', 'terbayar');
+                        $q->where('payment_status', 'Pesanan terbayar');
                     });
                 } elseif ($status === 'Gagal') {
                     $q->whereHas('payment', function ($q) {
@@ -296,7 +296,6 @@ class PaymentController extends Controller
                             ->orWhere('payment_status', 'pembayaran kedaluwarsa');
                     });
                 }
-
             }
 
             if ($month) {
@@ -306,6 +305,7 @@ class PaymentController extends Controller
 
         // Paginate the results
         $orderItems = $query->orderBy('created_at', 'desc')->paginate(5);
+
 
         // Transform the order items
         $orderItems->getCollection()->transform(function ($item) {
@@ -419,7 +419,7 @@ class PaymentController extends Controller
             ];
         });
 
-//        dd($statusHistory);
+        //        dd($statusHistory);
 
 
         return Inertia::render('OrderStatusSection', [

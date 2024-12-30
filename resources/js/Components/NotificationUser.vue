@@ -152,7 +152,6 @@ const parsedDate = (dateString) => {
 
 onMounted(async () => {
     await getStatusHistory();
-    console.log(combinedStatusHistory.value);
 });
 
 const combinedStatusHistory = computed(() => {
