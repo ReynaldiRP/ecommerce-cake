@@ -260,8 +260,6 @@ const props = defineProps({
     },
 });
 
-console.log(props.orderItems);
-
 const originalOrderItems = ref([]);
 originalOrderItems.value = props.orderItems.data;
 
@@ -425,6 +423,19 @@ onMounted(() => {
     transactionTabsClicked.value = transactionTabsClicked.value.map(
         (_, i) => i === 0,
     );
+
+    // Retrieves transaction status from the URL query parameters and updates the transaction status
+    const urlParams = new URLSearchParams(window.location.search).get("status");
+
+    if (urlParams) {
+        // Set the transaction status based on the URL parameter
+        selectedTransactionStatus.value = urlParams;
+        transactionTabsClicked.value = transactionTabsClicked.value.map(
+            (_, i) => transactionFilter[i] === urlParams,
+        );
+    } else {
+        console.log("No status parameter found in the URL");
+    }
 });
 
 onUnmounted(() => {

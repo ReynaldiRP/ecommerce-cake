@@ -28,7 +28,7 @@ class Payment extends Model
     {
         return Payment::query()->where('payment_status', '=', 'pesanan terbayar')
             ->when($pastMonth && $currentMonth, function ($query) use ($pastMonth, $currentMonth) {
-                return $query->whereBetween('payments.created_at', [$pastMonth, $currentMonth]);
+                return $query->whereBetween('orders.created_at', [$pastMonth, $currentMonth]);
             })
             ->join('orders', 'payments.order_id', '=', 'orders.id')
             ->sum('orders.total_price');

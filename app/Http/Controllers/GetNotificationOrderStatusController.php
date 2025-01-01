@@ -16,6 +16,7 @@ class GetNotificationOrderStatusController extends Controller
     {
         // Get the payment and order status history
         $statusHistory = Order::with(['payment', 'payment.paymentStatusHistories', 'orderStatusHistories'])
+            ->where('user_id', $request->user()->id)
             ->get();
 
         // Mapping the payment and order status history

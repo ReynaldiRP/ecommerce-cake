@@ -25,28 +25,27 @@
             >
                 <p class="text-lg">Notification</p>
             </div>
-            <div
-                class="grid grid-flow-col-dense place-items-center pt-2 px-2 border-b-2 border-base-content"
-            >
+            <div class="grid grid-flow-col-dense place-items-center pt-2 px-2">
                 <div
                     v-for="(status, index) in orderStatus"
                     :key="index"
                     class="py-2"
                 >
-                    <div
+                    <inertia-link
                         class="flex gap-1 flex-col text-center text-primary-color"
+                        href="#"
+                        @click="redirectLinkBasedOnOrderStatus(status.value)"
                     >
                         <i :class="status.icon"></i>
                         <span class="text-sm">{{ status.name }}</span>
-                    </div>
+                    </inertia-link>
                 </div>
             </div>
 
-            <inertia-link
+            <div
                 class="card-body flex-row gap-4 mt-2 rounded-lg bg-neutral"
                 v-for="(notification, index) in combinedStatusHistory"
                 :key="index"
-                :href="link"
             >
                 <div class="avatar">
                     <div class="w-16 rounded-lg bg-primary-color">
@@ -66,7 +65,7 @@
                         {{ notification.created_at }}
                     </p>
                 </div>
-            </inertia-link>
+            </div>
             <div class="card-actions my-2">
                 <inertia-link
                     :href="route('transaction-history')"
@@ -82,6 +81,7 @@
 <script setup>
 import axios from "axios";
 import { computed, onMounted, ref } from "vue";
+import { Inertia } from "@inertiajs/inertia";
 
 const props = defineProps({
     link: {
@@ -92,20 +92,19 @@ const props = defineProps({
 const notificationData = ref([]);
 const orderStatus = [
     {
-        icon: "fa-solid fa-clock fa-lg",
-        name: "Wait For Confirmation",
-    },
-    {
         icon: "fa-solid fa-spinner fa-lg",
-        name: "Order Process",
+        name: "Order Berjalan",
+        value: "Berjalan",
     },
     {
-        icon: "fa-solid fa-truck fa-lg",
-        name: "Order Delivery",
+        icon: "fa-solid fa-check-circle fa-lg",
+        name: "Order Sukses",
+        value: "Sukses",
     },
     {
-        icon: "fa-solid fa-location-dot fa-lg",
-        name: "Order Complete",
+        icon: "fa-solid fa-times-circle fa-lg",
+        name: "Order Gagal",
+        value: "Gagal",
     },
 ];
 
@@ -154,6 +153,11 @@ onMounted(async () => {
     await getStatusHistory();
 });
 
+/**
+ * Computes the combined status history of orders and payments.
+ *
+ * @returns {Array} - An array of the top 3 most recent combined statuses.
+ */
 const combinedStatusHistory = computed(() => {
     const orderStatuses = notificationData.value.map((status) =>
         status.order_statuses.map((orderStatus) => ({
@@ -173,8 +177,21 @@ const combinedStatusHistory = computed(() => {
         return [];
     });
 
-    return [...paymentStatuses, ...orderStatuses].flat().sort((a, b) => {
-        return parsedDate(b.created_at) - parsedDate(a.created_at);
-    });
+    return [...paymentStatuses, ...orderStatuses]
+        .flat()
+        .sort((a, b) => {
+            return parsedDate(b.created_at) - parsedDate(a.created_at);
+        })
+        .slice(0, 3);
 });
+
+/**
+ * Redirects the user to the appropriate page based on the order status.
+ *
+ * @param {string} status - The order status to redirect the user to.
+ * @returns {void}
+ */
+const redirectLinkBasedOnOrderStatus = (status) => {
+    Inertia.visit(route("transaction-history", { status }));
+};
 </script>

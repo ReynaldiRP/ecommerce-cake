@@ -25,7 +25,7 @@ class ShowDashboardController extends Controller
         // FIXME: the date range is still not working properly
         $getAllCakeSold = $orderItem->getAllCakeSold();
         // Get total revenue cake orders from the payment model
-        $totalRevenueCakeOrders = $payment->totalRevenueOrder('2024-09-01', '2024-12-31');
+        $totalRevenueCakeOrders = $payment->totalRevenueOrder('2024-01-01', '2024-12-31');
         // Get total cake sold
         $totalCakeSold = $orderItem->getTotalCakeSold('2024-01-01', '2024-12-31');
         // Get the most popular cake
