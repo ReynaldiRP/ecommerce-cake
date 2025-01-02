@@ -10,10 +10,12 @@ use Illuminate\Http\Request;
 use App\Models\OrderItemTopping;
 use App\Models\ShoppingChartItem;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 use Midtrans\Snap;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class OrderController extends Controller
@@ -273,5 +275,40 @@ class OrderController extends Controller
                 'error' => $th->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Export order data to PDF.
+     *
+     * @return HttpResponse
+     */
+    public function exportOrderToPdf(): HttpResponse
+    {
+        $orders = Order::orderBy('created_at', 'desc')->get();
+        $orders = $orders->transform(function ($order) {
+            return [
+                'order_code' => $order->order_code,
+                'total_price' => $this->formatPrice($order->total_price),
+                'status' => $order->status,
+                'user_address' => $order->user_address,
+                'cake_recipient' => $order->cake_recipient,
+                'estimated_delivery_date' => Carbon::parse($order->estimated_delivery_date)->isoFormat('dddd, Do MMMM YYYY'),
+                'method_delivery' => $order->method_delivery,
+                'created_at' => Carbon::parse($order->created_at)->isoFormat('dddd, Do MMMM YYYY'),
+            ];
+        });
+
+
+        $pdf = PDF::loadView('pdf.order', [
+            'orders' => $orders,
+        ]);
+
+        return $pdf->download('order.pdf');
+    }
+
+    // Format the price to Indonesian Rupiah
+    private function formatPrice($price)
+    {
+        return 'Rp. ' . number_format($price, 2, ',', '.');
     }
 }

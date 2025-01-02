@@ -20,6 +20,8 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Midtrans\Config;
 use Midtrans\Notification;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PaymentController extends Controller
 {
@@ -476,5 +478,28 @@ class PaymentController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Export transaction history to PDF.
+     *
+     * @return HttpResponse - The HTTP response containing the PDF file.
+     */
+    public function exportTransactionHistoryToPdf(): HttpResponse
+    {
+        $payment = Payment::with('order')->get();
+        $payment = $payment->transform(function ($item) {
+            return [
+                'transaction_id' => $item->transaction_id,
+                'order_code' => $item->order->order_code,
+                'payment_method' => $item->payment_method,
+                'payment_status' => $item->payment_status,
+                'created_at' => $item->created_at->isoFormat('dddd, D MMMM Y'),
+                'updated_at' => $item->updated_at->isoFormat('dddd, D MMMM Y'),
+            ];
+        });
+
+        $pdf = Pdf::loadView('pdf.transaction-history', ['payments' => $payment]);
+        return $pdf->download('transaction-history.pdf');
     }
 }

@@ -97,6 +97,12 @@ Route::middleware(['auth'])->group(function () {
             // Routes for showing all payments
             Route::get('/payments', ShowAllPaymentController::class)->name('payments.index');
 
+            // Routes for exporting data to PDF
+            Route::group(['prefix' => 'export', 'as' => 'export.'], function () {
+                Route::get('/data-dashboard-order', [OrderController::class, 'exportOrderToPdf'])->name('data-dashboard-order');
+                Route::get('/data-dashboard-payment', [PaymentController::class, 'exportTransactionHistoryToPdf'])->name('data-dashboard-payment');
+            });
+
             // Route for edit and update order status
             Route::get('/orders/edit-status/{order}', EditOrderStatus::class)->name('order.edit-status');
             Route::patch('/orders/edit-status/{orderId}', UpdateOrderStatus::class)->name('order.update-status');

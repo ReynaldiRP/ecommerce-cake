@@ -9,15 +9,23 @@
     <LayoutAuthenticated>
         <SectionMain class="flex flex-col gap-4">
             <section class="flex items-center justify-between">
-                <h1 class="font-bold text-2xl">Tabel Order</h1>
-                <NotificationBar
-                    class="w-[30%]"
-                    v-if="message"
-                    color="success"
-                    :icon="mdiCheckCircle"
+                <div class="flex gap-2 items-center">
+                    <h1 class="font-bold text-2xl">Tabel Order</h1>
+                    <NotificationBar
+                        class="w-[50%]"
+                        v-if="message"
+                        color="success"
+                        :icon="mdiCheckCircle"
+                    >
+                        {{ message }}
+                    </NotificationBar>
+                </div>
+                <a
+                    class="btn btn-info"
+                    :href="route('export.data-dashboard-order')"
                 >
-                    {{ message }}
-                </NotificationBar>
+                    Download Pdf
+                </a>
             </section>
 
             <CardBox title="Daftar Pesanan">
