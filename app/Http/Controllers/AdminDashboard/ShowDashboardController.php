@@ -44,16 +44,16 @@ class ShowDashboardController extends Controller
         $chartDataTotalTransaction = $order->showAllTransactionForEachMonths('2024');
 
         return Inertia::render('AdminDashboard/HomeSection', [
-            'totalRevenue' => $totalRevenueCakeOrders,
-            'totalCakeSold' => $totalCakeSold,
-            'mostPopularCake' => $mostPopularCake,
-            'mostPopularCakeType' => $mostPopularCakeType,
-            'mostPopularCakeCategory' => $mostPopularCakeCategory,
-            'growthRevenuePerMonthByPercentage' => $growthRevenuePerMonthByPercentage,
-            'totalTransaction' => $totalTransaction,
-            'chartData' => $chartData,
-            'chartDataCakeSold' => $getAllCakeSold,
-            'chartDataTotalTransaction' => $chartDataTotalTransaction,
+            'totalRevenue' => $totalRevenueCakeOrders ?? 0,
+            'totalCakeSold' => $totalCakeSold ?? 0,
+            'mostPopularCake' => $mostPopularCake ?? [],
+            'mostPopularCakeType' => $mostPopularCakeType ?? [],
+            'mostPopularCakeCategory' => $mostPopularCakeCategory ?? [],
+            'growthRevenuePerMonthByPercentage' => $growthRevenuePerMonthByPercentage ?? [],
+            'totalTransaction' => $totalTransaction ?? 0,
+            'chartData' => $chartData ?? [],
+            'chartDataCakeSold' => $getAllCakeSold ?? [],
+            'chartDataTotalTransaction' => $chartDataTotalTransaction ?? [],
         ]);
     }
 }

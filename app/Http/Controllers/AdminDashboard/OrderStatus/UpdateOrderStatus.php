@@ -5,6 +5,7 @@ namespace App\Http\Controllers\AdminDashboard\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderStatusHistory;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -35,7 +36,7 @@ class UpdateOrderStatus extends Controller
             ];
 
             // Insert the order status histories table
-            OrderStatusHistory::create([
+           $orderStatus =  OrderStatusHistory::create([
                 'order_id' => $order->id,
                 'status' => $order->status,
                 'description' => $orderStatus[$order->status]
@@ -43,7 +44,11 @@ class UpdateOrderStatus extends Controller
 
             return response()->json([
                 'message' => 'Berhasil merubah status pesanan',
-                'order' => $order
+                'order' => [
+                    'status' => $orderStatus->status,
+                    'description' => $orderStatus->description,
+                    'created_at' => Carbon::parse($orderStatus->created_at)->translatedFormat('d F Y, H:i:s')
+                ]
             ]);
         } catch (\Exception $e) {
             return response()->json([

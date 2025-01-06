@@ -25,7 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/shopping-chart-item', [ShoppingChartController::class, 'getShoppingChartItems'])->name('get-cart-item');
 });
 
-Route::post('/webhook/payments', [PaymentController::class, 'midtransWebhook']);
+Route::post('webhook/payments', [PaymentController::class, 'midtransWebhook']);
 
 Route::get('/api/transaction-history', [PaymentController::class, 'fetchFilteredDataTransactionHistory'])->name('api.transaction-history');
 

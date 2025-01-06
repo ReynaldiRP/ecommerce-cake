@@ -42,42 +42,65 @@ class OrderController extends Controller
      */
     public function index(): Response
     {
-        $orders = Order::query()->
-        orderBy('created_at', 'desc')->paginate(5);
-
+        $orders = Order::query()->latest()->paginate(5);
 
         foreach ($orders as $order) {
             $order->estimated_delivery_date = Carbon::parse($order->estimated_delivery_date)->isoFormat('dddd, Do MMMM YYYY');
         }
-
 
         return Inertia::render('AdminDashboard/Order/Index', [
             'orders' => $orders,
         ]);
     }
 
-    public function show($orderId): Response
-    {
-        $orders = OrderItem::query()->where('order_id', $orderId)->get();
 
-        // Transform the order items to include the cake toppings and flavours
-        $orders->map(function ($order) {
+    /**
+     * Display detail of an order in admin dashboard based on selected order.
+     *
+     * @param int $orderId
+     * @return Response The Inertia response containing the order detail.
+     */
+    public function show(int $orderId): Response
+    {
+        // Eager load the order items with their related data
+        $order = Order::with(['orderItems.cake', 'orderItems.cake.category', 'orderItems.cakeFlavour', 'orderItems.cakeTopping', 'orderItems.cakeSize'])
+            ->findOrFail($orderId);
+
+
+        // Format the estimated delivery date and created at date
+        $order->formatted_estimated_delivery_date = Carbon::parse($order->estimated_delivery_date)->translatedFormat('l, d F Y');
+        $order->formatted_created_at = Carbon::parse($order->created_at)->translatedFormat('l, d F Y H:i');
+
+        // Get the payment and order status history
+        $statusHistory = Order::with(['payment', 'payment.paymentStatusHistories', 'orderStatusHistories'])
+            ->where('id', $orderId)
+            ->get();
+
+        // Mapping the payment and order status history
+        $statusHistory = $statusHistory->map(function ($status) {
             return [
-                'id' => $order->id,
-                'cake' => $order->cake,
-                'cakeFlavour' => $order->cakeFlavour,
-                'cakeToppings' => $order->cakeTopping,
-                'quantity' => $order->quantity,
-                'price' => $order->price,
-                'note' => $order->note,
+                'order_statuses' => $status->orderStatusHistories->map(function ($item) {
+                    return [
+                        'status' => $item->status,
+                        'description' => $item->description,
+                        'created_at' => Carbon::parse($item->created_at)->translatedFormat('d F Y, H:i:s'),
+                    ];
+                }),
+                'payment_statuses' => $status->payment?->paymentStatusHistories->map(function ($item) {
+                    return [
+                        'status' => $item->status,
+                        'description' => $item->description,
+                        'created_at' => Carbon::parse($item->created_at)->translatedFormat('d F Y, H:i:s'),
+                    ];
+                }),
             ];
         });
 
-        return Inertia::render('AdminDashboard/Order/Show', [
-            'order' => $orders,
+        return Inertia::render('AdminDashboard/Order/Detail', [
+            'order' => $order,
+            'statusHistory' => $statusHistory,
         ]);
     }
-
 
     /**
      * Create a new order and associate it with the current user.

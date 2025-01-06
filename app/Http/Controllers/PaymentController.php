@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ShoppingChart\StoreShoppingChartRequest;
+use App\Mail\PaymentEmail;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderStatusHistory;
@@ -36,11 +37,10 @@ class PaymentController extends Controller
      */
     public function midtransWebhook(): HttpResponse
     {
-        Config::$serverKey = config('services.midtrans.serverKey');
-        Config::$isProduction = config('services.midtrans.isProduction');
-
-
         try {
+            Config::$serverKey = config('services.midtrans.serverKey');
+            Config::$isProduction = config('services.midtrans.isProduction');
+
             $notification = new Notification();
             $transaction_status = $notification->transaction_status;
 
@@ -48,7 +48,7 @@ class PaymentController extends Controller
             Log::channel('midtrans')->info('Parsed Midtrans Notification', [
                 'order_id' => $notification->order_id,
                 'transaction_id' => $notification->transaction_id,
-                'transaction_status' => $notification->transaction_status,
+                'transaction_status' => $transaction_status,
                 'gross_amount' => $notification->gross_amount,
                 'payment_type' => $notification->payment_type,
             ]);
@@ -66,7 +66,6 @@ class PaymentController extends Controller
                 $payment->transaction_id = $notification->transaction_id;
                 $payment->payment_method = $notification->payment_type;
             }
-
 
             $paymentStatus = [
                 'Menunggu pembayaran' => 'Sistem sedang menunggu pembayaran dari pembeli',
@@ -103,7 +102,7 @@ class PaymentController extends Controller
             ]);
 
             // Send email notification
-            //            Mail::to($order->user->email)->send(new PaymentEmail($order, $payment));
+//            Mail::to($order->user->email)->send(new PaymentEmail($order, $payment));
 
             return response('OK', 200);
         } catch (Exception $e) {
@@ -111,6 +110,8 @@ class PaymentController extends Controller
             return response('Error', 500);
         }
     }
+
+
 
     /**
      * Cancel an order by its ID.
@@ -202,9 +203,8 @@ class PaymentController extends Controller
             'cakeTopping'
         ])
             ->whereHas('order', function ($query) {
-                $query->where('user_id', auth()->id());
+                $query->where('user_id', auth()->id())->orderBy('created_at', 'desc');
             })
-            ->orderBy('created_at', 'desc')
             ->paginate(5);
 
 
@@ -355,7 +355,8 @@ class PaymentController extends Controller
             'orderItems.cakeFlavour',
             'orderItems.cakeTopping',
             'payment'
-        ])->where('order_code', $orderCode)->get();
+        ])
+            ->where('order_code', $orderCode)->get();
 
 
         // Transform the order items
@@ -461,7 +462,7 @@ class PaymentController extends Controller
                 $request->merge($orderItem);
 
                 $shoppingChartController = new ShoppingChartController();
-                $response =  $shoppingChartController->addChartItem($request);
+                $response = $shoppingChartController->addChartItem($request);
 
                 // If the response is successful, add it to our results
                 if ($response->getStatusCode() === 200) {

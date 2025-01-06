@@ -1,11 +1,4 @@
 <template>
-    <loading
-        v-model:active="isLoading"
-        :can-cancel="true"
-        color="#EBA9AE"
-        background-color="#B2BEB5"
-    />
-
     <LayoutAuthenticated>
         <SectionMain class="flex flex-col gap-4">
             <section class="flex items-center justify-between">
@@ -39,7 +32,6 @@
                                 <th>Alamat Penerima</th>
                                 <th>Penerima Kue</th>
                                 <th>Total Pembayaran</th>
-                                <th>Status Pemesanan</th>
                                 <th>Detail Pemesanan</th>
                                 <th>Pesanan Dibuat</th>
                             </tr>
@@ -56,77 +48,12 @@
                                 <td>{{ order.cake_recipient }}</td>
                                 <td>{{ formatPrice(order.total_price) }}</td>
                                 <td>
-                                    <div
-                                        class="btn btn-outline"
-                                        :class="orderStatusColor[order.status]"
-                                        @click="editOrderStatus(order)"
-                                    >
-                                        {{ order.status }}
-                                    </div>
-                                    <CardBoxModal
-                                        v-model="modalActive"
-                                        title="Ubah Status Pemesanan"
-                                        class="backdrop-contrast-50"
-                                        button-label="Simpan"
-                                        button="success"
-                                        :click-handler="
-                                            () => updateOrderStatus(orderId)
-                                        "
-                                    >
-                                        <div>
-                                            <label
-                                                class="form-control w-full max-w-xs"
-                                            >
-                                                <div class="label">
-                                                    <span
-                                                        class="label-text font-medium"
-                                                        >Status Pesanan</span
-                                                    >
-                                                </div>
-                                                <select
-                                                    class="select select-ghost select-bordered"
-                                                    v-model="currentOrderStatus"
-                                                >
-                                                    <option disabled>
-                                                        {{ currentOrderStatus }}
-                                                    </option>
-                                                    <option
-                                                        v-for="status in orderStatusFiltered(
-                                                            order,
-                                                        )"
-                                                        :key="status.id"
-                                                    >
-                                                        {{ status.name }}
-                                                    </option>
-                                                </select>
-                                            </label>
-                                            <label
-                                                v-show="
-                                                    currentOrderStatus ===
-                                                    'Pesanan diterima'
-                                                "
-                                                class="form-control w-full max-w-xs"
-                                            >
-                                                <div class="label">
-                                                    <span class="label-text">
-                                                        Bukti penerimaan pesanan
-                                                    </span>
-                                                </div>
-                                                <input
-                                                    type="file"
-                                                    class="file-input file-input-ghost file-input-bordered w-full max-w-xs"
-                                                />
-                                            </label>
-                                        </div>
-                                    </CardBoxModal>
-                                </td>
-                                <td>
-                                    <button
-                                        @click=""
+                                    <inertia-link
+                                        :href="route('order.show', order.id)"
                                         class="btn btn-outline btn-info"
                                     >
                                         Detail order
-                                    </button>
+                                    </inertia-link>
                                 </td>
                                 <td>{{ formattedDate(order.created_at) }}</td>
                             </tr>
@@ -158,10 +85,8 @@ import LayoutAuthenticated from "@/Layouts/Admin.vue";
 import SectionMain from "@/Components/DashboardAdmin/SectionMain.vue";
 import Pagination from "@/Components/Pagination.vue";
 import CardBox from "@/Components/DashboardAdmin/CardBox.vue";
-import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
 import { computed, ref } from "vue";
 import axios from "axios";
-import Loading from "vue-loading-overlay";
 import { mdiCheckCircle } from "@mdi/js";
 import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import "vue-loading-overlay/dist/css/index.css";

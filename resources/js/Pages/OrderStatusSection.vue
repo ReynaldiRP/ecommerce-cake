@@ -38,7 +38,6 @@
                     </div>
                 </div>
 
-                <!--   TODO: Implement the order and payment status history in timeline   -->
                 <!-- Order status -->
                 <section class="w-full my-8 flex justify-center items-center">
                     <ul
