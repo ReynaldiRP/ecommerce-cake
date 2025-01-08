@@ -25,9 +25,9 @@ class ShowDashboardController extends Controller
         // FIXME: the date range is still not working properly
         $getAllCakeSold = $orderItem->getAllCakeSold();
         // Get total revenue cake orders from the payment model
-        $totalRevenueCakeOrders = $payment->totalRevenueOrder('2024-01-01', '2024-12-31');
+        $totalRevenueCakeOrders = $payment->totalRevenueOrder('2025-01-01', '2025-12-31');
         // Get total cake sold
-        $totalCakeSold = $orderItem->getTotalCakeSold('2024-01-01', '2024-12-31');
+        $totalCakeSold = $orderItem->getTotalCakeSold('2025-01-01', '2025-12-31');
         // Get the most popular cake
         $mostPopularCake = $orderItem->getMostPopularCakes();
         // Get the most popular cake type
@@ -35,13 +35,13 @@ class ShowDashboardController extends Controller
         // Get the most popular cake category
         $mostPopularCakeCategory = $orderItem->getMostPopularCakeCategory();
         // Get the total transaction
-        $totalTransaction = $payment->getTotalTransaction('2024-01-01', '2024-12-31');
+        $totalTransaction = $payment->getTotalTransaction('2025-01-01', '2025-12-31');
         // Get the growth revenue per month by percentage
         $growthRevenuePerMonthByPercentage = $order->getGrowthRevenueRangeThreeMonthByPercentage();
         // Show chart data for the total revenue of cake orders per month
-        $chartData = $order->showAllRevenueForEachMonths('2024');
+        $chartData = $order->showAllRevenueForEachMonths('2025');
         // Show total transaction per month for the last 12 months based on selected year
-        $chartDataTotalTransaction = $order->showAllTransactionForEachMonths('2024');
+        $chartDataTotalTransaction = $order->showAllTransactionForEachMonths('2025');
 
         return Inertia::render('AdminDashboard/HomeSection', [
             'totalRevenue' => $totalRevenueCakeOrders ?? 0,

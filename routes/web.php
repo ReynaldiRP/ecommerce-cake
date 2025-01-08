@@ -99,7 +99,7 @@ Route::middleware(['auth'])->group(function () {
 
             // Routes for exporting data to PDF
             Route::group(['prefix' => 'export', 'as' => 'export.'], function () {
-                Route::get('/data-dashboard-order', [OrderController::class, 'exportOrderToPdf'])->name('data-dashboard-order');
+                Route::get('/data-dashboard-order', [OrderController::class, 'exportProductPerformanceToPdf'])->name('product-performance-report');
                 Route::get('/data-dashboard-payment', [PaymentController::class, 'exportTransactionHistoryToPdf'])->name('data-dashboard-payment');
             });
 

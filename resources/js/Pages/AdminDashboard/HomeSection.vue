@@ -215,7 +215,8 @@
                             <option value="2021">2021</option>
                             <option value="2022">2022</option>
                             <option value="2023">2023</option>
-                            <option value="2024" selected>2024</option>
+                            <option value="2024">2024</option>
+                            <option value="2025" selected>2025</option>
                         </select>
                     </label>
                 </div>
@@ -244,7 +245,8 @@
                             <option value="2021">2021</option>
                             <option value="2022">2022</option>
                             <option value="2023">2023</option>
-                            <option value="2024" selected>2024</option>
+                            <option value="2024">2024</option>
+                            <option value="2025" selected>2025</option>
                         </select>
                     </label>
                 </div>
@@ -299,8 +301,8 @@ const chartCakeSoldData = ref({});
 const chartTransactionData = ref({});
 
 const form = reactive({
-    selectedYearTransaction: "2024",
-    selectedYearRevenue: "2024",
+    selectedYearTransaction: "2025",
+    selectedYearRevenue: "2025",
 });
 
 // Growth Revenue Per Month By Percentage

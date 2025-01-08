@@ -13,12 +13,43 @@
                         {{ message }}
                     </NotificationBar>
                 </div>
-                <a
-                    class="btn btn-info"
-                    :href="route('export.data-dashboard-order')"
+
+                <button class="btn btn-info" @click="modalActive = true">
+                    Export Laporan
+                </button>
+                <CardBoxModal
+                    v-model="modalActive"
+                    title="Export Laporan"
+                    class="backdrop-contrast-50"
+                    button-label="Download Laporan"
+                    button="success"
+                    :click-handler="exportProductPerformanceReport"
                 >
-                    Download Pdf
-                </a>
+                    <label class="form-control w-full max-w-xs">
+                        <span class="text-sm m-0 p-0">
+                            Pilih periode laporan.
+                        </span>
+                        <select
+                            class="select select-ghost select-bordered w-full max-w-xs"
+                            @change="
+                                onChangeTransactionDate(
+                                    $event.target.selectedIndex,
+                                )
+                            "
+                        >
+                            <option disabled selected>
+                                Pilih Periode Laporan
+                            </option>
+                            <option
+                                v-for="(month, index) in months"
+                                :value="month.value"
+                                :key="index"
+                            >
+                                {{ month.name }}
+                            </option>
+                        </select>
+                    </label>
+                </CardBoxModal>
             </section>
 
             <CardBox title="Daftar Pesanan">
@@ -85,12 +116,13 @@ import LayoutAuthenticated from "@/Layouts/Admin.vue";
 import SectionMain from "@/Components/DashboardAdmin/SectionMain.vue";
 import Pagination from "@/Components/Pagination.vue";
 import CardBox from "@/Components/DashboardAdmin/CardBox.vue";
-import { computed, ref } from "vue";
-import axios from "axios";
+import { ref } from "vue";
 import { mdiCheckCircle } from "@mdi/js";
 import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import "vue-loading-overlay/dist/css/index.css";
 import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
+import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
+import { Inertia } from "@inertiajs/inertia";
 
 const props = defineProps({
     orders: Object,
@@ -99,111 +131,42 @@ const props = defineProps({
 const { formatPrice, formattedDate } = useAdminDashboardStore();
 const modalActive = ref(false);
 const ordersData = ref(props.orders.data);
-const orderId = ref("");
-const currentOrderStatus = ref("");
-const isLoading = ref(false);
 const message = ref("");
+const selectedTransactionDate = ref("");
 
-const orderStatus = [
-    {
-        id: 1,
-        name: "Pesanan diproses",
-    },
-    {
-        id: 2,
-        name: "Pesanan dikemas",
-    },
-    {
-        id: 3,
-        name: "Pesanan dikirim",
-    },
-    {
-        id: 4,
-        name: "Pesanan diterima",
-    },
+const months = [
+    { name: "Januari", value: "01" },
+    { name: "Februari", value: "02" },
+    { name: "Maret", value: "03" },
+    { name: "April", value: "04" },
+    { name: "Mei", value: "05" },
+    { name: "Juni", value: "06" },
+    { name: "Juli", value: "07" },
+    { name: "Agustus", value: "08" },
+    { name: "September", value: "09" },
+    { name: "Oktober", value: "10" },
+    { name: "November", value: "11" },
+    { name: "Desember", value: "12" },
 ];
 
 /**
- * Computed property that returns a mapping of order statuses to their corresponding button classes.
- * @returns {Object} An object where the keys are order statuses and the values are button classes.
- */
-const orderStatusColor = computed(() => {
-    return {
-        "Pesanan diproses": "btn-info",
-        "Pesanan dikonfirmasi": "btn-info",
-        "Pesanan dikemas": "btn-info",
-        "Pesanan dikirim": "btn-info",
-        "Pesanan diterima": "btn-success",
-        "Pesanan dibatalkan": "btn-error",
-        "Pesanan kadaluwarsa": "btn-error",
-    };
-});
-
-/**
- * Filters the order statuses to exclude the current status of the given order.
- * @param {Object} order - The order object containing the current status.
- * @returns {Array} An array of order statuses excluding the current status.
- */
-const orderStatusFiltered = (order) => {
-    return orderStatus.filter((status) => status.name !== order.status);
-};
-
-/**
- * Edits the status of the given order.
- * @param {Object} order - The order object containing the order ID.
- */
-const editOrderStatus = async (order) => {
-    try {
-        const response = await axios.get(
-            route("order.edit-status", { order: order.id }),
-            {
-                params: {
-                    order: order.id,
-                },
-            },
-        );
-
-        currentOrderStatus.value = response.data.order.status;
-        orderId.value = response.data.order.id;
-        modalActive.value = true;
-    } catch (e) {
-        console.error(e);
-    }
-};
-
-/**
- * Updates the status of the given order.
+ * Handles the change of the transaction date based on the selected index.
  *
- * @param {Object} order - The order object containing the order ID.
+ * @param {number} index - The index of the selected date in the months array.
  */
-const updateOrderStatus = async (order) => {
-    try {
-        const response = await axios.patch(
-            route("order.update-status", { orderId: order }),
-            {
-                status: currentOrderStatus.value,
-            },
-            {
-                params: {
-                    orderId: order,
-                },
-            },
-        );
+const onChangeTransactionDate = (index) => {
+    // Get the transaction date based on the selected date
+    selectedTransactionDate.value = months[index - 1].value;
+};
 
-        const index = ordersData.value.findIndex(
-            (order) => order.id === response.data.order.id,
-        );
-
-        isLoading.value = true;
-
-        setTimeout(() => {
-            isLoading.value = false;
-            modalActive.value = false;
-            ordersData.value[index].status = response.data.order.status;
-            message.value = response.data.message;
-        }, 2000);
-    } catch (e) {
-        console.error(e);
-    }
+/**
+ * Export the performance product based on the selected transaction date.
+ *
+ * @returns {void}
+ */
+const exportProductPerformanceReport = () => {
+    Inertia.get(route("export.product-performance-report"), {
+        month: selectedTransactionDate.value,
+    });
 };
 </script>

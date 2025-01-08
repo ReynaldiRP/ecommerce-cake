@@ -17,6 +17,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
 use Midtrans\Config;
@@ -102,7 +103,7 @@ class PaymentController extends Controller
             ]);
 
             // Send email notification
-//            Mail::to($order->user->email)->send(new PaymentEmail($order, $payment));
+            Mail::to($order->user->email)->send(new PaymentEmail($order, $payment));
 
             return response('OK', 200);
         } catch (Exception $e) {
@@ -500,7 +501,7 @@ class PaymentController extends Controller
             ];
         });
 
-        $pdf = Pdf::loadView('pdf.transaction-history', ['payments' => $payment]);
+        $pdf = Pdf::setOption('isRemoteEnabled', true)->loadView('pdf.transaction-history', ['payments' => $payment])->setPaper('a4', 'landscape');
         return $pdf->download('transaction-history.pdf');
     }
 }
