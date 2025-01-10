@@ -1,12 +1,77 @@
 <template>
     <LayoutAuthenticated>
         <SectionMain class="flex flex-col gap-6">
-            <div class="flex flex-col">
-                <h1 class="font-bold text-2xl">Dashboard Home</h1>
-                <small class="text-lg"
-                    >Data pemesanan dalam kurun waktu 3 bulan terkahir</small
+            <!--     Heading and export report button        -->
+            <section class="flex justify-between items-center">
+                <div class="flex flex-col">
+                    <h1 class="font-bold text-2xl">Dashboard Home</h1>
+                    <small class="text-lg"
+                        >Data pemesanan dalam kurun waktu 3 bulan
+                        terkahir</small
+                    >
+                </div>
+                <button
+                    class="btn btn-outline btn-info"
+                    @click="modalActive = true"
                 >
-            </div>
+                    <i class="fa-solid fa-file-export"></i>
+                    Export Laporan
+                </button>
+                <CardBoxModal
+                    v-model="modalActive"
+                    title="Export Laporan"
+                    class="backdrop-contrast-50"
+                    button-label="Download Laporan"
+                    button="success"
+                    :click-handler="exportReport"
+                >
+                    <label class="form-control w-full max-w-xs">
+                        <span class="text-sm m-0 p-0">
+                            Pilih jenis laporan.
+                        </span>
+                        <select
+                            class="select select-ghost select-bordered w-full max-w-xs"
+                            @change="
+                                onChangeReportType($event.target.selectedIndex)
+                            "
+                        >
+                            <option disabled selected>
+                                Pilih Jenis Laporan
+                            </option>
+                            <option
+                                v-for="(report, index) in reportType"
+                                :value="report.value"
+                                :key="index"
+                            >
+                                {{ report.name }}
+                            </option>
+                        </select>
+                    </label>
+                    <label class="form-control w-full max-w-xs">
+                        <span class="text-sm m-0 p-0">
+                            Pilih periode laporan.
+                        </span>
+                        <select
+                            class="select select-ghost select-bordered w-full max-w-xs"
+                            @change="
+                                onChangeExportMonth($event.target.selectedIndex)
+                            "
+                        >
+                            <option disabled selected>
+                                Pilih Periode Laporan
+                            </option>
+                            <option
+                                v-for="(month, index) in months"
+                                :value="month.value"
+                                :key="index"
+                            >
+                                {{ month.name }}
+                            </option>
+                        </select>
+                    </label>
+                </CardBoxModal>
+            </section>
+            <!--     Report card data       -->
             <section class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <CardBoxWidget
                     :icon="mdiCash"
@@ -195,7 +260,7 @@
                     </section>
                 </CardBox>
             </section>
-
+            <!--     Chart data       -->
             <section class="flex flex-col gap-4 mt-8">
                 <div class="flex justify-between items-center">
                     <h1 class="font-bold text-2xl">
@@ -223,7 +288,27 @@
                 <CardBox>
                     <LineChart :data="chartRevenueData" class="h-96" />
                 </CardBox>
-                <h1 class="font-bold text-2xl">Grafik Penjualan Kue</h1>
+                <div class="flex justify-between items-center">
+                    <h1 class="font-bold text-2xl">Grafik Penjualan Kue</h1>
+                    <label class="form-control w-full max-w-xs">
+                        <div class="label">
+                            <span class="label-text font-bold ms-auto"
+                                >Pilih Tahun Transaksi</span
+                            >
+                        </div>
+                        <select
+                            class="select select-bordered"
+                            v-model="form.selectedYearCakeSold"
+                        >
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025" selected>2025</option>
+                        </select>
+                    </label>
+                </div>
                 <CardBox>
                     <DoughnutChart :data="chartCakeSoldData" class="h-96" />
                 </CardBox>
@@ -272,6 +357,7 @@ import CardBox from "@/Components/DashboardAdmin/CardBox.vue";
 import BaseIcon from "@/Components/DashboardAdmin/BaseIcon.vue";
 import LineChart from "@/Components/DashboardAdmin/Charts/LineChart.vue";
 import { computed, onMounted, reactive, ref, watch } from "vue";
+import { Inertia } from "@inertiajs/inertia";
 import NumberDynamic from "@/Components/DashboardAdmin/NumberDynamic.vue";
 import BaseLevel from "@/Components/DashboardAdmin/BaseLevel.vue";
 import PillTagTrend from "@/Components/DashboardAdmin/PillTagTrend.vue";
@@ -279,6 +365,7 @@ import DoughnutChart from "@/Components/DashboardAdmin/Charts/DoughnutChart.vue"
 import BarChart from "@/Components/DashboardAdmin/Charts/BarChart.vue";
 import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
 import axios from "axios";
+import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
 
 const props = defineProps({
     totalRevenue: Number,
@@ -299,10 +386,37 @@ const minimumCakeSold = 5;
 const chartRevenueData = ref({});
 const chartCakeSoldData = ref({});
 const chartTransactionData = ref({});
+const modalActive = ref(false);
+
+const months = [
+    { name: "Januari", value: "01" },
+    { name: "Februari", value: "02" },
+    { name: "Maret", value: "03" },
+    { name: "April", value: "04" },
+    { name: "Mei", value: "05" },
+    { name: "Juni", value: "06" },
+    { name: "Juli", value: "07" },
+    { name: "Agustus", value: "08" },
+    { name: "September", value: "09" },
+    { name: "Oktober", value: "10" },
+    { name: "November", value: "11" },
+    { name: "Desember", value: "12" },
+];
+
+const reportType = [
+    {
+        name: "Laporan Performa Kue",
+        value: "product-performance-report",
+    },
+    { name: "Laporan Performa Penjualan", value: "sales-performance-report" },
+];
 
 const form = reactive({
+    selectedReportType: "",
+    selectedExportMonth: "",
     selectedYearTransaction: "2025",
     selectedYearRevenue: "2025",
+    selectedYearCakeSold: "2025",
 });
 
 // Growth Revenue Per Month By Percentage
@@ -375,7 +489,26 @@ const dataCakeSold = {
     ],
 };
 
-// TODO: Implement filtering data based on the selected year
+/**
+ * Handles the change of export report month based on the selected index.
+ *
+ * @param {number} index - The index of the selected date in the months array.
+ */
+const onChangeReportType = (index) => {
+    // Get the transaction date based on the selected date
+    form.selectedReportType = reportType[index - 1].value;
+};
+
+/**
+ * Handles the change of export report month based on the selected index.
+ *
+ * @param {number} index - The index of the selected date in the months array.
+ */
+const onChangeExportMonth = (index) => {
+    // Get the transaction date based on the selected date
+    form.selectedExportMonth = months[index - 1].value;
+};
+
 const fecthDataReportSelectedYear = async () => {
     try {
         const response = await axios.post(route("dashboard-home"), {
@@ -456,5 +589,16 @@ const evaluateTrend = (total, minimum) => {
     }
 
     return "down";
+};
+
+/**
+ * Export report based on selected report.
+ *
+ * @returns {void}
+ */
+const exportReport = () => {
+    Inertia.get(route(`export.${form.selectedReportType}`), {
+        month: form.selectedExportMonth,
+    });
 };
 </script>

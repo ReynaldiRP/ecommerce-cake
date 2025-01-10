@@ -4,52 +4,7 @@
             <section class="flex items-center justify-between">
                 <div class="flex gap-2 items-center">
                     <h1 class="font-bold text-2xl">Tabel Order</h1>
-                    <NotificationBar
-                        class="w-[50%]"
-                        v-if="message"
-                        color="success"
-                        :icon="mdiCheckCircle"
-                    >
-                        {{ message }}
-                    </NotificationBar>
                 </div>
-
-                <button class="btn btn-info" @click="modalActive = true">
-                    Export Laporan
-                </button>
-                <CardBoxModal
-                    v-model="modalActive"
-                    title="Export Laporan"
-                    class="backdrop-contrast-50"
-                    button-label="Download Laporan"
-                    button="success"
-                    :click-handler="exportProductPerformanceReport"
-                >
-                    <label class="form-control w-full max-w-xs">
-                        <span class="text-sm m-0 p-0">
-                            Pilih periode laporan.
-                        </span>
-                        <select
-                            class="select select-ghost select-bordered w-full max-w-xs"
-                            @change="
-                                onChangeTransactionDate(
-                                    $event.target.selectedIndex,
-                                )
-                            "
-                        >
-                            <option disabled selected>
-                                Pilih Periode Laporan
-                            </option>
-                            <option
-                                v-for="(month, index) in months"
-                                :value="month.value"
-                                :key="index"
-                            >
-                                {{ month.name }}
-                            </option>
-                        </select>
-                    </label>
-                </CardBoxModal>
             </section>
 
             <CardBox title="Daftar Pesanan">
@@ -117,56 +72,13 @@ import SectionMain from "@/Components/DashboardAdmin/SectionMain.vue";
 import Pagination from "@/Components/Pagination.vue";
 import CardBox from "@/Components/DashboardAdmin/CardBox.vue";
 import { ref } from "vue";
-import { mdiCheckCircle } from "@mdi/js";
-import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import "vue-loading-overlay/dist/css/index.css";
 import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
-import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
-import { Inertia } from "@inertiajs/inertia";
 
 const props = defineProps({
     orders: Object,
 });
 
 const { formatPrice, formattedDate } = useAdminDashboardStore();
-const modalActive = ref(false);
 const ordersData = ref(props.orders.data);
-const message = ref("");
-const selectedTransactionDate = ref("");
-
-const months = [
-    { name: "Januari", value: "01" },
-    { name: "Februari", value: "02" },
-    { name: "Maret", value: "03" },
-    { name: "April", value: "04" },
-    { name: "Mei", value: "05" },
-    { name: "Juni", value: "06" },
-    { name: "Juli", value: "07" },
-    { name: "Agustus", value: "08" },
-    { name: "September", value: "09" },
-    { name: "Oktober", value: "10" },
-    { name: "November", value: "11" },
-    { name: "Desember", value: "12" },
-];
-
-/**
- * Handles the change of the transaction date based on the selected index.
- *
- * @param {number} index - The index of the selected date in the months array.
- */
-const onChangeTransactionDate = (index) => {
-    // Get the transaction date based on the selected date
-    selectedTransactionDate.value = months[index - 1].value;
-};
-
-/**
- * Export the performance product based on the selected transaction date.
- *
- * @returns {void}
- */
-const exportProductPerformanceReport = () => {
-    Inertia.get(route("export.product-performance-report"), {
-        month: selectedTransactionDate.value,
-    });
-};
 </script>

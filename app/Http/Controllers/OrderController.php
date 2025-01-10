@@ -10,32 +10,14 @@ use Illuminate\Http\Request;
 use App\Models\OrderItemTopping;
 use App\Models\ShoppingChartItem;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response as HttpResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 use Midtrans\Snap;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class OrderController extends Controller
 {
-    private $months = [
-        '01' => 'Januari',
-        '02' => 'Februari',
-        '03' => 'Maret',
-        '04' => 'April',
-        '05' => 'Mei',
-        '06' => 'Juni',
-        '07' => 'Juli',
-        '08' => 'Agustus',
-        '09' => 'September',
-        '10' => 'Oktober',
-        '11' => 'November',
-        '12' => 'Desember',
-    ];
-
 
     /**
      * Setup Midtrans configuration.
@@ -317,81 +299,4 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Export product performance report to PDF.
-     *
-     * @param Request $request
-     * @return HttpResponse
-     */
-    public function exportProductPerformanceToPdf(Request $request): HttpResponse
-    {
-        $selectedMonth = $request->input('month');
-
-        // Get the product performance data
-        $productPerformance = Order::with(['payment', 'orderItems', 'orderItems.cake', 'orderItems.cakeFlavour', 'orderItems.cakeSize', 'orderItems.cakeTopping'])
-        ->whereMonth('orders.created_at', $selectedMonth)
-        ->orWhereHas('payment', function ($query) {
-            $query->where('payment_status', 'Pesanan terbayar');
-        })
-        ->get();
-
-        // Get the highest selling product
-        $bestSellingProduct = OrderItem::query()->selectRaw('cakes.name as cake, SUM(order_items.quantity) as total_sold')
-            ->join('cakes', 'order_items.cake_id', '=', 'cakes.id')
-            ->join('orders', 'order_items.order_id', '=', 'orders.id')
-            ->join('payments', 'orders.id', '=', 'payments.order_id')
-            ->where('payments.payment_status', 'Pesanan terbayar')
-            ->whereMonth('order_items.created_at', $selectedMonth)
-            ->groupBy('cakes.name')
-            ->orderByDesc('total_sold')
-            ->first();
-
-        // Get the lowest selling product
-        $worstSellingProduct = OrderItem::query()->selectRaw('cakes.name as cake, SUM(order_items.quantity) as total_sold')
-            ->join('cakes', 'order_items.cake_id', '=', 'cakes.id')
-            ->join('orders', 'order_items.order_id', '=', 'orders.id')
-            ->join('payments', 'orders.id', '=', 'payments.order_id')
-            ->where('payments.payment_status', 'Pesanan terbayar')
-            ->whereMonth('order_items.created_at', $selectedMonth)
-            ->groupBy('cakes.name')
-            ->orderBy('total_sold')
-            ->first();
-
-
-        // Get total revenue
-        $totalRevenue = $productPerformance->pluck('orderItems')->flatten()->sum('price');
-
-        // Transform the product performance data
-        $productPerformance = $productPerformance->flatMap(function ($order) {
-            return $order->orderItems->map(function ($orderItem) {
-                return [
-                    'cake_name' => $orderItem->cake->name,
-                    'cake_flavour' => $orderItem->cakeFlavour->name ?? '-',
-                    'cake_size' => $orderItem->cakeSize->size ?? '-',
-                    'cake_topping' => $orderItem->cakeTopping->implode('name', ', ') ?? '-',
-                    'quantity' => $orderItem->quantity,
-                    'price' => $this->formatPrice($orderItem->price),
-                    'total_price' => $this->formatPrice($orderItem->price * $orderItem->quantity),
-                ];
-            });
-        });
-
-
-        $pdf = PDF::setOption('isRemoteEnabled', true)->loadView('pdf.order', [
-            'productPerformance' => $productPerformance,
-            'bestSellingProduct' => $bestSellingProduct,
-            'worstSellingProduct' => $worstSellingProduct,
-            'totalRevenue' => $this->formatPrice($totalRevenue),
-            'generated_at' => Carbon::now()->translatedFormat('l, d F Y H:i'),
-            'period' => $this->months[$selectedMonth] . ' ' . Carbon::now()->year,
-        ])->setPaper('a4', 'landscape');
-
-        return $pdf->download('product-performance-report.pdf');
-    }
-
-    // Format the price to Indonesian Rupiah
-    private function formatPrice($price)
-    {
-        return 'Rp. ' . number_format($price, 2, ',', '.');
-    }
 }

@@ -3,12 +3,6 @@
         <SectionMain class="flex flex-col gap-6">
             <div class="flex justify-between items-center gap-2">
                 <h1 class="font-bold text-2xl">Tabel Pembayaran</h1>
-                <a
-                    class="btn btn-info"
-                    :href="route('export.data-dashboard-payment')"
-                >
-                    Download Pdf
-                </a>
             </div>
 
             <CardBox>

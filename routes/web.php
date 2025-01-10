@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminDashboard\ShowDashboardController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\ExportReportController;
 use App\Http\Controllers\GetNotificationOrderStatusController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CakeController;
@@ -99,8 +100,10 @@ Route::middleware(['auth'])->group(function () {
 
             // Routes for exporting data to PDF
             Route::group(['prefix' => 'export', 'as' => 'export.'], function () {
-                Route::get('/data-dashboard-order', [OrderController::class, 'exportProductPerformanceToPdf'])->name('product-performance-report');
-                Route::get('/data-dashboard-payment', [PaymentController::class, 'exportTransactionHistoryToPdf'])->name('data-dashboard-payment');
+               Route::controller(ExportReportController::class)->group(function () {
+                   Route::get('/product-performance', 'exportProductPerformanceToPdf')->name('product-performance-report');
+                   Route::get('/revenue-report', 'exportSalesPerformanceToPdf')->name('sales-performance-report');
+               });
             });
 
             // Route for edit and update order status
