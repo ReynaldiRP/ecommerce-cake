@@ -280,8 +280,8 @@
                             <option value="2021">2021</option>
                             <option value="2022">2022</option>
                             <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025" selected>2025</option>
+                            <option value="2024" selected>2024</option>
+                            <option value="2025">2025</option>
                         </select>
                     </label>
                 </div>
@@ -304,8 +304,8 @@
                             <option value="2021">2021</option>
                             <option value="2022">2022</option>
                             <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025" selected>2025</option>
+                            <option value="2024" selected>2024</option>
+                            <option value="2025">2025</option>
                         </select>
                     </label>
                 </div>
@@ -330,8 +330,8 @@
                             <option value="2021">2021</option>
                             <option value="2022">2022</option>
                             <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025" selected>2025</option>
+                            <option value="2024" selected>2024</option>
+                            <option value="2025">2025</option>
                         </select>
                     </label>
                 </div>
@@ -414,9 +414,9 @@ const reportType = [
 const form = reactive({
     selectedReportType: "",
     selectedExportMonth: "",
-    selectedYearTransaction: "2025",
-    selectedYearRevenue: "2025",
-    selectedYearCakeSold: "2025",
+    selectedYearTransaction: "2024",
+    selectedYearRevenue: "2024",
+    selectedYearCakeSold: "2024",
 });
 
 // Growth Revenue Per Month By Percentage
@@ -469,21 +469,38 @@ let dataTransaction = {
         },
     ],
 };
+// Remove duplicate chart data cake sold
+const aggregateChartDataCakeSold = (chartData) => {
+    return chartData.reduce((acc, data) => {
+        const existingData = acc.find(
+            (item) => item.cake_name === data.cake_name,
+        );
+
+        if (existingData) {
+            existingData.sold_quantity += data.sold_quantity;
+        } else {
+            acc.push({ ...data });
+        }
+
+        return acc;
+    }, []);
+};
+
 const dataCakeSold = {
     labels: props.chartDataCakeSold.map((data) => data.cake_name) ?? [],
     datasets: [
         {
             label: "Terjual",
             data:
-                props.chartDataCakeSold.map((data) => data.sold_quantity) ?? [],
-            backgroundColor: [
-                "rgba(255, 99, 132)",
-                "rgba(54, 162, 235)",
-                "rgba(255, 206, 86)",
-                "rgba(75, 192, 192)",
-                "rgba(153, 102, 255)",
-                "rgba(255, 159, 64)",
-            ],
+                aggregateChartDataCakeSold(props.chartDataCakeSold).map(
+                    (data) => data.sold_quantity,
+                ) ?? [],
+            backgroundColor: props.chartDataCakeSold.map(() => {
+                const r = Math.floor(Math.random() * 255);
+                const g = Math.floor(Math.random() * 255);
+                const b = Math.floor(Math.random() * 255);
+                return `rgba(${r}, ${g}, ${b})`;
+            }),
             hoverOffset: 4,
         },
     ],
@@ -509,41 +526,54 @@ const onChangeExportMonth = (index) => {
     form.selectedExportMonth = months[index - 1].value;
 };
 
-const fecthDataReportSelectedYear = async () => {
+const fetchDataReportSelectedYear = async () => {
     try {
         const response = await axios.post(route("dashboard-home"), {
             selectedTransactionYear: form.selectedYearTransaction,
             selectedRevenueYear: form.selectedYearRevenue,
+            selectedCakeSoldYear: form.selectedYearCakeSold,
         });
 
-        if (!response.data.chartDataTotalTransaction.length) {
+        const {
+            chartDataTotalTransaction,
+            chartDataRevenue,
+            chartDataCakeSold,
+        } = response.data;
+
+        if (!chartDataTotalTransaction.length) {
             chartTransactionData.value = {};
             return;
         }
 
-        if (!response.data.chartDataRevenue.length) {
+        if (!chartDataCakeSold.length) {
+            chartCakeSoldData.value = {};
+            return;
+        }
+
+        if (!chartDataRevenue.length) {
             chartRevenueData.value = {};
             return;
         }
 
-        dataRevenue.labels = response.data.chartDataRevenue.map(
-            (data) => data.month,
-        );
-
-        dataRevenue.datasets[0].data = response.data.chartDataRevenue.map(
+        dataRevenue.labels = chartDataRevenue.map((data) => data.month);
+        dataRevenue.datasets[0].data = chartDataRevenue.map(
             (data) => data.total_revenue,
         );
 
-        dataTransaction.labels = response.data.chartDataTotalTransaction.map(
-            (data) => data.month,
+        dataCakeSold.labels = chartDataCakeSold.map((data) => data.cake_name);
+        dataCakeSold.datasets[0].data = chartDataCakeSold.map(
+            (data) => data.sold_quantity,
         );
 
-        dataTransaction.datasets[0].data =
-            response.data.chartDataTotalTransaction.map(
-                (data) => data.total_transaction,
-            );
+        dataTransaction.labels = chartDataTotalTransaction.map(
+            (data) => data.month,
+        );
+        dataTransaction.datasets[0].data = chartDataTotalTransaction.map(
+            (data) => data.total_transaction,
+        );
 
         chartRevenueData.value = { ...dataRevenue };
+        chartCakeSoldData.value = { ...dataCakeSold };
         chartTransactionData.value = { ...dataTransaction };
     } catch (e) {
         console.error(e);
@@ -551,18 +581,14 @@ const fecthDataReportSelectedYear = async () => {
 };
 
 watch(
-    () => form.selectedYearTransaction,
+    [
+        () => form.selectedYearTransaction,
+        () => form.selectedYearRevenue,
+        () => form.selectedYearCakeSold,
+    ],
     async () => {
         // Fetch data based on the selected year
-        await fecthDataReportSelectedYear();
-    },
-);
-
-watch(
-    () => form.selectedYearRevenue,
-    async () => {
-        // Fetch data based on the selected year
-        await fecthDataReportSelectedYear();
+        await fetchDataReportSelectedYear();
     },
 );
 

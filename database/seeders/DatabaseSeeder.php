@@ -8,6 +8,7 @@ use App\Models\CakeSize;
 use App\Models\Category;
 use App\Models\Discount;
 use App\Models\Flavour;
+use App\Models\OrderItem;
 use App\Models\Topping;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -80,7 +81,6 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('12345678'),
             ]
         ]);
-
         Role::create(['name' => 'owner']);
         Role::create(['name' => 'admin']);
         Role::create(['name' => 'user']);
@@ -114,11 +114,17 @@ class DatabaseSeeder extends Seeder
             User::query()->where('username', $role)->first()->assignRole($role);
         });
 
-
         Flavour::factory(8)->create();
         CakeSize::factory(6)->create();
         Topping::factory(8)->create();
         Category::factory(6)->create();
         Discount::factory(3)->create();
+
+        $this->call([
+            CakesSeeder::class,
+            OrderSeeder::class,
+            OrderItemSeeder::class,
+            PaymentSeeder::class
+        ]);
     }
 }

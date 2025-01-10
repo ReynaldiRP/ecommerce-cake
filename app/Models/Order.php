@@ -60,7 +60,7 @@ class Order extends Model
         $totalRevenuePastThreeMonths = $this->selectRaw('SUM(total_price) as total_revenue')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
             ->where('payments.payment_status', '=', 'pesanan terbayar')
-            ->whereBetween('orders.created_at', [Carbon::now()->subMonths(3), Carbon::now()->subMonth()->endOfMonth()])
+            ->whereBetween('orders.created_at', [Carbon::now()->subMonths(3), Carbon::create(2024, 12, 31)->endOfMonth()])
             ->first();
 
 

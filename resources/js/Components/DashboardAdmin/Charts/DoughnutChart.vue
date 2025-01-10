@@ -45,10 +45,13 @@ onMounted(() => {
                                 return [];
                             }
 
-                            return datasets[0].data.map((data, i) => {
+                            return datasets[0].data.map((_, i) => {
                                 return {
-                                    text: `${labels[i]} : ${data} Pcs`,
+                                    text: `${labels[i]}: ${datasets[0].data[i]} Pcs`,
                                     fillStyle: datasets[0].backgroundColor[i],
+                                    hidden:
+                                        isNaN(datasets[0].data[i]) ||
+                                        datasets[0].data[i] === 0,
                                     index: i,
                                 };
                             });

@@ -30,15 +30,15 @@ class OrderItem extends Model
      *
      * @return array|\Illuminate\Database\Eloquent\Collection
      */
-    public function getAllCakeSold(string $currentMonth = null, string $pastMonth = null): array|\Illuminate\Database\Eloquent\Collection
+    public function getAllCakeSold(int $year): array|\Illuminate\Database\Eloquent\Collection
     {
         $query = OrderItem::query()->select('cakes.name as cake_name', 'order_items.quantity as sold_quantity')
             ->join('cakes', 'order_items.cake_id', '=', 'cakes.id')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
             ->where('payments.payment_status', '=', 'Pesanan terbayar')
-            ->when($pastMonth && $currentMonth, function ($query) use ($pastMonth, $currentMonth) {
-                return $query->whereBetween('orders.created_at', [$pastMonth, $currentMonth]);
+            ->whereHas('order', function ($query) use ($year) {
+                $query->whereYear('orders.created_at', $year);
             });
 
         \Log::info($query->toSql(), $query->getBindings());

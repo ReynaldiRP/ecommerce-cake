@@ -13,6 +13,7 @@ class DashboardController extends Controller
 {
     public function __construct(
         private readonly Order $order,
+        private readonly OrderItem $orderItem,
     )
     {}
 
@@ -21,17 +22,19 @@ class DashboardController extends Controller
         // request input for date range
         $selectedYearDataTransaction = $request->input('selectedTransactionYear', 2024);
         $selectedYearDataRevenue = $request->input('selectedRevenueYear', 2024);
+        $selectedYearDataCakeSold = $request->input('selectedCakeSoldYear', 2024);
 
 
 
         $fetchTransactionData = $this->fetchDataTransactionPerMonth($selectedYearDataTransaction);
         $fetchRevenueData = $this->fetchDataRevenuePerMonth($selectedYearDataRevenue);
-
+        $fetchCakeSoldData = $this->fetchDataCakeSoldPerMonth($selectedYearDataCakeSold);
 
 
         return response()->json([
             'chartDataTotalTransaction' => $fetchTransactionData,
             'chartDataRevenue' => $fetchRevenueData,
+            'chartDataCakeSold' => $fetchCakeSoldData,
         ]);
     }
 
@@ -59,5 +62,12 @@ class DashboardController extends Controller
         $dataRevenue = $this->order->showAllRevenueForEachMonths($year);
 
         return $dataRevenue->toArray();
+    }
+
+    public function fetchDataCakeSoldPerMonth(int $year): array
+    {
+        $dataCakeSold = $this->orderItem->getAllCakeSold($year);
+
+        return $dataCakeSold->toArray();
     }
 }
