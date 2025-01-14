@@ -47,28 +47,56 @@
                             </option>
                         </select>
                     </label>
-                    <label class="form-control w-full max-w-xs">
-                        <span class="text-sm m-0 p-0">
-                            Pilih periode laporan.
-                        </span>
-                        <select
-                            class="select select-ghost select-bordered w-full max-w-xs"
-                            @change="
-                                onChangeExportMonth($event.target.selectedIndex)
-                            "
-                        >
-                            <option disabled selected>
-                                Pilih Periode Laporan
-                            </option>
-                            <option
-                                v-for="(month, index) in months"
-                                :value="month.value"
-                                :key="index"
+                    <section class="flex gap-4">
+                        <label class="form-control w-full max-w-xs">
+                            <span class="text-sm m-0 p-0">
+                                Pilih periode tahun.
+                            </span>
+                            <select
+                                class="select select-ghost select-bordered w-full max-w-xs"
+                                @change="
+                                    onChangeExportYear(
+                                        $event.target.selectedIndex,
+                                    )
+                                "
                             >
-                                {{ month.name }}
-                            </option>
-                        </select>
-                    </label>
+                                <option disabled selected>
+                                    Pilih Periode Tahun
+                                </option>
+                                <option
+                                    v-for="(year, index) in years"
+                                    :value="year.value"
+                                    :key="index"
+                                >
+                                    {{ year.name }}
+                                </option>
+                            </select>
+                        </label>
+                        <label class="form-control w-full max-w-xs">
+                            <span class="text-sm m-0 p-0">
+                                Pilih periode laporan.
+                            </span>
+                            <select
+                                class="select select-ghost select-bordered w-full max-w-xs"
+                                @change="
+                                    onChangeExportMonth(
+                                        $event.target.selectedIndex,
+                                    )
+                                "
+                            >
+                                <option disabled selected>
+                                    Pilih Periode Laporan
+                                </option>
+                                <option
+                                    v-for="(month, index) in months"
+                                    :value="month.value"
+                                    :key="index"
+                                >
+                                    {{ month.name }}
+                                </option>
+                            </select>
+                        </label>
+                    </section>
                 </CardBoxModal>
             </section>
             <!--     Report card data       -->
@@ -388,6 +416,14 @@ const chartCakeSoldData = ref({});
 const chartTransactionData = ref({});
 const modalActive = ref(false);
 
+const years = [
+    { name: "2020", value: "2020" },
+    { name: "2021", value: "2021" },
+    { name: "2022", value: "2022" },
+    { name: "2023", value: "2023" },
+    { name: "2024", value: "2024" },
+    { name: "2025", value: "2025" },
+];
 const months = [
     { name: "Januari", value: "01" },
     { name: "Februari", value: "02" },
@@ -414,6 +450,7 @@ const reportType = [
 const form = reactive({
     selectedReportType: "",
     selectedExportMonth: "",
+    selectedExportYear: "",
     selectedYearTransaction: "2024",
     selectedYearRevenue: "2024",
     selectedYearCakeSold: "2024",
@@ -469,7 +506,13 @@ let dataTransaction = {
         },
     ],
 };
-// Remove duplicate chart data cake sold
+
+/**
+ * Aggregates the chart data for cakes sold by summing the sold quantities of cakes with the same name.
+ *
+ * @param {Array} chartData - The array of chart data objects, each containing `cake_name` and `sold_quantity`.
+ * @returns {Array} - The aggregated chart data with unique cake names and their total sold quantities.
+ */
 const aggregateChartDataCakeSold = (chartData) => {
     return chartData.reduce((acc, data) => {
         const existingData = acc.find(
@@ -485,7 +528,6 @@ const aggregateChartDataCakeSold = (chartData) => {
         return acc;
     }, []);
 };
-
 const dataCakeSold = {
     labels: props.chartDataCakeSold.map((data) => data.cake_name) ?? [],
     datasets: [
@@ -521,11 +563,29 @@ const onChangeReportType = (index) => {
  *
  * @param {number} index - The index of the selected date in the months array.
  */
+const onChangeExportYear = (index) => {
+    // Get the transaction date based on the selected date
+    form.selectedExportYear = years[index - 1].value;
+    console.log(form.selectedExportYear);
+};
+
+/**
+ * Handles the change of export report month based on the selected index.
+ *
+ * @param {number} index - The index of the selected date in the months array.
+ */
 const onChangeExportMonth = (index) => {
     // Get the transaction date based on the selected date
     form.selectedExportMonth = months[index - 1].value;
 };
 
+/**
+ * Fetches the report data for the selected year and updates the chart data.
+ *
+ * @async
+ * @function fetchDataReportSelectedYear
+ * @returns {Promise<void>} - A promise that resolves when the data is fetched and charts are updated.
+ */
 const fetchDataReportSelectedYear = async () => {
     try {
         const response = await axios.post(route("dashboard-home"), {
@@ -561,9 +621,9 @@ const fetchDataReportSelectedYear = async () => {
         );
 
         dataCakeSold.labels = chartDataCakeSold.map((data) => data.cake_name);
-        dataCakeSold.datasets[0].data = chartDataCakeSold.map(
-            (data) => data.sold_quantity,
-        );
+        dataCakeSold.datasets[0].data = aggregateChartDataCakeSold(
+            chartDataCakeSold,
+        ).map((data) => data.sold_quantity);
 
         dataTransaction.labels = chartDataTotalTransaction.map(
             (data) => data.month,
@@ -624,6 +684,7 @@ const evaluateTrend = (total, minimum) => {
  */
 const exportReport = () => {
     Inertia.get(route(`export.${form.selectedReportType}`), {
+        year: form.selectedExportYear,
         month: form.selectedExportMonth,
     });
 };

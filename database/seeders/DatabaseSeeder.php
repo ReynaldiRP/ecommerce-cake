@@ -123,7 +123,6 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CakesSeeder::class,
             OrderSeeder::class,
-            OrderItemSeeder::class,
             PaymentSeeder::class
         ]);
     }

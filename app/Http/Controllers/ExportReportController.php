@@ -46,10 +46,12 @@ class ExportReportController extends Controller
      */
     public function exportProductPerformanceToPdf(Request $request): HttpResponse
     {
+        $selectedYear = $request->input('year');
         $selectedMonth = $request->input('month');
 
         // Get the product performance data
         $productPerformance = Order::with(['payment', 'orderItems', 'orderItems.cake', 'orderItems.cakeFlavour', 'orderItems.cakeSize', 'orderItems.cakeTopping'])
+            ->whereYear('orders.created_at', $selectedYear)
             ->whereMonth('orders.created_at', $selectedMonth)
             ->whereHas('payment', function ($query) {
                 $query->where('payment_status', 'Pesanan terbayar');
@@ -63,7 +65,8 @@ class ExportReportController extends Controller
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
             ->where('payments.payment_status', 'Pesanan terbayar')
-            ->whereMonth('order_items.created_at', $selectedMonth)
+            ->whereYear('orders.created_at', $selectedYear)
+            ->whereMonth('orders.created_at', $selectedMonth)
             ->groupBy('cakes.name')
             ->orderByDesc('total_sold')
             ->first();
@@ -74,7 +77,8 @@ class ExportReportController extends Controller
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
             ->where('payments.payment_status', 'Pesanan terbayar')
-            ->whereMonth('order_items.created_at', $selectedMonth)
+            ->whereYear('orders.created_at', $selectedYear)
+            ->whereMonth('orders.created_at', $selectedMonth)
             ->groupBy('cakes.name')
             ->orderBy('total_sold')
             ->first();
@@ -94,6 +98,7 @@ class ExportReportController extends Controller
                     'quantity' => $orderItem->quantity,
                     'price' => $this->formatPrice($orderItem->price),
                     'total_price' => $this->formatPrice($orderItem->price * $orderItem->quantity),
+                    'order_created_at' => $orderItem->order->created_at->translatedFormat('l, d F Y H:i'),
                 ];
             });
         });
@@ -105,7 +110,7 @@ class ExportReportController extends Controller
             'worstSellingProduct' => $worstSellingProduct ?? [],
             'totalRevenue' => $this->formatPrice($totalRevenue) ?? '-',
             'generated_at' => Carbon::now()->translatedFormat('l, d F Y H:i'),
-            'period' => $this->months[$selectedMonth] . ' ' . Carbon::now()->year,
+            'period' => $this->months[$selectedMonth] . ' ' . $selectedYear,
         ])->setPaper('a4', 'landscape');
 
         return $pdf->download('product-performance-report.pdf');
@@ -119,12 +124,14 @@ class ExportReportController extends Controller
      */
     public function exportSalesPerformanceToPdf(Request $request): HttpResponse
     {
+        $selectedYear = $request->input('year');
         $selectedMonth = $request->input('month');
 
         // Get the total revenue for based on the selected month
         $totalRevenue = Order::selectRaw('SUM(total_price) as total_revenue')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
             ->where('payments.payment_status', 'Pesanan terbayar')
+            ->whereYear('orders.created_at', $selectedYear)
             ->whereMonth('orders.created_at', $selectedMonth)
             ->first();
 
@@ -132,6 +139,7 @@ class ExportReportController extends Controller
         $totalTransaction = Order::selectRaw('COUNT(orders.id) as total_transaction')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
             ->where('payments.payment_status', 'Pesanan terbayar')
+            ->whereYear('orders.created_at', $selectedYear)
             ->whereMonth('orders.created_at', $selectedMonth)
             ->first();
 
@@ -143,7 +151,10 @@ class ExportReportController extends Controller
         // Get the sales performance data to show in table
         $salePerformance = Payment::with(['order', 'order.user'])
             ->where('payment_status', 'Pesanan terbayar')
-            ->whereMonth('created_at', $selectedMonth)
+            ->whereHas('order', function ($query) use ($selectedYear, $selectedMonth) {
+                $query->whereYear('created_at', $selectedYear)
+                    ->whereMonth('created_at', $selectedMonth);
+            })
             ->get();
 
         // Transform the sales performance data
@@ -167,7 +178,7 @@ class ExportReportController extends Controller
             'totalTransaction' => $totalTransaction->total_transaction ?? '-',
             'averageOrderValue' => $this->formatPrice($averageOrderValue) ?? '-',
             'generated_at' => Carbon::now()->translatedFormat('l, d F Y H:i'),
-            'period' => $this->months[$selectedMonth] . ' ' . Carbon::now()->year,
+            'period' => $this->months[$selectedMonth] . ' ' . $selectedYear,
         ])->setPaper('a4', 'landscape');
 
 

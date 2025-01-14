@@ -130,13 +130,16 @@ import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
 import { mdiCheckCircle } from "@mdi/js";
 import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
+import { useOrderStatusStore } from "@/Stores/orderStatus.js";
+import { storeToRefs } from "pinia";
 
 const props = defineProps({
     order: Object,
     statusHistory: Array,
 });
 
-const orderInformationStatus = ref([]);
+const { orderInformationStatus } = storeToRefs(useOrderStatusStore());
+// const orderInformationStatus = ref([]);
 const currentOrderStatus = ref("");
 const isLoading = ref(false);
 const orderStatus = [

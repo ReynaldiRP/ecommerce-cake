@@ -170,6 +170,9 @@
 <script setup>
 import App from "@/Layouts/App.vue";
 import { computed } from "vue";
+import { useOrderStatusStore } from "@/Stores/orderStatus.js";
+import { storeToRefs } from "pinia";
+import { Inertia } from "@inertiajs/inertia";
 
 const props = defineProps({
     orders: {
@@ -178,6 +181,8 @@ const props = defineProps({
     },
     statusHistory: Object,
 });
+
+const { orderInformationStatus } = storeToRefs(useOrderStatusStore());
 
 const parsedDate = (dateString) => {
     const [time, date] = dateString.split(", ");
@@ -230,7 +235,16 @@ const combinedStatusHistory = computed(() => {
         return [];
     });
 
-    return [...paymentStatuses, ...orderStatuses].flat().sort((a, b) => {
+    // Combine the order and payment statuses
+    const combineStatus = [
+        ...paymentStatuses,
+        ...orderStatuses,
+        ...orderInformationStatus.value,
+    ].flat();
+
+    console.log(combineStatus);
+
+    return combineStatus.sort((a, b) => {
         return parsedDate(a.created_at) - parsedDate(b.created_at);
     });
 });

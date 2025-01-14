@@ -371,6 +371,7 @@ const changeBadgeColorOrderStatus = (order) => {
         "Pesanan diproses": "badge-info",
         "Pesanan dikemas": "badge-info",
         "Pesanan dikirim": "badge-success",
+        "Pesanan diterima": "badge-success",
         "Pesanan dibatalkan": "badge-error",
         "Pesanan kadaluwarsa": "badge-error",
     };

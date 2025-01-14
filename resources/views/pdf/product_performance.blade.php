@@ -76,6 +76,7 @@
                 <th>Kuantiti</th>
                 <th>Harga</th>
                 <th>Total Harga</th>
+                <th>Tanggal Pesanan</th>
             </tr>
             </thead>
             <tbody>
@@ -89,18 +90,19 @@
                     <td>{{ $product['quantity'] }}</td>
                     <td>{{ $product['price'] }}</td>
                     <td>{{ $product['total_price'] }}</td>
+                    <td>{{ $product['order_created_at'] }}</td>
                 </tr>
             @endforeach
             </tbody>
             <tfoot>
             <tr class="table-footer">
-                <td colspan="8">Total Pendapatan: {{ $totalRevenue }}</td>
+                <td colspan="9">Total Pendapatan: {{ $totalRevenue }}</td>
             </tr>
             <tr class="table-footer">
-                <td colspan="8">Kue Terbanyak Dipesan: {{ $bestSellingProduct['cake'] }} ({{$bestSellingProduct['total_sold']}} Pcs)</td>
+                <td colspan="9">Kue Terbanyak Dipesan: {{ $bestSellingProduct['cake'] }} ({{$bestSellingProduct['total_sold']}} Pcs)</td>
             </tr>
             <tr class="table-footer">
-                <td colspan="8">Kue Tersedikit Dipesan: {{ $worstSellingProduct['cake'] }} ({{$worstSellingProduct['total_sold']}} Pcs)</td>
+                <td colspan="9">Kue Tersedikit Dipesan: {{ $worstSellingProduct['cake'] }} ({{$worstSellingProduct['total_sold']}} Pcs)</td>
             </tr>
             </tfoot>
         </table>
