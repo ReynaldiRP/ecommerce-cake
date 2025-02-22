@@ -23,8 +23,13 @@ class CakeController extends Controller
      */
     public function index(): Response
     {
-        $cake = Cake::with(['category', 'discount'])->paginate(5);
-        return Inertia::render('AdminDashboard/Cake/Index', ['cakes' => $cake]);
+        $cakes = Cake::with(['category', 'discount'])->paginate(5);
+        // add discounted price to the cake
+        foreach ($cakes as $cake) {
+            $cake->discounted_price = $cake->base_price - ($cake->base_price * $cake->discount?->discount_percentage / 100);
+        }
+
+        return Inertia::render('AdminDashboard/Cake/Index', ['cakes' => $cakes]);
     }
 
 

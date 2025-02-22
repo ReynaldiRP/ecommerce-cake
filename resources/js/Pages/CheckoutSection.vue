@@ -207,11 +207,14 @@
                             name="chartItems"
                         />
                         <button
-                            class="btn"
-                            :class="disableCheckout"
+                            class="btn bg-primary-color text-base-300 hover:text-white"
                             type="submit"
                         >
-                            Pesan Sekarang
+                            <span v-show="!isSubmitting"> Pesan Sekarang </span>
+                            <span
+                                v-show="isSubmitting"
+                                class="loading loading-spinner loading-md"
+                            ></span>
                         </button>
                     </section>
                 </form>
@@ -241,6 +244,7 @@ const props = defineProps({
 
 const showResults = ref(false);
 const searchResults = ref([]);
+const isSubmitting = ref(false);
 const showSearchAddress = computed(() => {
     return showResults.value && form.user_address.length > 0;
 });
@@ -502,38 +506,42 @@ onUnmounted(() => {
  * @returns {void}
  */
 const submit = () => {
-    console.log(form.data());
+    // console.log(form.data());
 
     // If all fields are filled in, submit the form
-    axios
-        .post(
-            route("payments"),
-            {
-                estimated_delivery_date: form.estimated_delivery_date,
-                user_address: form.user_address,
-                cake_recipient: form.cake_recipient,
-                method_delivery: form.method_delivery,
-                chartItems: props.chartItems,
-            },
-            {
-                preserveState: true,
-                preserveScroll: true,
-            },
-        )
-        .then((response) => {
-            if (response.data.success) {
-                console.log(response.data);
-                // Redirect to Midtrans payment page
-                window.location.href = response.data.paymentUrl;
-            } else {
-                // Handle error
-                console.error(response.data.message);
-            }
-        })
-        .catch((error) => {
-            // Get only the first error message
-            const errors = error.response.data.error;
-            errorResponses.value = Object.values(errors)[0][0];
-        });
+    isSubmitting.value = true;
+    setTimeout(() => {
+        isSubmitting.value = false;
+        axios
+            .post(
+                route("payments"),
+                {
+                    estimated_delivery_date: form.estimated_delivery_date,
+                    user_address: form.user_address,
+                    cake_recipient: form.cake_recipient,
+                    method_delivery: form.method_delivery,
+                    chartItems: props.chartItems,
+                },
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                },
+            )
+            .then((response) => {
+                if (response.data.success) {
+                    console.log(response.data);
+                    // Redirect to Midtrans payment page
+                    window.location.href = response.data.paymentUrl;
+                } else {
+                    // Handle error
+                    console.error(response.data.message);
+                }
+            })
+            .catch((error) => {
+                // Get only the first error message
+                const errors = error.response.data.errors;
+                errorResponses.value = Object.values(errors)[0][0];
+            });
+    }, 2000);
 };
 </script>

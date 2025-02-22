@@ -46,8 +46,14 @@ onMounted(() => {
                             }
 
                             return datasets[0].data.map((_, i) => {
+                                const uniqueLabels = labels.filter(
+                                    (label, index) => {
+                                        return labels.indexOf(label) === index;
+                                    },
+                                );
+
                                 return {
-                                    text: `${labels[i]}: ${datasets[0].data[i]} Pcs`,
+                                    text: `${uniqueLabels[i]}: ${datasets[0].data[i]} Pcs`,
                                     fillStyle: datasets[0].backgroundColor[i],
                                     hidden:
                                         isNaN(datasets[0].data[i]) ||

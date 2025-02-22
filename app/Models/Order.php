@@ -57,23 +57,33 @@ class Order extends Model
 
     public function getGrowthRevenueRangeThreeMonthByPercentage(): float|int
     {
-        $totalRevenuePastThreeMonths = $this->selectRaw('SUM(total_price) as total_revenue')
+       // Get the total revenue for the current month
+        $currentMonthTotalRevenue = $this->selectRaw('SUM(total_price) as total_revenue')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
             ->where('payments.payment_status', '=', 'pesanan terbayar')
-            ->whereBetween('orders.created_at', [Carbon::now()->subMonths(3), Carbon::create(2024, 12, 31)->endOfMonth()])
+            ->whereBetWeen('orders.created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
             ->first();
 
-
-        $totalRevenueCurrentMonth = $this->selectRaw('SUM(total_price) as total_revenue')
+        // Get the last three months total revenue (excluding the current month)
+        $lastThreeMonthsRevenue = $this->selectRaw('SUM(total_price) as total_revenue')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
             ->where('payments.payment_status', '=', 'pesanan terbayar')
-            ->whereMonth('orders.created_at', Carbon::now()->month)
+            ->whereBetWeen('orders.created_at', [Carbon::now()->subMonths(3)->startOfMonth(), Carbon::now()->subMonths(1)->endOfMonth()])
             ->first();
 
+        // Extract the total revenue for the current month and the last three months
+        $currentMonthRevenue = $currentMonthTotalRevenue->total_revenue ?? 0;
+        $lastThreeMonthsRevenue = $lastThreeMonthsRevenue->total_revenue ?? 0;
 
-        return $totalRevenuePastThreeMonths->total_revenue != 0
-            ? ($totalRevenueCurrentMonth->total_revenue - $totalRevenuePastThreeMonths->total_revenue) / $totalRevenuePastThreeMonths->total_revenue * 100
-            : 0;
+        // If there was no revenue in the last three months, return the appropriate percentage
+        if ($lastThreeMonthsRevenue == 0) {
+            return $currentMonthRevenue > 0 ? 100 : 0;
+        }
+
+        // Calculate the growth revenue by percentage
+        $growthRevenueByPercentage = ($currentMonthRevenue - $lastThreeMonthsRevenue) / $lastThreeMonthsRevenue * 100;
+
+        return round($growthRevenueByPercentage, 2);
     }
 
     /**

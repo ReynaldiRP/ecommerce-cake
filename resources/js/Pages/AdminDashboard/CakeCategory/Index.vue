@@ -23,24 +23,24 @@
                         class="backdrop-contrast-50"
                         title="Tambah Kategori Kue"
                         button="success"
-                        button-label="Submit"
+                        button-label="Simpan"
                         :click-handler="submit"
                         has-cancel
                     >
                         <CardBox>
-                            <FormField label="Cake Category">
+                            <FormField label="Kategori Kue">
                                 <FormControl
                                     v-model="form.name"
-                                    placeholder="Birthday Cake"
+                                    placeholder="Kue Ulang Tahun"
                                     :icon="mdiCakeVariant"
                                 />
                             </FormField>
                             <NotificationBar
-                                v-if="props.error"
+                                v-if="errorsLength"
                                 color="danger"
                                 :icon="mdiAlertCircle"
                             >
-                                {{ props.error }}
+                                {{ props.errors.name }}
                             </NotificationBar>
                         </CardBox>
                     </CardBoxModal>
@@ -80,24 +80,33 @@
                                         class="btn btn-info"
                                         @click="() => edit(category)"
                                     >
-                                        Edit
+                                        Ubah
                                     </button>
                                     <CardBoxModal
                                         v-model="modalEditActive"
                                         class="backdrop-contrast-50"
-                                        title="Edit Kateogri Kue"
+                                        title="Ubah Kateogri Kue"
                                         button="success"
-                                        button-label="Submit"
-                                        :click-handler="() => update(category)"
+                                        button-label="Simpan"
+                                        :click-handler="
+                                            () =>
+                                                $inertia.put(
+                                                    route('category.update', {
+                                                        dashboard_category:
+                                                            category.id,
+                                                    }),
+                                                    { name: form.name },
+                                                )
+                                        "
                                         has-cancel
                                     >
                                         <FormField
                                             class="text-start"
-                                            label="Cake Category"
+                                            label="Kategori Kue"
                                         >
                                             <FormControl
                                                 v-model="form.name"
-                                                placeholder="Birthday Cake"
+                                                placeholder="Kue Ulang Tahun"
                                                 :icon="mdiCakeVariant"
                                             />
                                         </FormField>
@@ -113,14 +122,14 @@
                                         class="btn btn-error"
                                         @click="modalActive = true"
                                     >
-                                        Delete
+                                        Hapus
                                     </button>
                                     <CardBoxModal
                                         v-model="modalActive"
                                         class="backdrop-contrast-50"
                                         title="Kateogri Kue"
-                                        button="info"
-                                        button-label="Confirm"
+                                        button="danger"
+                                        button-label="Yakin"
                                         :click-handler="() => destroy(category)"
                                         has-cancel
                                     >
@@ -170,7 +179,7 @@ import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import BaseButton from "@/Components/DashboardAdmin/BaseButton.vue";
 import CardBox from "@/Components/DashboardAdmin/CardBox.vue";
 import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import FormControl from "@/Components/DashboardAdmin/FormControl.vue";
 import FormField from "@/Components/DashboardAdmin/FormField.vue";
 import { useForm } from "@inertiajs/inertia-vue3";
@@ -183,9 +192,10 @@ import { storeToRefs } from "pinia";
 
 const props = defineProps({
     cakeCategory: Object,
-    error: String,
+    errors: Object,
 });
 
+const errorsLength = computed(() => Object.keys(props.errors).length);
 const store = useAdminDashboardStore();
 const { userRolePermission, checkRolePermission } = storeToRefs(store);
 
@@ -198,7 +208,6 @@ const form = useForm({
 });
 
 const categoryData = ref(props.cakeCategory.data);
-
 const modalActive = ref(false);
 const modalCreateActive = ref(false);
 const modalEditActive = ref(false);
@@ -221,18 +230,23 @@ const create = () => {
  */
 const submit = () => {
     try {
-        form.post(route("category.store"), {
-            data: form.name,
-            onSuccess: () => {
-                isLoading.value = true;
+        isLoading.value = true;
 
-                setTimeout(() => {
-                    isLoading.value = false;
-                    modalCreateActive.value = false;
-                    form.reset("name");
-                }, 2000);
-            },
-        });
+        setTimeout(() => {
+            form.post(route("category.store"), {
+                data: form.name,
+                onSuccess: (response) => {
+                    const newCategory = response.props.cakeCategory.data[0];
+                    console.log(newCategory);
+                },
+                onError: () => {
+                    modalCreateActive.value = true;
+                },
+            });
+            isLoading.value = false;
+            modalCreateActive.value = false;
+            form.reset("name");
+        }, 2000);
     } catch (error) {
         console.error(error);
     }
@@ -280,9 +294,9 @@ const update = async (category) => {
         isLoading.value = true;
 
         setTimeout(() => {
+            categoryData.value[itemIndex].name = response.data.category.name;
             isLoading.value = false;
             modalEditActive.value = false;
-            categoryData.value[itemIndex].name = response.data.category.name;
             form.reset("name");
         }, 2000);
     } catch (error) {

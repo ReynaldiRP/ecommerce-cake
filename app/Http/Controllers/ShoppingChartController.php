@@ -82,7 +82,7 @@ class ShoppingChartController extends Controller
                     'cake_toppings' =>  $cartItemWithRelations->cakeTopping?->pluck('name'),
                 ],
                 'cartItems' => [$cartItemWithRelations],
-                'message' => 'Item added to cart successfully!'
+                'message' => 'Pesanan berhasil ditambahkan ke keranjang!'
             ]);
         } catch (ValidationException $e) {
             // Handle validation errors and return a response with the errors

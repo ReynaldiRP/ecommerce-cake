@@ -16,7 +16,7 @@
         <SectionMain class="flex flex-col gap-6">
             <div class="grid grid-cols-12">
                 <div class="col-span-4 flex items-center gap-2">
-                    <h1 class="font-bold text-2xl">Flavour Table</h1>
+                    <h1 class="font-bold text-2xl">Tabel Rasa Kue</h1>
                     <BaseButton
                         v-if="checkRolePermission"
                         color="success"
@@ -42,9 +42,8 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Flavour Name</th>
-                                <th>Flavour Price</th>
-                                <th>Flavour Image</th>
+                                <th>Rasa Kue</th>
+                                <th>Harga Rasa Kue</th>
                                 <th v-if="checkRolePermission">Action</th>
                             </tr>
                         </thead>
@@ -56,18 +55,18 @@
                                 <th>{{ index + 1 }}</th>
                                 <td>{{ flavour.name }}</td>
                                 <td>{{ store.formatPrice(flavour.price) }}</td>
-                                <td>
-                                    <button
-                                        @click="
-                                            () => showImage(flavour.image_url)
-                                        "
-                                        class="my-image-links btn btn-info"
-                                    >
-                                        <i
-                                            class="fa-solid fa-image text-lg text-neutral"
-                                        ></i>
-                                    </button>
-                                </td>
+                                <!--                                <td>-->
+                                <!--                                    <button-->
+                                <!--                                        @click="-->
+                                <!--                                            () => showImage(flavour.image_url)-->
+                                <!--                                        "-->
+                                <!--                                        class="my-image-links btn btn-info"-->
+                                <!--                                    >-->
+                                <!--                                        <i-->
+                                <!--                                            class="fa-solid fa-image text-lg text-neutral"-->
+                                <!--                                        ></i>-->
+                                <!--                                    </button>-->
+                                <!--                                </td>-->
                                 <td
                                     v-if="checkRolePermission"
                                     class="flex lg:justify-start justify-end gap-2"
@@ -77,19 +76,19 @@
                                             route('flavour.edit', flavour.id)
                                         "
                                         class="btn btn-info"
-                                        >Edit</inertia-link
+                                        >Ubah</inertia-link
                                     >
                                     <button
                                         class="btn btn-error"
                                         @click="modalActive = true"
                                     >
-                                        Delete
+                                        Hapus
                                     </button>
                                     <CardBoxModal
                                         v-model="modalActive"
                                         class="backdrop-contrast-50"
                                         title="Flavour Data"
-                                        button="info"
+                                        button="danger"
                                         button-label="Confirm"
                                         :click-handler="
                                             () => deleteHandler(flavour.id)
@@ -97,8 +96,8 @@
                                         has-cancel
                                     >
                                         <p>
-                                            Are you sure want to delete Flavour
-                                            ?
+                                            Apakah kamu yakin untuk menghapus
+                                            data rasa kue?
                                         </p>
                                     </CardBoxModal>
                                 </td>

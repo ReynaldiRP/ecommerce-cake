@@ -190,7 +190,7 @@
                                         'Pesanan dikonfirmasi' &&
                                         order.transaction_status === null)
                                 "
-                                @click="handleCancelOrder(order.order_code)"
+                                @click="modalActive = true"
                                 class="btn btn-outline btn-error font-semibold"
                             >
                                 Batalkan Pesanan
@@ -215,6 +215,23 @@
                                 >
                                     Beli Lagi
                                 </button>
+                                <CardBoxModal
+                                    v-model="modalActive"
+                                    class="backdrop-contrast-50"
+                                    title="Pembatalan Pesanan"
+                                    button="danger"
+                                    button-label="Yakin"
+                                    :click-handler="
+                                        () =>
+                                            handleCancelOrder(order.order_code)
+                                    "
+                                    has-cancel
+                                >
+                                    <p>
+                                        Apakah kamu yakin untuk membatalkan
+                                        pesanan kue ?
+                                    </p>
+                                </CardBoxModal>
                             </section>
                         </section>
                     </section>
@@ -250,7 +267,8 @@
 <script setup>
 import App from "@/Layouts/App.vue";
 import axios from "axios";
-import { ref, onMounted, onUnmounted, watch } from "vue";
+import { ref, onMounted, onUnmounted, watch, onUpdated } from "vue";
+import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
 import Pagination from "@/Components/Pagination.vue";
 
 const props = defineProps({
@@ -263,6 +281,7 @@ const props = defineProps({
 const originalOrderItems = ref([]);
 originalOrderItems.value = props.orderItems.data;
 
+const modalActive = ref(false);
 const transactionFilter = ["Semua", "Berjalan", "Sukses", "Gagal"];
 const orderStatus = ["Menunggu konfirmasi", "Pesanan diproses", "Terkirim"];
 const months = [
@@ -334,7 +353,7 @@ const onChangeTransactionDate = (index) => {
  */
 const fetchFilteredData = async () => {
     try {
-        const response = await axios.get(route("api.transaction-history"), {
+        const response = await axios.get(route("fetch-transaction-history"), {
             params: {
                 status: selectedTransactionStatus.value,
                 date: selectedTransactionDate.value,
@@ -346,6 +365,7 @@ const fetchFilteredData = async () => {
         if (results.length <= 0) {
             originalOrderItems.value = [];
         } else {
+            console.log(results);
             originalOrderItems.value = results;
         }
     } catch (error) {
@@ -434,17 +454,10 @@ onMounted(() => {
         transactionTabsClicked.value = transactionTabsClicked.value.map(
             (_, i) => transactionFilter[i] === urlParams,
         );
-    } else {
-        console.log("No status parameter found in the URL");
     }
 });
 
-onUnmounted(() => {
-    // When unmounted reset the tab to be active default in first index
-    transactionTabsClicked.value = new Array(transactionFilter.length).fill(
-        false,
-    );
-});
+onUpdated(() => {});
 
 /**
  * Redirects the user to the specified payment URL.

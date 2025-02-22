@@ -2,6 +2,9 @@
 import { computed, ref, onMounted, onBeforeUnmount } from "vue";
 import { useMainStore } from "@/Stores/main";
 import FormControlIcon from "@/Components/DashboardAdmin/FormControlIcon.vue";
+import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
+
+const { formatDiscount } = useAdminDashboardStore();
 
 const props = defineProps({
     name: {
@@ -152,7 +155,11 @@ if (props.ctrlKFocus) {
                 :key="option.id ?? option"
                 :value="option[optionValue]"
             >
-                {{ option[optionLabel] }}
+                {{
+                    optionLabel === "discount_percentage"
+                        ? formatDiscount(option[optionLabel])
+                        : option[optionLabel]
+                }}
             </option>
         </select>
         <textarea

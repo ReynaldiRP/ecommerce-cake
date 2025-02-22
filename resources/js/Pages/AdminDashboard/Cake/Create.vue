@@ -12,12 +12,12 @@
                     <ul>
                         <li>
                             <inertia-link :href="route('cake.index')"
-                                >Cake</inertia-link
+                                >Kue</inertia-link
                             >
                         </li>
                         <li>
                             <inertia-link :href="route('cake.create')"
-                                >Create</inertia-link
+                                >Tambah</inertia-link
                             >
                         </li>
                     </ul>
@@ -47,7 +47,7 @@
                             :options="props.cakeCategory"
                             option-label="name"
                             option-value="id"
-                            option-default="Choose the cake category"
+                            option-default="Pilih kategori kue"
                             :icon="mdiCakeVariant"
                             type="select"
                         />
@@ -65,7 +65,7 @@
                             :options="props.discounts"
                             option-label="discount_percentage"
                             option-value="id"
-                            option-default="Choose cake discount"
+                            option-default="Pilih diskon kue"
                             :icon="mdiCakeVariant"
                             type="select"
                         />
@@ -95,7 +95,7 @@
                     <FormField label="Deskripsi Kue">
                         <FormControl
                             v-model="form.description"
-                            placeholder="Cakes description"
+                            placeholder="Deskripsi kue"
                             type="textarea"
                         />
                     </FormField>
@@ -127,7 +127,7 @@
                             :options="cakePersonalizationType"
                             option-label="name"
                             option-value="name"
-                            option-default="Choose the cake personalization type"
+                            option-default="Pilih jenis kue"
                             :icon="mdiCakeVariant"
                             type="select"
                         />
@@ -164,12 +164,10 @@ import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import { ref } from "vue";
 import { mdiCakeVariant, mdiImageArea, mdiCash, mdiAlertCircle } from "@mdi/js";
 import { useForm } from "@inertiajs/inertia-vue3";
-import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
 
 const isLoading = ref(false);
-const { formatDiscount } = useAdminDashboardStore();
 
 const props = defineProps({
     cakeCategory: {
@@ -182,8 +180,6 @@ const props = defineProps({
         type: Object,
     },
 });
-
-console.log(props.discounts);
 
 const cakePersonalizationType = [
     {

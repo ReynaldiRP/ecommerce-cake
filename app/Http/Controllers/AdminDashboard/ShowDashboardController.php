@@ -27,15 +27,15 @@ class ShowDashboardController extends Controller
         // Get total revenue cake orders from the payment model
         $totalRevenueCakeOrders = $payment->totalRevenueOrder('2024-01-01', '2025-01-31');
         // Get total cake sold
-        $totalCakeSold = $orderItem->getTotalCakeSold('2024-01-01', '2025-01-31');
+        $totalCakeSold = $orderItem->getTotalCakeSold('2024-11-01', '2025-01-31');
         // Get the most popular cake
         $mostPopularCake = $orderItem->getMostPopularCakes();
         // Get the most popular cake type
-        $mostPopularCakeType = $orderItem->getMostPopularCakeType();
+        $mostPopularCakeType = $orderItem->getMostPopularCakeType('2024-11-01', '2025-01-31');
         // Get the most popular cake category
         $mostPopularCakeCategory = $orderItem->getMostPopularCakeCategory();
         // Get the total transaction
-        $totalTransaction = $payment->getTotalTransaction('2024-01-01', '2025-01-31');
+        $totalTransaction = $payment->getTotalTransaction('2024-11-01', '2025-01-31');
         // Get the growth revenue per month by percentage
         $growthRevenuePerMonthByPercentage = $order->getGrowthRevenueRangeThreeMonthByPercentage();
         // Show chart data for the total revenue of cake orders per month

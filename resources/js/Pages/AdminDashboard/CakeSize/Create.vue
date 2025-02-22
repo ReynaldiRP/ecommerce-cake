@@ -12,22 +12,22 @@
                     <ul>
                         <li>
                             <inertia-link :href="route('size.index')"
-                                >Cake Size</inertia-link
+                                >Ukuran Kue</inertia-link
                             >
                         </li>
                         <li>
                             <inertia-link :href="route('size.create')"
-                                >Create</inertia-link
+                                >Tambah</inertia-link
                             >
                         </li>
                     </ul>
                 </div>
 
-                <h1 class="font-bold text-2xl">Add Cake Size</h1>
+                <h1 class="font-bold text-2xl">Tambah Ukuran Kue</h1>
             </div>
             <form @submit.prevent="submit">
                 <CardBox>
-                    <FormField label="Cake Size (Cm)">
+                    <FormField label="Ukuran Kue (Cm)">
                         <FormControl
                             v-model="form.size"
                             placeholder="10"
@@ -42,7 +42,7 @@
                     >
                         {{ props.errors.size }}
                     </NotificationBar>
-                    <FormField label="Cake Sized Price">
+                    <FormField label="Harga Ukuran Kue">
                         <FormControl
                             v-model="form.price"
                             placeholder="Rp5000"
@@ -61,7 +61,7 @@
                     <template #footer>
                         <BaseButton
                             type="submit"
-                            label="Submit"
+                            label="Simpan"
                             color="success"
                         />
                     </template>

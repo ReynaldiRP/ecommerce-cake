@@ -41,8 +41,6 @@ class OrderItem extends Model
                 $query->whereYear('orders.created_at', $year);
             });
 
-        \Log::info($query->toSql(), $query->getBindings());
-
         return $query->get();
     }
 

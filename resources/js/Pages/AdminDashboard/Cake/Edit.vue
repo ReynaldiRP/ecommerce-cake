@@ -12,19 +12,19 @@
                     <ul>
                         <li>
                             <inertia-link :href="route('cake.index')"
-                                >Cake</inertia-link
+                                >Kue</inertia-link
                             >
                         </li>
                         <li>
-                            <inertia-link>Edit</inertia-link>
+                            <inertia-link>Ubah</inertia-link>
                         </li>
                     </ul>
                 </div>
-                <h1 class="font-bold text-2xl">Edit Cake</h1>
+                <h1 class="font-bold text-2xl">Ubah Kue</h1>
             </div>
             <form @submit.prevent="submit">
                 <CardBox>
-                    <FormField label="Cake Name">
+                    <FormField label="Nama Kue">
                         <FormControl
                             v-model="form.name"
                             placeholder="Base Cake"
@@ -38,7 +38,7 @@
                     >
                         {{ props.errors.name }}
                     </NotificationBar>
-                    <FormField label="Cake Category">
+                    <FormField label="Kategori Kue">
                         <FormControl
                             v-model="form.category_id"
                             option-label="name"
@@ -56,7 +56,7 @@
                     >
                         {{ props.errors.category_id }}
                     </NotificationBar>
-                    <FormField label="Cake Discount">
+                    <FormField label="Diskon Kue">
                         <FormControl
                             v-model="form.discount_id"
                             option-label="discount_percentage"
@@ -74,7 +74,7 @@
                     >
                         {{ props.errors.discount_id }}
                     </NotificationBar>
-                    <FormField label="Cake Base Price">
+                    <FormField label="Harga Kue">
                         <FormControl
                             v-model="form.base_price"
                             placeholder="Rp5000"
@@ -89,7 +89,7 @@
                     >
                         {{ props.errors.base_price }}
                     </NotificationBar>
-                    <FormField label="Cake Image">
+                    <FormField label="Gambar Kue">
                         <FormControl
                             @change="handleFileUpload"
                             :icon="mdiImageArea"
@@ -103,13 +103,13 @@
                     >
                         {{ props.errors.image_url }}
                     </NotificationBar>
-                    <FormField label="Cake Personalization Type">
+                    <FormField label="Jenis Kue">
                         <FormControl
                             v-model="form.personalization_type"
                             :options="cakePersonalizationType"
                             option-label="name"
                             option-value="name"
-                            option-default="Choose the cake personalization type"
+                            option-default="Pilih jenis kue"
                             :icon="mdiCakeVariant"
                             type="select"
                         />
@@ -123,7 +123,7 @@
                     </NotificationBar>
                     <template #footer>
                         <BaseButton
-                            label="Submit"
+                            label="Simpan"
                             color="success"
                             type="submit"
                         />

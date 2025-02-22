@@ -16,7 +16,7 @@
         <SectionMain class="flex flex-col gap-6">
             <div class="grid grid-cols-12">
                 <div class="col-span-4 flex items-center gap-2">
-                    <h1 class="font-bold text-2xl">Cakes Table</h1>
+                    <h1 class="font-bold text-2xl">Tabel Kue</h1>
                     <BaseButton
                         v-if="checkRolePermission"
                         color="success"
@@ -42,13 +42,13 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Cake Name</th>
-                                <th>Cake Category</th>
-                                <th>Cake Price</th>
-                                <th>Cake Discount</th>
-                                <th>Cake Description</th>
-                                <th>Cake Image</th>
-                                <th>Cake Personalization Type</th>
+                                <th>Nama Kue</th>
+                                <th>Kategori Kue</th>
+                                <th>Harga Kue</th>
+                                <th>Diskon Kue</th>
+                                <th>Deskripsi Kue</th>
+                                <th>Foto Kue</th>
+                                <th>Jenis Kue</th>
                                 <th v-if="checkRolePermission">Action</th>
                             </tr>
                         </thead>
@@ -106,28 +106,28 @@
                                                 })
                                             "
                                             class="btn btn-info"
-                                            >Edit</inertia-link
+                                            >Ubah</inertia-link
                                         >
                                         <button
                                             class="btn btn-error"
                                             @click="modalActive = true"
                                         >
-                                            Delete
+                                            Hapus
                                         </button>
                                         <CardBoxModal
                                             v-model="modalActive"
                                             class="backdrop-contrast-50"
-                                            title="Cakes"
+                                            title="Kue"
                                             button="danger"
-                                            button-label="Confirm"
+                                            button-label="Yakin"
                                             :click-handler="
                                                 () => deleteHandler(cakes.id)
                                             "
                                             has-cancel
                                         >
                                             <p>
-                                                Are you sure want to delete Cake
-                                                ?
+                                                Apakah Anda yakin ingin
+                                                menghapus data kue ?
                                             </p>
                                         </CardBoxModal>
                                     </div>

@@ -84,9 +84,6 @@ class ExportReportController extends Controller
             ->first();
 
 
-        // Get total revenue
-        $totalRevenue = $productPerformance->pluck('orderItems')->flatten()->sum('price');
-
         // Transform the product performance data
         $productPerformance = $productPerformance->flatMap(function ($order) {
             return $order->orderItems->map(function ($orderItem) {
@@ -101,6 +98,11 @@ class ExportReportController extends Controller
                     'order_created_at' => $orderItem->order->created_at->translatedFormat('l, d F Y H:i'),
                 ];
             });
+        });
+
+        // Get total revenue
+        $totalRevenue = $productPerformance->sum(function ($item) {
+            return (float) str_replace(['Rp. ', '.', ','], ['', '', '.'], $item['total_price']);
         });
 
 

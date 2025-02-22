@@ -70,20 +70,20 @@
                                             route('discount.edit', discount.id)
                                         "
                                         class="btn btn-info"
-                                        >Edit</inertia-link
+                                        >Ubah</inertia-link
                                     >
                                     <button
                                         class="btn btn-error"
                                         @click="modalActive = true"
                                     >
-                                        Delete
+                                        Hapus
                                     </button>
                                     <CardBoxModal
                                         v-model="modalActive"
                                         class="backdrop-contrast-50 text-start"
-                                        title="Cakes"
+                                        title="Diskon Kue"
                                         button="danger"
-                                        button-label="Confirm"
+                                        button-label="Yakin"
                                         :click-handler="
                                             () => deleteHandler(discount.id)
                                         "

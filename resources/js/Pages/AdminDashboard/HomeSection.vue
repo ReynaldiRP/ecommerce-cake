@@ -441,10 +441,10 @@ const months = [
 
 const reportType = [
     {
-        name: "Laporan Performa Kue",
+        name: "Laporan Penjualan Kue Terlaris",
         value: "product-performance-report",
     },
-    { name: "Laporan Performa Penjualan", value: "sales-performance-report" },
+    { name: "Laporan Transaksi Penjualan", value: "sales-performance-report" },
 ];
 
 const form = reactive({
@@ -476,6 +476,7 @@ const dataRevenue = {
         },
     ],
 };
+
 let dataTransaction = {
     labels: props.chartDataTotalTransaction.map((data) => data.month) ?? [],
     datasets: [
@@ -485,22 +486,17 @@ let dataTransaction = {
                 (data) => data.total_transaction,
             ),
             backgroundColor: [
-                "rgba(255, 99, 132, 0.2)",
-                "rgba(255, 159, 64, 0.2)",
-                "rgba(255, 205, 86, 0.2)",
-                "rgba(75, 192, 192, 0.2)",
-                "rgba(54, 162, 235, 0.2)",
-                "rgba(153, 102, 255, 0.2)",
-                "rgba(201, 203, 207, 0.2)",
-            ],
-            borderColor: [
-                "rgb(255, 99, 132)",
-                "rgb(255, 159, 64)",
-                "rgb(255, 205, 86)",
-                "rgb(75, 192, 192)",
-                "rgb(54, 162, 235)",
-                "rgb(153, 102, 255)",
-                "rgb(201, 203, 207)",
+                "rgba(255, 99, 132)",
+                "rgba(255, 159, 64)",
+                "rgba(255, 205, 86)",
+                "rgba(75, 192, 192)",
+                "rgba(54, 162, 235)",
+                "rgba(153, 102, 255)",
+                "rgba(201, 203, 207)",
+                "rgba(255, 99, 71)",
+                "rgba(144, 238, 144)",
+                "rgba(173, 216, 230)",
+                "rgba(255, 182, 193)",
             ],
             borderWidth: 1,
         },

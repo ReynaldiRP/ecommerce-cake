@@ -16,16 +16,16 @@
                             >
                         </li>
                         <li>
-                            <inertia-link>Edit</inertia-link>
+                            <inertia-link>Ubah</inertia-link>
                         </li>
                     </ul>
                 </div>
 
-                <h1 class="font-bold text-2xl">Edit Topping</h1>
+                <h1 class="font-bold text-2xl">Ubah Topping</h1>
             </div>
             <form @submit.prevent="submit">
                 <CardBox>
-                    <FormField label="Cake Topping">
+                    <FormField label="Topping Kue">
                         <FormControl
                             v-model="form.name"
                             name="name"
@@ -40,7 +40,7 @@
                     >
                         {{ props.errors.name }}
                     </NotificationBar>
-                    <FormField label="Topping Price">
+                    <FormField label="Harga Topping">
                         <FormControl
                             v-model="form.price"
                             name="price"
@@ -56,24 +56,24 @@
                     >
                         {{ props.errors.price }}
                     </NotificationBar>
-                    <FormField label="Topping Image">
-                        <FormControl
-                            @change="handleFileUpload"
-                            :icon="mdiImageArea"
-                            type="file"
-                        />
-                    </FormField>
-                    <NotificationBar
-                        v-if="props.errors.image_url"
-                        color="danger"
-                        :icon="mdiAlertCircle"
-                    >
-                        {{ props.errors.image_url }}
-                    </NotificationBar>
+                    <!--                    <FormField label="Topping Image">-->
+                    <!--                        <FormControl-->
+                    <!--                            @change="handleFileUpload"-->
+                    <!--                            :icon="mdiImageArea"-->
+                    <!--                            type="file"-->
+                    <!--                        />-->
+                    <!--                    </FormField>-->
+                    <!--                    <NotificationBar-->
+                    <!--                        v-if="props.errors.image_url"-->
+                    <!--                        color="danger"-->
+                    <!--                        :icon="mdiAlertCircle"-->
+                    <!--                    >-->
+                    <!--                        {{ props.errors.image_url }}-->
+                    <!--                    </NotificationBar>-->
                     <template #footer>
                         <BaseButton
                             type="submit"
-                            label="Submit"
+                            label="Simpan"
                             color="success"
                         />
                     </template>

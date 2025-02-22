@@ -16,7 +16,7 @@
         <SectionMain class="flex flex-col gap-6">
             <div class="grid grid-cols-12">
                 <div class="col-span-4 flex items-center gap-2">
-                    <h1 class="font-bold text-2xl">Topping Table</h1>
+                    <h1 class="font-bold text-2xl">Tabel Topping</h1>
                     <BaseButton
                         v-if="checkRolePermission"
                         color="success"
@@ -42,9 +42,9 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Topping Name</th>
-                                <th>Topping Price</th>
-                                <th>Toppping Image</th>
+                                <th>Nama Topping</th>
+                                <th>Harga Topping</th>
+                                <!--                                <th>Toppping Image</th>-->
                                 <th v-if="checkRolePermission">Action</th>
                             </tr>
                         </thead>
@@ -56,18 +56,18 @@
                                 <th>{{ index + 1 }}</th>
                                 <td>{{ topping.name }}</td>
                                 <td>{{ store.formatPrice(topping.price) }}</td>
-                                <td>
-                                    <button
-                                        @click="
-                                            () => showImage(topping.image_url)
-                                        "
-                                        class="my-image-links btn btn-info"
-                                    >
-                                        <i
-                                            class="fa-solid fa-image text-lg text-neutral"
-                                        ></i>
-                                    </button>
-                                </td>
+                                <!--                                <td>-->
+                                <!--                                    <button-->
+                                <!--                                        @click="-->
+                                <!--                                            () => showImage(topping.image_url)-->
+                                <!--                                        "-->
+                                <!--                                        class="my-image-links btn btn-info"-->
+                                <!--                                    >-->
+                                <!--                                        <i-->
+                                <!--                                            class="fa-solid fa-image text-lg text-neutral"-->
+                                <!--                                        ></i>-->
+                                <!--                                    </button>-->
+                                <!--                                </td>-->
                                 <td
                                     v-if="checkRolePermission"
                                     class="flex lg:justify-start justify-end gap-2"
@@ -77,19 +77,19 @@
                                             route('topping.edit', topping.id)
                                         "
                                         class="btn btn-info"
-                                        >Edit</inertia-link
+                                        >Ubah</inertia-link
                                     >
                                     <button
                                         class="btn btn-error"
                                         @click="modalActive = true"
                                     >
-                                        Delete
+                                        Hapus
                                     </button>
                                     <CardBoxModal
                                         v-model="modalActive"
                                         class="backdrop-contrast-50"
                                         title="Topping Data"
-                                        button="info"
+                                        button="danger"
                                         button-label="Confirm"
                                         :click-handler="
                                             () => deleteHandler(topping.id)
@@ -97,8 +97,8 @@
                                         has-cancel
                                     >
                                         <p>
-                                            Are you sure want to delete Topping
-                                            ?
+                                            Apakah Anda yakin ingin menghapus
+                                            data topping ini?
                                         </p>
                                     </CardBoxModal>
                                 </td>

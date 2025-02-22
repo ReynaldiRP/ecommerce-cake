@@ -1,6 +1,6 @@
 <template>
     <div
-        class="col-span-8 flex justify-center items-start gap-4 px-4 py-12 bg-neutral rounded-lg"
+        class="col-span-8 flex items-start gap-4 px-4 py-12 bg-neutral rounded-lg"
     >
         <img
             src="/assets/image/cake-not-found.gif"
@@ -10,11 +10,10 @@
         <div class="flex flex-col gap-4 justify-center">
             <div class="flex flex-col gap-2">
                 <h1 class="text-2xl font-bold">
-                    Your Cart is as Empty as an Uncut Cake!
+                    Ups! Keranjangmu masih kosong...
                 </h1>
                 <p class="text-lg font-light">
-                    Browse our delicious selection: From classic flavors to
-                    unique creations, we've got something for everyone.
+                    Saatnya mengisinya dengan kelezatan! 🍰
                 </p>
             </div>
 

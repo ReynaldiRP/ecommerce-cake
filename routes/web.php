@@ -143,6 +143,8 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(PaymentController::class)->group(function () {
         // History transaction route
         Route::get('home/transaction-history', 'transactionHistory')->name('transaction-history');
+        // Fetch transaction history route
+        Route::get('home/transaction-history/fetch', 'fetchFilteredDataTransactionHistory')->name('fetch-transaction-history');
         // Detail transaction route
         Route::get('home/transaction-history/{orderCode}',  'detailTransaction')->name('detail-transaction');
         // Buy again cake order route

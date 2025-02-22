@@ -87,7 +87,7 @@
                     <template #footer>
                         <BaseButton
                             type="submit"
-                            label="Submit"
+                            label="Simpan"
                             color="success"
                         />
                     </template>

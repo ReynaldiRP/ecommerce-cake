@@ -141,11 +141,13 @@ class OrderController extends Controller
                 'cake_recipient' => 'required|string|regex:/^[a-zA-Z\s]+$/|min:3|max:100',
                 'method_delivery' => 'required',
             ], [
+                'estimated_delivery_date.required' => 'Tanggal pengambilan harus diisi.',
                 'estimated_delivery_date.after' => 'Tanggal pengambilan minimal 2 hari setelah hari ini',
                 'user_address.required' => 'Alamat penerima harus diisi.',
                 'user_address.max' => 'Alamat penerima maksimal 255 karakter.',
                 'cake_recipient.required' => 'Nama penerima kue harus diisi.',
                 'cake_recipient.regex' => 'Nama penerima hanya boleh berisi huruf dan spasi.',
+                'method_delivery.required' => 'Metode pengiriman harus diisi.',
             ]);
 
             $order = $this->createOrder($orderData);

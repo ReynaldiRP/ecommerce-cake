@@ -51,7 +51,7 @@ class StoreShoppingChartRequest extends FormRequest
             'shopping_chart_id' => 'nullable',
             'cake_id' => 'required',
             'cake_size_id' => 'required_with:cake_personalization_type',
-            'cake_flavour_id' => 'required_with:cake_size',
+            'cake_flavour_id' => 'required_with:cake_personalization_type',
             'toppings' => 'sometimes|array|max:4',
             'toppings.*' => 'integer|exists:toppings,id',
             'quantity' => 'required|numeric|min:1',

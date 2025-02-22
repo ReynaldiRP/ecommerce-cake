@@ -13,42 +13,42 @@ export default [
         label: "Dashboard",
     },
     {
-        label: "Products",
+        label: "Produk",
         icon: mdiViewList,
         menu: [
             {
                 route: "category.index",
-                label: "Cake Category",
+                label: "Kategori Kue",
             },
             {
                 route: "discount.index",
-                label: "Cake Discount",
+                label: "Diskon Kue",
             },
             {
                 route: "cake.index",
-                label: "Cake",
+                label: "Kue",
             },
             {
                 route: "size.index",
-                label: "Cake Size",
+                label: "Ukuran Kue",
             },
             {
                 route: "flavour.index",
-                label: "Cake Flavour",
+                label: "Rasa Kue",
             },
             {
                 route: "topping.index",
-                label: "Cake Topping",
+                label: "Topping Kue",
             },
         ],
     },
     {
-        label: "Orders",
+        label: "Pesanan",
         icon: mdiShopping,
         route: "orders.index",
     },
     {
-        label: "Payments",
+        label: "Pembayaran",
         icon: mdiAccountCash,
         route: "payments.index",
     },

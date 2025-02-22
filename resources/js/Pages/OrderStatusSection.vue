@@ -172,7 +172,6 @@ import App from "@/Layouts/App.vue";
 import { computed } from "vue";
 import { useOrderStatusStore } from "@/Stores/orderStatus.js";
 import { storeToRefs } from "pinia";
-import { Inertia } from "@inertiajs/inertia";
 
 const props = defineProps({
     orders: {

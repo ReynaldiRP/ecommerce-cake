@@ -17,17 +17,17 @@
                         </li>
                         <li>
                             <inertia-link :href="route('topping.create')"
-                                >Create</inertia-link
+                                >Tambah</inertia-link
                             >
                         </li>
                     </ul>
                 </div>
 
-                <h1 class="font-bold text-2xl">Add Topping</h1>
+                <h1 class="font-bold text-2xl">Tambah Topping</h1>
             </div>
             <form @submit.prevent="submit">
                 <CardBox>
-                    <FormField label="Cake Topping">
+                    <FormField label="Topping Kue">
                         <FormControl
                             v-model="form.name"
                             name="name"
@@ -42,7 +42,7 @@
                     >
                         {{ props.errors.name }}
                     </NotificationBar>
-                    <FormField label="Topping Price">
+                    <FormField label="Harga Topping">
                         <FormControl
                             v-model="form.price"
                             name="price"
@@ -58,25 +58,25 @@
                     >
                         {{ props.errors.price }}
                     </NotificationBar>
-                    <FormField label="Topping Image">
-                        <FormControl
-                            v-model="form.image_url"
-                            :icon="mdiImageArea"
-                            @input="form.image_url = $event.target.files[0]"
-                            type="file"
-                        />
-                    </FormField>
-                    <NotificationBar
-                        v-if="props.errors.image_url"
-                        color="danger"
-                        :icon="mdiAlertCircle"
-                    >
-                        {{ props.errors.image_url }}
-                    </NotificationBar>
+                    <!--                    <FormField label="Topping Image">-->
+                    <!--                        <FormControl-->
+                    <!--                            v-model="form.image_url"-->
+                    <!--                            :icon="mdiImageArea"-->
+                    <!--                            @input="form.image_url = $event.target.files[0]"-->
+                    <!--                            type="file"-->
+                    <!--                        />-->
+                    <!--                    </FormField>-->
+                    <!--                    <NotificationBar-->
+                    <!--                        v-if="props.errors.image_url"-->
+                    <!--                        color="danger"-->
+                    <!--                        :icon="mdiAlertCircle"-->
+                    <!--                    >-->
+                    <!--                        {{ props.errors.image_url }}-->
+                    <!--                    </NotificationBar>-->
                     <template #footer>
                         <BaseButton
                             type="submit"
-                            label="Submit"
+                            label="Simpan"
                             color="success"
                         />
                     </template>

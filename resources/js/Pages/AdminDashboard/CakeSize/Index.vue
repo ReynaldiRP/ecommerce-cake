@@ -36,8 +36,8 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Cake Size</th>
-                                <th>Price</th>
+                                <th>Ukuran Kue</th>
+                                <th>Harga</th>
                                 <th v-if="checkRolePermission">Action</th>
                             </tr>
                         </thead>
@@ -56,28 +56,28 @@
                                     <inertia-link
                                         :href="route('size.edit', cakeSize.id)"
                                         class="btn btn-info"
-                                        >Edit</inertia-link
+                                        >Ubah</inertia-link
                                     >
                                     <button
                                         class="btn btn-error"
                                         @click="modalActive = true"
                                     >
-                                        Delete
+                                        Hapus
                                     </button>
                                     <CardBoxModal
                                         v-model="modalActive"
                                         class="backdrop-contrast-50"
-                                        title="Cake Size"
-                                        button="info"
-                                        button-label="Confirm"
+                                        title="Ukuran Kue"
+                                        button="danger"
+                                        button-label="Yakin"
                                         :click-handler="
                                             () => deleteHandler(cakeSize.id)
                                         "
                                         has-cancel
                                     >
                                         <p>
-                                            Are you sure want to delete Category
-                                            Cake ?
+                                            Apakah kamu yakin untuk menghapus
+                                            ukuran kue ?
                                         </p>
                                     </CardBoxModal>
                                 </td>

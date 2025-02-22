@@ -56,20 +56,20 @@
                     >
                         {{ props.errors.price }}
                     </NotificationBar>
-                    <FormField label="Cake Image">
-                        <FormControl
-                            @change="handleFileUpload"
-                            :icon="mdiImageArea"
-                            type="file"
-                        />
-                    </FormField>
-                    <NotificationBar
-                        v-if="props.errors.image_url"
-                        color="danger"
-                        :icon="mdiAlertCircle"
-                    >
-                        {{ props.errors.image_url }}
-                    </NotificationBar>
+                    <!--                    <FormField label="Cake Image">-->
+                    <!--                        <FormControl-->
+                    <!--                            @change="handleFileUpload"-->
+                    <!--                            :icon="mdiImageArea"-->
+                    <!--                            type="file"-->
+                    <!--                        />-->
+                    <!--                    </FormField>-->
+                    <!--                    <NotificationBar-->
+                    <!--                        v-if="props.errors.image_url"-->
+                    <!--                        color="danger"-->
+                    <!--                        :icon="mdiAlertCircle"-->
+                    <!--                    >-->
+                    <!--                        {{ props.errors.image_url }}-->
+                    <!--                    </NotificationBar>-->
                     <template #footer>
                         <BaseButton
                             type="submit"

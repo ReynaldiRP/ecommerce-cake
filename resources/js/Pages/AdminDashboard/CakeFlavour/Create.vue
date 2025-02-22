@@ -12,22 +12,22 @@
                     <ul>
                         <li>
                             <inertia-link :href="route('flavour.index')"
-                                >Flavour</inertia-link
+                                >Rasa Kue</inertia-link
                             >
                         </li>
                         <li>
                             <inertia-link :href="route('flavour.create')"
-                                >Create</inertia-link
+                                >Tambah</inertia-link
                             >
                         </li>
                     </ul>
                 </div>
 
-                <h1 class="font-bold text-2xl">Add Flavour</h1>
+                <h1 class="font-bold text-2xl">Tambah Rasa Kue</h1>
             </div>
             <form @submit.prevent="submit">
                 <CardBox>
-                    <FormField label="Flavour Cake">
+                    <FormField label="Rasa Kue">
                         <FormControl
                             v-model="form.name"
                             name="name"
@@ -42,7 +42,7 @@
                     >
                         {{ props.errors.name }}
                     </NotificationBar>
-                    <FormField label="Flavour Price">
+                    <FormField label="Harga Rasa Kue">
                         <FormControl
                             v-model="form.price"
                             name="price"
@@ -58,21 +58,21 @@
                     >
                         {{ props.errors.price }}
                     </NotificationBar>
-                    <FormField label="Flavour Image">
-                        <FormControl
-                            v-model="form.image_url"
-                            :icon="mdiImageArea"
-                            @input="form.image_url = $event.target.files[0]"
-                            type="file"
-                        />
-                    </FormField>
-                    <NotificationBar
-                        v-if="props.errors.image_url"
-                        color="danger"
-                        :icon="mdiAlertCircle"
-                    >
-                        {{ props.errors.image_url }}
-                    </NotificationBar>
+                    <!--                    <FormField label="Flavour Image">-->
+                    <!--                        <FormControl-->
+                    <!--                            v-model="form.image_url"-->
+                    <!--                            :icon="mdiImageArea"-->
+                    <!--                            @input="form.image_url = $event.target.files[0]"-->
+                    <!--                            type="file"-->
+                    <!--                        />-->
+                    <!--                    </FormField>-->
+                    <!--                    <NotificationBar-->
+                    <!--                        v-if="props.errors.image_url"-->
+                    <!--                        color="danger"-->
+                    <!--                        :icon="mdiAlertCircle"-->
+                    <!--                    >-->
+                    <!--                        {{ props.errors.image_url }}-->
+                    <!--                    </NotificationBar>-->
                     <template #footer>
                         <BaseButton
                             type="submit"

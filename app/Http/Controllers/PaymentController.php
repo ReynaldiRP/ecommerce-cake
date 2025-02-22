@@ -202,9 +202,11 @@ class PaymentController extends Controller
             'cakeTopping'
         ])
             ->whereHas('order', function ($query) {
-                $query->where('user_id', auth()->id())->orderBy('created_at', 'desc');
-            })
-            ->paginate(5);
+                $query->where('user_id', auth()->id());
+            });
+
+        // Paginate the results
+        $orderItems = $orderItems->orderBy('created_at', 'desc')->paginate(5);
 
 
         // Transform the order items
@@ -228,10 +230,11 @@ class PaymentController extends Controller
                 'cake_note' => $item->note,
                 'price' => $item->price,
                 'payment_url' => $item->order?->payment_url,
-                'order_created_at' => $item->order?->created_at?->isoFormat('dddd, D MMMM Y'),
-                'order_updated_at' => $item->order?->updated_at?->isoFormat('dddd, D MMMM Y')
+                'order_created_at' => $item->created_at->isoFormat('dddd, D MMMM Y'),
+                'order_updated_at' => $item->updated_at->isoFormat('dddd, D MMMM Y')
             ];
         });
+
 
 
         return Inertia::render('OrderHistorySection', [
@@ -282,6 +285,8 @@ class PaymentController extends Controller
             'cakeFlavour',
             'cakeTopping'
         ])->whereHas('order', function ($q) use ($status, $month) {
+            $q->where('user_id', auth()->id())->orderBy('created_at', 'desc');
+
             if ($status !== 'All') {
                 if ($status === 'Berjalan') {
                     $q->whereHas('payment', function ($q) {
@@ -302,6 +307,7 @@ class PaymentController extends Controller
             if ($month) {
                 $q->whereMonth('created_at', '=', $month);
             }
+
         });
 
         // Paginate the results
@@ -332,6 +338,7 @@ class PaymentController extends Controller
                 'order_updated_at' => $item->order?->updated_at?->isoFormat('dddd, D MMMM Y')
             ];
         });
+
 
         return response()->json([
             'orderItems' => $orderItems,
@@ -420,8 +427,6 @@ class PaymentController extends Controller
                 }),
             ];
         });
-
-        //        dd($statusHistory);
 
 
         return Inertia::render('OrderStatusSection', [

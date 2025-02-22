@@ -53,7 +53,7 @@
 <body>
 <header style="text-align: center; padding: 15px; border-bottom: 2px solid #e0e0e0; background-color: #f9f9f9;">
     <img src="http://ecommerce-cake-app.test/assets/image/logo-dreamdessert.webp" alt="Company Logo" style="width: 90px; margin-bottom: 10px;"/>
-    <h1 style="font-size: 28px; color: #333; margin: 5px 0;">Laporan Performa Kue</h1>
+    <h1 style="font-size: 28px; color: #333; margin: 5px 0;">Laporan Penjualan Kue Terlaris</h1>
     <p style="font-size: 16px; color: #666; margin: 5px 0;">Dibuat pada: <strong>{{$generated_at}}</strong></p>
     <p style="font-size: 14px; color: #666; margin: 5px 0;">Periode : {{$period}} <strong></strong></p>
     <div style="margin-top: 20px;">

@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -26,18 +27,20 @@ class CategoryController extends Controller
         ]);
     }
 
+    // TODO: return category data after submit the form
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request): RedirectResponse
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+            $data = $request->validate([
+                'name' => 'required|string|max:255',
+            ], [
+                'name.required' => 'Kategori Kue harus diisi',
+            ]);
 
-        Category::create($data);
-
-        return redirect()->route('category.index')->with('success', 'The Cake Category has been created');
+           $categoryData =  Category::create($data);
+            return redirect()->back()->with('success', 'The Cake Category has been added');
     }
 
     /**
@@ -59,7 +62,7 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $dashboard_category): JsonResponse
+    public function update(Request $request, Category $dashboard_category): RedirectResponse
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
@@ -67,10 +70,7 @@ class CategoryController extends Controller
 
         $dashboard_category->update($data);
 
-        return response()->json([
-            'message' => 'The Cake Category has been changed',
-            'category' => $dashboard_category,
-        ]);
+        return redirect()->route('category.index')->with('success', 'The Cake Category has been updated');
     }
 
     /**
