@@ -123,36 +123,33 @@
                                 }"
                             >
                                 <section>
-                                    <section v-if="item.cake.discount">
-                                        <p
-                                            class="text-lg font-medium text-primary-color"
-                                        >
-                                            {{ formattedSubTotal[index] }}
-                                        </p>
-                                        <section class="flex gap-2">
-                                            <p
-                                                class="text-lg font-medium line-through"
-                                            >
-                                                {{
-                                                    formatPrice(
-                                                        item.cake.base_price,
-                                                    )
-                                                }}
-                                            </p>
-                                            <p
-                                                class="text-lg font-medium text-primary-color"
-                                            >
-                                                ({{
-                                                    item.cake.discount
-                                                        .discount_percentage
-                                                }}%)
-                                            </p>
-                                        </section>
-                                    </section>
-                                    <p
-                                        v-else
-                                        class="text-lg font-medium lg:ms-auto"
-                                    >
+                                    <!--                                    <section v-if="item.cake.discount">-->
+                                    <!--                                        <p-->
+                                    <!--                                            class="text-lg font-medium text-primary-color"-->
+                                    <!--                                        >-->
+                                    <!--                                            {{ formattedSubTotal[index] }}-->
+                                    <!--                                        </p>-->
+                                    <!--                                        <section class="flex gap-2">-->
+                                    <!--                                            <p-->
+                                    <!--                                                class="text-lg font-medium line-through"-->
+                                    <!--                                            >-->
+                                    <!--                                                {{-->
+                                    <!--                                                    formatPrice(-->
+                                    <!--                                                        item.cake.base_price,-->
+                                    <!--                                                    )-->
+                                    <!--                                                }}-->
+                                    <!--                                            </p>-->
+                                    <!--                                            <p-->
+                                    <!--                                                class="text-lg font-medium text-primary-color"-->
+                                    <!--                                            >-->
+                                    <!--                                                ({{-->
+                                    <!--                                                    item.cake.discount-->
+                                    <!--                                                        .discount_percentage-->
+                                    <!--                                                }}%)-->
+                                    <!--                                            </p>-->
+                                    <!--                                        </section>-->
+                                    <!--                                    </section>-->
+                                    <p class="text-lg font-medium lg:ms-auto">
                                         {{ formattedSubTotal[index] }}
                                     </p>
                                 </section>

@@ -48,7 +48,7 @@ class OrderSeeder extends Seeder
         $faker = Factory::create();
 
         // Loop create order for each user
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 50; $i++) {
             $order = Order::create([
                 'user_id' => $users->random()->id,
                 'order_code' => Str::uuid(),
@@ -58,7 +58,7 @@ class OrderSeeder extends Seeder
                 'cake_recipient' => $faker->name,
                 'status' => 'Pesanan diterima',
                 'total_price' => 0,
-                'created_at' => $faker->dateTimeBetween('2023-01-01', '2024-12-31'),
+                'created_at' => $faker->dateTimeBetween('2023-01-01', '2025-02-24'),
             ]);
 
             // Loop create order item for each order

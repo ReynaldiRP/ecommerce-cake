@@ -110,16 +110,24 @@
                     color="text-base-300 dark:text-white"
                 />
                 <CardBoxWidget
-                    :icon="mdiChartBellCurveCumulative"
-                    label="Persentase Pertumbuhan Pendapatan"
-                    suffix="%"
-                    :number="growthRevenuePerMonthByPercentage"
-                    :trend="evaluateTrend(growthRevenuePerMonthByPercentage, 0)"
-                    :trend-type="
-                        evaluateTrend(growthRevenuePerMonthByPercentage, 0)
-                    "
+                    :icon="mdiCash"
+                    label="Rata - Rata Pendapatan"
+                    :value="formatPrice(averageRevenue)"
+                    :trend="evaluateTrend(averageRevenue, 0)"
+                    :trend-type="evaluateTrend(averageRevenue, 0)"
                     color="text-base-300 dark:text-white"
                 />
+                <!--                <CardBoxWidget-->
+                <!--                    :icon="mdiChartBellCurveCumulative"-->
+                <!--                    label="Persentase Pertumbuhan Pendapatan"-->
+                <!--                    suffix="%"-->
+                <!--                    :number="growthRevenuePerMonthByPercentage"-->
+                <!--                    :trend="evaluateTrend(growthRevenuePerMonthByPercentage, 0)"-->
+                <!--                    :trend-type="-->
+                <!--                        evaluateTrend(growthRevenuePerMonthByPercentage, 0)-->
+                <!--                    "-->
+                <!--                    color="text-base-300 dark:text-white"-->
+                <!--                />-->
                 <CardBoxWidget
                     :icon="mdiCakeVariant"
                     label="Total Kue Terjual"
@@ -402,6 +410,7 @@ const props = defineProps({
     mostPopularCakeType: Object,
     mostPopularCakeCategory: Object,
     growthRevenuePerMonthByPercentage: Number,
+    averageRevenue: Number,
     totalTransaction: Number,
     chartData: Object,
     chartDataCakeSold: Object,

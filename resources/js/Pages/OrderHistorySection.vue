@@ -249,14 +249,14 @@
                 <div class="flex justify-between items-center">
                     <Pagination
                         class="btn-outline"
-                        :links="props.orderItems.links"
-                        :next-page-url="props.orderItems.next_page_url"
-                        :previous-page-url="props.orderItems.prev_page_url"
+                        :links="pagination.links"
+                        :next-page-url="pagination.next_page_url"
+                        :previous-page-url="pagination.prev_page_url"
                     />
                     <p>
                         Page
-                        <span>{{ props.orderItems.current_page }}</span> of
-                        <span>{{ props.orderItems.last_page }}</span>
+                        <span>{{ pagination.current_page }}</span> of
+                        <span>{{ pagination.last_page }}</span>
                     </p>
                 </div>
             </footer>
@@ -280,6 +280,8 @@ const props = defineProps({
 
 const originalOrderItems = ref([]);
 originalOrderItems.value = props.orderItems.data;
+
+const pagination = ref(props.orderItems);
 
 const modalActive = ref(false);
 const transactionFilter = ["Semua", "Berjalan", "Sukses", "Gagal"];
@@ -365,9 +367,10 @@ const fetchFilteredData = async () => {
         if (results.length <= 0) {
             originalOrderItems.value = [];
         } else {
-            console.log(results);
             originalOrderItems.value = results;
         }
+
+        pagination.value = response.data.orderItems;
     } catch (error) {
         console.error("Error fetching filtered data:", error);
     }
@@ -457,8 +460,6 @@ onMounted(() => {
     }
 });
 
-onUpdated(() => {});
-
 /**
  * Redirects the user to the specified payment URL.
  *
@@ -524,8 +525,12 @@ const handleBuyAgain = async (orderItem) => {
             },
         );
 
+        const chartItemId = response.data.chartItem[0].cartItem.id;
+
         // Redirect to the detail chart page
-        window.location.href = route("detail-chart", response.data);
+        window.location.href = route("detail-chart", {
+            chartItemId: chartItemId,
+        });
     } catch (e) {
         console.error("Error buying again:", e);
     }

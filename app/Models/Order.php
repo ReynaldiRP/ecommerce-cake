@@ -86,6 +86,24 @@ class Order extends Model
         return round($growthRevenueByPercentage, 2);
     }
 
+
+    /**
+     * Get the average revenue for the last three months.
+     *
+     * @return int | float
+     */
+    public function getTheAverageRevenueThreeMonth(): int | float
+    {
+        // Get the average revenue for the last three months
+        $averageRevenue = $this->selectRaw('AVG(total_price) as average_revenue')
+            ->join('payments', 'orders.id', '=', 'payments.order_id')
+            ->where('payments.payment_status', '=', 'pesanan terbayar')
+            ->whereBetWeen('orders.created_at', [Carbon::now()->subMonths(3)->startOfMonth(), Carbon::now()->endOfMonth()])
+            ->first();
+
+        return $averageRevenue->average_revenue ?? 0;
+    }
+
     /**
      * Get total transaction for each month based on selected year.
      *

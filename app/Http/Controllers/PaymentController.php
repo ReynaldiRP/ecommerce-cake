@@ -475,6 +475,7 @@ class PaymentController extends Controller
             }
 
             return response()->json([
+                'chartItem' => $addedItems,
                 'message' => 'Buy again cake order successfully.',
             ]);
         } catch (Exception $e) {
