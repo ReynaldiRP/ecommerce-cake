@@ -61,7 +61,6 @@ class ShoppingChartController extends Controller
 
             $cartItemWithRelations = ShoppingChartItem::with('cart', 'cake', 'cake.discount', 'cakeFlavour', 'cakeTopping');
 
-            // TODO: Implement the discount logic here
             // transform the cart item with discounted price
             $cartItemWithRelations = $cartItemWithRelations->get()->transform(function ($item) {
                 if ($item->cake->discount) {

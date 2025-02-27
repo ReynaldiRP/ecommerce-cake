@@ -11,6 +11,7 @@ export default {
         "./resources/js/**/*.js",
     ],
     darkMode: "class", // or 'media' or 'class'
+    // TODO: Change the colors palette for the app to lighter colors
     theme: {
         extend: {
             colors: {

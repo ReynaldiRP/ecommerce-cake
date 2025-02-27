@@ -20,6 +20,7 @@ class ShowAllPaymentController extends Controller
      */
     public function __invoke(Request $request, Payment $payment): Response
     {
+        //TODO: add ordering by payment created_at
         $payments = Payment::with('order')->orderBy('created_at', 'desc')->paginate(5);
 
         // Transform the payments

@@ -23,7 +23,6 @@ class ShowDashboardController extends Controller
         $orderItem = new OrderItem();
 
 
-        // FIXME: the date range is still not working properly
         $getAllCakeSold = $orderItem->getAllCakeSold('2024');
         // Get total revenue cake orders from the payment model
         $totalRevenueCakeOrders = $payment->totalRevenueOrder('2024-11-01', Carbon::now()->format('Y-m-d'));

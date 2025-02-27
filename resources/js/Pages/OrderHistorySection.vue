@@ -101,9 +101,6 @@
                             >
                                 {{ order.transaction_status ?? "" }}
                             </div>
-                            <p class="font-extralight">
-                                {{ order.transaction_id || order.order_code }}
-                            </p>
                             <div
                                 class="badge badge-outline font-medium text-lg"
                                 :class="changeBadgeColorOrderStatus(order)"
@@ -371,6 +368,7 @@ const fetchFilteredData = async () => {
         }
 
         pagination.value = response.data.orderItems;
+        console.log("Pagination", pagination.value);
     } catch (error) {
         console.error("Error fetching filtered data:", error);
     }
@@ -536,6 +534,7 @@ const handleBuyAgain = async (orderItem) => {
     }
 };
 
+// FIXME: fix the cancel order for not canceling all the order status
 const handleCancelOrder = async (orderId) => {
     try {
         await axios.post(route("cancel-order", { orderId }), null, {

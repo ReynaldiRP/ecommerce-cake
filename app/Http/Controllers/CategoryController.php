@@ -27,8 +27,7 @@ class CategoryController extends Controller
         ]);
     }
 
-    // TODO: return category data after submit the form
-    /**
+    /**`
      * Store a newly created resource in storage.
      */
     public function store(Request $request): RedirectResponse

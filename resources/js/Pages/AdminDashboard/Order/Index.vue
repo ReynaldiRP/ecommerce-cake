@@ -11,6 +11,7 @@
                 <div class="overflow-x-auto">
                     <table class="table w-full">
                         <thead>
+                            <!--          TODO: Add the current order status              -->
                             <tr>
                                 <th></th>
                                 <th>Order Kode</th>

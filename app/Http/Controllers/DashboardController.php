@@ -8,7 +8,6 @@ use App\Models\Payment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-// TODO: Implement filtering data transaction per month based on selected year
 class DashboardController extends Controller
 {
     public function __construct(
