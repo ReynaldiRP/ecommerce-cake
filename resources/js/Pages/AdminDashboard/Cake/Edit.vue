@@ -9,7 +9,9 @@
         <SectionMain class="flex flex-col gap-6">
             <div class="flex justify-between items-center">
                 <div class="breadcrumbs text-sm">
-                    <ul>
+                    <ul
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <li>
                             <inertia-link :href="route('cake.index')"
                                 >Kue</inertia-link
@@ -20,11 +22,18 @@
                         </li>
                     </ul>
                 </div>
-                <h1 class="font-bold text-2xl">Ubah Kue</h1>
+                <h1
+                    class="font-bold text-2xl text-color-dashboard-light dark:text-color-dashboard-dark"
+                >
+                    Ubah Kue
+                </h1>
             </div>
             <form @submit.prevent="submit">
                 <CardBox>
-                    <FormField label="Nama Kue">
+                    <FormField
+                        label="Nama Kue"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.name"
                             placeholder="Base Cake"
@@ -38,7 +47,10 @@
                     >
                         {{ props.errors.name }}
                     </NotificationBar>
-                    <FormField label="Kategori Kue">
+                    <FormField
+                        label="Kategori Kue"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.category_id"
                             option-label="name"
@@ -56,7 +68,10 @@
                     >
                         {{ props.errors.category_id }}
                     </NotificationBar>
-                    <FormField label="Diskon Kue">
+                    <FormField
+                        label="Diskon Kue"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.discount_id"
                             option-label="discount_percentage"
@@ -74,7 +89,10 @@
                     >
                         {{ props.errors.discount_id }}
                     </NotificationBar>
-                    <FormField label="Harga Kue">
+                    <FormField
+                        label="Harga Kue"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.base_price"
                             placeholder="Rp5000"
@@ -89,7 +107,10 @@
                     >
                         {{ props.errors.base_price }}
                     </NotificationBar>
-                    <FormField label="Gambar Kue">
+                    <FormField
+                        label="Gambar Kue"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             @change="handleFileUpload"
                             :icon="mdiImageArea"
@@ -103,7 +124,10 @@
                     >
                         {{ props.errors.image_url }}
                     </NotificationBar>
-                    <FormField label="Jenis Kue">
+                    <FormField
+                        label="Jenis Kue"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.personalization_type"
                             :options="cakePersonalizationType"

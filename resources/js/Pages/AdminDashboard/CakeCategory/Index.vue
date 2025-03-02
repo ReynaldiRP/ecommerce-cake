@@ -10,7 +10,11 @@
         <SectionMain class="flex flex-col gap-6">
             <div class="grid grid-cols-12">
                 <div class="col-span-4 flex items-center gap-2">
-                    <h1 class="font-bold text-2xl">Tabel Kategori Kue</h1>
+                    <h1
+                        class="font-bold text-2xl text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
+                        Tabel Kategori Kue
+                    </h1>
                     <BaseButton
                         v-if="checkRolePermission"
                         color="success"
@@ -59,7 +63,9 @@
                     <table class="table table-lg">
                         <!-- head -->
                         <thead>
-                            <tr>
+                            <tr
+                                class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                            >
                                 <th></th>
                                 <th>Kategori Kue</th>
                                 <th v-if="checkRolePermission">Action</th>
@@ -69,6 +75,7 @@
                             <tr
                                 v-for="(category, index) in categoryData"
                                 :key="category.id"
+                                class="text-color-dashboard-light dark:text-color-dashboard-dark"
                             >
                                 <th>{{ index + 1 }}</th>
                                 <td>{{ category.name }}</td>

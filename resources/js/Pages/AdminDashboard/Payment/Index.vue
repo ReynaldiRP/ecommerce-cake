@@ -2,7 +2,11 @@
     <LayoutAuthenticated>
         <SectionMain class="flex flex-col gap-6">
             <div class="flex justify-between items-center gap-2">
-                <h1 class="font-bold text-2xl">Tabel Pembayaran</h1>
+                <h1
+                    class="font-bold text-2xl text-color-dashboard-light dark:text-color-dashboard-dark"
+                >
+                    Tabel Pembayaran
+                </h1>
             </div>
 
             <CardBox>
@@ -10,26 +14,26 @@
                     <table class="table table-lg">
                         <!-- head -->
                         <thead>
-                            <tr>
+                            <tr
+                                class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                            >
                                 <th></th>
-                                <th>Transaksi Id</th>
-                                <th>Kode Order</th>
-                                <th>Metode Pembayaran</th>
-                                <th>Status Pembayaran</th>
                                 <th>Transaksi Dibuat</th>
                                 <th>Transaksi Dibayar</th>
+                                <th>Metode Pembayaran</th>
+                                <th>Status Pembayaran</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr
                                 v-for="(payment, index) in props.payments.data"
                                 :key="payment.id"
+                                class="text-color-dashboard-light dark:text-color-dashboard-dark"
                             >
                                 <th>{{ index + 1 }}</th>
                                 <td>
-                                    {{ payment.transaction_id }}
+                                    {{ payment.payment_created_at }}
                                 </td>
-                                <td>{{ payment.order_code }}</td>
                                 <td>{{ payment.payment_method }}</td>
                                 <td>
                                     <div
@@ -43,9 +47,6 @@
                                     >
                                         {{ payment.payment_status }}
                                     </div>
-                                </td>
-                                <td>
-                                    {{ payment.payment_created_at }}
                                 </td>
                                 <td>
                                     {{ payment.payment_paid_at }}

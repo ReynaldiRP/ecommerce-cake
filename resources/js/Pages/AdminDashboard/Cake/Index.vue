@@ -16,7 +16,11 @@
         <SectionMain class="flex flex-col gap-6">
             <div class="grid grid-cols-12">
                 <div class="col-span-4 flex items-center gap-2">
-                    <h1 class="font-bold text-2xl">Tabel Kue</h1>
+                    <h1
+                        class="font-bold text-2xl text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
+                        Tabel Kue
+                    </h1>
                     <BaseButton
                         v-if="checkRolePermission"
                         color="success"
@@ -40,7 +44,9 @@
                     <table class="table table-lg">
                         <!-- head -->
                         <thead>
-                            <tr>
+                            <tr
+                                class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                            >
                                 <th></th>
                                 <th>Nama Kue</th>
                                 <th>Kategori Kue</th>
@@ -56,6 +62,7 @@
                             <tr
                                 v-for="(cakes, index) in props.cakes.data"
                                 :key="cakes.id"
+                                class="text-color-dashboard-light dark:text-color-dashboard-dark"
                             >
                                 <th>{{ index + 1 }}</th>
                                 <td>{{ cakes.name }}</td>
@@ -172,6 +179,7 @@ import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
 import { storeToRefs } from "pinia";
+import FormField from "@/Components/DashboardAdmin/FormField.vue";
 
 const props = defineProps({
     cakes: {

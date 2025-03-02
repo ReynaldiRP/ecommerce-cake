@@ -9,7 +9,9 @@
         <SectionMain class="flex flex-col gap-6">
             <div class="flex justify-between items-center">
                 <div class="breadcrumbs text-sm">
-                    <ul>
+                    <ul
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <li>
                             <inertia-link :href="route('cake.index')"
                                 >Kue</inertia-link
@@ -23,11 +25,18 @@
                     </ul>
                 </div>
 
-                <h1 class="font-bold text-2xl">Add Product</h1>
+                <h1
+                    class="font-bold text-2xl text-color-dashboard-light dark:text-color-dashboard-dark"
+                >
+                    Add Product
+                </h1>
             </div>
             <form @submit.prevent="submit">
                 <CardBox>
-                    <FormField label="Nama Kue">
+                    <FormField
+                        label="Nama Kue"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.name"
                             placeholder="Base Cake"
@@ -41,7 +50,10 @@
                     >
                         {{ props.errors.name }}
                     </NotificationBar>
-                    <FormField label="Kategori Kue">
+                    <FormField
+                        label="Kategori Kue"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.category_id"
                             :options="props.cakeCategory"
@@ -59,7 +71,10 @@
                     >
                         {{ props.errors.category_id }}
                     </NotificationBar>
-                    <FormField label="Diskon Kue">
+                    <FormField
+                        label="Diskon Kue"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.discount_id"
                             :options="props.discounts"
@@ -77,7 +92,10 @@
                     >
                         {{ props.errors.discount_id }}
                     </NotificationBar>
-                    <FormField label="Harga Kue">
+                    <FormField
+                        label="Harga Kue"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.base_price"
                             placeholder="Rp5000"
@@ -92,7 +110,10 @@
                     >
                         {{ props.errors.base_price }}
                     </NotificationBar>
-                    <FormField label="Deskripsi Kue">
+                    <FormField
+                        label="Deskripsi Kue"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.description"
                             placeholder="Deskripsi kue"
@@ -106,7 +127,10 @@
                     >
                         {{ props.errors.description }}
                     </NotificationBar>
-                    <FormField label="Foto Kue">
+                    <FormField
+                        label="Foto Kue"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.image_url"
                             @input="form.image_url = $event.target.files[0]"
@@ -121,7 +145,10 @@
                     >
                         {{ props.errors.image_url }}
                     </NotificationBar>
-                    <FormField label="Jenis Kue">
+                    <FormField
+                        label="Jenis Kue"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.personalization_type"
                             :options="cakePersonalizationType"

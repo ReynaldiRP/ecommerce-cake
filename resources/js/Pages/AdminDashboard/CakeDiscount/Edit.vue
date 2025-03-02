@@ -9,7 +9,9 @@
         <SectionMain class="flex flex-col gap-6">
             <div class="flex justify-between items-center">
                 <div class="breadcrumbs text-sm">
-                    <ul>
+                    <ul
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <li>
                             <inertia-link :href="route('discount.index')"
                                 >Diskon Kue</inertia-link
@@ -21,11 +23,18 @@
                     </ul>
                 </div>
 
-                <h1 class="font-bold text-2xl">Ubah Diskon Kue</h1>
+                <h1
+                    class="font-bold text-2xl text-color-dashboard-light dark:text-color-dashboard-dark"
+                >
+                    Ubah Diskon Kue
+                </h1>
             </div>
             <form @submit.prevent="submit">
                 <CardBox>
-                    <FormField label="Nama Diskon">
+                    <FormField
+                        label="Nama Diskon"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.name"
                             placeholder="10"
@@ -40,7 +49,10 @@
                     >
                         {{ props.errors.name }}
                     </NotificationBar>
-                    <FormField label="Presentase Diskon">
+                    <FormField
+                        label="Presentase Diskon"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.discount_percentage"
                             placeholder="10%"
@@ -55,7 +67,10 @@
                     >
                         {{ props.errors.discount_percentage }}
                     </NotificationBar>
-                    <FormField label="Tanggal Mulai Diskon">
+                    <FormField
+                        label="Tanggal Mulai Diskon"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.start_date"
                             placeholder="Rp5000"
@@ -70,7 +85,10 @@
                     >
                         {{ props.errors.start_date }}
                     </NotificationBar>
-                    <FormField label="Tanggal Berakhir Diskon">
+                    <FormField
+                        label="Tanggal Berakhir Diskon"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.end_date"
                             :icon="mdiCalendar"

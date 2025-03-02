@@ -48,17 +48,19 @@ class OrderSeeder extends Seeder
         $faker = Factory::create();
 
         // Loop create order for each user
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 100; $i++) {
+            $createdAt = $faker->dateTimeBetween('2023-01-01', '2025-03-02');
+
             $order = Order::create([
                 'user_id' => $users->random()->id,
                 'order_code' => Str::uuid(),
-                'estimated_delivery_date' => $faker->dateTimeBetween('2023-01-01', '2024-12-31')->modify('+2 days'),
+                'estimated_delivery_date' => (clone $createdAt)->modify('+2 days'),
                 'method_delivery' => $faker->randomElement(['Dikirim', 'Ambil di toko']),
                 'user_address' => $faker->address,
                 'cake_recipient' => $faker->name,
                 'status' => 'Pesanan diterima',
                 'total_price' => 0,
-                'created_at' => $faker->dateTimeBetween('2023-01-01', '2025-02-24'),
+                'created_at' => $createdAt,
             ]);
 
             // Loop create order item for each order
@@ -83,7 +85,7 @@ class OrderSeeder extends Seeder
                     'cake_flavour_id' => $flavour->id ?? null,
                     'quantity' => $faker->numberBetween(1, 3),
                     'price' => $cake->base_price + ($size->price ?? 0) + ($flavour->price ?? 0) + ($topping->price ?? 0),
-                    'created_at' => $faker->dateTimeBetween('2024-01-01', '2024-12-31'),
+                    'created_at' => $faker->dateTimeBetween('2023-01-01', '2025-03-02'),
                 ]);
 
                 // Attach topping if included

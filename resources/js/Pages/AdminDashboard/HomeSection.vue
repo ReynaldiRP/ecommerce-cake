@@ -2,7 +2,9 @@
     <LayoutAuthenticated>
         <SectionMain class="flex flex-col gap-6">
             <!--     Heading and export report button        -->
-            <section class="flex justify-between items-center">
+            <section
+                class="flex justify-between items-center text-color-dashboard-light dark:text-color-dashboard-dark"
+            >
                 <div class="flex flex-col">
                     <h1 class="font-bold text-2xl">Dashboard Home</h1>
                     <small class="text-lg"
@@ -19,7 +21,7 @@
                 <CardBoxModal
                     v-model="modalActive"
                     title="Export Laporan"
-                    class="backdrop-contrast-50"
+                    class="backdrop-contrast-50 text-color-dashboard-light dark:text-color-dashboard-dark"
                     button-label="Download Laporan"
                     button="success"
                     :click-handler="exportReport"
@@ -106,7 +108,7 @@
                     :value="formatPrice(totalRevenue)"
                     :trend="evaluateTrend(totalRevenue, minimumRevenue)"
                     :trend-type="evaluateTrend(totalRevenue, minimumRevenue)"
-                    color="text-base-300 dark:text-white"
+                    color="text-color-dashboard-light dark:text-color-dashboard-dark"
                 />
                 <CardBoxWidget
                     :icon="mdiCash"
@@ -114,7 +116,7 @@
                     :value="formatPrice(averageRevenue)"
                     :trend="evaluateTrend(averageRevenue, 0)"
                     :trend-type="evaluateTrend(averageRevenue, 0)"
-                    color="text-base-300 dark:text-white"
+                    color="text-color-dashboard-light dark:text-color-dashboard-dark"
                 />
                 <!--                <CardBoxWidget-->
                 <!--                    :icon="mdiChartBellCurveCumulative"-->
@@ -133,14 +135,14 @@
                     :number="totalCakeSold"
                     :trend="evaluateTrend(totalCakeSold, minimumCakeSold)"
                     :trend-type="evaluateTrend(totalCakeSold, minimumCakeSold)"
-                    color="text-base-300 dark:text-white"
+                    color="text-color-dashboard-light dark:text-color-dashboard-dark"
                 />
                 <CardBox>
                     <section class="flex flex-col gap-4">
                         <BaseLevel mobile>
                             <PillTagTrend trend="up" trend-type="up" small />
                             <h3
-                                class="text-lg leading-tight text-gray-500 dark:text-slate-400"
+                                class="text-lg leading-tight text-color-dashboard-light dark:text-color-dashboard-dark"
                             >
                                 Kue Terpopuler
                             </h3>
@@ -167,7 +169,7 @@
                                         {{ mostPopularCake.cake_name ?? "N/A" }}
                                     </h1>
                                     <label
-                                        class="text-sm leading-tight text-gray-500 dark:text-slate-400"
+                                        class="text-sm leading-tight text-color-dashboard-light dark:text-color-dashboard-dark"
                                     >
                                         {{ mostPopularCake.total_sold ?? 0 }}
                                         terjual
@@ -189,7 +191,7 @@
                         <BaseLevel mobile>
                             <PillTagTrend trend="up" trend-type="up" small />
                             <h3
-                                class="text-lg leading-tight text-gray-500 dark:text-slate-400"
+                                class="text-lg leading-tight text-color-dashboard-light dark:text-color-dashboard-dark"
                             >
                                 Tipe Kue Terpopuler
                             </h3>
@@ -203,7 +205,7 @@
                                     }}
                                 </h1>
                                 <label
-                                    class="text-sm leading-tight text-gray-500 dark:text-slate-400"
+                                    class="text-sm leading-tight text-color-dashboard-light dark:text-color-dashboard-dark"
                                 >
                                     <NumberDynamic
                                         :value="
@@ -268,7 +270,7 @@
                         <BaseLevel mobile>
                             <PillTagTrend trend="up" trend-type="up" small />
                             <h3
-                                class="text-lg leading-tight text-gray-500 dark:text-slate-400"
+                                class="text-lg leading-tight text-color-dashboard-light dark:text-color-dashboard-dark"
                             >
                                 Total Transaksi
                             </h3>
@@ -276,7 +278,7 @@
                         <BaseLevel class="mt-3" mobile>
                             <section class="flex flex-col gap-1">
                                 <label
-                                    class="text-xl leading-tight font-semibold text-gray-500 dark:text-slate-400"
+                                    class="text-xl leading-tight font-semibold text-color-dashboard-light dark:text-color-dashboard-dark"
                                 >
                                     <NumberDynamic
                                         :value="totalTransaction ?? 0"
@@ -298,12 +300,15 @@
             <!--     Chart data       -->
             <section class="flex flex-col gap-4 mt-8">
                 <div class="flex justify-between items-center">
-                    <h1 class="font-bold text-2xl">
+                    <h1
+                        class="font-bold text-2xl text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         Grafik Pendapatan Perbulan
                     </h1>
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
-                            <span class="label-text font-bold ms-auto"
+                            <span
+                                class="label-text font-bold ms-auto text-color-dashboard-light dark:text-color-dashboard-dark"
                                 >Pilih Tahun Transaksi</span
                             >
                         </div>
@@ -324,10 +329,15 @@
                     <LineChart :data="chartRevenueData" class="h-96" />
                 </CardBox>
                 <div class="flex justify-between items-center">
-                    <h1 class="font-bold text-2xl">Grafik Penjualan Kue</h1>
+                    <h1
+                        class="font-bold text-2xl text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
+                        Grafik Penjualan Kue
+                    </h1>
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
-                            <span class="label-text font-bold ms-auto"
+                            <span
+                                class="label-text font-bold ms-auto text-color-dashboard-light dark:text-color-dashboard-dark"
                                 >Pilih Tahun Transaksi</span
                             >
                         </div>
@@ -348,12 +358,15 @@
                     <DoughnutChart :data="chartCakeSoldData" class="h-96" />
                 </CardBox>
                 <div class="flex justify-between items-center">
-                    <h1 class="font-bold text-2xl">
+                    <h1
+                        class="font-bold text-2xl text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         Grafik Jumlah Transaksi Perbulan
                     </h1>
                     <label class="form-control w-full max-w-xs">
                         <div class="label">
-                            <span class="label-text font-bold ms-auto"
+                            <span
+                                class="label-text font-bold ms-auto text-color-dashboard-light dark:text-color-dashboard-dark"
                                 >Pilih Tahun Transaksi</span
                             >
                         </div>

@@ -3,7 +3,11 @@
         <SectionMain class="flex flex-col gap-4">
             <section class="flex items-center justify-between">
                 <div class="flex gap-2 items-center">
-                    <h1 class="font-bold text-2xl">Tabel Order</h1>
+                    <h1
+                        class="font-bold text-2xl text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
+                        Tabel Order
+                    </h1>
                 </div>
             </section>
 
@@ -12,27 +16,27 @@
                     <table class="table w-full">
                         <thead>
                             <!--          TODO: Add the current order status              -->
-                            <tr>
+                            <tr
+                                class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                            >
                                 <th></th>
-                                <th>Order Kode</th>
+                                <th>Pesanan Dibuat</th>
                                 <th>Estimasi Tanggal Pengiriman</th>
-                                <th>Alamat Penerima</th>
                                 <th>Penerima Kue</th>
                                 <th>Total Pembayaran</th>
                                 <th>Status Pesanan</th>
                                 <th>Detail Pemesanan</th>
-                                <th>Pesanan Dibuat</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr
                                 v-for="(order, index) in ordersData"
                                 :key="order.id"
+                                class="text-color-dashboard-light dark:text-color-dashboard-dark"
                             >
                                 <th>{{ index + 1 }}</th>
-                                <td>{{ order.order_code }}</td>
+                                <td>{{ formattedDate(order.created_at) }}</td>
                                 <td>{{ order.estimated_delivery_date }}</td>
-                                <td>{{ order.user_address }}</td>
                                 <td>{{ order.cake_recipient }}</td>
                                 <td>{{ formatPrice(order.total_price) }}</td>
                                 <td>
@@ -51,7 +55,6 @@
                                         Detail order
                                     </inertia-link>
                                 </td>
-                                <td>{{ formattedDate(order.created_at) }}</td>
                             </tr>
                         </tbody>
                     </table>

@@ -34,33 +34,6 @@
             overflow-wrap: break-word;
         }
 
-        /* Set specific widths for columns to fit better */
-        table th:nth-child(1),
-        table td:nth-child(1) {
-            width: 3%;
-        }
-
-        table th:nth-child(2),
-        table td:nth-child(2),
-        table th:nth-child(8),
-        table td:nth-child(8),
-        table th:nth-child(9),
-        table td:nth-child(9) {
-            width: 13%;
-        }
-
-        /* For the method delivery column which might have longer text */
-        table th:nth-child(5),
-        table td:nth-child(5) {
-            width: 14%;
-        }
-
-        /* For price column */
-        table th:nth-child(6),
-        table td:nth-child(6) {
-            width: 10%;
-        }
-
         th {
             background-color: #f2f2f2;
             color: #333;
@@ -92,14 +65,13 @@
     <img src="http://ecommerce-cake-app.test/assets/image/logo-dreamdessert.webp" alt="Company Logo"
          style="width: 90px; margin-bottom: 10px;" />
     <h1 style="font-size: 1em; color: #333; margin: 5px 0;">Laporan Transaksi Penjualan</h1>
-    <p style="font-size: 0.8em; color: #666; margin: 5px 0;">Periode : <strong>{{$period}}</strong></p>
+    <p style="font-size: 1em; color: #666; margin: 5px 0;">Periode : <strong>{{$period}}</strong></p>
     <p style="font-size: 0.8em; color: #666; margin: 5px 0;">Dibuat pada: <strong>{{$generated_at}}</strong></p>
     <div style="margin-top: 20px;">
         <hr style="border: 1px solid #e0e0e0;" />
     </div>
 </header>
 
-{{--FIXME: the responsive of table content --}}
 <main style="margin-top: 20px; margin-bottom: 20px;">
     @if(count($salePerformance) == 0)
         <p style="font-size: 16px; color: #666; margin: 5px 0;">Tidak ada data yang ditemukan.</p>
@@ -114,8 +86,6 @@
                 <th>Metode Pengiriman</th>
                 <th>Total Harga</th>
                 <th>Metode Pembayaran</th>
-                <th>Pembayaran Dilakukan</th>
-                <th>Tanggal Pengiriman</th>
             </tr>
             </thead>
             <tbody>
@@ -128,8 +98,6 @@
                     <td>{{ $transaction['method_delivery'] }}</td>
                     <td>{{ $transaction['total_price'] }}</td>
                     <td>{{ $transaction['payment_method'] }}</td>
-                    <td>{{ $transaction['payment_date'] }}</td>
-                    <td>{{ $transaction['estimated_delivery'] }}</td>
                 </tr>
             @endforeach
             </tbody>

@@ -66,7 +66,9 @@ defineProps({
                 >
                     {{ label }}
                 </h3>
-                <h1 class="text-3xl leading-tight font-semibold">
+                <h1
+                    class="text-3xl leading-tight font-semibold text-color-dashboard-light dark:text-color-dashboard-dark"
+                >
                     <NumberDynamic
                         v-if="number"
                         :value="number"

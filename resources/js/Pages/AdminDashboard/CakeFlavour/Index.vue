@@ -16,7 +16,11 @@
         <SectionMain class="flex flex-col gap-6">
             <div class="grid grid-cols-12">
                 <div class="col-span-4 flex items-center gap-2">
-                    <h1 class="font-bold text-2xl">Tabel Rasa Kue</h1>
+                    <h1
+                        class="font-bold text-2xl text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
+                        Tabel Rasa Kue
+                    </h1>
                     <BaseButton
                         v-if="checkRolePermission"
                         color="success"
@@ -40,7 +44,9 @@
                     <table class="table table-lg">
                         <!-- head -->
                         <thead>
-                            <tr>
+                            <tr
+                                class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                            >
                                 <th></th>
                                 <th>Rasa Kue</th>
                                 <th>Harga Rasa Kue</th>
@@ -51,6 +57,7 @@
                             <tr
                                 v-for="(flavour, index) in props.flavour.data"
                                 :key="flavour.id"
+                                class="text-color-dashboard-light dark:text-color-dashboard-dark"
                             >
                                 <th>{{ index + 1 }}</th>
                                 <td>{{ flavour.name }}</td>

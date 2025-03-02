@@ -9,7 +9,9 @@
         <SectionMain class="flex flex-col gap-6">
             <div class="flex justify-between items-center">
                 <div class="breadcrumbs text-sm">
-                    <ul>
+                    <ul
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <li>
                             <inertia-link :href="route('flavour.index')"
                                 >Flavour</inertia-link
@@ -21,11 +23,18 @@
                     </ul>
                 </div>
 
-                <h1 class="font-bold text-2xl">Edit Flavour</h1>
+                <h1
+                    class="font-bold text-2xl text-color-dashboard-light dark:text-color-dashboard-dark"
+                >
+                    Edit Flavour
+                </h1>
             </div>
             <form @submit.prevent="submit">
                 <CardBox>
-                    <FormField label="Flavour Cake">
+                    <FormField
+                        label="Flavour Cake"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.name"
                             name="name"
@@ -40,7 +49,10 @@
                     >
                         {{ props.errors.name }}
                     </NotificationBar>
-                    <FormField label="Flavour Price">
+                    <FormField
+                        label="Flavour Price"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.price"
                             name="price"

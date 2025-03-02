@@ -10,7 +10,11 @@
         <SectionMain class="flex flex-col gap-6">
             <div class="grid grid-cols-12">
                 <div class="col-span-4 flex items-center gap-2">
-                    <h1 class="font-bold text-2xl">Cake Size Table</h1>
+                    <h1
+                        class="font-bold text-2xl text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
+                        Cake Size Table
+                    </h1>
                     <BaseButton
                         v-if="checkRolePermission"
                         color="success"
@@ -34,7 +38,9 @@
                     <table class="table table-lg">
                         <!-- head -->
                         <thead>
-                            <tr>
+                            <tr
+                                class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                            >
                                 <th></th>
                                 <th>Ukuran Kue</th>
                                 <th>Harga</th>
@@ -45,6 +51,7 @@
                             <tr
                                 v-for="(cakeSize, index) in props.cakeSize.data"
                                 :key="cakeSize.id"
+                                class="text-color-dashboard-light dark:text-color-dashboard-dark"
                             >
                                 <th>{{ index + 1 }}</th>
                                 <td>{{ cakeSize.size }}(Cm)</td>

@@ -9,7 +9,9 @@
         <SectionMain class="flex flex-col gap-6">
             <div class="flex justify-between items-center">
                 <div class="breadcrumbs text-sm">
-                    <ul>
+                    <ul
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <li>
                             <inertia-link :href="route('size.index')"
                                 >Ukuran Kue</inertia-link
@@ -21,11 +23,18 @@
                     </ul>
                 </div>
 
-                <h1 class="font-bold text-2xl">Ubah Ukuran Kue</h1>
+                <h1
+                    class="font-bold text-2xl text-color-dashboard-light dark:text-color-dashboard-dark"
+                >
+                    Ubah Ukuran Kue
+                </h1>
             </div>
             <form @submit.prevent="submit">
                 <CardBox>
-                    <FormField label="Ukuran Kue (Cm)">
+                    <FormField
+                        label="Ukuran Kue (Cm)"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.size"
                             name="size"
@@ -41,7 +50,10 @@
                     >
                         {{ props.errors.size }}
                     </NotificationBar>
-                    <FormField label="Harga Ukuran Kue">
+                    <FormField
+                        label="Harga Ukuran Kue"
+                        class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
                         <FormControl
                             v-model="form.price"
                             name="price"

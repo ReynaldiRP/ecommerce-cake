@@ -10,7 +10,11 @@
         <SectionMain class="flex flex-col gap-6">
             <div class="grid grid-cols-12">
                 <div class="col-span-4 flex items-center gap-2">
-                    <h1 class="font-bold text-2xl">Tabel Diskon</h1>
+                    <h1
+                        class="font-bold text-2xl text-color-dashboard-light dark:text-color-dashboard-dark"
+                    >
+                        Tabel Diskon
+                    </h1>
                     <BaseButton
                         v-if="checkRolePermission"
                         color="success"
@@ -33,7 +37,9 @@
                     <table class="table table-lg">
                         <!-- head -->
                         <thead>
-                            <tr>
+                            <tr
+                                class="text-color-dashboard-light dark:text-color-dashboard-dark"
+                            >
                                 <th></th>
                                 <th>Nama Diskon</th>
                                 <th>Total Diskon</th>
@@ -47,6 +53,7 @@
                                 v-for="(discount, index) in props.discounts
                                     .data"
                                 :key="discount.id"
+                                class="text-color-dashboard-light dark:text-color-dashboard-dark"
                             >
                                 <th>{{ index + 1 }}</th>
                                 <td>
