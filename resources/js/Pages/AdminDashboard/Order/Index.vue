@@ -19,6 +19,7 @@
                                 <th>Alamat Penerima</th>
                                 <th>Penerima Kue</th>
                                 <th>Total Pembayaran</th>
+                                <th>Status Pesanan</th>
                                 <th>Detail Pemesanan</th>
                                 <th>Pesanan Dibuat</th>
                             </tr>
@@ -34,6 +35,14 @@
                                 <td>{{ order.user_address }}</td>
                                 <td>{{ order.cake_recipient }}</td>
                                 <td>{{ formatPrice(order.total_price) }}</td>
+                                <td>
+                                    <button
+                                        class="btn btn-outline"
+                                        :class="orderStatusStyle[order.status]"
+                                    >
+                                        {{ order.status }}
+                                    </button>
+                                </td>
                                 <td>
                                     <inertia-link
                                         :href="route('order.show', order.id)"
@@ -72,7 +81,7 @@ import LayoutAuthenticated from "@/Layouts/Admin.vue";
 import SectionMain from "@/Components/DashboardAdmin/SectionMain.vue";
 import Pagination from "@/Components/Pagination.vue";
 import CardBox from "@/Components/DashboardAdmin/CardBox.vue";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import "vue-loading-overlay/dist/css/index.css";
 import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
 
@@ -82,4 +91,15 @@ const props = defineProps({
 
 const { formatPrice, formattedDate } = useAdminDashboardStore();
 const ordersData = ref(props.orders.data);
+const orderStatusStyle = computed(() => {
+    return {
+        "Pesanan diterima": "btn-success",
+        "Pesanan dikonfirmasi": "btn-info",
+        "Pesanan diproses": "btn-info",
+        "Pesanan dikemas": "btn-info",
+        "Pesanan dikirim": "btn-info",
+        "Pesanan dibatalkan": "btn-error",
+        "Pesanan kadaluarsa": "btn-error",
+    };
+});
 </script>

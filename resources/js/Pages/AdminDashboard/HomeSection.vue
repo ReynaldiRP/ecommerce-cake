@@ -6,8 +6,7 @@
                 <div class="flex flex-col">
                     <h1 class="font-bold text-2xl">Dashboard Home</h1>
                     <small class="text-lg"
-                        >Data pemesanan dalam kurun waktu 3 bulan
-                        terkahir</small
+                        >Data pemesanan periode {{ currentMonth }}</small
                     >
                 </div>
                 <button
@@ -415,6 +414,7 @@ const props = defineProps({
     chartData: Object,
     chartDataCakeSold: Object,
     chartDataTotalTransaction: Object,
+    currentMonth: String,
 });
 
 const { formatPrice } = useAdminDashboardStore();
@@ -447,7 +447,6 @@ const months = [
     { name: "November", value: "11" },
     { name: "Desember", value: "12" },
 ];
-
 const reportType = [
     {
         name: "Laporan Penjualan Kue Terlaris",
@@ -571,7 +570,6 @@ const onChangeReportType = (index) => {
 const onChangeExportYear = (index) => {
     // Get the transaction date based on the selected date
     form.selectedExportYear = years[index - 1].value;
-    console.log(form.selectedExportYear);
 };
 
 /**

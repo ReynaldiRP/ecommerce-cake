@@ -2,7 +2,8 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Order Reports</title>
     <style>
@@ -13,16 +14,51 @@
             color: #333;
         }
 
+        /* Add these styles */
+        @page {
+            size: landscape;
+            margin: 15px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14px;
+            font-size: 0.8em; /* Reduce font size */
         }
 
         th, td {
             border: 1px solid #ddd;
-            padding: 12px;
+            padding: 6px; /* Reduce padding */
             text-align: left;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        /* Set specific widths for columns to fit better */
+        table th:nth-child(1),
+        table td:nth-child(1) {
+            width: 3%;
+        }
+
+        table th:nth-child(2),
+        table td:nth-child(2),
+        table th:nth-child(8),
+        table td:nth-child(8),
+        table th:nth-child(9),
+        table td:nth-child(9) {
+            width: 13%;
+        }
+
+        /* For the method delivery column which might have longer text */
+        table th:nth-child(5),
+        table td:nth-child(5) {
+            width: 14%;
+        }
+
+        /* For price column */
+        table th:nth-child(6),
+        table td:nth-child(6) {
+            width: 10%;
         }
 
         th {
@@ -42,6 +78,7 @@
         .table-header {
             background-color: #4CAF50;
             color: white;
+            padding-inline-start: 2rem;
         }
 
         .table-footer {
@@ -52,16 +89,18 @@
 </head>
 <body>
 <header style="text-align: center; padding: 15px; border-bottom: 2px solid #e0e0e0; background-color: #f9f9f9;">
-    <img src="http://ecommerce-cake-app.test/assets/image/logo-dreamdessert.webp" alt="Company Logo" style="width: 90px; margin-bottom: 10px;"/>
-    <h1 style="font-size: 28px; color: #333; margin: 5px 0;">Laporan Transaksi Penjualan</h1>
-    <p style="font-size: 16px; color: #666; margin: 5px 0;">Dibuat pada: <strong>{{$generated_at}}</strong></p>
-    <p style="font-size: 14px; color: #666; margin: 5px 0;">Periode : {{$period}} <strong></strong></p>
+    <img src="http://ecommerce-cake-app.test/assets/image/logo-dreamdessert.webp" alt="Company Logo"
+         style="width: 90px; margin-bottom: 10px;" />
+    <h1 style="font-size: 1em; color: #333; margin: 5px 0;">Laporan Transaksi Penjualan</h1>
+    <p style="font-size: 0.8em; color: #666; margin: 5px 0;">Periode : <strong>{{$period}}</strong></p>
+    <p style="font-size: 0.8em; color: #666; margin: 5px 0;">Dibuat pada: <strong>{{$generated_at}}</strong></p>
     <div style="margin-top: 20px;">
-        <hr style="border: 1px solid #e0e0e0;"/>
+        <hr style="border: 1px solid #e0e0e0;" />
     </div>
 </header>
 
-<main style="margin-top: 20px;margin-bottom: 20px">
+{{--FIXME: the responsive of table content --}}
+<main style="margin-top: 20px; margin-bottom: 20px;">
     @if(count($salePerformance) == 0)
         <p style="font-size: 16px; color: #666; margin: 5px 0;">Tidak ada data yang ditemukan.</p>
     @else
@@ -72,11 +111,11 @@
                 <th>Pesanan Dibuat</th>
                 <th>Nama Pemesan</th>
                 <th>Nama Penerima Kue</th>
-                <th>Metode Pengiriman atau Pengambilan</th>
+                <th>Metode Pengiriman</th>
                 <th>Total Harga</th>
                 <th>Metode Pembayaran</th>
                 <th>Pembayaran Dilakukan</th>
-                <th>Tanggal Pengiriman atau Pengambilan</th>
+                <th>Tanggal Pengiriman</th>
             </tr>
             </thead>
             <tbody>
@@ -110,10 +149,15 @@
 </main>
 
 <footer style="text-align: center; padding: 20px; border-top: 2px solid #e0e0e0; background-color: #f9f9f9">
-    <p style="font-size: 14px; color: #666; margin: 5px 0;">&copy; 2025 Dream Desserts. All rights reserved.</p>
-    <p style="font-size: 14px; color: #666; margin: 5px 0;">Address: Jln.Airlangga, Masuk gang baratnya balai, RT.4/RW.3, Sukorejo, Kabupaten Kediri</p>
-    <p style="font-size: 14px; color: #666; margin: 5px 0;">Phone: <a href="tel:+1234567890" style="color: #007bff; text-decoration: none;">(085) 707-498048</a></p>
-    <p style="font-size: 14px; color: #666; margin: 5px 0;">Email: <a href="mailto:dreamdessert@example.com" style="color: #007bff; text-decoration: none;">dreamdessert@example.com</a></p>
+    <p style="font-size: 0.8em; color: #666; margin: 5px 0;">&copy; 2025 Dream Desserts. All rights reserved.</p>
+    <p style="font-size: 0.8em; color: #666; margin: 5px 0;">Address: Jln.Airlangga, Masuk gang baratnya balai,
+        RT.4/RW.3, Sukorejo, Kabupaten Kediri</p>
+    <p style="font-size: 0.8em; color: #666; margin: 5px 0;">Phone: <a href="tel:+1234567890"
+                                                                      style="color: #007bff; text-decoration: none;">(085)
+            707-498048</a></p>
+    <p style="font-size: 0.8em; color: #666; margin: 5px 0;">Email: <a href="mailto:dreamdessert@example.com"
+                                                                      style="color: #007bff; text-decoration: none;">dreamdessert@example.com</a>
+    </p>
 </footer>
 </body>
 </html>

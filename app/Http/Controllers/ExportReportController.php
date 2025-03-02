@@ -174,11 +174,14 @@ class ExportReportController extends Controller
         });
 
 
-        $pdf = Pdf::setOption('isRemoteEnabled', true)->loadView('pdf.sales_performance', [
+        $pdf = Pdf::setOption('isRemoteEnabled', true)
+            ->setOption('dpi', 150)
+            ->setOption('defaultFont', 'sans-serif')
+            ->loadView('pdf.sales_performance', [
             'salePerformance' => $salePerformance ?? [],
-            'totalRevenue' => $this->formatPrice($totalRevenue->total_revenue) ?? '-',
+            'totalRevenue' => $this->formatPrice($totalRevenue->total_revenue ?? 0) ?? '-',
             'totalTransaction' => $totalTransaction->total_transaction ?? '-',
-            'averageOrderValue' => $this->formatPrice($averageOrderValue) ?? '-',
+            'averageOrderValue' => $this->formatPrice($averageOrderValue ?? 0) ?? '-',
             'generated_at' => Carbon::now()->translatedFormat('l, d F Y H:i'),
             'period' => $this->months[$selectedMonth] . ' ' . $selectedYear,
         ])->setPaper('a4', 'landscape');

@@ -25,17 +25,18 @@ class ShowDashboardController extends Controller
 
         $getAllCakeSold = $orderItem->getAllCakeSold('2024');
         // Get total revenue cake orders from the payment model
-        $totalRevenueCakeOrders = $payment->totalRevenueOrder('2024-11-01', Carbon::now()->format('Y-m-d'));
+        $totalRevenueCakeOrders = $payment->totalRevenueOrder(Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth());
         // Get total cake sold
-        $totalCakeSold = $orderItem->getTotalCakeSold('2024-11-01', Carbon::now()->format('Y-m-d'));
+        $totalCakeSold = $orderItem->getTotalCakeSold(Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth());
+        // FIXME: fix the date range for the most popular cake
         // Get the most popular cake
-        $mostPopularCake = $orderItem->getMostPopularCakes();
+        $mostPopularCake = $orderItem->getMostPopularCakes(Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth());
         // Get the most popular cake type
-        $mostPopularCakeType = $orderItem->getMostPopularCakeType('2024-11-01', Carbon::now()->format('Y-m-d'));
+        $mostPopularCakeType = $orderItem->getMostPopularCakeType(Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth());
         // Get the most popular cake category
-        $mostPopularCakeCategory = $orderItem->getMostPopularCakeCategory('2024-11-01', Carbon::now()->format('Y-m-d'));
+        $mostPopularCakeCategory = $orderItem->getMostPopularCakeCategory(Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth());
         // Get the total transaction
-        $totalTransaction = $payment->getTotalTransaction('2024-11-01', Carbon::now()->format('Y-m-d'));
+        $totalTransaction = $payment->getTotalTransaction(Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth());
         // Get the growth revenue for the last three months
         $growthGrowthRevenueForThreeMonth = $order->getGrowthRevenueRangeThreeMonthByPercentage();
         // Get the average revenue for last three months
@@ -44,6 +45,8 @@ class ShowDashboardController extends Controller
         $chartData = $order->showAllRevenueForEachMonths('2024');
         // Show total transaction per month for the last 12 months based on selected year
         $chartDataTotalTransaction = $order->showAllTransactionForEachMonths('2024');
+        // Show the current month
+        $currentMonth = Carbon::now()->translatedFormat('F Y');
 
         return Inertia::render('AdminDashboard/HomeSection', [
             'totalRevenue' => $totalRevenueCakeOrders ?? 0,
@@ -57,6 +60,7 @@ class ShowDashboardController extends Controller
             'chartData' => $chartData ?? [],
             'chartDataCakeSold' => $getAllCakeSold ?? [],
             'chartDataTotalTransaction' => $chartDataTotalTransaction ?? [],
+            'currentMonth' => $currentMonth,
         ]);
     }
 }

@@ -54,8 +54,8 @@
 <header style="text-align: center; padding: 15px; border-bottom: 2px solid #e0e0e0; background-color: #f9f9f9;">
     <img src="http://ecommerce-cake-app.test/assets/image/logo-dreamdessert.webp" alt="Company Logo" style="width: 90px; margin-bottom: 10px;"/>
     <h1 style="font-size: 28px; color: #333; margin: 5px 0;">Laporan Penjualan Kue Terlaris</h1>
-    <p style="font-size: 16px; color: #666; margin: 5px 0;">Dibuat pada: <strong>{{$generated_at}}</strong></p>
-    <p style="font-size: 14px; color: #666; margin: 5px 0;">Periode : {{$period}} <strong></strong></p>
+    <p style="font-size: 16px; color: #666; margin: 5px 0;">Periode : <strong>{{$period}}</strong></p>
+    <p style="font-size: 14px; color: #666; margin: 5px 0;">Dibuat pada: <strong>{{$generated_at}}</strong></p>
     <div style="margin-top: 20px;">
         <hr style="border: 1px solid #e0e0e0;"/>
     </div>
@@ -65,47 +65,49 @@
     @if(count($productPerformance) == 0)
         <p style="font-size: 16px; color: #666; margin: 5px 0;">Tidak ada data yang ditemukan.</p>
     @else
-        <table>
-            <thead>
-            <tr class="table-header">
-                <th>No</th>
-                <th>Nama Kue</th>
-                <th>Rasa Kue</th>
-                <th>Topping Kue</th>
-                <th>Ukuran Kue</th>
-                <th>Kuantiti</th>
-                <th>Harga</th>
-                <th>Total Harga</th>
-                <th>Tanggal Pesanan</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach($productPerformance as $index => $product)
-                <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $product['cake_name'] }}</td>
-                    <td>{{ $product['cake_flavour'] }}</td>
-                    <td>{{ $product['cake_topping'] }}</td>
-                    <td>{{ $product['cake_size'] }}@if($product['cake_size'] != '-') <span>Cm</span> @endif</td>
-                    <td>{{ $product['quantity'] }}</td>
-                    <td>{{ $product['price'] }}</td>
-                    <td>{{ $product['total_price'] }}</td>
-                    <td>{{ $product['order_created_at'] }}</td>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                <tr class="table-header">
+                    <th>No</th>
+                    <th>Nama Kue</th>
+                    <th>Rasa Kue</th>
+                    <th>Topping Kue</th>
+                    <th>Ukuran Kue</th>
+                    <th>Kuantiti</th>
+                    <th>Harga</th>
+                    <th>Total Harga</th>
+                    <th>Tanggal Pesanan</th>
                 </tr>
-            @endforeach
-            </tbody>
-            <tfoot>
-            <tr class="table-footer">
-                <td colspan="9">Total Pendapatan: {{ $totalRevenue }}</td>
-            </tr>
-            <tr class="table-footer">
-                <td colspan="9">Kue Terbanyak Dipesan: {{ $bestSellingProduct['cake'] }} ({{$bestSellingProduct['total_sold']}} Pcs)</td>
-            </tr>
-            <tr class="table-footer">
-                <td colspan="9">Kue Tersedikit Dipesan: {{ $worstSellingProduct['cake'] }} ({{$worstSellingProduct['total_sold']}} Pcs)</td>
-            </tr>
-            </tfoot>
-        </table>
+                </thead>
+                <tbody>
+                @foreach($productPerformance as $index => $product)
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $product['cake_name'] }}</td>
+                        <td>{{ $product['cake_flavour'] }}</td>
+                        <td>{{ $product['cake_topping'] }}</td>
+                        <td>{{ $product['cake_size'] }}@if($product['cake_size'] != '-') <span>Cm</span> @endif</td>
+                        <td>{{ $product['quantity'] }}</td>
+                        <td>{{ $product['price'] }}</td>
+                        <td>{{ $product['total_price'] }}</td>
+                        <td>{{ $product['order_created_at'] }}</td>
+                    </tr>
+                @endforeach
+                </tbody>
+                <tfoot>
+                <tr class="table-footer">
+                    <td colspan="9">Total Pendapatan: {{ $totalRevenue }}</td>
+                </tr>
+                <tr class="table-footer">
+                    <td colspan="9">Kue Terbanyak Dipesan: {{ $bestSellingProduct['cake'] }} ({{$bestSellingProduct['total_sold']}} Pcs)</td>
+                </tr>
+                <tr class="table-footer">
+                    <td colspan="9">Kue Tersedikit Dipesan: {{ $worstSellingProduct['cake'] }} ({{$worstSellingProduct['total_sold']}} Pcs)</td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
     @endif
 </main>
 

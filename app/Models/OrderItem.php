@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use mysql_xdevapi\Collection;
 
 class OrderItem extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'order_id',
         'cake_id',
@@ -48,30 +50,22 @@ class OrderItem extends Model
     /**
      * Get the most popular cake based on the total quantity sold.
      *
-     * @param string|null $currentMonth The end date for the date range filter (optional).
-     * @param string|null $pastMonth The start date for the date range filter (optional).
-     * @return Model|null The most popular cake with its name, image, and total quantity sold.
      */
-    public function getMostPopularCakes(string $currentMonth = null, string $pastMonth = null): ?Model
+    public function getMostPopularCakes(string $currentMonth = null, string $pastMonth = null)
     {
-        // Get the most popular cake
-        $cakeSales = OrderItem::query()->select('cakes.name as cake_name', 'cakes.image_url as cake_image', DB::raw('SUM(order_items.quantity) as total_sold'))
+        // Get the most popular cake for the specified date range
+        $query = OrderItem::query()->select('cakes.name as cake_name', 'order_items.quantity as total_sold')
             ->join('cakes', 'order_items.cake_id', '=', 'cakes.id')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
-            ->where('payments.payment_status', '=', 'pesanan terbayar')
+            ->where('payments.payment_status', '=', 'Pesanan terbayar')
             ->when($pastMonth && $currentMonth, function ($query) use ($pastMonth, $currentMonth) {
                 return $query->whereBetween('order_items.created_at', [$pastMonth, $currentMonth]);
-            })
-            ->groupBy('cakes.name', 'cakes.image_url');
+            });
 
-        // Use a subquery to find the max sold cake
-        $maxSold = DB::table(DB::raw("({$cakeSales->toSql()}) as subquery"))
-            ->mergeBindings($cakeSales->getQuery())
-            ->max('total_sold');
+        Log::info($query->toSql(), $query->getBindings());
 
-        // Fetch the most popular cake
-        return $cakeSales->having('total_sold', '=', $maxSold)->first();
+        return $query->get();
     }
 
     /**

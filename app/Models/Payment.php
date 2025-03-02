@@ -20,7 +20,6 @@ class Payment extends Model
     /**
      * Calculate the total revenue from orders that have been paid.
      *
-     * @param string|null $pastMonth The start date for the date range filter (optional).
      * @param string|null $currentMonth The end date for the date range filter (optional).
      * @return float The total revenue from orders within the specified date range.
      */
