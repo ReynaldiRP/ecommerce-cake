@@ -15,9 +15,13 @@
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-5 w-5"
+                    :class="
+                        isNavbarHovered
+                            ? 'stroke-neutral-content'
+                            : 'stroke-base-100'
+                    "
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke="currentColor"
                 >
                     <path
                         stroke-linecap="round"
@@ -106,6 +110,13 @@ import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 import EmptyShoppingChart from "@/Components/EmptyShoppingChart.vue";
 import { Inertia } from "@inertiajs/inertia";
+
+const props = defineProps({
+    isNavbarHovered: {
+        type: Boolean,
+        default: false,
+    },
+});
 
 const page = usePage();
 const chartItems = ref(

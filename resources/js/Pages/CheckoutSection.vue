@@ -1,10 +1,12 @@
 <template>
     <App>
         <section
-            class="min-h-screen w-full py-36 xl:py-28 px-10 flex flex-col justify-center gap-4"
+            class="min-h-screen w-full py-36 xl:py-28 px-10 flex flex-col justify-center gap-4 bg-primary-color-light"
         >
             <div class="flex justify-between items-center">
-                <h1 class="text-4xl font-bold relative">Pesanan kamu</h1>
+                <h1 class="text-4xl font-bold relative text-base-100">
+                    Pesanan kamu
+                </h1>
                 <BaseAlert
                     v-if="errorResponses"
                     class="w-fit"
@@ -17,7 +19,7 @@
             >
                 <section class="flex flex-col gap-4">
                     <section
-                        class="h-fit w-[700px] flex flex-col gap-6 p-4 border rounded-lg bg-neutral"
+                        class="h-fit w-[700px] flex flex-col gap-6 p-4 border rounded-lg bg-base-100"
                         v-for="(item, index) in chartItems"
                         :key="index"
                     >
@@ -117,7 +119,7 @@
                 </section>
                 <form
                     @submit.prevent="submit"
-                    class="h-fit w-[700px] rounded-lg px-8 py-6 flex flex-col gap-4 bg-neutral border border-white"
+                    class="h-fit w-[700px] rounded-lg px-8 py-6 flex flex-col gap-4 bg-base-100 border border-white"
                 >
                     <h1 class="text-4xl text-white font-bold">Checkout</h1>
                     <section class="flex flex-col gap-4">

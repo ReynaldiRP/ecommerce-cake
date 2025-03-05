@@ -1,10 +1,12 @@
 <template>
     <App>
-        <section class="min-h-screen flex flex-col justify-center">
+        <section
+            class="min-h-screen flex flex-col justify-center bg-primary-color-light"
+        >
             <aside
                 class="breadcrumbs text-sm me-auto relative top-32 lg:top-[88px] left-8"
             >
-                <ul>
+                <ul class="text-base-100">
                     <li>
                         <inertia-link :href="route('home')"
                             >Beranda</inertia-link
@@ -102,7 +104,9 @@
                                 </div>
                             </div>
                         </article>
-                        <h1 class="hidden lg:block text-lg font-medium me-auto">
+                        <h1
+                            class="hidden lg:block text-lg font-medium me-auto text-base-100"
+                        >
                             Filter
                         </h1>
                     </section>
@@ -150,14 +154,11 @@
                             />
                         </FilterItem>
                         <div class="hidden lg:flex items-center gap-2 mt-2">
-                            <button
-                                class="btn btn-outline"
-                                @click="clearFilters"
-                            >
+                            <button class="btn btn-dark" @click="clearFilters">
                                 Clear
                             </button>
                             <button
-                                class="btn bg-primary-color text-base-200 hover:bg-base-content"
+                                class="btn bg-primary-color text-base-100 hover:bg-primary-color border-none"
                                 @click="applyFilters"
                             >
                                 Save

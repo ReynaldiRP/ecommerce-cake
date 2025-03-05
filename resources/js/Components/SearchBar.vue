@@ -1,11 +1,20 @@
 <template>
     <div @click="handleClick" ref="container">
-        <label class="w-[450px] input input-bordered flex items-center gap-2">
+        <label
+            class="w-[450px] input flex items-center gap-2"
+            :class="
+                isNavbarHovered
+                    ? 'input-bordered'
+                    : 'bg-transparent border-2 border-base-100 text-base-100'
+            "
+        >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 16 16"
-                fill="currentColor"
                 class="h-4 w-4 opacity-70"
+                :class="
+                    isNavbarHovered ? 'fill-neutral-content' : 'fill-base-100'
+                "
             >
                 <path
                     fill-rule="evenodd"
@@ -16,6 +25,11 @@
             <input
                 type="text"
                 class="grow"
+                :class="
+                    isNavbarHovered
+                        ? 'placeholder-neutral-content'
+                        : 'placeholder-base-100 '
+                "
                 placeholder="Cari kue..."
                 v-model="search"
                 @keyup="keyupSearch"
@@ -70,6 +84,11 @@ import { usePage } from "@inertiajs/inertia-vue3";
 import { debounce } from "lodash";
 import axios from "axios";
 
+const props = defineProps({
+    isNavbarHovered: {
+        type: Boolean,
+    },
+});
 const page = usePage();
 
 const searchQuery = ref(page.props.value.search?.query || "");

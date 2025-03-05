@@ -1,10 +1,12 @@
 <template>
     <App>
         <section
-            class="min-h-screen w-full flex flex-col gap-4 pt-36 pb-14 px-10 lg:px-20"
+            class="min-h-screen w-full flex flex-col gap-4 pt-36 pb-14 px-10 lg:px-20 bg-primary-color-light"
         >
             <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold">Keranjang Belanja</h1>
+                <h1 class="text-2xl font-bold text-base-100">
+                    Keranjang Belanja
+                </h1>
                 <BaseAlert
                     v-show="showAlert"
                     class="w-fit py-2 font-medium ms-auto"
@@ -19,7 +21,7 @@
                     class="col-span-8 flex flex-col gap-6"
                     v-if="chartItems.length > 0"
                 >
-                    <div class="h-full px-3 py-5 bg-neutral rounded-t-lg">
+                    <div class="h-full px-3 py-5 bg-base-100 rounded-t-lg">
                         <div class="flex items-center justify-between">
                             <BaseCheckbox
                                 :label="`Pilih Semua (${chartItems.length})`"
@@ -38,7 +40,7 @@
                     </div>
                     <div class="flex flex-col gap-4">
                         <div
-                            class="flex flex-col lg:flex-row lg:justify-between lg:items-center lg:gap-2 px-3 py-4 bg-neutral rounded-md"
+                            class="flex flex-col lg:flex-row lg:justify-between lg:items-center lg:gap-2 px-3 py-4 bg-base-100 rounded-md"
                             v-for="(item, index) in chartItems"
                             :key="item.id"
                             :class="{
@@ -192,7 +194,7 @@
                 <EmptyDetailShoppingChart v-else />
                 <section class="h-fit col-span-4 flex justify-center">
                     <section
-                        class="w-full flex flex-col gap-2 px-5 py-4 bg-neutral rounded-lg"
+                        class="w-full flex flex-col gap-2 px-5 py-4 bg-base-100 rounded-lg"
                     >
                         <h1 class="text-white text-2xl font-bold">
                             Ringkasan Belanja

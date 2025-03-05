@@ -1,6 +1,6 @@
 <template>
     <div
-        class="navbar px-5 py-4 fixed top-0 transition-all z-50 duration-300 hover:bg-base-200"
+        class="navbar px-5 py-4 fixed top-0 transition-all z-50 duration-300"
         :class="headerClass"
         ref="navbar"
     >
@@ -15,23 +15,29 @@
             </div>
             <inertia-link
                 :href="route('home')"
-                class="text-md font-bold text-primary-color cursor-pointer"
+                :class="textColor"
+                class="text-md font-bold cursor-pointer"
                 >Dream Dessert
             </inertia-link>
         </div>
         <ul class="navbar-center hidden lg:flex gap-8">
-            <SearchBar />
+            <SearchBar :is-navbar-hovered="isNavbarHovered" />
         </ul>
         <div class="navbar-end flex gap-2">
             <section class="flex justify-center items-center">
-                <ShoppingChart />
-                <NotificationUser v-if="user" :link="route('order.status')" />
+                <ShoppingChart :is-navbar-hovered="isNavbarHovered" />
+                <NotificationUser
+                    v-if="user"
+                    :link="route('order.status')"
+                    :is-navbar-hovered="isNavbarHovered"
+                />
             </section>
             <Sidebar
                 :menu="menu"
                 :menuAuthenticated="menuAuthenticated"
                 :user="user"
                 :logout-handler="logout"
+                :is-navbar-hovered="isNavbarHovered"
             />
         </div>
     </div>
@@ -62,9 +68,11 @@ const user = computed(() => page.props.value.auth.user);
 
 const state = reactive({
     backgroundColor: "bg-transparent",
+    textColor: "text-base-100",
 });
 
 const isLoading = ref(false);
+const isNavbarHovered = ref(false);
 
 /**
  * Logs out the current user by sending a POST request to the logout route.
@@ -108,14 +116,20 @@ const menuAuthenticated = [
  */
 const handleScroll = () => {
     const scrollPositition = window.scrollY;
+
     if (scrollPositition > 10) {
+        isNavbarHovered.value = true;
         state.backgroundColor = "bg-base-200";
+        state.textColor = "text-primary-color-light";
     } else {
+        isNavbarHovered.value = false;
         state.backgroundColor = "bg-transparent";
+        state.textColor = "text-base-100";
     }
 };
 
 const headerClass = computed(() => state.backgroundColor);
+const textColor = computed(() => state.textColor);
 
 onMounted(() => {
     window.addEventListener("scroll", handleScroll);

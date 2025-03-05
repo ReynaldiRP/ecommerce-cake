@@ -10,8 +10,10 @@
             />
         </section>
         <section class="h-full px-10 flex flex-col items-center my-6">
-            <h1 class="text-3xl font-semibold uppercase">our story</h1>
-            <p class="textarea-lg font-light text-justify">
+            <h1 class="text-3xl font-semibold uppercase text-base-100">
+                our story
+            </h1>
+            <p class="textarea-lg font-light text-justify text-base-200">
                 Dream Dessert adalah UMKM yang bergerak di industri makanan,
                 khususnya pembuatan kue sejak 2021. Berlokasi di Kecamatan
                 Mojoroto, Jl. Kawi Gang 2, Kota Kediri, Jawa Timur 64112, kami
@@ -19,7 +21,7 @@
                 puding, dan brownies. Untuk tart dan kue pernikahan, Anda bebas
                 memilih varian dan topping sesuai keinginan.
             </p>
-            <p class="textarea-lg font-light text-justify">
+            <p class="textarea-lg font-light text-justify text-base-200">
                 Kami mengundang Anda untuk berkunjung langsung ke tempat kami di
                 Kediri atau menjelajahi pilihan kue kami secara online. Jadikan
                 Dream Dessert bagian dari momen istimewa Anda, menciptakan

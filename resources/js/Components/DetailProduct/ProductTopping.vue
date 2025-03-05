@@ -1,11 +1,11 @@
 <template>
-    <section class="flex flex-col gap-4">
+    <section class="flex flex-col gap-4 text-base-100">
         <div class="flex justify-between items-center">
             <div class="flex flex-col gap-1">
                 <h2 class="text-2xl font-bold">Topping</h2>
-                <small class="text-primary-color font-medium"
+                <small class="text-base-200 font-medium"
                     >Toppings opsional
-                    <span class="text-neutral-content"
+                    <span class="text-red-600 font-medium"
                         >. Pilih maximal 4
                     </span></small
                 >
@@ -26,7 +26,7 @@
                 <BaseCheckbox
                     :id="toppings.id"
                     v-model="model"
-                    text-color="#A6ADBB"
+                    text-color="text-base-100"
                     :label="toppings.name"
                     @change="updateToppingPrice"
                 />

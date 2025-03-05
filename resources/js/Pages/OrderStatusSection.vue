@@ -1,6 +1,6 @@
 <template>
     <App>
-        <section class="min-h-screen w-full">
+        <section class="min-h-screen w-full bg-primary-color-light">
             <section
                 v-for="order in orders"
                 :key="order.order_code"
@@ -8,7 +8,9 @@
             >
                 <!-- Order Details -->
                 <div class="flex gap-4">
-                    <div class="flex flex-col gap-2 justify-center">
+                    <div
+                        class="flex flex-col gap-2 justify-center text-base-100"
+                    >
                         <h1 class="text-3xl font-bold w-fit">
                             Detail Pesanan #{{ order.order_code }}
                         </h1>
@@ -32,7 +34,7 @@
                         </p>
                     </div>
                     <div
-                        class="badge text-xl bg-neutral text-primary-color py-4 px-6 rounded-lg font-bold relative top-1"
+                        class="badge text-primary-color text-xl bg-neutral py-4 px-6 rounded-lg font-bold relative top-1"
                     >
                         {{ order.order_status }}
                     </div>
@@ -56,7 +58,7 @@
                                         : 'timeline-end'
                                 "
                             >
-                                <div class="flex flex-col gap-1">
+                                <div class="flex flex-col gap-1 text-base-100">
                                     <span class="text-lg font-medium">{{
                                         status.status
                                     }}</span>
@@ -75,7 +77,7 @@
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 20 20"
                                     fill="currentColor"
-                                    class="text-primary-color h-5 w-5"
+                                    class="text-base-100 h-5 w-5"
                                 >
                                     <path
                                         fill-rule="evenodd"
@@ -91,11 +93,13 @@
 
                 <!-- Order Item  -->
                 <div class="flex flex-col gap-4 mt-6">
-                    <h1 class="text-2xl font-bold">Item ordered</h1>
+                    <h1 class="text-2xl font-bold text-base-100">
+                        Pesanan kue
+                    </h1>
                     <div
                         v-for="(orderItem, index) in order.order_items"
                         :key="index"
-                        class="w-full px-8 bg-neutral rounded-lg"
+                        class="w-full px-8 bg-base-100 text-white rounded-lg"
                     >
                         <div
                             class="flex justify-between items-center px-4 py-6"
@@ -152,7 +156,7 @@
                         </div>
                     </div>
                     <div
-                        class="w-fit ms-auto px-12 py-4 flex flex-col gap-12 bg-neutral rounded-lg"
+                        class="w-fit ms-auto px-12 py-4 flex flex-col gap-12 bg-base-100 text-white rounded-lg"
                     >
                         <div class="flex gap-24">
                             <h1 class="text-xl font-bold">Product Total:</h1>
@@ -211,7 +215,6 @@ const parsedDate = (dateString) => {
 
 /**
  * Combines the order and payment status history into a single array and sorts them by the created_at date.
- *
  *
  * @returns {Array} - The combined status history of the order and payment.
  */

@@ -17,7 +17,7 @@
                 alt="image"
             />
             <p
-                class="text-2xl text-white"
+                class="text-2xl text-base-100"
                 :class="{
                     'font-bold': activeSlideIndex === index,
                 }"

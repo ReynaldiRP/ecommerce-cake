@@ -1,7 +1,7 @@
 <template>
     <App>
         <section
-            class="min-h-screen w-full grid grid-cols-1 lg:grid-cols-2 gap-2 place-items-center pt-28 lg:py-0"
+            class="min-h-screen w-full grid grid-cols-1 lg:grid-cols-2 gap-2 place-items-center pt-28 lg:py-0 bg-primary-color-light"
         >
             <section class="flex flex-col gap-10">
                 <aside
@@ -12,7 +12,7 @@
                             : 'lg:bottom-0'
                     "
                 >
-                    <ul>
+                    <ul class="text-base-100">
                         <li>
                             <inertia-link :href="route('home')"
                                 >Beranda</inertia-link

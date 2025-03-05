@@ -7,13 +7,17 @@
                 class="relative top-32 lg:top-0 w-full lg:col-span-1 col-span-2 px-10 lg:px-0"
             >
                 <section
-                    class="min-h-1/2 w-full lg:h-full lg:px-28 bg-base-200 lg:bg-base-100 py-4 px-8 lg:p-0 rounded-lg flex flex-col justify-center gap-6"
+                    class="min-h-1/2 w-full lg:h-full lg:px-28 bg-base-200 lg:bg-primary-color-light py-4 px-8 lg:p-0 rounded-lg flex flex-col justify-center gap-6"
                 >
                     <div class="flex flex-col text-xl lg:text-2xl gap-3">
-                        <h1 class="font-bold uppercase text-primary-color">
+                        <h1
+                            class="font-bold uppercase text-primary-color lg:text-base-100"
+                        >
                             Buat kue impian Anda hanya untuk Anda!
                         </h1>
-                        <p class="text-lg lg:text-xl text-justify">
+                        <p
+                            class="text-lg lg:text-xl text-justify text-neutral-content lg:text-base-200"
+                        >
                             Dari kue pernikahan yang elegan hingga brownies
                             lezat dan pastry yang menggugah selera, kami
                             menyediakan aneka pilihan untuk memanjakan kecintaan
@@ -23,7 +27,7 @@
                     <div class="flex gap-2">
                         <inertia-link
                             :href="route('products')"
-                            class="btn btn-xs sm:btn-sm lg:btn-md text-black bg-primary-color hover:bg-primary-color hover:opacity-65 hover:text-slate-500 border-none"
+                            class="btn sm:btn-sm lg:btn-md bg-primary-color text-white lg:bg-base-100 lg:text-primary-color-light"
                         >
                             Katalog Kami
                         </inertia-link>

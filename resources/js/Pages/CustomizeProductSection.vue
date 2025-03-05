@@ -1,13 +1,11 @@
 <template>
-    <section
-        class="h-screen flex flex-col items-center gap-6 text-primary-color"
-    >
+    <section class="h-screen flex flex-col items-center gap-6">
         <div class="grid grid-cols-1 gap-2 px-14 place-items-center">
-            <h1 class="font-bold text-xl lg:text-2xl">
+            <h1 class="font-bold text-xl lg:text-2xl text-base-100">
                 Ciptakan Kue Impianmu Sendiri! 🎂✨
             </h1>
             <p
-                class="w-full md:w-3/4 lg:w-1/2 font-light text-lg lg:text-xl text-justify lg:text-center"
+                class="w-full md:w-3/4 lg:w-1/2 font-light text-lg lg:text-xl text-justify lg:text-center text-base-200"
             >
                 Ingin kue yang benar-benar sesuai selera? Di sini, kamu bisa
                 membuat kue spesial yang unik dan personal! Pilih ukuran, rasa,

@@ -5,7 +5,7 @@
                 type="radio"
                 v-model="model"
                 :value="id"
-                class="radio btn-outline checked:bg-pink-400 checked:outline-white"
+                class="radio btn-outline checked:bg-primary-color"
             />
             <span class="text-size text-color font-medium"
                 >{{ props.label }}

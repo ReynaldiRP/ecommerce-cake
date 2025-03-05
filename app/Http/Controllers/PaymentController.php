@@ -74,9 +74,7 @@ class PaymentController extends Controller
             ];
 
             // Update the payment status based on the transaction status
-            if ($transaction_status == 'pending') {
-                $payment->payment_status = 'Menunggu pembayaran';
-            } elseif ($transaction_status == 'settlement') {
+            if ($transaction_status == 'settlement') {
                 $payment->payment_status = 'Pesanan terbayar';
             } elseif ($transaction_status == 'expire') {
                 $payment->payment_status = 'Pembayaran kedaluwarsa';
@@ -111,7 +109,6 @@ class PaymentController extends Controller
     }
 
 
-
     /**
      * Cancel an order by its ID.
      *
@@ -138,7 +135,7 @@ class PaymentController extends Controller
             // Check if user canceled the order before choose payment method
             if ($responseBody->status_code == '404') {
                 // Manually set order status to cancel
-                $order = Order::query()->where('order_code', $orderId)->firstOrFail();
+                $order = Order::query()->where('order_code', $orderId)->first();
 
                 if (!$order) {
                     return response()->json([
@@ -208,9 +205,43 @@ class PaymentController extends Controller
         // Paginate the results
         $orderItems = $orderItems->orderBy('created_at', 'desc')->paginate(5);
 
+        //Merge the order status and payment status into an array
+        $statuses = Order::with(['orderStatusHistories', 'payment', 'payment.paymentStatusHistories'])
+            ->where('user_id', auth()->id())
+            ->get();
+
+        // Mapping the order status and payment status
+        $transactionStatus = $statuses->keyBy('order_code')->map(function ($status) {
+            return [
+                'order_statuses' => $status->orderStatusHistories->map(function ($item) {
+                    return [
+                        'status' => $item->status,
+                        'description' => $item->description,
+                        'created_at' => Carbon::parse($item->created_at)->translatedFormat('H.i:s, d F Y'),
+                    ];
+                }),
+                'payment_statuses' => $status->payment
+                    ? $status->payment->paymentStatusHistories->map(function ($item) {
+                        return [
+                            'status' => $item->status,
+                            'description' => $item->description,
+                            'created_at' => Carbon::parse($item->created_at)->translatedFormat('H.i:s, d F Y'),
+                        ];
+                    })
+                    : collect(),
+            ];
+        });
+
+        // Combine the order status and payment status into a single status flat array then select one of the latest status
+        $status = $transactionStatus->map(function ($status) {;
+            return collect($status['order_statuses'])
+                ->merge($status['payment_statuses'])
+                ->sortByDesc('created_at')
+                ->first();
+        });
 
         // Transform the order items
-        $orderItems->getCollection()->transform(function ($item) {
+        $orderItems->getCollection()->transform(function ($item) use ($status) {
             return [
                 'transaction_id' => $item->order?->payment?->transaction_id,
                 'order_code' => $item->order?->order_code,
@@ -236,9 +267,9 @@ class PaymentController extends Controller
         });
 
 
-
         return Inertia::render('OrderHistorySection', [
             'orderItems' => $orderItems,
+            'transactionStatus' => $status,
         ]);
     }
 

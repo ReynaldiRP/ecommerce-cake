@@ -1,9 +1,9 @@
 <template>
     <App>
-        <section class="min-h-screen w-full py-28 px-10">
+        <section class="min-h-screen w-full py-28 px-10 bg-primary-color-light">
             <!-- breadcrumbs page -->
             <aside class="breadcrumbs text-sm me-auto relative">
-                <ul>
+                <ul class="text-base-100">
                     <li>
                         <inertia-link :href="route('home')"
                             >Beranda</inertia-link
@@ -19,7 +19,10 @@
 
             <!-- header content -->
             <section class="flex items-center gap-2 mt-4">
-                <h1 class="text-2xl font-bold">Daftar Transaksi</h1>
+                <h1 class="text-2xl font-bold text-base-100">
+                    Daftar Transaksi
+                    {{ username.charAt(0).toUpperCase() + username.slice(1) }}
+                </h1>
                 <div
                     class="px-3 rounded-lg bg-primary-color text-black font-medium text-lg"
                 >
@@ -90,22 +93,26 @@
                         class="rounded-lg flex flex-col gap-4 border-2 border-neutral p-4"
                     >
                         <!-- Transaction Detail -->
-                        <section class="flex items-center gap-2 text-xl">
+                        <section
+                            class="flex items-center gap-2 text-xl text-base-100"
+                        >
                             <p>
                                 {{ order.order_created_at }}
                             </p>
                             <div
-                                v-if="order.transaction_status"
-                                class="badge badge-outline font-medium text-lg"
-                                :class="changeBadgeColorPaymentStatus(order)"
+                                class="badge p-3 font-bold"
+                                :class="
+                                    changeBadgeColorOrderStatus(
+                                        originalTransactionStatus[
+                                            order.order_code
+                                        ].status,
+                                    )
+                                "
                             >
-                                {{ order.transaction_status ?? "" }}
-                            </div>
-                            <div
-                                class="badge badge-outline font-medium text-lg"
-                                :class="changeBadgeColorOrderStatus(order)"
-                            >
-                                {{ order.order_status }}
+                                {{
+                                    originalTransactionStatus[order.order_code]
+                                        .status
+                                }}
                             </div>
                         </section>
 
@@ -123,7 +130,9 @@
                                         />
                                     </div>
                                 </div>
-                                <div class="flex flex-col justify-center">
+                                <div
+                                    class="flex flex-col justify-center text-base-100"
+                                >
                                     <p class="text-lg font-bold">
                                         {{ order.cake_name }}
                                         <span v-if="order.cake_size"
@@ -161,7 +170,9 @@
                                 </div>
                             </div>
 
-                            <div class="flex flex-col text-xl pr-36">
+                            <div
+                                class="flex flex-col text-xl pr-36 text-base-100"
+                            >
                                 <p>Total Order</p>
                                 <strong>{{ formatPrice(order.price) }}</strong>
                             </div>
@@ -176,22 +187,35 @@
                                         order.order_code,
                                     )
                                 "
-                                class="link text-primary-color"
+                                class="link text-base-100"
                                 >See Detail Transaction</inertia-link
                             >
                             <button
                                 v-if="
-                                    order.transaction_status ===
-                                        'Menunggu pembayaran' ||
-                                    (order.order_status ===
-                                        'Pesanan dikonfirmasi' &&
-                                        order.transaction_status === null)
+                                    originalTransactionStatus[order.order_code]
+                                        .status === 'Menunggu pembayaran'
                                 "
-                                @click="modalActive = true"
-                                class="btn btn-outline btn-error font-semibold"
+                                @click="modalActiveMap[order.order_code] = true"
+                                class="btn btn-error font-semibold"
                             >
                                 Batalkan Pesanan
                             </button>
+                            <CardBoxModal
+                                v-model="modalActiveMap[order.order_code]"
+                                class="backdrop-contrast-50"
+                                title="Pembatalan Pesanan"
+                                button="danger"
+                                button-label="Yakin"
+                                :click-handler="
+                                    () => handleCancelOrder(order.order_code)
+                                "
+                                has-cancel
+                            >
+                                <p>
+                                    Apakah kamu yakin untuk membatalkan pesanan
+                                    kue ?
+                                </p>
+                            </CardBoxModal>
                             <section
                                 v-if="
                                     order.order_status !== 'Pesanan kadaluwarsa'
@@ -201,7 +225,7 @@
                                     v-if="showPayNowButton(order)"
                                     href="#"
                                     @click="redirectPayment(order.payment_url)"
-                                    class="btn btn-outline btn-info font-semibold"
+                                    class="btn btn-info font-semibold"
                                 >
                                     Bayar Sekarang
                                 </inertia-link>
@@ -212,32 +236,14 @@
                                 >
                                     Beli Lagi
                                 </button>
-                                <CardBoxModal
-                                    v-model="modalActive"
-                                    class="backdrop-contrast-50"
-                                    title="Pembatalan Pesanan"
-                                    button="danger"
-                                    button-label="Yakin"
-                                    :click-handler="
-                                        () =>
-                                            handleCancelOrder(order.order_code)
-                                    "
-                                    has-cancel
-                                >
-                                    <p>
-                                        Apakah kamu yakin untuk membatalkan
-                                        pesanan kue ?
-                                    </p>
-                                </CardBoxModal>
                             </section>
                         </section>
                     </section>
                 </section>
                 <!-- Filtered Data not found -->
                 <section v-if="originalOrderItems.length <= 0">
-                    <p>
-                        Oops! Looks like this transaction pulled a disappearing
-                        act. 🎩✨
+                    <p class="text-base-100">
+                        Oops! transaksi tidak ditemukan. 🎩✨
                     </p>
                 </section>
             </section>
@@ -264,23 +270,31 @@
 <script setup>
 import App from "@/Layouts/App.vue";
 import axios from "axios";
-import { ref, onMounted, onUnmounted, watch, onUpdated } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
 import Pagination from "@/Components/Pagination.vue";
+import { usePage } from "@inertiajs/inertia-vue3";
+
+const page = usePage();
+const username = computed(() => page.props.value.auth.user.name);
 
 const props = defineProps({
     orderItems: {
         type: Object,
         default: () => ({}),
     },
+    transactionStatus: {
+        type: Object,
+        default: () => ({}),
+    },
 });
 
+const originalTransactionStatus = ref(props.transactionStatus);
 const originalOrderItems = ref([]);
 originalOrderItems.value = props.orderItems.data;
 
 const pagination = ref(props.orderItems);
-
-const modalActive = ref(false);
+const modalActiveMap = ref({});
 const transactionFilter = ["Semua", "Berjalan", "Sukses", "Gagal"];
 const orderStatus = ["Menunggu konfirmasi", "Pesanan diproses", "Terkirim"];
 const months = [
@@ -383,11 +397,12 @@ watch([selectedTransactionStatus, selectedTransactionDate], fetchFilteredData);
 /**
  * Changes the badge color based on the order status.
  *
- * @param {Object} order - The order object to check.
  * @returns {string} - The class name for the badge color.
+ * @param status
  */
-const changeBadgeColorOrderStatus = (order) => {
+const changeBadgeColorOrderStatus = (status) => {
     const orderStatusMap = {
+        "Menunggu pembayaran": "badge-info",
         "Pesanan dikonfirmasi": "badge-info",
         "Pesanan diproses": "badge-info",
         "Pesanan dikemas": "badge-info",
@@ -395,28 +410,13 @@ const changeBadgeColorOrderStatus = (order) => {
         "Pesanan diterima": "badge-success",
         "Pesanan dibatalkan": "badge-error",
         "Pesanan kadaluwarsa": "badge-error",
-    };
-
-    return orderStatusMap[order.order_status] || "badge-neutral";
-};
-
-/**
- * Changes the badge color based on the payment status.
- *
- * @param {Object} order - The order object to check.
- * @returns {string} - The class name for the badge color.
- */
-const changeBadgeColorPaymentStatus = (order) => {
-    const paymentStatusMap = {
-        "Menunggu pembayaran": "badge-info",
         "Pesanan terbayar": "badge-success",
         "Pembayaran kedaluwarsa": "badge-error",
         "Pembayaran dibatalkan": "badge-error",
     };
 
-    return paymentStatusMap[order.transaction_status] || "badge-neutral";
+    return orderStatusMap[status] || "badge-neutral";
 };
-
 /**
  * Checks the status of an order by returning the payment status if available,
  * otherwise returns the order status.
@@ -543,13 +543,11 @@ const handleCancelOrder = async (orderId) => {
             },
         });
 
-        // Update the order items after cancel order
-        originalOrderItems.value.forEach((order) => {
-            order.order_status = "Pesanan dibatalkan";
-            order.transaction_status != null
-                ? (order.transaction_status = "Pembayaran dibatalkan")
-                : null;
-        });
+        console.log(orderId);
+        // Update the transaction status after cancel order
+        originalTransactionStatus.value[orderId].status = "Pesanan dibatalkan";
+
+        modalActiveMap.value[orderId] = false;
     } catch (e) {
         console.error("Error cancel order again:", e);
     }

@@ -282,7 +282,16 @@ class OrderController extends Controller
             $order = Order::query()->findOrFail($orderDetails->data->order->id);
 
             $order->update([
+                'status' => 'Menunggu pembayaran',
                 'payment_url' => $paymentUrl,
+            ]);
+
+            sleep(2);
+            // Set the order status to 'Menunggu Pembayaran'
+            $order->orderStatusHistories()->create([
+                'order_id' => $order->id,
+                'status' => $order->status,
+                'description' => 'Pesanan sedang menunggu pembayaran',
             ]);
 
             // Return the payment page URL

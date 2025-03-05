@@ -1,5 +1,5 @@
 <template>
-    <section class="flex flex-col gap-2">
+    <section class="flex flex-col gap-2 text-base-100">
         <h1 class="text-3xl font-bold">
             {{ cake.name }}
         </h1>

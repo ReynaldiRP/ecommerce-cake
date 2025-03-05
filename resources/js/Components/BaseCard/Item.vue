@@ -24,7 +24,7 @@
                     </div>
                 </div>
             </figure>
-            <div class="card-body gap-1 text-base-content">
+            <div class="card-body gap-1 text-base-100">
                 <h2 class="text-base font-medium">
                     {{ cakes.name }}
                 </h2>
@@ -79,7 +79,7 @@ const props = defineProps({
 
 const isCustomizedBadge = () => {
     return props.cakes.personalization_type === "customized"
-        ? "badge-secondary "
+        ? "bg-primary-color border border-primary-color text-base-100"
         : " badge-neutral";
 };
 </script>

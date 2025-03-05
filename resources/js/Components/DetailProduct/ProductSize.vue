@@ -2,10 +2,12 @@
     <section class="flex flex-col gap-4">
         <section class="flex justify-between">
             <div class="flex flex-col gap-1">
-                <h2 class="text-2xl font-bold">Ukuran Kue</h2>
-                <small class="text-primary-color font-medium"
+                <h2 class="text-2xl font-bold text-base-100">Ukuran Kue</h2>
+                <small class="text-base-200 font-medium"
                     >Ukuran kue harus dipilih
-                    <span class="text-neutral-content">. Pilih 1</span></small
+                    <span class="text-red-600 font-medium"
+                        >. Pilih 1</span
+                    ></small
                 >
             </div>
             <BaseAlert

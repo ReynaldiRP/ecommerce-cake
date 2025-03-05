@@ -1,11 +1,13 @@
 <template>
-    <section class="flex flex-col gap-4">
+    <section class="flex flex-col gap-4 text-base-100">
         <div class="flex justify-between items-center">
             <div class="flex flex-col gap-1">
                 <h2 class="text-2xl font-bold">Rasa Kue</h2>
-                <small class="text-primary-color font-medium"
+                <small class="text-base-200 font-medium"
                     >Rasa kue harus dipilih
-                    <span class="text-neutral-content">. Pilih 1</span></small
+                    <span class="text-red-600 font-medium"
+                        >. Pilih 1</span
+                    ></small
                 >
             </div>
             <BaseAlert
@@ -25,7 +27,7 @@
                     text-size="1rem"
                     :id="flavour?.id"
                     v-model="model"
-                    text-color="#A6ADBB"
+                    text-color="text-base-100"
                     :label="flavour?.name"
                     @change="updateFlavourPrice"
                 />
