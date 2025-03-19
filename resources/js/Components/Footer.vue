@@ -1,6 +1,6 @@
 <template>
     <footer
-        class="footer footer-center bg-primary-color-light text-base-100 p-8 border border-top-2 border-base-100"
+        class="footer footer-center bg-primary-color-light text-base-100 p-8 border border-top border-base-100"
     >
         <aside>
             <p>

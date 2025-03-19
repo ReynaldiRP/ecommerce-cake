@@ -46,36 +46,34 @@
                             >{{ filter }}</a
                         >
                     </div>
-
-                    <!--                    <div-->
-                    <!--                        v-if="transactionTabsClicked[1]"-->
-                    <!--                        role="tablist"-->
-                    <!--                        class="tabs tabs-boxed font-medium"-->
-                    <!--                    >-->
-                    <!--                        <a-->
-                    <!--                            v-for="(status, index) in orderStatus"-->
-                    <!--                            role="tab"-->
-                    <!--                            class="tab"-->
-                    <!--                            :class="{-->
-                    <!--                                'tab-active': orderStatusTabsClicked[index],-->
-                    <!--                            }"-->
-                    <!--                            @click="handleOrderStatusTabClick(index)"-->
-                    <!--                            >{{ status }}</a-->
-                    <!--                        >-->
-                    <!--                    </div>-->
                 </section>
 
-                <select
-                    class="select select-bordered w-full max-w-xs"
-                    @change="
-                        onChangeTransactionDate($event.target.selectedIndex)
-                    "
-                >
-                    <option disabled selected>Pilih Bulan Transaksi</option>
-                    <option v-for="(month, index) in months" :key="index">
-                        {{ month }}
-                    </option>
-                </select>
+                <section class="flex gap-2">
+                    <select
+                        class="select select-bordered w-full max-w-xs"
+                        @change="
+                            onChangeYearTransaction($event.target.selectedIndex)
+                        "
+                    >
+                        <option disabled selected>Pilih Tahun Transaksi</option>
+                        <option v-for="(year, index) in years" :key="index">
+                            {{ year }}
+                        </option>
+                    </select>
+                    <select
+                        class="select select-bordered w-full max-w-xs"
+                        @change="
+                            onChangeMonthTransaction(
+                                $event.target.selectedIndex,
+                            )
+                        "
+                    >
+                        <option disabled selected>Pilih Bulan Transaksi</option>
+                        <option v-for="(month, index) in months" :key="index">
+                            {{ month }}
+                        </option>
+                    </select>
+                </section>
             </section>
 
             <!-- transaction history content -->
@@ -105,13 +103,13 @@
                                     changeBadgeColorOrderStatus(
                                         originalTransactionStatus[
                                             order.order_code
-                                        ].status,
+                                        ]?.status ?? order.order_status,
                                     )
                                 "
                             >
                                 {{
                                     originalTransactionStatus[order.order_code]
-                                        .status
+                                        ?.status ?? order.order_status
                                 }}
                             </div>
                         </section>
@@ -193,7 +191,7 @@
                             <button
                                 v-if="
                                     originalTransactionStatus[order.order_code]
-                                        .status === 'Menunggu pembayaran'
+                                        ?.status === 'Menunggu pembayaran'
                                 "
                                 @click="modalActiveMap[order.order_code] = true"
                                 class="btn btn-error font-semibold"
@@ -270,13 +268,13 @@
 <script setup>
 import App from "@/Layouts/App.vue";
 import axios from "axios";
-import { ref, onMounted, watch, computed } from "vue";
+import { ref, onMounted, watch, computed, reactive } from "vue";
 import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
 import Pagination from "@/Components/Pagination.vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 
 const page = usePage();
-const username = computed(() => page.props.value.auth.user.name);
+const username = computed(() => page.props.value.user.name);
 
 const props = defineProps({
     orderItems: {
@@ -289,7 +287,8 @@ const props = defineProps({
     },
 });
 
-const originalTransactionStatus = ref(props.transactionStatus);
+const originalTransactionStatus = ref(props.transactionStatus || {});
+console.log(originalTransactionStatus.value);
 const originalOrderItems = ref([]);
 originalOrderItems.value = props.orderItems.data;
 
@@ -311,6 +310,7 @@ const months = [
     "November",
     "Desember",
 ];
+const years = ["2021", "2022", "2023", "2024", "2025"];
 
 const transactionTabsClicked = ref(
     new Array(transactionFilter.length).fill(false),
@@ -318,7 +318,10 @@ const transactionTabsClicked = ref(
 
 const orderStatusTabsClicked = ref(new Array(orderStatus.length).fill(false));
 const selectedTransactionStatus = ref("All");
-const selectedTransactionDate = ref("");
+const selectedTransactionDate = reactive({
+    months: null,
+    years: null,
+});
 
 /**
  * Handles the click event for transaction tabs.
@@ -347,14 +350,14 @@ const handleOrderStatusTabClick = (index) => {
     );
 };
 
-/**
- * Handles the change of the transaction date based on the selected index.
- *
- * @param {number} index - The index of the selected date in the months array.
- */
-const onChangeTransactionDate = (index) => {
-    // Get the transaction date based on the selected date
-    selectedTransactionDate.value = months[index - 1];
+const onChangeMonthTransaction = (index) => {
+    selectedTransactionDate.months = months[index - 1];
+    console.log(selectedTransactionDate.months);
+};
+
+const onChangeYearTransaction = (index) => {
+    selectedTransactionDate.years = years[index - 1];
+    console.log(selectedTransactionDate.years);
 };
 
 /**
@@ -369,7 +372,8 @@ const fetchFilteredData = async () => {
         const response = await axios.get(route("fetch-transaction-history"), {
             params: {
                 status: selectedTransactionStatus.value,
-                date: selectedTransactionDate.value,
+                month: selectedTransactionDate.months,
+                year: selectedTransactionDate.years,
             },
         });
 
@@ -382,7 +386,6 @@ const fetchFilteredData = async () => {
         }
 
         pagination.value = response.data.orderItems;
-        console.log("Pagination", pagination.value);
     } catch (error) {
         console.error("Error fetching filtered data:", error);
     }
@@ -544,8 +547,11 @@ const handleCancelOrder = async (orderId) => {
         });
 
         console.log(orderId);
-        // Update the transaction status after cancel order
-        originalTransactionStatus.value[orderId].status = "Pesanan dibatalkan";
+
+        if (originalTransactionStatus.value[orderId]) {
+            originalTransactionStatus.value[orderId].status =
+                "Pesanan dibatalkan";
+        }
 
         modalActiveMap.value[orderId] = false;
     } catch (e) {

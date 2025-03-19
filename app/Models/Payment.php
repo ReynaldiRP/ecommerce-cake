@@ -25,11 +25,11 @@ class Payment extends Model
      */
     public function totalRevenueOrder(string $pastMonth = null, string $currentMonth = null): float
     {
-        return Payment::query()->where('payment_status', '=', 'pesanan terbayar')
-            ->when($pastMonth && $currentMonth, function ($query) use ($pastMonth, $currentMonth) {
-                return $query->whereBetween('orders.created_at', [$pastMonth, $currentMonth]);
-            })
+        return Payment::query()->where('payment_status', '=', 'Pesanan terbayar')
             ->join('orders', 'payments.order_id', '=', 'orders.id')
+            ->when($pastMonth && $currentMonth, function ($query) use ($currentMonth, $pastMonth) {
+                return $query->whereBetween('payments.created_at', [$pastMonth, $currentMonth]);
+            })
             ->sum('orders.total_price');
     }
 

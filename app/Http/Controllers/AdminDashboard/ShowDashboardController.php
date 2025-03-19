@@ -18,6 +18,11 @@ class ShowDashboardController extends Controller
      */
     public function __invoke(Request $request): Response
     {
+        // check role permission
+        if (!auth()->user()->hasPermissionTo('read-dashboard')) {
+            abort(403, 'Unauthorized access');
+        }
+
         $payment = new Payment();
         $order = new Order();
         $orderItem = new OrderItem();
@@ -28,7 +33,6 @@ class ShowDashboardController extends Controller
         $totalRevenueCakeOrders = $payment->totalRevenueOrder(Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth());
         // Get total cake sold
         $totalCakeSold = $orderItem->getTotalCakeSold(Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth());
-        // FIXME: fix the date range for the most popular cake
         // Get the most popular cake
         $mostPopularCake = $orderItem->getMostPopularCakes(Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth());
         // Get the most popular cake type

@@ -27,7 +27,7 @@ class PaymentSeeder extends Seeder
                 'transaction_id' => Str::uuid(),
                 'payment_method' => $faker->randomElement(['Transfer', 'Cash']),
                 'payment_status' => 'Pesanan terbayar',
-                'created_at' => $faker->dateTimeBetween('2024-01-01', '2024-12-31'),
+                'created_at' => $order->created_at,
             ]);
         }
     }

@@ -431,7 +431,7 @@ const props = defineProps({
 });
 
 const { formatPrice } = useAdminDashboardStore();
-const minimumRevenue = 1000000;
+const minimumRevenue = 0;
 const minimumCakeSold = 5;
 const chartRevenueData = ref({});
 const chartCakeSoldData = ref({});

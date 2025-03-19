@@ -10,11 +10,13 @@ export default [
     {
         route: "dashboard-home",
         icon: mdiMonitor,
+        role: "owner",
         label: "Dashboard",
     },
     {
         label: "Produk",
         icon: mdiViewList,
+        role: "staff administrasi",
         menu: [
             {
                 route: "category.index",
@@ -46,11 +48,13 @@ export default [
         label: "Pesanan",
         icon: mdiShopping,
         route: "orders.index",
+        role: "staff administrasi",
     },
     {
         label: "Pembayaran",
         icon: mdiAccountCash,
         route: "payments.index",
+        role: "staff administrasi",
     },
     // {
     //     label: "Approval",

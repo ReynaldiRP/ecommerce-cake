@@ -40,12 +40,16 @@
                                         class="btn btn-outline"
                                         :class="
                                             changeTransactionStatusColor[
-                                                payment.payment_status
+                                                payment.payment_status ??
+                                                    'Menunggu pembayaran'
                                             ]
                                         "
                                         @click="modalActive = true"
                                     >
-                                        {{ payment.payment_status }}
+                                        {{
+                                            payment.payment_status ??
+                                            "Menunggu pembayaran"
+                                        }}
                                     </div>
                                 </td>
                                 <td>

@@ -22,7 +22,11 @@
                             :class="orderStatusColor[order.status]"
                             @click="
                                 () => {
-                                    if (order.status !== 'Pesanan dibatalkan')
+                                    if (
+                                        order.status !==
+                                            'Menunggu pembayaran' &&
+                                        order.status !== 'Pesanan dibatalkan'
+                                    )
                                         editOrderStatus(order);
                                 }
                             "
@@ -213,6 +217,7 @@ const orderStatusFiltered = (order) => {
  */
 const orderStatusColor = computed(() => {
     return {
+        "Menunggu pembayaran": "btn-info",
         "Pesanan diproses": "btn-info",
         "Pesanan dikonfirmasi": "btn-info",
         "Pesanan dikemas": "btn-info",

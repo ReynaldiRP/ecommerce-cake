@@ -6,7 +6,7 @@
                     <h1
                         class="font-bold text-2xl text-color-dashboard-light dark:text-color-dashboard-dark"
                     >
-                        Tabel Order
+                        Tabel Pesanan
                     </h1>
                 </div>
             </section>
@@ -96,6 +96,7 @@ const { formatPrice, formattedDate } = useAdminDashboardStore();
 const ordersData = ref(props.orders.data);
 const orderStatusStyle = computed(() => {
     return {
+        "Menunggu pembayaran": "btn-info",
         "Pesanan diterima": "btn-success",
         "Pesanan dikonfirmasi": "btn-info",
         "Pesanan diproses": "btn-info",

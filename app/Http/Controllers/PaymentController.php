@@ -66,8 +66,16 @@ class PaymentController extends Controller
                 $payment->payment_method = $notification->payment_type;
             }
 
+            $orderStatus = [
+                'Pesanan diproses' => 'Pesanan sedang diproses oleh penjual',
+                'Pesanan dikemas' => 'Pesanan sedang dikemas oleh penjual untuk dikirim atau diambil',
+                'Pesanan dikirim' => 'Pesanan sedang dalam perjalanan menuju tujuan',
+                'Pesanan diterima' => 'Pesanan telah diterima oleh pembeli dan transaksi selesai',
+                'Pesanan kadaluwarsa' => 'Pesanan kadaluwarsa karena pembayaran tidak diterima dalam waktu yang ditentukan',
+                'Pesanan dibatalkan' => 'Pesanan dibatalkan oleh pembeli',
+            ];
+
             $paymentStatus = [
-                'Menunggu pembayaran' => 'Sistem sedang menunggu pembayaran dari pembeli',
                 'Pesanan terbayar' => 'Pembayaran telah diterima oleh sistem',
                 'Pembayaran kedaluwarsa' => 'Pembayaran tidak diterima oleh sistem dalam waktu yang ditentukan',
                 'Pembayaran dibatalkan' => 'Pembayaran dibatalkan oleh pembeli',
@@ -76,14 +84,14 @@ class PaymentController extends Controller
             // Update the payment status based on the transaction status
             if ($transaction_status == 'settlement') {
                 $payment->payment_status = 'Pesanan terbayar';
+                $order->status = 'Pesanan diproses';
+                $order->save();
             } elseif ($transaction_status == 'expire') {
                 $payment->payment_status = 'Pembayaran kedaluwarsa';
-                // set status order to expired
                 $order->status = 'Pesanan kadaluwarsa';
                 $order->save();
             } elseif ($transaction_status == 'cancel') {
                 $payment->payment_status = 'Pembayaran dibatalkan';
-                // set status order to canceled
                 $order->status = 'Pesanan dibatalkan';
                 $order->save();
             }
@@ -91,12 +99,22 @@ class PaymentController extends Controller
             // Save the payment (whether new or updated)
             $payment->save();
 
-            // Save the payment status history
-            $paymentStatusHistory = PaymentStatusHistory::create([
-                'payment_id' => $payment->id,
-                'status' => $payment->payment_status,
-                'description' => $paymentStatus[$payment->payment_status]
-            ]);
+            if ($transaction_status !== 'pending') {
+                // Save the payment status history
+                $paymentStatusHistory = PaymentStatusHistory::create([
+                    'payment_id' => $payment->id,
+                    'status' => $payment->payment_status,
+                    'description' => $paymentStatus[$payment->payment_status]
+                ]);
+
+                // Save the order status history
+                $orderStatusHistory = OrderStatusHistory::create([
+                    'order_id' => $order->id,
+                    'status' => $order->status,
+                    'description' => $orderStatus[$order->status]
+                ]);
+            }
+
 
             // Send email notification
             Mail::to($order->user->email)->send(new PaymentEmail($order, $payment));
@@ -287,7 +305,8 @@ class PaymentController extends Controller
     {
         // Get query parameters for filtering
         $status = $request->query('status', 'All');
-        $date = $request->query('date', '');
+        $month = $request->query('month', '');
+        $year = $request->query('year', '');
 
         // Map Indonesian months to their respective month numbers
         $indonesianMonths = [
@@ -306,7 +325,7 @@ class PaymentController extends Controller
         ];
 
         // Get the month number from the date parameter if it exists
-        $month = $date && isset($indonesianMonths[$date]) ? $indonesianMonths[$date] : null;
+        $month = $month && isset($indonesianMonths[$month]) ? $indonesianMonths[$month] : null;
 
         // Build the query for order items
         $query = OrderItem::with([
@@ -315,7 +334,7 @@ class PaymentController extends Controller
             'cakeSize',
             'cakeFlavour',
             'cakeTopping'
-        ])->whereHas('order', function ($q) use ($status, $month) {
+        ])->whereHas('order', function ($q) use ($status, $month, $year) {
             $q->where('user_id', auth()->id())->orderBy('created_at', 'desc');
 
             if ($status !== 'All') {
@@ -335,8 +354,8 @@ class PaymentController extends Controller
                 }
             }
 
-            if ($month) {
-                $q->whereMonth('created_at', '=', $month);
+            if ($month && $year) {
+                $q->whereYear('created_at', $year)->whereMonth('created_at', $month);
             }
 
         });

@@ -23,8 +23,8 @@ const props = defineProps({
 const emit = defineEmits(["menu-click"]);
 const page = usePage();
 const username =
-    page.props.value.auth.user.username.charAt(0).toUpperCase() +
-    page.props.value.auth.user.username.slice(1);
+    page.props.value.user.name.charAt(0).toUpperCase() +
+    page.props.value.user.name.slice(1);
 
 const is = computed(() => {
     if (props.item.href) {

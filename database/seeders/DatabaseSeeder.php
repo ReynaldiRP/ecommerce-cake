@@ -54,6 +54,7 @@ class DatabaseSeeder extends Seeder
         'update-topping',
         'delete-topping',
         'update-order-status',
+        'read-dashboard',
     ];
 
 
@@ -62,8 +63,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-
-
         User::factory()->createMany([
             [
                 'username' => 'owner',
@@ -76,14 +75,15 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('12345678'),
             ],
             [
-                'username' => 'user',
+                'username' => 'pelanggan',
                 'email' => 'user@example.com',
                 'password' => Hash::make('12345678'),
             ]
         ]);
+
         Role::create(['name' => 'owner']);
         Role::create(['name' => 'admin']);
-        Role::create(['name' => 'user']);
+        Role::create(['name' => 'pelanggan']);
 
         // create permissions based on the permissions array
         foreach ($this->permissions as $permission) {
@@ -92,7 +92,9 @@ class DatabaseSeeder extends Seeder
 
         // assign permissions to roles
         $ownerPermissions = Permission::query()->where('name', 'LIKE', '%role')
-            ->orWhere('name', 'LIKE', '%permission')->get();
+            ->orWhere('name', 'LIKE', '%permission')
+            ->orWhere('name', 'LIKE', '%dashboard')
+            ->get();
 
         $adminPermissions = Permission::query()->where('name', 'LIKE', '%cake')
             ->orWhere('name', 'LIKE', '%category')
@@ -110,7 +112,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // assign user roles
-        collect(['admin', 'user', 'owner'])->each(function ($role) {
+        collect(['admin', 'pelanggan', 'owner'])->each(function ($role) {
             User::query()->where('username', $role)->first()->assignRole($role);
         });
 

@@ -35,7 +35,7 @@ class OrderSeeder extends Seeder
 
         // Get user that has role of user from spatie
         $users = User::with('roles')->whereHas('roles', function ($query) {
-            $query->where('name', 'user');
+            $query->where('name', 'pelanggan');
         })->get();
 
         // Get item data
@@ -49,7 +49,7 @@ class OrderSeeder extends Seeder
 
         // Loop create order for each user
         for ($i = 0; $i < 100; $i++) {
-            $createdAt = $faker->dateTimeBetween('2023-01-01', '2025-03-02');
+            $createdAt = $faker->dateTimeBetween('2024-01-01', '2025-03-06');
 
             $order = Order::create([
                 'user_id' => $users->random()->id,
@@ -85,7 +85,7 @@ class OrderSeeder extends Seeder
                     'cake_flavour_id' => $flavour->id ?? null,
                     'quantity' => $faker->numberBetween(1, 3),
                     'price' => $cake->base_price + ($size->price ?? 0) + ($flavour->price ?? 0) + ($topping->price ?? 0),
-                    'created_at' => $faker->dateTimeBetween('2023-01-01', '2025-03-02'),
+                    'created_at' => $order->created_at,
                 ]);
 
                 // Attach topping if included

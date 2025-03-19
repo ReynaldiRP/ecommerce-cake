@@ -64,7 +64,7 @@ import "vue-loading-overlay/dist/css/index.css";
 
 const page = usePage();
 
-const user = computed(() => page.props.value.auth.user);
+const user = computed(() => page.props.value.authenticated);
 
 const state = reactive({
     backgroundColor: "bg-transparent",
@@ -89,23 +89,15 @@ const logout = () => {
 
 const menu = [
     {
-        name: "Catalouge",
+        name: "Katalog Kue",
         link: route("products"),
-    },
-    {
-        name: "Order",
-        link: route("order.status"),
     },
 ];
 
 const menuAuthenticated = [
     {
-        name: "Profile",
-        link: "#",
-    },
-    {
-        name: "Order History",
-        link: "#",
+        name: "Riwayat Transaksi",
+        link: route("transaction-history"),
     },
 ];
 

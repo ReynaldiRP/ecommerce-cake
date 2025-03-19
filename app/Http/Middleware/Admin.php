@@ -18,14 +18,18 @@ class Admin
         // Check if the user is an admin
         if ($request->user()->hasRole('admin') || $request->user()->hasRole('owner')) {
 
-
             // Allow the request to proceed if the route belongs to the admin section
             if ($request->is('admin/dashboard*')) {
                 return $next($request);
             }
 
-            // If not already on the dashboard, redirect to the admin dashboard
-            return redirect()->route('dashboard-home');
+            // Check if the user is not owner its will not access to home dashboard
+            if (!auth()->user()->hasRole('owner')) {
+                return redirect()->route('category.index');
+            } else {
+                return redirect()->route('dashboard-home');
+            }
+
         }
 
         // If the user is not an admin, redirect them to the homepage

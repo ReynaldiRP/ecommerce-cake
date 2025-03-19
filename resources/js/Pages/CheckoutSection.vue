@@ -508,8 +508,6 @@ onUnmounted(() => {
  * @returns {void}
  */
 const submit = () => {
-    // console.log(form.data());
-
     // If all fields are filled in, submit the form
     isSubmitting.value = true;
     setTimeout(() => {

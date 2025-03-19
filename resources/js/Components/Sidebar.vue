@@ -128,7 +128,7 @@ const props = defineProps({
 });
 
 const page = usePage();
-const user = page.props.value.auth.user;
+const user = page.props.value.authenticated;
 
 const handlerClick = (link) => {
     if (typeof link === "string") {

@@ -54,18 +54,26 @@ class OrderItem extends Model
     public function getMostPopularCakes(string $currentMonth = null, string $pastMonth = null)
     {
         // Get the most popular cake for the specified date range
-        $query = OrderItem::query()->select('cakes.name as cake_name', 'order_items.quantity as total_sold')
+        $query = OrderItem::query()
+            ->select('cakes.name as cake_name', DB::raw('SUM(order_items.quantity) as total_sold'), 'cakes.image_url as cake_image')
             ->join('cakes', 'order_items.cake_id', '=', 'cakes.id')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
             ->where('payments.payment_status', '=', 'Pesanan terbayar')
             ->when($pastMonth && $currentMonth, function ($query) use ($pastMonth, $currentMonth) {
-                return $query->whereBetween('order_items.created_at', [$pastMonth, $currentMonth]);
-            });
+                if (strtotime($pastMonth) > strtotime($currentMonth)) {
+                    [$pastMonth, $currentMonth] = [$currentMonth, $pastMonth];
+                }
 
-        Log::info($query->toSql(), $query->getBindings());
+                Log::debug("Date filter applied", ['from' => $pastMonth, 'to' => $currentMonth]);
+                return $query->whereBetween('orders.created_at', [$pastMonth, $currentMonth]);
+            })
+            ->groupBy('cakes.name', 'cakes.image_url')
+            ->orderBy('total_sold', 'desc');
 
-        return $query->get();
+        Log::debug("getMostPopularCakes query: " . $query->toSql(), $query->getBindings());
+
+        return $query->first();
     }
 
     /**
@@ -77,14 +85,21 @@ class OrderItem extends Model
      */
     public function getTotalCakeSold(string $pastMonth = null, string $currentMonth = null): int
     {
-        return (int)OrderItem::with('order', 'order.payment')
-            ->whereHas('order.payment', function ($query) {
-                $query->where('payment_status', '=', 'pesanan terbayar');
-            })
+        return (int)OrderItem::query()
+            ->join('orders', 'orders.id', '=', 'order_items.order_id')
+            ->join('payments', 'payments.order_id', '=', 'orders.id')
+            ->where('payments.payment_status', '=', 'Pesanan terbayar') // Check capitalization
             ->when($pastMonth && $currentMonth, function ($query) use ($pastMonth, $currentMonth) {
-                return $query->whereBetween('order_items.created_at', [$pastMonth, $currentMonth]);
+                // Ensure start date is before end date
+                if (strtotime($pastMonth) > strtotime($currentMonth)) {
+                    [$pastMonth, $currentMonth] = [$currentMonth, $pastMonth];
+                }
+
+                // Log dates for debugging
+                \Log::info("Date range:", ['start' => $pastMonth, 'end' => $currentMonth]);
+                return $query->whereBetween('orders.created_at', [$pastMonth, $currentMonth]);
             })
-            ->sum('quantity');
+            ->sum('order_items.quantity');
     }
 
     /**
@@ -100,7 +115,7 @@ class OrderItem extends Model
             ->join('cakes', 'order_items.cake_id', '=', 'cakes.id')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
-            ->where('payments.payment_status', '=', 'pesanan terbayar')
+            ->where('payments.payment_status', '=', 'Pesanan terbayar')
             ->when($pastMonth && $currentMonth, function ($query) use ($pastMonth, $currentMonth) {
                 return $query->whereBetween('order_items.created_at', [$pastMonth, $currentMonth]);
             })

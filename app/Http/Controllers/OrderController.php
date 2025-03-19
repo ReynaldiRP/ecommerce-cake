@@ -286,7 +286,7 @@ class OrderController extends Controller
                 'payment_url' => $paymentUrl,
             ]);
 
-            sleep(2);
+            sleep(1);
             // Set the order status to 'Menunggu Pembayaran'
             $order->orderStatusHistories()->create([
                 'order_id' => $order->id,
