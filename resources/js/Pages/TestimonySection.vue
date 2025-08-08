@@ -1,7 +1,9 @@
 <template>
-    <section class="h-screen py-[5%] my-4 px-10 flex flex-col items-center">
+    <section
+        class="h-screen py-0 lg:py-20 px-2 sm:px-10 mt-10 flex flex-col items-center"
+    >
         <h1
-            class="relative bottom-10 lg:bottom-16 text-3xl lg:text-4xl font-semibold text-base-100"
+            class="relative bottom-10 lg:bottom-16 text-3xl lg:text-4xl text-center md:text-justify font-semibold text-base-100"
         >
             Apa Yang Dikatan Pelanggan Kami
         </h1>

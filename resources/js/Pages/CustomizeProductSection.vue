@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, defineComponent } from "vue";
+import { reactive, ref } from "vue";
 import LayoutCarousel from "@/Components/BaseCarousel/Layout.vue";
 import ImageCarousel from "@/Components/BaseCarousel/Image.vue";
 import "@splidejs/vue-splide/css";

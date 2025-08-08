@@ -1,5 +1,5 @@
 <template>
-    <div class="min-h-screen w-full">
+    <div class="h-screen w-full">
         <header>
             <Navbar />
         </header>
