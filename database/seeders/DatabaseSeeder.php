@@ -124,8 +124,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             CakesSeeder::class,
-            OrderSeeder::class,
-            PaymentSeeder::class
+            EnhancedOrderSeeder::class,
         ]);
     }
 }

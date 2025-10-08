@@ -106,7 +106,8 @@
                         <!-- Date Filters -->
                         <div class="flex flex-col sm:flex-row gap-4">
                             <div class="space-y-2">
-                                <label class="text-sm font-medium text-gray-700 mx-2"
+                                <label
+                                    class="text-sm font-medium text-gray-700 mx-2"
                                     >Tahun</label
                                 >
                                 <select
@@ -129,7 +130,8 @@
                                 </select>
                             </div>
                             <div class="space-y-2">
-                                <label class="text-sm font-medium text-gray-700 mx-2"
+                                <label
+                                    class="text-sm font-medium text-gray-700 mx-2"
                                     >Bulan</label
                                 >
                                 <select
@@ -633,8 +635,7 @@ const changeBadgeColorOrderStatus = (status) => {
         "Pesanan diterima":
             "bg-green-100 text-green-800 border border-green-200",
         "Pesanan dibatalkan": "bg-red-100 text-red-800 border border-red-200",
-        "Pesanan kadaluwarsa":
-            "bg-gray-100 text-gray-800 border border-gray-200",
+        "Pesanan kadaluwarsa": "bg-red-100 text-red-800 border border-red-200",
         "Pesanan terbayar":
             "bg-green-100 text-green-800 border border-green-200",
         "Pembayaran kedaluwarsa":
