@@ -1,104 +1,191 @@
 <template>
     <App>
-        <section class="min-h-screen w-full py-28 px-10 bg-primary-color-light">
-            <!-- breadcrumbs page -->
-            <aside class="breadcrumbs text-sm me-auto relative">
-                <ul class="text-base-100">
-                    <li>
-                        <inertia-link :href="route('home')"
-                            >Beranda</inertia-link
-                        >
-                    </li>
-                    <li>
-                        <inertia-link :href="route('order.history')"
-                            >Riwayat Transaksi
-                        </inertia-link>
-                    </li>
-                </ul>
-            </aside>
+        <section class="min-h-screen w-full bg-gradient-soft">
+            <div class="container mx-auto px-6 lg:px-12 pt-24 pb-16">
+                <!-- Breadcrumb -->
+                <nav class="flex mb-6" aria-label="Breadcrumb">
+                    <ol class="inline-flex items-center space-x-2 md:space-x-3">
+                        <li class="inline-flex items-center">
+                            <inertia-link
+                                :href="route('home')"
+                                class="inline-flex items-center text-gray-700 hover:text-primary transition-colors font-medium"
+                            >
+                                <svg
+                                    class="w-4 h-4 mr-2"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path
+                                        d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
+                                    ></path>
+                                </svg>
+                                Beranda
+                            </inertia-link>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <svg
+                                    class="w-4 h-4 text-gray-400"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path
+                                        fill-rule="evenodd"
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd"
+                                    ></path>
+                                </svg>
+                                <span
+                                    class="ml-2 text-sm font-medium text-gray-600"
+                                    >Riwayat Transaksi</span
+                                >
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
 
-            <!-- header content -->
-            <section class="flex items-center gap-2 mt-4">
-                <h1 class="text-2xl font-bold text-base-100">
-                    Daftar Transaksi
-                    {{ username.charAt(0).toUpperCase() + username.slice(1) }}
-                </h1>
+                <!-- Header Section -->
                 <div
-                    class="px-3 rounded-lg bg-primary-color text-black font-medium text-lg"
+                    class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8"
                 >
-                    {{ orderItems.total }}
-                </div>
-            </section>
-
-            <!-- transaction history filter -->
-            <section class="mt-4 flex items-center justify-between">
-                <section class="flex flex-col gap-2">
-                    <div role="tablist" class="tabs tabs-boxed font-bold">
-                        <a
-                            v-for="(filter, index) in transactionFilter"
-                            :key="index"
-                            role="tab"
-                            class="tab"
-                            :class="{
-                                'tab-active': transactionTabsClicked[index],
-                            }"
-                            @click="handleTransactionTabClick(index)"
-                            >{{ filter }}</a
-                        >
-                    </div>
-                </section>
-
-                <section class="flex gap-2">
-                    <select
-                        class="select select-bordered w-full max-w-xs"
-                        @change="
-                            onChangeYearTransaction($event.target.selectedIndex)
-                        "
-                    >
-                        <option disabled selected>Pilih Tahun Transaksi</option>
-                        <option v-for="(year, index) in years" :key="index">
-                            {{ year }}
-                        </option>
-                    </select>
-                    <select
-                        class="select select-bordered w-full max-w-xs"
-                        @change="
-                            onChangeMonthTransaction(
-                                $event.target.selectedIndex,
-                            )
-                        "
-                    >
-                        <option disabled selected>Pilih Bulan Transaksi</option>
-                        <option v-for="(month, index) in months" :key="index">
-                            {{ month }}
-                        </option>
-                    </select>
-                </section>
-            </section>
-
-            <!-- transaction history content -->
-            <section
-                class="flex flex-col gap-4 mt-4 p-4 border-2 border-neutral rounded-lg shadow-lg"
-            >
-                <!-- Iterate over each order group (list of orders per transaction) -->
-                <section
-                    v-for="(order, orderIndex) in originalOrderItems"
-                    :key="order.transaction_id + orderIndex"
-                    class="flex flex-col gap-4"
-                >
-                    <!-- Iterate over each individual order -->
-                    <section
-                        class="rounded-lg flex flex-col gap-4 border-2 border-neutral p-4"
-                    >
-                        <!-- Transaction Detail -->
-                        <section
-                            class="flex items-center gap-2 text-xl text-base-100"
-                        >
-                            <p>
-                                {{ order.order_created_at }}
-                            </p>
+                    <div class="space-y-2">
+                        <div class="flex items-center space-x-3">
+                            <h1
+                                class="text-2xl lg:text-3xl font-heading font-bold text-gray-900"
+                            >
+                                Riwayat Transaksi
+                            </h1>
                             <div
-                                class="badge p-3 font-bold"
+                                class="px-3 py-1 bg-gradient-to-r from-primary to-accent text-white rounded-full text-sm font-semibold shadow-soft"
+                            >
+                                {{ orderItems.total }}
+                            </div>
+                        </div>
+                        <p class="text-gray-600">
+                            Halo,
+                            {{
+                                username.charAt(0).toUpperCase() +
+                                username.slice(1)
+                            }}! Kelola dan pantau semua transaksi Anda
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Filter and Sort Section -->
+                <div
+                    class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-card border border-white/20 p-6 mb-8"
+                >
+                    <div
+                        class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6"
+                    >
+                        <!-- Transaction Filter Tabs -->
+                        <div class="flex-1">
+                            <h3
+                                class="text-lg font-semibold text-gray-900 mb-4"
+                            >
+                                Filter Status
+                            </h3>
+                            <div class="flex flex-wrap gap-2">
+                                <button
+                                    v-for="(filter, index) in transactionFilter"
+                                    :key="index"
+                                    class="px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-200"
+                                    :class="{
+                                        'bg-gradient-to-r from-primary to-accent text-white shadow-soft':
+                                            transactionTabsClicked[index],
+                                        'bg-gray-100 text-gray-700 hover:bg-gray-200':
+                                            !transactionTabsClicked[index],
+                                    }"
+                                    @click="handleTransactionTabClick(index)"
+                                >
+                                    {{ filter }}
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Date Filters -->
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-gray-700 mx-2"
+                                    >Tahun</label
+                                >
+                                <select
+                                    class="select select-bordered bg-white border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl"
+                                    @change="
+                                        onChangeYearTransaction(
+                                            $event.target.selectedIndex,
+                                        )
+                                    "
+                                >
+                                    <option disabled selected>
+                                        Pilih Tahun
+                                    </option>
+                                    <option
+                                        v-for="(year, index) in years"
+                                        :key="index"
+                                    >
+                                        {{ year }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-gray-700 mx-2"
+                                    >Bulan</label
+                                >
+                                <select
+                                    class="select select-bordered bg-white border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl"
+                                    @change="
+                                        onChangeMonthTransaction(
+                                            $event.target.selectedIndex,
+                                        )
+                                    "
+                                >
+                                    <option disabled selected>
+                                        Pilih Bulan
+                                    </option>
+                                    <option
+                                        v-for="(month, index) in months"
+                                        :key="index"
+                                    >
+                                        {{ month }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction History Content -->
+                <div class="space-y-6">
+                    <!-- Individual Order Cards -->
+                    <div
+                        v-for="(order, orderIndex) in originalOrderItems"
+                        :key="order.transaction_id + orderIndex"
+                        class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-card border border-white/20 p-6 lg:p-8 transition-all duration-300 hover:shadow-card-hover"
+                    >
+                        <!-- Order Header -->
+                        <div
+                            class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6"
+                        >
+                            <div class="flex items-center space-x-4">
+                                <div
+                                    class="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-2xl flex items-center justify-center"
+                                >
+                                    <i class="fas fa-receipt text-white"></i>
+                                </div>
+                                <div>
+                                    <p
+                                        class="text-lg font-semibold text-gray-900"
+                                    >
+                                        {{ order.order_created_at }}
+                                    </p>
+                                    <p class="text-sm text-gray-600">
+                                        ID: {{ order.order_code }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div
+                                class="px-4 py-2 rounded-full text-sm font-semibold"
                                 :class="
                                     changeBadgeColorOrderStatus(
                                         originalTransactionStatus[
@@ -112,155 +199,283 @@
                                         ?.status ?? order.order_status
                                 }}
                             </div>
-                        </section>
+                        </div>
 
-                        <!-- Transaction Image and Details -->
-                        <section class="flex items-center justify-between">
-                            <div class="flex gap-4">
-                                <div class="avatar">
-                                    <div class="w-28 rounded">
+                        <!-- Order Content -->
+                        <div class="flex flex-col lg:flex-row gap-6">
+                            <!-- Product Image and Details -->
+                            <div class="flex gap-4 flex-1">
+                                <div class="avatar flex-shrink-0">
+                                    <div
+                                        class="w-20 h-20 lg:w-24 lg:h-24 rounded-2xl overflow-hidden shadow-soft ring-2 ring-gray-100"
+                                    >
                                         <img
                                             :src="
                                                 order.cake_image ??
                                                 '/assets/image/default-img.jpg'
                                             "
                                             alt="Cake Image"
+                                            class="w-full h-full object-cover"
                                         />
                                     </div>
                                 </div>
-                                <div
-                                    class="flex flex-col justify-center text-base-100"
-                                >
-                                    <p class="text-lg font-bold">
+
+                                <div class="flex-1 space-y-2">
+                                    <h3
+                                        class="text-lg lg:text-xl font-semibold text-gray-900"
+                                    >
                                         {{ order.cake_name }}
-                                        <span v-if="order.cake_size"
-                                            >({{ order.cake_size }}Cm)</span
+                                        <span
+                                            v-if="order.cake_size"
+                                            class="text-primary font-medium"
                                         >
-                                    </p>
-                                    <p
-                                        v-if="order.cake_flavour"
-                                        class="font-medium"
-                                    >
-                                        {{ order.cake_flavour }}
-                                    </p>
-                                    <div
-                                        v-if="order.cake_toppings.length"
-                                        class="flex gap-2"
-                                    >
-                                        <p class="font-medium">
-                                            {{ order.cake_toppings.join(", ") }}
+                                            ({{ order.cake_size }}cm)
+                                        </span>
+                                    </h3>
+
+                                    <!-- Specifications -->
+                                    <div class="space-y-1">
+                                        <div
+                                            v-if="order.cake_flavour"
+                                            class="flex items-center space-x-2 text-sm text-gray-600"
+                                        >
+                                            <div
+                                                class="w-2 h-2 bg-primary/50 rounded-full"
+                                            ></div>
+                                            <span class="font-medium"
+                                                >Rasa:</span
+                                            >
+                                            <span>{{
+                                                order.cake_flavour
+                                            }}</span>
+                                        </div>
+                                        <div
+                                            v-if="order.cake_toppings.length"
+                                            class="flex items-center space-x-2 text-sm text-gray-600"
+                                        >
+                                            <div
+                                                class="w-2 h-2 bg-accent/50 rounded-full"
+                                            ></div>
+                                            <span class="font-medium"
+                                                >Topping:</span
+                                            >
+                                            <span>{{
+                                                order.cake_toppings.join(", ")
+                                            }}</span>
+                                        </div>
+                                        <div
+                                            v-if="order.cake_note"
+                                            class="bg-blue-50 rounded-xl p-3 border border-blue-100"
+                                        >
+                                            <div
+                                                class="flex items-start space-x-2"
+                                            >
+                                                <i
+                                                    class="fas fa-sticky-note text-blue-500 mt-0.5 text-sm"
+                                                ></i>
+                                                <div>
+                                                    <p
+                                                        class="text-xs font-semibold text-blue-700 mb-1"
+                                                    >
+                                                        Catatan:
+                                                    </p>
+                                                    <p
+                                                        class="text-sm text-blue-600 italic"
+                                                    >
+                                                        "{{ order.cake_note }}"
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Quantity and Price per Item -->
+                                    <div class="bg-gray-50 rounded-xl p-3">
+                                        <p class="text-sm text-gray-700">
+                                            <span class="font-semibold">{{
+                                                order.quantity
+                                            }}</span>
+                                            x
+                                            <span class="font-medium">{{
+                                                formattedSubtotal[orderIndex]
+                                            }}</span>
                                         </p>
                                     </div>
-                                    <p
-                                        v-if="order.cake_note"
-                                        class="font-extralight"
-                                    >
-                                        "{{ order.cake_note }}"
-                                    </p>
-                                    <p class="font-light">
-                                        {{ order.quantity }}
-                                        {{ order.cake_name }}
-                                        <span v-if="order.cake_size"
-                                            >({{ order.cake_size }}Cm)</span
-                                        >
-                                        x {{ formattedSubtotal[orderIndex] }}
-                                    </p>
                                 </div>
                             </div>
 
-                            <div
-                                class="flex flex-col text-xl pr-36 text-base-100"
-                            >
-                                <p>Total Order</p>
-                                <strong>{{ formatPrice(order.price) }}</strong>
+                            <!-- Price and Actions -->
+                            <div class="lg:w-80 space-y-4">
+                                <!-- Total Price -->
+                                <div
+                                    class="bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl p-4"
+                                >
+                                    <p class="text-sm text-gray-600 mb-1">
+                                        Total Pembayaran
+                                    </p>
+                                    <p class="text-2xl font-bold text-primary">
+                                        {{ formatPrice(order.price) }}
+                                    </p>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="space-y-3">
+                                    <inertia-link
+                                        :href="
+                                            route(
+                                                'detail-transaction',
+                                                order.order_code,
+                                            )
+                                        "
+                                        class="btn w-full bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-xl transition-all duration-200"
+                                    >
+                                        <i class="fas fa-eye mr-2"></i>
+                                        Lihat Detail
+                                    </inertia-link>
+
+                                    <button
+                                        v-if="
+                                            originalTransactionStatus[
+                                                order.order_code
+                                            ]?.status === 'Menunggu pembayaran'
+                                        "
+                                        @click="
+                                            modalActiveMap[order.order_code] =
+                                                true
+                                        "
+                                        class="btn w-full bg-red-50 border-2 border-red-200 text-red-600 hover:bg-red-100 rounded-xl transition-all duration-200"
+                                    >
+                                        <i class="fas fa-times mr-2"></i>
+                                        Batalkan Pesanan
+                                    </button>
+
+                                    <div
+                                        v-if="
+                                            order.order_status !==
+                                            'Pesanan kadaluwarsa'
+                                        "
+                                    >
+                                        <inertia-link
+                                            v-if="showPayNowButton(order)"
+                                            href="#"
+                                            @click="
+                                                redirectPayment(
+                                                    order.payment_url,
+                                                )
+                                            "
+                                            class="btn w-full bg-gradient-to-r from-primary to-accent text-white hover:from-primary-hover hover:to-accent-hover rounded-xl shadow-soft transition-all duration-200"
+                                        >
+                                            <i
+                                                class="fas fa-credit-card mr-2"
+                                            ></i>
+                                            Bayar Sekarang
+                                        </inertia-link>
+                                        <button
+                                            v-else
+                                            @click="
+                                                handleBuyAgain(
+                                                    order.order_item_id,
+                                                )
+                                            "
+                                            class="btn w-full bg-green-50 border-2 border-green-200 text-green-700 hover:bg-green-100 rounded-xl transition-all duration-200"
+                                        >
+                                            <i
+                                                class="fas fa-shopping-cart mr-2"
+                                            ></i>
+                                            Beli Lagi
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                        </section>
+                        </div>
 
-                        <!-- Transaction CTA -->
-                        <section class="ms-auto flex gap-4 items-center">
+                        <!-- Cancel Order Modal -->
+                        <CardBoxModal
+                            v-model="modalActiveMap[order.order_code]"
+                            class="backdrop-blur-sm"
+                            title="Konfirmasi Pembatalan"
+                            button="danger"
+                            button-label="Ya, Batalkan"
+                            :click-handler="
+                                () => handleCancelOrder(order.order_code)
+                            "
+                            has-cancel
+                        >
+                            <div class="space-y-4">
+                                <div
+                                    class="flex items-center space-x-3 p-4 bg-red-50 rounded-xl border border-red-100"
+                                >
+                                    <i
+                                        class="fas fa-exclamation-triangle text-red-500 text-lg"
+                                    ></i>
+                                    <div>
+                                        <p class="font-semibold text-red-800">
+                                            Yakin ingin membatalkan pesanan?
+                                        </p>
+                                        <p class="text-sm text-red-600">
+                                            Tindakan ini tidak dapat dibatalkan.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </CardBoxModal>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div
+                        v-if="originalOrderItems.length <= 0"
+                        class="text-center py-16"
+                    >
+                        <div class="max-w-md mx-auto">
+                            <div
+                                class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6"
+                            >
+                                <i
+                                    class="fas fa-shopping-bag text-gray-400 text-2xl"
+                                ></i>
+                            </div>
+                            <h3
+                                class="text-xl font-heading font-bold text-gray-900 mb-4"
+                            >
+                                Belum Ada Transaksi
+                            </h3>
+                            <p class="text-gray-600 mb-8">
+                                Anda belum memiliki riwayat transaksi. Mulai
+                                berbelanja sekarang! 🎂✨
+                            </p>
                             <inertia-link
-                                :href="
-                                    route(
-                                        'detail-transaction',
-                                        order.order_code,
-                                    )
-                                "
-                                class="link text-base-100"
-                                >See Detail Transaction</inertia-link
+                                :href="route('products')"
+                                class="btn btn-primary-modern"
                             >
-                            <button
-                                v-if="
-                                    originalTransactionStatus[order.order_code]
-                                        ?.status === 'Menunggu pembayaran'
-                                "
-                                @click="modalActiveMap[order.order_code] = true"
-                                class="btn btn-error font-semibold"
-                            >
-                                Batalkan Pesanan
-                            </button>
-                            <CardBoxModal
-                                v-model="modalActiveMap[order.order_code]"
-                                class="backdrop-contrast-50"
-                                title="Pembatalan Pesanan"
-                                button="danger"
-                                button-label="Yakin"
-                                :click-handler="
-                                    () => handleCancelOrder(order.order_code)
-                                "
-                                has-cancel
-                            >
-                                <p>
-                                    Apakah kamu yakin untuk membatalkan pesanan
-                                    kue ?
-                                </p>
-                            </CardBoxModal>
-                            <section
-                                v-if="
-                                    order.order_status !== 'Pesanan kadaluwarsa'
-                                "
-                            >
-                                <inertia-link
-                                    v-if="showPayNowButton(order)"
-                                    href="#"
-                                    @click="redirectPayment(order.payment_url)"
-                                    class="btn btn-info font-semibold"
-                                >
-                                    Bayar Sekarang
-                                </inertia-link>
-                                <button
-                                    v-else
-                                    @click="handleBuyAgain(order.order_item_id)"
-                                    class="btn btn-success font-semibold"
-                                >
-                                    Beli Lagi
-                                </button>
-                            </section>
-                        </section>
-                    </section>
-                </section>
-                <!-- Filtered Data not found -->
-                <section v-if="originalOrderItems.length <= 0">
-                    <p class="text-base-100">
-                        Oops! transaksi tidak ditemukan. 🎩✨
-                    </p>
-                </section>
-            </section>
+                                <i class="fas fa-shopping-cart mr-2"></i>
+                                Mulai Belanja
+                            </inertia-link>
+                        </div>
+                    </div>
+                </div>
 
-            <footer class="mt-2">
-                <div class="flex justify-between items-center">
+                <!-- Pagination -->
+                <div
+                    class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4"
+                >
                     <Pagination
-                        class="btn-outline"
+                        class="order-2 sm:order-1"
                         :links="pagination.links"
                         :next-page-url="pagination.next_page_url"
                         :previous-page-url="pagination.prev_page_url"
                     />
-                    <p>
-                        Page
-                        <span>{{ pagination.current_page }}</span> of
-                        <span>{{ pagination.last_page }}</span>
+                    <p class="text-sm text-gray-600 order-1 sm:order-2">
+                        Halaman
+                        <span class="font-semibold">{{
+                            pagination.current_page
+                        }}</span>
+                        dari
+                        <span class="font-semibold">{{
+                            pagination.last_page
+                        }}</span>
                     </p>
                 </div>
-            </footer>
+            </div>
         </section>
     </App>
 </template>
@@ -405,20 +620,33 @@ watch([selectedTransactionStatus, selectedTransactionDate], fetchFilteredData);
  */
 const changeBadgeColorOrderStatus = (status) => {
     const orderStatusMap = {
-        "Menunggu pembayaran": "badge-info",
-        "Pesanan dikonfirmasi": "badge-info",
-        "Pesanan diproses": "badge-info",
-        "Pesanan dikemas": "badge-info",
-        "Pesanan dikirim": "badge-success",
-        "Pesanan diterima": "badge-success",
-        "Pesanan dibatalkan": "badge-error",
-        "Pesanan kadaluwarsa": "badge-error",
-        "Pesanan terbayar": "badge-success",
-        "Pembayaran kedaluwarsa": "badge-error",
-        "Pembayaran dibatalkan": "badge-error",
+        "Menunggu pembayaran":
+            "bg-blue-100 text-blue-800 border border-blue-200",
+        "Pesanan dikonfirmasi":
+            "bg-blue-100 text-blue-800 border border-blue-200",
+        "Pesanan diproses":
+            "bg-yellow-100 text-yellow-800 border border-yellow-200",
+        "Pesanan dikemas":
+            "bg-purple-100 text-purple-800 border border-purple-200",
+        "Pesanan dikirim":
+            "bg-indigo-100 text-indigo-800 border border-indigo-200",
+        "Pesanan diterima":
+            "bg-green-100 text-green-800 border border-green-200",
+        "Pesanan dibatalkan": "bg-red-100 text-red-800 border border-red-200",
+        "Pesanan kadaluwarsa":
+            "bg-gray-100 text-gray-800 border border-gray-200",
+        "Pesanan terbayar":
+            "bg-green-100 text-green-800 border border-green-200",
+        "Pembayaran kedaluwarsa":
+            "bg-red-100 text-red-800 border border-red-200",
+        "Pembayaran dibatalkan":
+            "bg-red-100 text-red-800 border border-red-200",
     };
 
-    return orderStatusMap[status] || "badge-neutral";
+    return (
+        orderStatusMap[status] ||
+        "bg-gray-100 text-gray-800 border border-gray-200"
+    );
 };
 /**
  * Checks the status of an order by returning the payment status if available,

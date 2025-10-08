@@ -1,20 +1,18 @@
 <template>
-    <div @click="handleClick" ref="container">
+    <div @click="handleClick" ref="container" class="relative w-[400px] max-w-lg">
         <label
-            class="w-[450px] input flex items-center gap-2"
+            class="w-full input flex items-center gap-3 transition-all duration-300"
             :class="
                 isNavbarHovered
-                    ? 'input-bordered'
-                    : 'bg-transparent border-2 border-base-100 text-base-100'
+                    ? 'input-bordered bg-white/95 backdrop-blur-sm shadow-soft'
+                    : 'bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white shadow-soft'
             "
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 16 16"
-                class="h-4 w-4 opacity-70"
-                :class="
-                    isNavbarHovered ? 'fill-neutral-content' : 'fill-base-100'
-                "
+                class="h-5 w-5 transition-colors duration-300 flex-shrink-0"
+                :class="isNavbarHovered ? 'text-gray-500' : 'text-white/80'"
             >
                 <path
                     fill-rule="evenodd"
@@ -24,56 +22,89 @@
             </svg>
             <input
                 type="text"
-                class="grow"
-                :class="
-                    isNavbarHovered
-                        ? 'placeholder-neutral-content'
-                        : 'placeholder-base-100 '
-                "
-                placeholder="Cari kue..."
+                class="grow text-sm font-medium text-gray-900 transition-colors duration-300 bg-transparent border-0 focus:outline-none focus:ring-0"
+                placeholder="Cari kue impian Anda..."
                 v-model="search"
                 @keyup="keyupSearch"
                 @focus="onFocusHandler"
             />
         </label>
+
+        <!-- Search Results Dropdown -->
         <div
             v-show="onFocus"
-            class="absolute top-[5.20rem] w-[450px] h-fit rounded-lg border border-[#383F47] bg-base-100"
-            :class="
-                onFocus ? 'outline outline-[#383F47] outline-offset-2 ' : ''
-            "
+            class="absolute top-full mt-2 w-full bg-white/95 backdrop-blur-lg rounded-2xl shadow-card-lg border border-white/20 overflow-hidden z-50"
             ref="resultsContainer"
         >
-            <ul
-                tabindex="0"
-                class="dropdown-content menu rounded-box z-[1] w-full p-2 shadow"
-            >
-                <li v-for="(cake, index) in results" :key="cake.id">
-                    <inertia-link
-                        class="flex justify-between"
-                        :href="route('detail-product', { cakeId: cake.id })"
+            <div class="p-2">
+                <div
+                    v-if="results.length > 0"
+                    class="space-y-1 max-h-80 overflow-y-auto custom-scrollbar"
+                >
+                    <div
+                        v-for="(cake, index) in results"
+                        :key="cake.id"
+                        class="group"
                     >
-                        <div class="flex items-center gap-1">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <span class="ml-1">{{ cake.name }}</span>
-                            <span class="font-bold" v-show="cake.cake_size"
-                                >({{ cake.cake_size?.size }}Cm)</span
-                            >
-                        </div>
-                        <p>
-                            {{
-                                formatPrice(
-                                    cake.base_price +
-                                        (cake.cake_size?.price ?? 0),
-                                )
-                            }}
-                        </p>
-                    </inertia-link>
-                </li>
-                <li v-if="results.length <= 0">
-                    <a>Kue tidak ditemukan</a>
-                </li>
-            </ul>
+                        <inertia-link
+                            class="flex items-center justify-between p-3 rounded-xl hover:bg-primary/10 transition-all duration-200 group-hover:shadow-soft"
+                            :href="route('detail-product', { cakeId: cake.id })"
+                        >
+                            <div class="flex items-center space-x-3 flex-1">
+                                <div
+                                    class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center"
+                                >
+                                    <i
+                                        class="fa-solid fa-cake-candles text-primary text-sm"
+                                    ></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p
+                                        class="text-sm font-semibold text-gray-900 truncate"
+                                    >
+                                        {{ cake.name }}
+                                        <span
+                                            v-if="cake.cake_size"
+                                            class="text-primary font-medium"
+                                        >
+                                            ({{ cake.cake_size?.size }}cm)
+                                        </span>
+                                    </p>
+                                    <p class="text-xs text-gray-500">
+                                        Kue
+                                        {{ cake.category?.name || "Premium" }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-bold text-primary">
+                                    {{
+                                        formatPrice(
+                                            cake.base_price +
+                                                (cake.cake_size?.price ?? 0),
+                                        )
+                                    }}
+                                </p>
+                            </div>
+                        </inertia-link>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div v-else class="p-6 text-center">
+                    <div
+                        class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3"
+                    >
+                        <i class="fas fa-search text-gray-400 text-xl"></i>
+                    </div>
+                    <p class="text-sm font-medium text-gray-900 mb-1">
+                        Kue tidak ditemukan
+                    </p>
+                    <p class="text-xs text-gray-500">
+                        Coba dengan kata kunci yang berbeda
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -187,3 +218,23 @@ const formatPrice = (price = 0) => {
     }).format(price);
 };
 </script>
+
+<style scoped>
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #d946ef, #ec4899);
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #c026d3, #db2777);
+}
+</style>
