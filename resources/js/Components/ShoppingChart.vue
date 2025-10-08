@@ -6,19 +6,20 @@
             'dropdown dropdown-hover dropdown-end': !isMobileDisplayed,
         }"
     >
+        <!-- Cart Button -->
         <div
             :tabindex="isMobileDisplayed ? null : '0'"
             :role="isMobileDisplayed ? null : 'button'"
-            class="btn btn-ghost btn-circle"
+            class="btn btn-ghost btn-circle group relative transition-all duration-300 hover:bg-white/20 hover:scale-105"
         >
             <div class="indicator">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
+                    class="h-6 w-6 transition-all duration-300"
                     :class="
                         isNavbarHovered
-                            ? 'stroke-neutral-content'
-                            : 'stroke-base-100'
+                            ? 'stroke-neutral-content group-hover:stroke-primary'
+                            : 'stroke-base-100 group-hover:stroke-primary'
                     "
                     fill="none"
                     viewBox="0 0 24 24"
@@ -30,77 +31,164 @@
                         d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                     />
                 </svg>
-                <span class="badge badge-sm indicator-item">{{
-                    chartItems.length
-                }}</span>
+                <span
+                    v-if="chartItems.length > 0"
+                    class="badge badge-sm indicator-item bg-gradient-to-r from-primary to-accent text-white border-0 animate-pulse-gentle shadow-lg"
+                >
+                    {{ chartItems.length }}
+                </span>
             </div>
         </div>
+
+        <!-- Cart Dropdown Content -->
         <div
             v-if="chartItems.length > 0"
             tabindex="0"
             :class="{
-                'card card-compact dropdown-content w-96 max-h-96 bg-base-100 shadow overflow-auto':
+                'card dropdown-content w-[420px] max-h-[500px] bg-white/95 backdrop-blur-lg shadow-card-lg border border-white/20 overflow-hidden rounded-3xl':
                     !isMobileDisplayed,
                 hidden: isMobileDisplayed,
             }"
         >
-            <div class="card-body border-b-2 border-neutral">
+            <!-- Cart Header -->
+            <div class="px-6 py-5 border-b border-gray-100/50">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-lg font-bold">
-                        Keranjang Belanja
-                        <span class="font-light">({{ chartItemsLength }})</span>
-                    </h3>
+                    <div class="flex flex-col space-y-1">
+                        <h3
+                            class="text-lg font-heading font-bold text-gray-900"
+                        >
+                            Keranjang Belanja
+                        </h3>
+                        <span class="text-sm text-gray-500">
+                            {{ chartItemsLength }} item{{
+                                chartItemsLength > 1 ? "s" : ""
+                            }}
+                        </span>
+                    </div>
                     <inertia-link
                         :href="route('detail-chart')"
-                        class="text-lg text-primary-color font-bold"
+                        class="text-sm font-semibold text-primary hover:text-accent transition-all duration-300 flex items-center space-x-2 bg-primary/10 hover:bg-primary/20 rounded-full px-4 py-2"
                     >
-                        Lihat Semua
+                        <span>Lihat Semua</span>
+                        <svg
+                            class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="m9 5 7 7-7 7"
+                            />
+                        </svg>
                     </inertia-link>
                 </div>
             </div>
-            <div class="card-body gap-4">
+
+            <!-- Cart Items -->
+            <div
+                class="px-4 py-3 space-y-3 max-h-80 overflow-y-auto aside-scrollbars-light"
+            >
                 <inertia-link
-                    class="flex justify-between items-center gap-2 bg-neutral rounded-lg shadow-xl"
                     v-for="(items, index) in chartItems"
                     :key="index"
                     :href="route('detail-product', items.cake?.id)"
+                    class="flex items-start gap-4 p-4 bg-white/80 rounded-2xl shadow-soft hover:shadow-card transition-all duration-300 group border border-gray-100/50 hover:border-primary/20"
                 >
-                    <div class="flex items-center gap-2">
-                        <div class="avatar">
-                            <div class="w-16 rounded">
-                                <img
-                                    :src="
-                                        items.cake?.image_url ??
-                                        `/assets/image/default-img.jpg`
-                                    "
-                                    alt="Tailwind-CSS-Avatar-component"
-                                />
-                            </div>
-                        </div>
-                        <div class="flex flex-col">
-                            <h1 class="font-bold text-lg m-0">
-                                {{ items.cake?.name }}
-                            </h1>
-                            <div
-                                class="flex flex-col text-sm font-medium text-opacity-70"
-                            >
-                                <p>
-                                    {{ items.cake_flavour?.name }}
-                                </p>
-                                <p>
-                                    {{ getToppingNameBasedChartItem(items.id) }}
-                                </p>
-                            </div>
+                    <!-- Item Image -->
+                    <div class="avatar flex-shrink-0">
+                        <div
+                            class="w-16 h-16 rounded-2xl overflow-hidden shadow-soft ring-2 ring-gray-100 group-hover:ring-primary/30 transition-all duration-300"
+                        >
+                            <img
+                                :src="
+                                    items.cake?.image_url ??
+                                    `/assets/image/default-img.jpg`
+                                "
+                                :alt="`Gambar ${items.cake?.name}`"
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                            />
                         </div>
                     </div>
-                    <div class="flex items-center gap-1 me-2 font-bold">
-                        <p>{{ items.quantity }}</p>
-                        <p>x</p>
-                        <p>{{ formatPrice(items.price) }}</p>
+
+                    <!-- Item Details -->
+                    <div class="flex-1 min-w-0 space-y-2">
+                        <div class="flex justify-between items-start gap-3">
+                            <h4
+                                class="font-semibold text-gray-900 text-sm leading-tight group-hover:text-primary transition-colors duration-300"
+                            >
+                                {{ items.cake?.name }}
+                            </h4>
+                            <div
+                                class="flex flex-col items-end space-y-1 flex-shrink-0"
+                            >
+                                <div
+                                    class="bg-primary/15 text-primary text-xs font-bold px-3 py-1 rounded-full"
+                                >
+                                    {{ items.quantity }}x
+                                </div>
+                                <div class="font-bold text-primary text-sm">
+                                    {{ formatPrice(items.price) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item Specifications -->
+                        <div class="space-y-1.5">
+                            <div
+                                v-if="items.cake_flavour?.name"
+                                class="flex items-center space-x-2 text-xs text-gray-600"
+                            >
+                                <div
+                                    class="w-2 h-2 bg-primary/50 rounded-full flex-shrink-0"
+                                ></div>
+                                <span class="font-medium">Rasa:</span>
+                                <span>{{ items.cake_flavour?.name }}</span>
+                            </div>
+                            <div
+                                v-if="getToppingNameBasedChartItem(items.id)"
+                                class="flex items-center space-x-2 text-xs text-gray-600"
+                            >
+                                <div
+                                    class="w-2 h-2 bg-accent/50 rounded-full flex-shrink-0"
+                                ></div>
+                                <span class="font-medium">Topping:</span>
+                                <span class="truncate">{{
+                                    getToppingNameBasedChartItem(items.id)
+                                }}</span>
+                            </div>
+                        </div>
                     </div>
                 </inertia-link>
             </div>
+
+            <!-- Cart Footer -->
+            <div class="px-6 py-5 border-t border-gray-100/50">
+                <inertia-link
+                    :href="route('detail-chart')"
+                    class="btn btn-modern w-full bg-gradient-to-r from-primary to-accent text-white hover:from-primary-hover hover:to-accent-hover transition-all duration-300 shadow-card hover:shadow-card-hover transform hover:scale-[1.02] border-0 py-3"
+                >
+                    <svg
+                        class="w-5 h-5 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                        />
+                    </svg>
+                    Lihat Keranjang Lengkap
+                </inertia-link>
+            </div>
         </div>
+
+        <!-- Empty Cart Component -->
         <EmptyShoppingChart :is-mobile-displayed="isMobileDisplayed" v-else />
     </component>
 </template>

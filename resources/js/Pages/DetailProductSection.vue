@@ -1,82 +1,203 @@
 <template>
     <App>
-        <section
-            class="min-h-screen w-full grid grid-cols-1 lg:grid-cols-2 gap-2 place-items-center pt-28 lg:py-0 bg-primary-color-light"
-        >
-            <section class="flex flex-col gap-10">
-                <aside
-                    class="breadcrumbs text-sm me-auto relative"
-                    :class="
-                        props.cake?.personalization_type === 'customized'
-                            ? '-bottom-4'
-                            : 'lg:bottom-0'
-                    "
+        <!-- Main Product Detail Section -->
+        <section class="min-h-screen w-full bg-gradient-soft">
+            <div class="container mx-auto px-6 lg:px-12 py-8 lg:py-16">
+                <!-- Breadcrumbs -->
+                <nav
+                    class="flex mb-10 animate-slide-up relative top-5"
+                    aria-label="Breadcrumb"
                 >
-                    <ul class="text-base-100">
-                        <li>
-                            <inertia-link :href="route('home')"
-                                >Beranda</inertia-link
+                    <ol class="inline-flex items-center space-x-2 md:space-x-3">
+                        <li class="inline-flex items-center">
+                            <inertia-link
+                                :href="route('home')"
+                                class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200"
                             >
+                                <svg
+                                    class="w-4 h-4 mr-2"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path
+                                        d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
+                                    ></path>
+                                </svg>
+                                Beranda
+                            </inertia-link>
                         </li>
                         <li>
-                            <inertia-link :href="route('products')"
-                                >Katalog</inertia-link
+                            <div class="flex items-center">
+                                <svg
+                                    class="w-6 h-6 text-gray-400"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path
+                                        fill-rule="evenodd"
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd"
+                                    ></path>
+                                </svg>
+                                <inertia-link
+                                    :href="route('products')"
+                                    class="ml-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors duration-200"
+                                >
+                                    Katalog
+                                </inertia-link>
+                            </div>
+                        </li>
+                        <li aria-current="page">
+                            <div class="flex items-center">
+                                <svg
+                                    class="w-6 h-6 text-gray-400"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path
+                                        fill-rule="evenodd"
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd"
+                                    ></path>
+                                </svg>
+                                <span
+                                    class="ml-2 text-sm font-medium text-gray-600"
+                                    >Detail Kue</span
+                                >
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
+
+                <!-- Product Content Grid -->
+                <div
+                    class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start"
+                >
+                    <!-- Product Image Section -->
+                    <div
+                        class="flex flex-col space-y-6 animate-slide-up"
+                        style="animation-delay: 0.1s"
+                    >
+                        <div class="relative group">
+                            <div
+                                class="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-300"
+                            ></div>
+                            <ProductImage
+                                :class="[
+                                    'relative rounded-2xl overflow-hidden shadow-card-lg transition-all duration-300 group-hover:shadow-card-hover',
+                                    props.cake?.personalization_type ===
+                                    'customized'
+                                        ? 'w-full max-w-md lg:max-w-lg h-80 sm:h-96 lg:h-[500px]'
+                                        : 'w-full max-w-md h-80 sm:h-96',
+                                ]"
+                                :cake-image="props.cake.image_url"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Product Configuration Form -->
+                    <div
+                        class="flex flex-col justify-start animate-slide-up"
+                        style="animation-delay: 0.2s"
+                    >
+                        <div
+                            class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-card-lg p-6 lg:p-8 border border-white/50"
+                        >
+                            <form
+                                @submit.prevent="addItemToChart"
+                                class="space-y-8"
                             >
-                        </li>
-                        <li>
-                            <inertia-link>Detail Kue</inertia-link>
-                        </li>
-                    </ul>
-                </aside>
-                <ProductImage
-                    :class="
-                        props.cake?.personalization_type === 'customized'
-                            ? 'w-[450px] h-[450px] lg:w-[600px] lg:h-[600px]'
-                            : 'w-[450px] h-[450px]'
-                    "
-                    :cake-image="props.cake.image_url"
-                />
-            </section>
-            <form
-                @submit.prevent="addItemToChart"
-                class="h-full w-full flex flex-col justify-center px-8 py-10 mt-10 gap-6"
-            >
-                <input type="text" hidden v-model="form.cake_id" />
-                <ProductDetail :cake="totalPrice" :format-price="formatPrice" />
+                                <input
+                                    type="text"
+                                    hidden
+                                    v-model="form.cake_id"
+                                />
 
-                <ProductFlavour
-                    v-if="isCakeCustomized"
-                    :flavours="props.flavour"
-                    v-model="form.cake_flavour_id"
-                    @update-flavour-price="handleUpdateFlavourPrice"
-                    :error-responses="errorResponses"
-                    :format-price="formatPrice"
-                />
-                <ProductTopping
-                    v-if="isCakeCustomized"
-                    :toppings="props.topping"
-                    v-model="form.toppings"
-                    @update-topping-price="handleUpdateToppingPrice"
-                    :error-responses="errorResponses"
-                    :format-price="formatPrice"
-                />
-                <ProductSize
-                    v-if="isCakeCustomized"
-                    v-model="form.cake_size_id"
-                    :cake-size="props.size"
-                    :error-responses="errorResponses"
-                    :format-price="formatPrice"
-                    @update-cake-size-price="handleUpdateCakeSizePrice"
-                />
-                <ProductQuantity
-                    v-model="form.quantity"
-                    :quantity="qty"
-                    @update-quantity-price="handleUpdateQuantityPrice"
-                />
+                                <!-- Product Details -->
+                                <div class="space-y-6">
+                                    <ProductDetail
+                                        :cake="totalPrice"
+                                        :format-price="formatPrice"
+                                    />
+                                </div>
 
-                <AddToChartButton type="submit" :is-submitting="isSubmitting" />
-            </form>
+                                <!-- Product Customization Options -->
+                                <div
+                                    v-if="isCakeCustomized"
+                                    class="space-y-6 border-t border-gray-100 pt-6"
+                                >
+                                    <h3
+                                        class="text-lg font-heading font-semibold text-gray-900 mb-4"
+                                    >
+                                        Kustomisasi Produk
+                                    </h3>
+
+                                    <ProductFlavour
+                                        :flavours="props.flavour"
+                                        v-model="form.cake_flavour_id"
+                                        @update-flavour-price="
+                                            handleUpdateFlavourPrice
+                                        "
+                                        :error-responses="errorResponses"
+                                        :format-price="formatPrice"
+                                        class="animate-slide-up"
+                                        style="animation-delay: 0.3s"
+                                    />
+
+                                    <ProductTopping
+                                        :toppings="props.topping"
+                                        v-model="form.toppings"
+                                        @update-topping-price="
+                                            handleUpdateToppingPrice
+                                        "
+                                        :error-responses="errorResponses"
+                                        :format-price="formatPrice"
+                                        class="animate-slide-up"
+                                        style="animation-delay: 0.4s"
+                                    />
+
+                                    <ProductSize
+                                        v-model="form.cake_size_id"
+                                        :cake-size="props.size"
+                                        :error-responses="errorResponses"
+                                        :format-price="formatPrice"
+                                        @update-cake-size-price="
+                                            handleUpdateCakeSizePrice
+                                        "
+                                        class="animate-slide-up"
+                                        style="animation-delay: 0.5s"
+                                    />
+                                </div>
+
+                                <!-- Quantity and Add to Cart -->
+                                <div
+                                    class="space-y-6 border-t border-gray-100 pt-6"
+                                >
+                                    <ProductQuantity
+                                        v-model="form.quantity"
+                                        :quantity="qty"
+                                        @update-quantity-price="
+                                            handleUpdateQuantityPrice
+                                        "
+                                        class="animate-slide-up"
+                                        style="animation-delay: 0.6s"
+                                    />
+
+                                    <AddToChartButton
+                                        type="submit"
+                                        :is-submitting="isSubmitting"
+                                        class="w-full animate-slide-up"
+                                        style="animation-delay: 0.7s"
+                                    />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
+
+        <!-- Preview Modal -->
         <PreviewChartItem
             :is-preview-open="isPreviewOpen"
             :chart="chartItem"

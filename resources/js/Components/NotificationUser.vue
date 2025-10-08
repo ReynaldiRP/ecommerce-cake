@@ -1,82 +1,161 @@
 <template>
     <div class="dropdown dropdown-hover dropdown-end">
-        <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+        <div
+            tabindex="0"
+            role="button"
+            class="btn btn-ghost btn-circle group relative transition-all duration-300 hover:bg-white/20 hover:scale-105"
+        >
             <div class="indicator">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 448 512"
-                    class="h-5 w-5"
+                    class="h-6 w-6 transition-all duration-300"
                     :class="
                         isNavbarHovered
-                            ? 'fill-neutral-content'
-                            : 'fill-base-100'
+                            ? 'fill-neutral-content group-hover:fill-primary'
+                            : 'fill-base-100 group-hover:fill-primary'
                     "
                 >
                     <path
                         d="M224 0c-17.7 0-32 14.3-32 32l0 19.2C119 66 64 130.6 64 208l0 18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416l384 0c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8l0-18.8c0-77.4-55-142-128-156.8L256 32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3l-64 0-64 0c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z"
                     />
                 </svg>
-                <span class="badge badge-sm indicator-item">{{
-                    orderStatus.length
-                }}</span>
+                <span
+                    v-if="orderStatus.length > 0"
+                    class="badge badge-sm indicator-item bg-gradient-to-r from-primary to-accent text-white border-0 animate-pulse-gentle shadow-lg"
+                >
+                    {{ orderStatus.length }}
+                </span>
             </div>
         </div>
         <div
             tabindex="0"
-            class="z-[1] card card-compact dropdown-content w-96 max-h-96 bg-base-100 shadow-xl p-3 overflow-auto"
+            class="z-[1] card card-compact dropdown-content w-[420px] max-h-[500px] bg-white/95 backdrop-blur-lg shadow-card-lg border border-white/20 overflow-hidden rounded-3xl"
         >
-            <div
-                class="flex justify-between items-center text-base font-medium py-2"
-            >
-                <p class="text-lg">Notification</p>
-            </div>
-            <div class="grid grid-flow-col-dense place-items-center pt-2 px-2">
-                <div
-                    v-for="(status, index) in orderStatus"
-                    :key="index"
-                    class="py-2"
-                >
-                    <inertia-link
-                        class="flex gap-1 flex-col text-center text-primary-color"
-                        href="#"
-                        @click="redirectLinkBasedOnOrderStatus(status.value)"
+            <!-- Notification Header -->
+            <div class="px-6 py-5 border-b border-gray-100/50">
+                <div class="flex items-center space-x-3">
+                    <div
+                        class="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-2xl flex items-center justify-center"
                     >
-                        <i :class="status.icon"></i>
-                        <span class="text-sm">{{ status.name }}</span>
-                    </inertia-link>
+                        <svg
+                            class="w-5 h-5 text-white"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                        >
+                            <path d="M10 2L3 7v11h4v-6h6v6h4V7l-7-5z" />
+                        </svg>
+                    </div>
+                    <div class="flex flex-col">
+                        <h3
+                            class="text-lg font-heading font-bold text-gray-900"
+                        >
+                            Notifikasi
+                        </h3>
+                        <span class="text-sm text-gray-500">
+                            Status pesanan terbaru
+                        </span>
+                    </div>
                 </div>
             </div>
 
-            <div
-                class="card-body flex-row gap-4 mt-2 rounded-lg bg-neutral"
-                v-for="(notification, index) in combinedStatusHistory"
-                :key="index"
-            >
-                <div class="avatar">
-                    <div class="w-16 rounded-lg bg-primary-color">
-                        <img src="/assets/image/pastry.png" alt="" />
+            <!-- Status Icons Grid -->
+            <div class="px-6 py-4 border-b border-gray-100/50">
+                <div class="grid grid-cols-3 gap-3">
+                    <div
+                        v-for="(status, index) in orderStatus"
+                        :key="index"
+                        class="group cursor-pointer"
+                        @click="redirectLinkBasedOnOrderStatus(status.value)"
+                    >
+                        <div
+                            class="flex flex-col items-center space-y-2 p-3 bg-white/70 rounded-2xl shadow-soft hover:shadow-card transition-all duration-300 group-hover:scale-105 border border-gray-100/50 group-hover:border-primary/20"
+                        >
+                            <div
+                                class="w-10 h-10 bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl flex items-center justify-center group-hover:from-primary/20 group-hover:to-accent/20 transition-all duration-300"
+                            >
+                                <i
+                                    :class="[
+                                        status.icon,
+                                        'text-primary group-hover:text-accent transition-colors duration-300 text-sm',
+                                    ]"
+                                ></i>
+                            </div>
+                            <span
+                                class="text-xs font-semibold text-gray-700 text-center group-hover:text-primary transition-colors duration-300 leading-tight"
+                            >
+                                {{ status.name }}
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div class="flex flex-col gap-1">
-                    <div class="flex flex-col">
-                        <p class="text-base text-justify">
-                            {{ notification.status }}
-                        </p>
-                        <p class="text-sm font-light">
-                            {{ notification.description }}
-                        </p>
-                    </div>
-                    <p class="text-sm font-light">
-                        {{ notification.created_at }}
-                    </p>
                 </div>
             </div>
-            <div class="card-actions my-2">
+
+            <!-- Notification Items -->
+            <div class="max-h-72 overflow-y-auto aside-scrollbars-light">
+                <div class="px-4 py-3 space-y-3">
+                    <div
+                        class="flex items-start gap-4 p-4 bg-white/80 rounded-2xl shadow-soft hover:shadow-card transition-all duration-300 border border-gray-100/50 hover:border-primary/20 group"
+                        v-for="(notification, index) in combinedStatusHistory"
+                        :key="index"
+                    >
+                        <div class="avatar flex-shrink-0">
+                            <div
+                                class="w-14 h-14 rounded-2xl bg-gradient-to-r from-primary/10 to-accent/10 flex items-center justify-center ring-2 ring-gray-100 group-hover:ring-primary/30 transition-all duration-300"
+                            >
+                                <img
+                                    src="/assets/image/pastry.png"
+                                    alt="Order notification"
+                                    class="w-8 h-8 object-cover rounded-xl"
+                                />
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2 flex-1 min-w-0">
+                            <div class="space-y-1">
+                                <p
+                                    class="text-sm font-semibold text-gray-900 leading-relaxed group-hover:text-primary transition-colors duration-300"
+                                >
+                                    {{ notification.status }}
+                                </p>
+                                <p
+                                    class="text-xs text-gray-600 leading-relaxed line-clamp-2"
+                                >
+                                    {{ notification.description }}
+                                </p>
+                            </div>
+                            <div class="flex items-center space-x-2 mt-1">
+                                <div
+                                    class="w-1.5 h-1.5 bg-primary/50 rounded-full flex-shrink-0"
+                                ></div>
+                                <p class="text-xs font-medium text-gray-500">
+                                    {{ notification.created_at }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Action -->
+            <div class="px-6 py-5 border-t border-gray-100/50">
                 <inertia-link
                     :href="route('transaction-history')"
-                    class="btn btn-sm bg-primary-color text-slate-700 hover:text-white btn-block"
+                    class="btn btn-modern w-full bg-gradient-to-r from-primary to-accent text-white hover:from-primary-hover hover:to-accent-hover transition-all duration-300 shadow-card hover:shadow-card-hover transform hover:scale-[1.02] border-0 py-3"
                 >
-                    View Transaction
+                    <svg
+                        class="w-5 h-5 mr-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                        />
+                    </svg>
+                    Lihat Riwayat Transaksi
                 </inertia-link>
             </div>
         </div>

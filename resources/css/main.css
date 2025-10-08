@@ -58,9 +58,69 @@ h6 {
     -webkit-line-clamp: 3;
 }
 
-/* Modern button styles */
+/* Modern Button Styles */
 .btn-modern {
-    @apply inline-flex items-center justify-center px-6 py-3 text-sm font-medium rounded-xl transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-opacity-50;
+    @apply relative overflow-hidden font-semibold py-3 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 active:scale-95;
+}
+
+/* Modern Card Styles */
+.card-modern {
+    @apply relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-3xl shadow-card border border-white/20 transition-all duration-300 hover:shadow-card-hover hover:border-white/40;
+}
+
+/* Gradient Backgrounds */
+.bg-gradient-soft {
+    @apply bg-gradient-to-br from-primary/5 via-white to-accent/5;
+}
+
+.bg-gradient-primary {
+    @apply bg-gradient-to-r from-primary to-accent;
+}
+
+/* Modern animations */
+@keyframes pulse-gentle {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+@keyframes bounce-gentle {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-2px);
+    }
+}
+
+.animate-pulse-gentle {
+    animation: pulse-gentle 2s ease-in-out infinite;
+}
+
+.animate-bounce-gentle {
+    animation: bounce-gentle 1s ease-in-out infinite;
+}
+
+/* Scrollbar Styles */
+.aside-scrollbars-light::-webkit-scrollbar {
+    @apply w-2;
+}
+
+.aside-scrollbars-light::-webkit-scrollbar-track {
+    @apply bg-gray-100 rounded-full;
+}
+
+.aside-scrollbars-light::-webkit-scrollbar-thumb {
+    @apply bg-primary/30 rounded-full;
+}
+
+.aside-scrollbars-light::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary/50;
 }
 
 .btn-primary-modern {
