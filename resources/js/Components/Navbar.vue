@@ -1,30 +1,34 @@
 <template>
     <div
-        class="navbar px-5 py-4 fixed top-0 transition-all z-50 duration-300"
+        class="navbar px-6 py-4 fixed top-0 transition-all z-50 duration-300 backdrop-blur-modern"
         :class="headerClass"
         ref="navbar"
     >
-        <div class="navbar-start gap-3">
+        <div class="navbar-start gap-4">
             <div class="avatar">
-                <div class="w-16 rounded-full">
+                <div class="w-12 h-12 rounded-full ring-2 ring-primary/20">
                     <img
                         src="/assets/image/logo-dreamdessert.webp"
-                        alt="ini gambar"
+                        alt="Dream Dessert Logo"
+                        class="object-cover w-full h-full rounded-full"
                     />
                 </div>
             </div>
             <inertia-link
                 :href="route('home')"
                 :class="textColor"
-                class="text-md font-bold cursor-pointer"
+                class="text-xl font-heading font-bold cursor-pointer hover:text-primary transition-colors duration-200"
                 >Dream Dessert
             </inertia-link>
         </div>
+
+        <!-- Desktop Navigation -->
         <ul class="navbar-center hidden lg:flex gap-8">
             <SearchBar :is-navbar-hovered="isNavbarHovered" />
         </ul>
-        <div class="navbar-end flex gap-2">
-            <section class="flex justify-center items-center">
+
+        <div class="navbar-end flex gap-3">
+            <section class="flex justify-center items-center gap-2">
                 <ShoppingChart :is-navbar-hovered="isNavbarHovered" />
                 <NotificationUser
                     v-if="user"
@@ -46,8 +50,9 @@
         v-model:active="isLoading"
         :can-cancel="true"
         :is-full-page="true"
-        color="#EBA9AE"
-        background-color="#B2BEB5"
+        color="#D946EF"
+        background-color="rgba(255, 255, 255, 0.9)"
+        loader="dots"
     />
 </template>
 
@@ -67,8 +72,8 @@ const page = usePage();
 const user = computed(() => page.props.value.authenticated);
 
 const state = reactive({
-    backgroundColor: "bg-transparent",
-    textColor: "text-base-100",
+    backgroundColor: "bg-white/95",
+    textColor: "text-gray-900",
 });
 
 const isLoading = ref(false);
@@ -111,12 +116,13 @@ const handleScroll = () => {
 
     if (scrollPositition > 10) {
         isNavbarHovered.value = true;
-        state.backgroundColor = "bg-base-200";
-        state.textColor = "text-primary-color-light";
+        state.backgroundColor =
+            "bg-white/98 shadow-lg border-b border-gray-100";
+        state.textColor = "text-gray-900";
     } else {
         isNavbarHovered.value = false;
-        state.backgroundColor = "bg-transparent";
-        state.textColor = "text-base-100";
+        state.backgroundColor = "bg-white/95";
+        state.textColor = "text-gray-900";
     }
 };
 

@@ -1,212 +1,271 @@
 <template>
     <App>
-        <section
-            class="min-h-screen flex flex-col justify-center bg-primary-color-light"
-        >
-            <aside
-                class="breadcrumbs text-sm me-auto relative top-32 lg:top-[88px] left-8"
-            >
-                <ul class="text-base-100">
-                    <li>
-                        <inertia-link :href="route('home')"
-                            >Beranda</inertia-link
-                        >
-                    </li>
-                    <li>
-                        <inertia-link :href="route('products')"
-                            >Katalog</inertia-link
-                        >
-                    </li>
-                </ul>
-            </aside>
-            <section
-                class="w-full grid grid-cols-12 px-8 sm:px-4 place-items-center lg:place-items-start"
-            >
-                <section
-                    class="h-fit w-full lg:w-fit col-span-full sm:col-span-5 md:col-span-4 lg:col-span-3 flex flex-col justify-start mb-auto gap-2 px-2 pb-10 pt-36 sm:py-36 lg:py-24"
-                >
-                    <section
-                        class="w-full px-4 lg:px-0 flex items-center gap-2 relative sm:right-4 lg:right-0 lg:left-4"
-                    >
-                        <article
-                            class="lg:hidden collapse collapse-arrow bg-base-300"
-                        >
-                            <input type="checkbox" />
-                            <div class="collapse-title text-lg font-medium">
-                                Filter
-                            </div>
-                            <div class="collapse-content">
-                                <FilterItem filtering-name="Penawaran">
-                                    <BaseRadio
-                                        v-for="(promo, index) in cakePromoType"
-                                        v-model="filteredData.selectedPromoId"
-                                        :key="index"
-                                        :label="promo.name"
-                                        :id="promo.id"
-                                        :total-data="
-                                            geTotalCakeWithDiscount[promo.name]
-                                        "
-                                    />
-                                </FilterItem>
-
-                                <FilterItem
-                                    class="my-4"
-                                    filtering-name="Tipe Kue"
-                                >
-                                    <BaseRadio
-                                        v-for="(
-                                            cakePersonalizationType, index
-                                        ) in cakePersonalizationType"
-                                        v-model="
-                                            filteredData.selectedPersonalizationId
-                                        "
-                                        :key="index"
-                                        :label="cakePersonalizationType.name"
-                                        :id="cakePersonalizationType.id"
-                                        :total-data="
-                                            getTotalDataCakeType(
-                                                cakePersonalizationType.name,
-                                            )
-                                        "
-                                    />
-                                </FilterItem>
-
-                                <FilterItem
-                                    class="my-4"
-                                    filtering-name="Kategori Kue"
-                                >
-                                    <BaseCheckbox
-                                        v-for="cakeCategory in props.cakeCategories"
-                                        v-model="
-                                            filteredData.selectedCakeCategoryId
-                                        "
-                                        :key="cakeCategory.id"
-                                        :label="cakeCategory?.name"
-                                        :id="cakeCategory.id"
-                                        :total-data="
-                                            totalCakeCategory[cakeCategory.name]
-                                        "
-                                    />
-                                </FilterItem>
-                                <div class="flex items-center gap-2 mt-2">
-                                    <button
-                                        class="btn btn-outline"
-                                        @click="clearFilters"
-                                    >
-                                        Clear
-                                    </button>
-                                    <button
-                                        class="btn bg-primary-color text-base-200 hover:bg-base-content"
-                                        @click="applyFilters"
-                                    >
-                                        Save
-                                    </button>
-                                </div>
-                            </div>
-                        </article>
-                        <h1
-                            class="hidden lg:block text-lg font-medium me-auto text-base-100"
-                        >
-                            Filter
-                        </h1>
-                    </section>
-
-                    <FilterLayout class="hidden lg:flex">
-                        <FilterItem filtering-name="Penawaran">
-                            <BaseRadio
-                                v-for="(promo, index) in cakePromoType"
-                                v-model="filteredData.selectedPromoId"
-                                :key="index"
-                                :label="promo.name"
-                                :id="promo.id"
-                                :total-data="
-                                    geTotalCakeWithDiscount[promo.name]
-                                "
-                            />
-                        </FilterItem>
-
-                        <FilterItem filtering-name="Tipe Kue">
-                            <BaseRadio
-                                v-for="(
-                                    cakePersonalizationType, index
-                                ) in cakePersonalizationType"
-                                v-model="filteredData.selectedPersonalizationId"
-                                :key="index"
-                                :label="cakePersonalizationType.name"
-                                :id="cakePersonalizationType.id"
-                                :total-data="
-                                    getTotalDataCakeType(
-                                        cakePersonalizationType.name,
-                                    )
-                                "
-                            />
-                        </FilterItem>
-                        <FilterItem filtering-name="Kategori Kue">
-                            <BaseCheckbox
-                                v-for="cakeCategory in props.cakeCategories"
-                                v-model="filteredData.selectedCakeCategoryId"
-                                :key="cakeCategory.id"
-                                :label="cakeCategory?.name"
-                                :id="cakeCategory.id"
-                                :total-data="
-                                    totalCakeCategory[cakeCategory.name]
-                                "
-                            />
-                        </FilterItem>
-                        <div class="hidden lg:flex items-center gap-2 mt-2">
-                            <button class="btn btn-dark" @click="clearFilters">
-                                Clear
-                            </button>
-                            <button
-                                class="btn bg-primary-color text-base-100 hover:bg-primary-color border-none"
-                                @click="applyFilters"
+        <section class="min-h-screen bg-gradient-soft">
+            <!-- Breadcrumb -->
+            <div class="container mx-auto px-6 lg:px-12 pt-28 pb-6">
+                <nav class="flex" aria-label="Breadcrumb">
+                    <ol class="inline-flex items-center space-x-2 md:space-x-3">
+                        <li class="inline-flex items-center">
+                            <inertia-link
+                                :href="route('home')"
+                                class="inline-flex items-center text-gray-700 hover:text-primary transition-colors font-medium"
                             >
-                                Save
+                                <svg
+                                    class="w-4 h-4 mr-2"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path
+                                        d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
+                                    ></path>
+                                </svg>
+                                Beranda
+                            </inertia-link>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <svg
+                                    class="w-6 h-6 text-gray-400"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path
+                                        fill-rule="evenodd"
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd"
+                                    ></path>
+                                </svg>
+                                <span
+                                    class="ml-2 text-gray-600 font-medium md:ml-2"
+                                    >Katalog</span
+                                >
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+
+            <div class="container mx-auto px-6 lg:px-12 pb-12">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-10">
+                    <!-- Filters Sidebar -->
+                    <div class="lg:col-span-1">
+                        <!-- Mobile Filter Toggle -->
+                        <div class="lg:hidden mb-6">
+                            <button
+                                class="w-full flex items-center justify-between p-4 bg-white rounded-xl shadow-soft border"
+                                @click="mobileFiltersOpen = !mobileFiltersOpen"
+                            >
+                                <span class="font-medium text-gray-900"
+                                    >Filter & Sortir</span
+                                >
+                                <svg
+                                    class="w-5 h-5 text-gray-400"
+                                    :class="{ 'rotate-180': mobileFiltersOpen }"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M19 9l-7 7-7-7"
+                                    />
+                                </svg>
                             </button>
                         </div>
-                    </FilterLayout>
-                </section>
-                <section
-                    class="col-span-full sm:col-span-7 md:col-span-8 lg:col-span-9 flex flex-col items-center gap-8 pb-8"
-                    :class="{
-                        'sm:py-36 lg:py-32': props.cakes.data.length > 0,
-                    }"
-                >
-                    <section
-                        class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-11 place-items-center gap-4"
-                    >
-                        <CardLayout
-                            v-for="cakes in props.cakes.data"
-                            :key="cakes.id"
-                            class="col-span-2"
+
+                        <!-- Filter Panel -->
+                        <div
+                            class="bg-white rounded-2xl shadow-card p-6 sticky top-28"
+                            :class="{ 'hidden lg:block': !mobileFiltersOpen }"
                         >
-                            <CardItem
-                                :cakes="cakes"
-                                :format-price="formatPrice"
+                            <h3
+                                class="text-lg font-heading font-semibold text-gray-900 mb-8"
+                            >
+                                Filter Produk
+                            </h3>
+
+                            <!-- Promo Filter -->
+                            <FilterItem
+                                filtering-name="Penawaran"
+                                class="mb-8"
+                                custom-class="text-gray-900"
+                            >
+                                <BaseRadio
+                                    v-for="(promo, index) in cakePromoType"
+                                    v-model="filteredData.selectedPromoId"
+                                    :key="index"
+                                    :label="promo.name"
+                                    :id="promo.id"
+                                    :total-data="
+                                        geTotalCakeWithDiscount[promo.name]
+                                    "
+                                    text-color="black"
+                                />
+                            </FilterItem>
+
+                            <!-- Cake Type Filter -->
+                            <FilterItem
+                                filtering-name="Tipe Kue"
+                                class="mb-8"
+                                custom-class="text-gray-900"
+                            >
+                                <BaseRadio
+                                    v-for="(
+                                        cakePersonalizationType, index
+                                    ) in cakePersonalizationType"
+                                    v-model="
+                                        filteredData.selectedPersonalizationId
+                                    "
+                                    :key="index"
+                                    :label="cakePersonalizationType.name"
+                                    :id="cakePersonalizationType.id"
+                                    :total-data="
+                                        getTotalDataCakeType(
+                                            cakePersonalizationType.name,
+                                        )
+                                    "
+                                    text-color="black"
+                                />
+                            </FilterItem>
+
+                            <!-- Category Filter -->
+                            <FilterItem
+                                filtering-name="Kategori Kue"
+                                custom-class="text-gray-900"
+                                class="mb-8"
+                            >
+                                <BaseCheckbox
+                                    v-for="cakeCategory in props.cakeCategories"
+                                    v-model="
+                                        filteredData.selectedCakeCategoryId
+                                    "
+                                    :key="cakeCategory.id"
+                                    :label="cakeCategory?.name"
+                                    :id="cakeCategory.id"
+                                    :total-data="
+                                        totalCakeCategory[cakeCategory.name]
+                                    "
+                                    text-color="black"
+                                />
+                            </FilterItem>
+
+                            <!-- Filter Actions -->
+                            <div
+                                class="flex gap-3 pt-6 border-t border-gray-200"
+                            >
+                                <button
+                                    class="flex-1 px-4 py-3 text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors font-medium"
+                                    @click="clearFilters"
+                                >
+                                    Clear
+                                </button>
+                                <button
+                                    class="flex-1 px-4 py-3 bg-gradient-to-r from-primary to-accent text-white rounded-xl hover:shadow-lg transition-all transform hover:scale-105 font-medium"
+                                    @click="applyFilters"
+                                >
+                                    Terapkan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Products Grid -->
+                    <div class="lg:col-span-3">
+                        <!-- Products Header -->
+                        <div
+                            class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-10"
+                        >
+                            <div>
+                                <h1
+                                    class="text-3xl font-heading font-bold text-gray-900 mb-3"
+                                >
+                                    Katalog Kue
+                                </h1>
+                                <p class="text-gray-600 text-lg">
+                                    Menampilkan
+                                    <span class="font-semibold text-gray-900">{{
+                                        props.cakes.data.length
+                                    }}</span>
+                                    dari
+                                    <span class="font-semibold text-gray-900">{{
+                                        props.cakes.total ||
+                                        props.cakes.data.length
+                                    }}</span>
+                                    produk
+                                </p>
+                            </div>
+
+                            <!-- Sort Options -->
+                            <div class="mt-6 sm:mt-0">
+                                <select
+                                    class="w-full sm:w-auto px-4 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                                >
+                                    <option>Terbaru</option>
+                                    <option>Harga: Rendah ke Tinggi</option>
+                                    <option>Harga: Tinggi ke Rendah</option>
+                                    <option>Nama A-Z</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Products Grid or Empty State -->
+                        <div v-if="props.cakes.data.length > 0">
+                            <div
+                                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16"
+                            >
+                                <div
+                                    v-for="cake in props.cakes.data"
+                                    :key="cake.id"
+                                    class="fade-in-up"
+                                >
+                                    <CardLayout>
+                                        <CardItem
+                                            :cakes="cake"
+                                            :format-price="formatPrice"
+                                        />
+                                    </CardLayout>
+                                </div>
+                            </div>
+
+                            <!-- Pagination -->
+                            <Pagination
+                                :links="props.cakes.links"
+                                :next-page-url="props.cakes.next_page_url"
+                                :previous-page-url="props.cakes.prev_page_url"
                             />
-                        </CardLayout>
-                    </section>
-                    <Pagination
-                        v-if="props.cakes.data.length > 0"
-                        :links="props.cakes.links"
-                        :next-page-url="props.cakes.next_page_url"
-                        :previous-page-url="props.cakes.prev_page_url"
-                    />
-                    <section
-                        v-else
-                        class="relative lg:left-24 lg:bottom-4 flex flex-col items-center justify-center"
-                    >
-                        <h1 class="relative top-16 font-bold text-xl">
-                            Cake Not Founds
-                        </h1>
-                        <img
-                            src="/assets/image/cake-not-found.gif"
-                            class="rounded-xl"
-                            alt="image not found"
-                        />
-                    </section>
-                </section>
-            </section>
+                        </div>
+
+                        <!-- Empty State -->
+                        <div v-else class="text-center py-16">
+                            <div class="max-w-md mx-auto">
+                                <img
+                                    src="/assets/image/cake-not-found.gif"
+                                    class="w-64 h-64 mx-auto mb-8 rounded-2xl"
+                                    alt="Kue tidak ditemukan"
+                                />
+                                <h3
+                                    class="text-2xl font-heading font-bold text-gray-900 mb-4"
+                                >
+                                    Ops! Kue Tidak Ditemukan
+                                </h3>
+                                <p class="text-gray-600 mb-8">
+                                    Maaf, tidak ada kue yang sesuai dengan
+                                    filter yang Anda pilih. Coba ubah filter
+                                    atau jelajahi semua produk kami.
+                                </p>
+                                <button
+                                    @click="clearFilters"
+                                    class="btn-primary-modern"
+                                >
+                                    Lihat Semua Produk
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
     </App>
 </template>
@@ -215,13 +274,12 @@
 import App from "@/Layouts/App.vue";
 import CardLayout from "@/Components/BaseCard/Layout.vue";
 import CardItem from "@/Components/BaseCard/Item.vue";
-import FilterLayout from "@/Components/FilterProduct/Layout.vue";
 import FilterItem from "@/Components/FilterProduct/Item.vue";
 import BaseCheckbox from "@/Components/BaseCheckbox.vue";
 import BaseRadio from "@/Components/BaseRadio.vue";
 import Pagination from "@/Components/Pagination.vue";
 import { Inertia } from "@inertiajs/inertia";
-import { computed, reactive } from "vue";
+import { ref, computed, reactive } from "vue";
 
 const props = defineProps({
     cakes: {
@@ -360,6 +418,8 @@ let filteredData = reactive({
     selectedPromoId: null,
     selectedCakeCategoryId: [],
 });
+
+const mobileFiltersOpen = ref(false);
 
 /**
  * Applies filters to the products based on the selected personalization and cake category.

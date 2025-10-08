@@ -1,6 +1,6 @@
 <template>
     <section class="flex flex-col gap-3">
-        <h1 class="text-lg font-bold">{{ filteringName }}</h1>
+        <h1 class="text-lg" :class="customClass">{{ filteringName }}</h1>
         <slot></slot>
     </section>
 </template>
@@ -11,5 +11,9 @@ defineProps({
         type: String,
         default: null,
     },
+    customClass: {
+        type: String,
+        default: null,
+    }
 });
 </script>

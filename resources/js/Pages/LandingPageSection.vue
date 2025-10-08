@@ -1,11 +1,18 @@
 <template>
     <App>
-        <section class="pt-10 pb-96 md:pb-28 lg:py-0 bg-primary-color-light">
+        <div class="min-h-screen">
+            <!-- Hero Section -->
             <HeroSection />
+
+            <!-- Features Section -->
             <CustomizeProductSection :cakes="props.cakes" />
+
+            <!-- About Section -->
             <AboutSection />
+
+            <!-- Testimonials Section -->
             <TestimonySection />
-        </section>
+        </div>
     </App>
 </template>
 
