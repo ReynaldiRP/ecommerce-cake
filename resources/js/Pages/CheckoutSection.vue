@@ -1,226 +1,415 @@
 <template>
     <App>
-        <section
-            class="min-h-screen w-full py-36 xl:py-28 px-10 flex flex-col justify-center gap-4 bg-primary-color-light"
-        >
-            <div class="flex justify-between items-center">
-                <h1 class="text-4xl font-bold relative text-base-100">
-                    Pesanan kamu
-                </h1>
-                <BaseAlert
-                    v-if="errorResponses"
-                    class="w-fit"
-                    type="alert-error"
-                    >{{ errorResponses }}</BaseAlert
+        <section class="min-h-screen w-full bg-gradient-soft">
+            <div class="container mx-auto px-6 lg:px-12 pt-24 pb-16">
+                <!-- Header Section -->
+                <div
+                    class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8"
                 >
-            </div>
-            <section
-                class="flex flex-col-reverse items-center lg:items-start lg:flex-row justify-center xl:justify-between gap-4"
-            >
-                <section class="flex flex-col gap-4">
-                    <section
-                        class="h-fit w-[700px] flex flex-col gap-6 p-4 border rounded-lg bg-base-100"
-                        v-for="(item, index) in chartItems"
-                        :key="index"
+                    <div class="space-y-2">
+                        <h1
+                            class="text-3xl lg:text-4xl font-heading font-bold text-gray-900"
+                        >
+                            Checkout Pesanan
+                        </h1>
+                        <p class="text-gray-600">
+                            Lengkapi detail pesanan Anda sebelum pembayaran
+                        </p>
+                    </div>
+                    <BaseAlert
+                        v-if="errorResponses"
+                        class="bg-red-50 border border-red-200 text-red-800 px-6 py-3 rounded-2xl shadow-soft"
+                        type="alert-error"
                     >
-                        <section class="flex items-center justify-between">
-                            <section class="flex gap-3">
-                                <figure
-                                    class="avatar rounded-lg outline outline-neutral shadow-lg"
-                                >
-                                    <div class="w-20 rounded">
-                                        <img
-                                            :src="
-                                                item.cake.image_url ??
-                                                `/assets/image/default-img.jpg`
-                                            "
-                                            alt="Tailwind-CSS-Avatar-component"
-                                        />
-                                    </div>
-                                </figure>
-                                <section class="flex flex-col justify-center">
-                                    <h1 class="text-xl text-white">
-                                        {{ item.cake.name }}
-                                        <span v-if="item.cake_size">
-                                            ({{ item.cake_size?.size }}Cm)
-                                        </span>
-                                    </h1>
-
-                                    <article class="flex gap-2 text-white">
-                                        <p class="text-base text-opacity-75">
-                                            {{ item.cake_flavour?.name }}
-                                        </p>
-                                        <span
-                                            v-show="
-                                                item.cake_flavour &&
-                                                item.cake_topping.length >= 1
-                                            "
-                                            >|</span
-                                        >
-                                        <p class="text-base text-opacity-75">
-                                            {{
-                                                getToppingNameBasedOnChartItems(
-                                                    item,
-                                                )
-                                            }}
-                                        </p>
-                                    </article>
-                                    <!-- Cake Notes -->
-                                    <p
-                                        v-if="cakeNotes[item.id]"
-                                        class="font-extralight"
-                                    >
-                                        "{{ cakeNotes[item.id] }}"
-                                    </p>
-                                </section>
-                            </section>
-                            <div class="flex flex-col text-white">
-                                <!-- Quantity and Order Price -->
-                                <h1 class="text-xl font-bold">
-                                    {{ cakeQuantities[item.id] }} x
-                                    {{ formattedTotalPrice[index] }}
-                                </h1>
-                            </div>
-                        </section>
-                        <section class="px-2 text-xl font-bold text-white/70">
-                            <article class="flex justify-between">
-                                <h1 class="flex items-center gap-2">Kue</h1>
-                                <h1>
-                                    {{ formattedSubTotal[index] }}
-                                </h1>
-                            </article>
-                            <article class="flex justify-between">
-                                <h1>Rasa Kue</h1>
-                                <h1>
-                                    {{ formatPrice(item.cake_flavour?.price) }}
-                                </h1>
-                            </article>
-                            <article class="flex justify-between">
-                                <h1>Toppings</h1>
-                                <h1>
-                                    {{
-                                        formatPrice(
-                                            getToppingPriceBasedOnChartItems(
-                                                item,
-                                            ),
-                                        )
-                                    }}
-                                </h1>
-                            </article>
-                            <article
-                                class="px-2 flex justify-between mt-4 border-t-white border-t-2 text-white"
+                        {{ errorResponses }}
+                    </BaseAlert>
+                </div>
+                <!-- Main Content Grid -->
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                    <!-- Order Items Section -->
+                    <div class="space-y-6">
+                        <div
+                            class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-card border border-white/20 p-2"
+                        >
+                            <h2
+                                class="text-xl font-heading font-bold text-gray-900 mb-6 px-4 pt-4"
                             >
-                                <h1>Totals</h1>
-                                <!-- Order Total Price -->
-                                <h1>{{ formatPrice(cakePrices[item.id]) }}</h1>
-                            </article>
-                        </section>
-                    </section>
-                </section>
-                <form
-                    @submit.prevent="submit"
-                    class="h-fit w-[700px] rounded-lg px-8 py-6 flex flex-col gap-4 bg-base-100 border border-white"
-                >
-                    <h1 class="text-4xl text-white font-bold">Checkout</h1>
-                    <section class="flex flex-col gap-4">
-                        <article class="flex flex-col gap-2">
-                            <section class="flex flex-col gap-1">
-                                <BaseLabel
-                                    :required="true"
-                                    label="Tanggal Pengiriman / Pengambilan"
-                                />
-                                <small class="font-medium"
-                                    >(Pemesanan kue memerlukan pemberitahuan 2
-                                    hari sebelumnya.)</small
+                                Item Pesanan
+                            </h2>
+
+                            <div class="space-y-4">
+                                <div
+                                    v-for="(item, index) in chartItems"
+                                    :key="index"
+                                    class="bg-white/70 rounded-2xl shadow-soft border border-gray-100/50 p-4 mx-4 mb-4"
                                 >
-                            </section>
-                            <BaseInput
-                                input-type="date"
-                                v-model="form.estimated_delivery_date"
-                            />
-                        </article>
-                        <article
-                            class="flex flex-col gap-2"
-                            @click="handleClickOutsideAddressContainer"
-                            ref="addressContainer"
-                        >
-                            <section class="flex flex-col gap-1">
-                                <BaseLabel
-                                    label="Alamat Pengiriman"
-                                    :required="true"
-                                />
-                                <small class="font-medium">
-                                    (Pengiriman hanya tersedia di Kediri dan
-                                    area sekitarnya.)
-                                </small>
-                            </section>
-                            <BaseInput
-                                v-model="form.user_address"
-                                style="width: 100%"
-                                placeholder="Alamat Penerima"
-                                input-type="address"
-                                @keyup="getSearchResultAddress"
-                                :input-class="
-                                    showSearchAddress
-                                        ? 'rounded-t-lg rounded-b-none'
-                                        : 'rounded-lg'
-                                "
-                            />
-                            <PreviewSearchAddress
-                                v-if="showSearchAddress"
-                                :results="searchResults"
-                                :selectAddress="selectedAddress"
-                                :addressResultsContainer="
-                                    addressResultsContainer
-                                "
-                            />
-                        </article>
-                        <article class="flex flex-col gap-2">
-                            <BaseInput
-                                v-model="form.cake_recipient"
-                                style="width: 100%"
-                                placeholder="Nama Penerima"
-                                input-type="username"
-                            />
-                        </article>
-                        <article class="flex flex-col gap-2">
-                            <section class="flex flex-col gap-1">
-                                <BaseLabel
-                                    label="Metode Pengiriman"
-                                    :required="true"
-                                />
-                                <small class="font-medium">
-                                    (Pilih salah satu metode pengiriman.)
-                                </small>
-                            </section>
-                            <div class="flex items-center gap-2">
-                                <BaseRadio
-                                    v-for="method in deliveryMethod"
-                                    v-model="form.method_delivery"
-                                    :key="method.id"
-                                    :label="method.label"
-                                    :id="method.id"
-                                />
+                                    <!-- Item Header -->
+                                    <div class="flex items-start gap-4 mb-4">
+                                        <div class="avatar flex-shrink-0">
+                                            <div
+                                                class="w-20 h-20 rounded-2xl overflow-hidden shadow-soft ring-2 ring-gray-100"
+                                            >
+                                                <img
+                                                    :src="
+                                                        item.cake.image_url ??
+                                                        `/assets/image/default-img.jpg`
+                                                    "
+                                                    :alt="item.cake.name"
+                                                    class="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div class="flex-1 space-y-2">
+                                            <h3
+                                                class="text-lg font-semibold text-gray-900"
+                                            >
+                                                {{ item.cake.name }}
+                                                <span
+                                                    v-if="item.cake_size"
+                                                    class="text-primary font-medium"
+                                                >
+                                                    ({{
+                                                        item.cake_size?.size
+                                                    }}cm)
+                                                </span>
+                                            </h3>
+
+                                            <!-- Specifications -->
+                                            <div class="space-y-1">
+                                                <div
+                                                    v-if="
+                                                        item.cake_flavour?.name
+                                                    "
+                                                    class="flex items-center space-x-2 text-sm text-gray-600"
+                                                >
+                                                    <div
+                                                        class="w-2 h-2 bg-primary/50 rounded-full"
+                                                    ></div>
+                                                    <span class="font-medium"
+                                                        >Rasa:</span
+                                                    >
+                                                    <span>{{
+                                                        item.cake_flavour?.name
+                                                    }}</span>
+                                                </div>
+                                                <div
+                                                    v-if="
+                                                        getToppingNameBasedOnChartItems(
+                                                            item,
+                                                        )
+                                                    "
+                                                    class="flex items-center space-x-2 text-sm text-gray-600"
+                                                >
+                                                    <div
+                                                        class="w-2 h-2 bg-accent/50 rounded-full"
+                                                    ></div>
+                                                    <span class="font-medium"
+                                                        >Topping:</span
+                                                    >
+                                                    <span>{{
+                                                        getToppingNameBasedOnChartItems(
+                                                            item,
+                                                        )
+                                                    }}</span>
+                                                </div>
+                                                <div
+                                                    v-if="cakeNotes[item.id]"
+                                                    class="flex items-start space-x-2 text-sm text-gray-600"
+                                                >
+                                                    <div
+                                                        class="w-2 h-2 bg-blue-400 rounded-full mt-1.5 flex-shrink-0"
+                                                    ></div>
+                                                    <span class="font-medium"
+                                                        >Catatan:</span
+                                                    >
+                                                    <span class="italic"
+                                                        >"{{
+                                                            cakeNotes[item.id]
+                                                        }}"</span
+                                                    >
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Quantity and Price -->
+                                        <div class="text-right space-y-1">
+                                            <div
+                                                class="text-lg font-bold text-primary"
+                                            >
+                                                {{ cakeQuantities[item.id] }} x
+                                                {{ formattedTotalPrice[index] }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Price Breakdown -->
+                                    <div
+                                        class="bg-gray-50 rounded-xl p-4 space-y-2"
+                                    >
+                                        <h4
+                                            class="font-semibold text-gray-700 mb-3"
+                                        >
+                                            Rincian Harga
+                                        </h4>
+                                        <div class="space-y-2 text-sm">
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-600"
+                                                    >Harga Kue</span
+                                                >
+                                                <span class="font-medium">{{
+                                                    formattedSubTotal[index]
+                                                }}</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-600"
+                                                    >Rasa Kue</span
+                                                >
+                                                <span class="font-medium">{{
+                                                    formatPrice(
+                                                        item.cake_flavour
+                                                            ?.price || 0,
+                                                    )
+                                                }}</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-600"
+                                                    >Toppings</span
+                                                >
+                                                <span class="font-medium">{{
+                                                    formatPrice(
+                                                        getToppingPriceBasedOnChartItems(
+                                                            item,
+                                                        ),
+                                                    )
+                                                }}</span>
+                                            </div>
+                                            <div
+                                                class="border-t border-gray-200 pt-2 mt-3"
+                                            >
+                                                <div
+                                                    class="flex justify-between text-base font-bold text-primary"
+                                                >
+                                                    <span>Total</span>
+                                                    <span>{{
+                                                        formatPrice(
+                                                            cakePrices[item.id],
+                                                        )
+                                                    }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </article>
-                        <input
-                            type="hidden"
-                            v-model="form.chartItems"
-                            name="chartItems"
-                        />
-                        <button
-                            class="btn bg-primary-color text-base-300 hover:text-white"
-                            type="submit"
+                        </div>
+                    </div>
+                    <!-- Checkout Form Section -->
+                    <div>
+                        <form
+                            @submit.prevent="submit"
+                            class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-card border border-white/20 p-6 lg:p-8"
                         >
-                            <span v-show="!isSubmitting"> Pesan Sekarang </span>
-                            <span
-                                v-show="isSubmitting"
-                                class="loading loading-spinner loading-md"
-                            ></span>
-                        </button>
-                    </section>
-                </form>
-            </section>
+                            <!-- Form Header -->
+                            <div class="flex items-center space-x-3 mb-8">
+                                <div
+                                    class="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-2xl flex items-center justify-center"
+                                >
+                                    <i
+                                        class="fas fa-clipboard-list text-white"
+                                    ></i>
+                                </div>
+                                <h2
+                                    class="text-2xl font-heading font-bold text-gray-900"
+                                >
+                                    Detail Pengiriman
+                                </h2>
+                            </div>
+
+                            <div class="space-y-6">
+                                <!-- Delivery Date -->
+                                <div class="space-y-3">
+                                    <div class="space-y-1">
+                                        <BaseLabel
+                                            :required="true"
+                                            label="Tanggal Pengiriman / Pengambilan"
+                                            class="text-gray-900 font-semibold"
+                                        />
+                                        <p
+                                            class="text-sm text-gray-600 bg-amber-50 border border-amber-200 rounded-xl p-3"
+                                        >
+                                            <i
+                                                class="fas fa-info-circle text-amber-600 mr-2"
+                                            ></i>
+                                            Pemesanan kue memerlukan
+                                            pemberitahuan 2 hari sebelumnya
+                                        </p>
+                                    </div>
+                                    <BaseInput
+                                        input-type="date"
+                                        v-model="form.estimated_delivery_date"
+                                        class="w-full"
+                                    />
+                                </div>
+
+                                <!-- Address Section -->
+                                <div
+                                    class="space-y-3"
+                                    @click="handleClickOutsideAddressContainer"
+                                    ref="addressContainer"
+                                >
+                                    <div class="space-y-1">
+                                        <BaseLabel
+                                            label="Alamat Pengiriman"
+                                            :required="true"
+                                            class="text-gray-900 font-semibold"
+                                        />
+                                        <p
+                                            class="text-sm text-gray-600 bg-blue-50 border border-blue-200 rounded-xl p-3"
+                                        >
+                                            <i
+                                                class="fas fa-map-marker-alt text-blue-600 mr-2"
+                                            ></i>
+                                            Pengiriman hanya tersedia di Kediri
+                                            dan area sekitarnya
+                                        </p>
+                                    </div>
+                                    <BaseInput
+                                        v-model="form.user_address"
+                                        placeholder="Masukkan alamat lengkap penerima"
+                                        input-type="address"
+                                        @keyup="getSearchResultAddress"
+                                        :input-class="
+                                            showSearchAddress
+                                                ? 'rounded-t-2xl rounded-b-none'
+                                                : 'rounded-2xl'
+                                        "
+                                        class="w-full"
+                                    />
+                                    <PreviewSearchAddress
+                                        v-if="showSearchAddress"
+                                        :results="searchResults"
+                                        :selectAddress="selectedAddress"
+                                        :addressResultsContainer="
+                                            addressResultsContainer
+                                        "
+                                    />
+                                </div>
+
+                                <!-- Recipient Name -->
+                                <div class="space-y-3">
+                                    <BaseLabel
+                                        label="Nama Penerima"
+                                        :required="true"
+                                        class="text-gray-900 font-semibold"
+                                    />
+                                    <BaseInput
+                                        v-model="form.cake_recipient"
+                                        placeholder="Nama lengkap penerima"
+                                        input-type="username"
+                                        class="w-full"
+                                    />
+                                </div>
+
+                                <!-- Delivery Method -->
+                                <div class="space-y-3">
+                                    <div class="space-y-1">
+                                        <BaseLabel
+                                            label="Metode Pengiriman"
+                                            :required="true"
+                                            class="text-gray-900 font-semibold"
+                                        />
+                                        <p class="text-sm text-gray-600">
+                                            Pilih salah satu metode pengiriman
+                                            yang tersedia
+                                        </p>
+                                    </div>
+                                    <div
+                                        class="grid grid-cols-1 sm:grid-cols-2 gap-4"
+                                    >
+                                        <div
+                                            v-for="method in deliveryMethod"
+                                            :key="method.id"
+                                            class="relative"
+                                        >
+                                            <BaseRadio
+                                                v-model="form.method_delivery"
+                                                :label="method.label"
+                                                :id="method.id"
+                                                class="peer sr-only"
+                                            />
+                                            <label
+                                                :for="method.id"
+                                                class="flex items-center space-x-3 p-4 bg-white border-2 border-gray-200 rounded-2xl cursor-pointer peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/50 transition-all duration-200"
+                                            >
+                                                <div
+                                                    class="w-4 h-4 border-2 border-gray-300 rounded-full peer-checked:border-primary peer-checked:bg-primary"
+                                                ></div>
+                                                <span
+                                                    class="font-medium text-gray-700"
+                                                    >{{ method.label }}</span
+                                                >
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Hidden Input -->
+                                <input
+                                    type="hidden"
+                                    v-model="form.chartItems"
+                                    name="chartItems"
+                                />
+
+                                <!-- Submit Button -->
+                                <button
+                                    type="submit"
+                                    :disabled="isSubmitting"
+                                    class="btn btn-modern w-full bg-gradient-to-r from-primary to-accent text-white hover:from-primary-hover hover:to-accent-hover transition-all duration-300 shadow-card hover:shadow-card-hover transform hover:scale-[1.02] border-0 py-4 text-lg font-semibold"
+                                >
+                                    <span
+                                        v-if="!isSubmitting"
+                                        class="flex items-center justify-center space-x-2"
+                                    >
+                                        <i class="fas fa-credit-card"></i>
+                                        <span>Lanjutkan ke Pembayaran</span>
+                                    </span>
+                                    <span
+                                        v-else
+                                        class="flex items-center justify-center space-x-2"
+                                    >
+                                        <span
+                                            class="loading loading-spinner loading-md"
+                                        ></span>
+                                        <span>Memproses Pesanan...</span>
+                                    </span>
+                                </button>
+
+                                <!-- Security Info -->
+                                <div
+                                    class="mt-6 p-4 bg-green-50 rounded-2xl border border-green-100"
+                                >
+                                    <div class="flex items-start space-x-3">
+                                        <i
+                                            class="fas fa-shield-alt text-green-500 mt-0.5"
+                                        ></i>
+                                        <div class="text-sm text-green-700">
+                                            <p class="font-semibold mb-1">
+                                                Pembayaran Aman
+                                            </p>
+                                            <p class="text-xs">
+                                                Transaksi Anda dilindungi dengan
+                                                sistem pembayaran yang aman dan
+                                                terpercaya.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </section>
     </App>
 </template>

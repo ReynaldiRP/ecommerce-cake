@@ -1,214 +1,375 @@
 <template>
     <App>
-        <section
-            class="min-h-screen w-full flex flex-col gap-4 pt-36 pb-14 px-10 lg:px-20 bg-primary-color-light"
-        >
-            <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-base-100">
-                    Keranjang Belanja
-                </h1>
-                <BaseAlert
-                    v-show="showAlert"
-                    class="w-fit py-2 font-medium ms-auto"
-                    type="alert-success"
+        <section class="min-h-screen w-full bg-gradient-soft">
+            <div class="container mx-auto px-6 lg:px-12 pt-24 pb-16">
+                <div
+                    class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8"
                 >
-                    {{ messageDelete }}
-                </BaseAlert>
-            </div>
-
-            <section class="grid grid-cols-12 gap-8">
-                <section
-                    class="col-span-8 flex flex-col gap-6"
-                    v-if="chartItems.length > 0"
-                >
-                    <div class="h-full px-3 py-5 bg-base-100 rounded-t-lg">
-                        <div class="flex items-center justify-between">
-                            <BaseCheckbox
-                                :label="`Pilih Semua (${chartItems.length})`"
-                                text-color="white"
-                                v-model="selectAllItem"
-                                @change="isSelectedAll"
-                            />
-                            <p
-                                v-show="totalSelectedCake > 0"
-                                class="text-lg font-medium text-primary-color cursor-pointer"
-                                @click="deleteItem"
-                            >
-                                Delete
-                            </p>
-                        </div>
-                    </div>
-                    <div class="flex flex-col gap-4">
-                        <div
-                            class="flex flex-col lg:flex-row lg:justify-between lg:items-center lg:gap-2 px-3 py-4 bg-base-100 rounded-md"
-                            v-for="(item, index) in chartItems"
-                            :key="item.id"
-                            :class="{
-                                'slide-left': item.id === deleteAnimation,
-                            }"
+                    <div class="space-y-2">
+                        <h1
+                            class="text-2xl lg:text-3xl font-heading font-bold text-gray-900 leading-tight"
                         >
-                            <div class="flex gap-2">
-                                <BaseCheckbox
-                                    v-model="selectCake[item.id]"
-                                    :value="item.id"
-                                />
-                                <div class="flex gap-4">
-                                    <div
-                                        class="flex flex-col sm:flex-row gap-4"
-                                    >
-                                        <div
-                                            class="avatar w-fit rounded-lg outline outline-neutral shadow-lg"
-                                        >
-                                            <div class="w-20 rounded">
-                                                <img
-                                                    :src="
-                                                        item.cake.image_url
-                                                            ? item.cake
-                                                                  .image_url
-                                                            : '/assets/image/default-img.jpg'
-                                                    "
-                                                    alt="Tailwind-CSS-Avatar-component"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div
-                                            class="flex flex-col gap-1 lg:justify-center"
-                                        >
-                                            <h1
-                                                class="text-xl font-semibold text-white"
-                                            >
-                                                {{ item.cake?.name }}
-                                                <span v-if="item.cake_size">
-                                                    ({{
-                                                        item.cake_size?.size
-                                                    }}Cm)
-                                                </span>
-                                            </h1>
-                                            <div
-                                                class="flex gap-2 lg:items-center text-base text-nowrap text-white text-opacity-75"
-                                            >
-                                                <p v-show="item.cake_flavour">
-                                                    {{
-                                                        item.cake_flavour?.name
-                                                    }}
-                                                </p>
-                                                <div
-                                                    v-show="
-                                                        item.cake_flavour &&
-                                                        item.cake_topping
-                                                            .length >= 1
-                                                    "
-                                                >
-                                                    |
-                                                </div>
-                                                <p v-show="item.cake_topping">
-                                                    {{
-                                                        getToppingNameBasedChartItem(
-                                                            item.id,
-                                                        )
-                                                    }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div
-                                class="flex flex-col relative left-10 sm:left-[8.5rem] lg:left-0 lg:bottom-0 items-start lg:items-center gap-2"
-                                :class="{
-                                    'sm:bottom-12':
-                                        !item.cake_flavour ||
-                                        item.cake_topping.length <= 0,
-                                    'sm:bottom-6':
-                                        item.cake_flavour ||
-                                        item.cake_topping.length >= 1,
-                                }"
-                            >
-                                <section>
-                                    <p class="text-lg font-medium lg:ms-auto">
-                                        {{ formattedSubTotal[index] }}
-                                    </p>
-                                </section>
-                                <div
-                                    class="flex flex-row-reverse items-center gap-4"
-                                >
-                                    <div class="join">
-                                        <button
-                                            class="btn btn-sm btn-outline shadow-lg join-item"
-                                            @click="decrementQuantity(item)"
-                                        >
-                                            -
-                                        </button>
-                                        <input
-                                            class="input input-sm input-ghost input-bordered text-center w-10 join-item focus:bg-transparent"
-                                            v-model="cakeQuantity[item.id]"
-                                        />
-                                        <button
-                                            class="btn btn-sm btn-outline shadow-lg join-item"
-                                            @click="incrementQuantity(item)"
-                                        >
-                                            +
-                                        </button>
-                                    </div>
-                                    <button @click="deleteItem(item.id)">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                    <AddNotesOrder
-                                        :hiddenNotes="hiddenNotes"
-                                        v-model:notes="notes[item.id]"
-                                        @update:hiddenNotes="
-                                            hiddenNotes = $event
-                                        "
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <EmptyDetailShoppingChart v-else />
-                <section class="h-fit col-span-4 flex justify-center">
-                    <section
-                        class="w-full flex flex-col gap-2 px-5 py-4 bg-base-100 rounded-lg"
-                    >
-                        <h1 class="text-white text-2xl font-bold">
-                            Ringkasan Belanja
+                            Keranjang Belanja
                         </h1>
-                        <div
-                            class="flex justify-between text-white font-bold text-lg"
-                        >
-                            <p>Total</p>
-                            <p>{{ formatPrice(totalPrice) }}</p>
-                        </div>
-                        <component
-                            :is="chartItems.length <= 0 ? 'div' : 'button'"
-                            :class="
-                                chartItems.length <= 0
-                                    ? 'bg-gray-400 hover:bg-gray-400 cursor-not-allowed'
-                                    : 'bg-primary-color hover:bg-primary-color hover:opacity-65 hover:text-slate-500 border-none'
-                            "
-                            @click="
-                                checkoutItems(
-                                    chartItems.map(
-                                        (item) => selectCake[item.id],
-                                    ),
-                                )
-                            "
-                            class="btn btn-block mt-auto text-black"
-                        >
-                            <span v-show="!isSubmitting"> Checkout </span>
-                            <span
-                                v-show="isSubmitting"
-                                class="loading loading-spinner loading-md"
-                            ></span>
-                            <span
-                                v-show="totalSelectedCake > 0 && !isSubmitting"
+                        <p class="text-gray-600">
+                            Kelola pesanan Anda sebelum checkout
+                        </p>
+                    </div>
+                    <BaseAlert
+                        v-show="showAlert"
+                        class="w-fit py-3 px-6 font-medium bg-green-50 border border-green-200 text-green-800 rounded-2xl shadow-soft"
+                        type="alert-success"
+                    >
+                        {{ messageDelete }}
+                    </BaseAlert>
+                </div>
+
+                <!-- Main Content Grid -->
+                <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+                    <!-- Cart Items Section -->
+                    <div class="xl:col-span-8">
+                        <div v-if="chartItems.length > 0" class="space-y-6">
+                            <!-- Select All Header -->
+                            <div
+                                class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-card border border-white/20 p-6"
                             >
-                                ({{ totalSelectedCake }})
-                            </span>
-                        </component>
-                    </section>
-                </section>
-            </section>
+                                <div class="flex justify-between items-center">
+                                    <BaseCheckbox
+                                        :label="`Pilih Semua (${chartItems.length} item${chartItems.length > 1 ? 's' : ''})`"
+                                        text-color="gray-900"
+                                        v-model="selectAllItem"
+                                        @change="isSelectedAll"
+                                        class="text-gray-900 font-semibold"
+                                    />
+                                    <button
+                                        v-show="totalSelectedCake > 0"
+                                        class="text-red-600 hover:text-red-700 font-semibold px-4 py-2 rounded-full hover:bg-red-50 transition-all duration-200 text-sm"
+                                        @click="deleteItem"
+                                    >
+                                        <i class="fas fa-trash mr-2"></i>
+                                        Hapus ({{ totalSelectedCake }})
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Cart Items List -->
+                            <div class="space-y-4">
+                                <div
+                                    v-for="(item, index) in chartItems"
+                                    :key="item.id"
+                                    :class="{
+                                        'slide-left':
+                                            item.id === deleteAnimation,
+                                    }"
+                                    class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-card border border-white/20 p-6 transition-all duration-300 hover:shadow-card-hover"
+                                >
+                                    <div
+                                        class="flex flex-col lg:flex-row gap-6"
+                                    >
+                                        <!-- Checkbox and Product Info -->
+                                        <div class="flex gap-4 flex-1">
+                                            <BaseCheckbox
+                                                v-model="selectCake[item.id]"
+                                                :value="item.id"
+                                                class="mt-1"
+                                            />
+
+                                            <!-- Product Image -->
+                                            <div class="avatar flex-shrink-0">
+                                                <div
+                                                    class="w-20 h-20 lg:w-24 lg:h-24 rounded-2xl overflow-hidden shadow-soft ring-2 ring-gray-100"
+                                                >
+                                                    <img
+                                                        :src="
+                                                            item.cake
+                                                                .image_url ||
+                                                            '/assets/image/default-img.jpg'
+                                                        "
+                                                        :alt="item.cake?.name"
+                                                        class="w-full h-full object-cover"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <!-- Product Details -->
+                                            <div class="flex-1 space-y-2">
+                                                <h3
+                                                    class="text-lg lg:text-xl font-semibold text-gray-900 leading-tight"
+                                                >
+                                                    {{ item.cake?.name }}
+                                                    <span
+                                                        v-if="item.cake_size"
+                                                        class="text-primary font-medium"
+                                                    >
+                                                        ({{
+                                                            item.cake_size
+                                                                ?.size
+                                                        }}cm)
+                                                    </span>
+                                                </h3>
+
+                                                <!-- Specifications -->
+                                                <div
+                                                    class="flex flex-wrap gap-4 text-sm text-gray-600"
+                                                >
+                                                    <div
+                                                        v-if="item.cake_flavour"
+                                                        class="flex items-center space-x-2"
+                                                    >
+                                                        <div
+                                                            class="w-2 h-2 bg-primary/50 rounded-full"
+                                                        ></div>
+                                                        <span
+                                                            class="font-medium"
+                                                            >Rasa:</span
+                                                        >
+                                                        <span>{{
+                                                            item.cake_flavour
+                                                                ?.name
+                                                        }}</span>
+                                                    </div>
+                                                    <div
+                                                        v-if="
+                                                            getToppingNameBasedChartItem(
+                                                                item.id,
+                                                            )
+                                                        "
+                                                        class="flex items-center space-x-2"
+                                                    >
+                                                        <div
+                                                            class="w-2 h-2 bg-accent/50 rounded-full"
+                                                        ></div>
+                                                        <span
+                                                            class="font-medium"
+                                                            >Topping:</span
+                                                        >
+                                                        <span>{{
+                                                            getToppingNameBasedChartItem(
+                                                                item.id,
+                                                            )
+                                                        }}</span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Price Display -->
+                                                <div
+                                                    class="text-xl font-bold text-primary"
+                                                >
+                                                    {{
+                                                        formattedSubTotal[index]
+                                                    }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Actions Section -->
+                                        <div
+                                            class="flex flex-col lg:flex-row items-start lg:items-center gap-4"
+                                        >
+                                            <!-- Quantity Controls -->
+                                            <div
+                                                class="flex items-center gap-3"
+                                            >
+                                                <span
+                                                    class="text-sm font-medium text-gray-600"
+                                                    >Jumlah:</span
+                                                >
+                                                <div
+                                                    class="join bg-gray-50 rounded-xl"
+                                                >
+                                                    <button
+                                                        class="btn btn-sm join-item bg-white hover:bg-gray-50 border-gray-200"
+                                                        @click="
+                                                            decrementQuantity(
+                                                                item,
+                                                            )
+                                                        "
+                                                    >
+                                                        <i
+                                                            class="fas fa-minus text-xs"
+                                                        ></i>
+                                                    </button>
+                                                    <input
+                                                        class="input input-sm input-bordered text-center w-16 join-item bg-white focus:bg-white"
+                                                        v-model="
+                                                            cakeQuantity[
+                                                                item.id
+                                                            ]
+                                                        "
+                                                        readonly
+                                                    />
+                                                    <button
+                                                        class="btn btn-sm join-item bg-white hover:bg-gray-50 border-gray-200"
+                                                        @click="
+                                                            incrementQuantity(
+                                                                item,
+                                                            )
+                                                        "
+                                                    >
+                                                        <i
+                                                            class="fas fa-plus text-xs"
+                                                        ></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Action Buttons -->
+                                            <div
+                                                class="flex items-center gap-3"
+                                            >
+                                                <AddNotesOrder
+                                                    v-model:notes="
+                                                        notes[item.id]
+                                                    "
+                                                />
+                                                <button
+                                                    @click="deleteItem(item.id)"
+                                                    class="btn btn-sm btn-circle bg-red-50 hover:bg-red-100 border-red-200 text-red-600"
+                                                >
+                                                    <i
+                                                        class="fas fa-trash text-xs"
+                                                    ></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <EmptyDetailShoppingChart v-else />
+                    </div>
+                    <!-- Order Summary Section -->
+                    <div class="xl:col-span-4">
+                        <div class="sticky top-8">
+                            <div
+                                class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-card border border-white/20 p-6 lg:p-8"
+                            >
+                                <!-- Summary Header -->
+                                <div class="flex items-center space-x-3 mb-6">
+                                    <div
+                                        class="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-2xl flex items-center justify-center"
+                                    >
+                                        <i
+                                            class="fas fa-shopping-cart text-white"
+                                        ></i>
+                                    </div>
+                                    <h2
+                                        class="text-xl lg:text-2xl font-heading font-bold text-gray-900"
+                                    >
+                                        Ringkasan Belanja
+                                    </h2>
+                                </div>
+
+                                <!-- Total Price -->
+                                <div
+                                    class="bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl p-4 mb-6"
+                                >
+                                    <div
+                                        class="flex justify-between items-center"
+                                    >
+                                        <span
+                                            class="text-lg font-semibold text-gray-700"
+                                            >Total Pembayaran</span
+                                        >
+                                        <span
+                                            class="text-2xl font-bold text-primary"
+                                            >{{ formatPrice(totalPrice) }}</span
+                                        >
+                                    </div>
+                                    <div
+                                        v-if="totalSelectedCake > 0"
+                                        class="text-sm text-gray-500 mt-1"
+                                    >
+                                        {{ totalSelectedCake }} item{{
+                                            totalSelectedCake > 1 ? "s" : ""
+                                        }}
+                                        dipilih
+                                    </div>
+                                </div>
+
+                                <!-- Checkout Button -->
+                                <component
+                                    :is="
+                                        chartItems.length <= 0
+                                            ? 'div'
+                                            : 'button'
+                                    "
+                                    :class="[
+                                        'btn w-full py-4 text-lg font-semibold rounded-2xl transition-all duration-300',
+                                        chartItems.length <= 0 ||
+                                        totalSelectedCake <= 0
+                                            ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                            : 'btn-modern bg-gradient-to-r from-primary to-accent text-white hover:from-primary-hover hover:to-accent-hover shadow-card hover:shadow-card-hover transform hover:scale-[1.02]',
+                                    ]"
+                                    :disabled="
+                                        chartItems.length <= 0 ||
+                                        totalSelectedCake <= 0
+                                    "
+                                    @click="
+                                        checkoutItems(
+                                            chartItems.map(
+                                                (item) => selectCake[item.id],
+                                            ),
+                                        )
+                                    "
+                                >
+                                    <span
+                                        v-if="!isSubmitting"
+                                        class="flex items-center justify-center space-x-2"
+                                    >
+                                        <i class="fas fa-credit-card"></i>
+                                        <span>
+                                            Checkout
+                                            <span v-if="totalSelectedCake > 0">
+                                                ({{ totalSelectedCake }})
+                                            </span>
+                                        </span>
+                                    </span>
+                                    <span
+                                        v-else
+                                        class="flex items-center justify-center space-x-2"
+                                    >
+                                        <span
+                                            class="loading loading-spinner loading-md"
+                                        ></span>
+                                        <span>Memproses...</span>
+                                    </span>
+                                </component>
+
+                                <!-- Checkout Info -->
+                                <div
+                                    class="mt-4 p-4 bg-blue-50 rounded-2xl border border-blue-100"
+                                >
+                                    <div class="flex items-start space-x-3">
+                                        <i
+                                            class="fas fa-info-circle text-blue-500 mt-0.5"
+                                        ></i>
+                                        <div class="text-sm text-blue-700">
+                                            <p class="font-semibold mb-1">
+                                                Informasi Checkout
+                                            </p>
+                                            <ul class="space-y-1 text-xs">
+                                                <li>
+                                                    • Pilih item yang ingin
+                                                    dibeli
+                                                </li>
+                                                <li>
+                                                    • Pastikan jumlah sudah
+                                                    sesuai
+                                                </li>
+                                                <li>
+                                                    • Klik checkout untuk
+                                                    melanjutkan
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
     </App>
 </template>
@@ -242,8 +403,8 @@ const cakeQuantity = ref({
         chartItems.value.map((item) => [item.id, item.quantity]),
     ),
 });
-const hiddenNotes = ref(false);
-const notes = ref([]);
+// No longer need hiddenNotes since each component manages its own state
+const notes = ref({});
 const totalPriceEachItem = ref([]);
 
 onMounted(() => {
