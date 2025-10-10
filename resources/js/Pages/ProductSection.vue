@@ -200,12 +200,18 @@
                             <!-- Sort Options -->
                             <div class="mt-6 sm:mt-0">
                                 <select
+                                    v-model="filteredData.sortBy"
+                                    @change="applyFilters"
                                     class="w-full sm:w-auto px-4 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                                 >
-                                    <option>Terbaru</option>
-                                    <option>Harga: Rendah ke Tinggi</option>
-                                    <option>Harga: Tinggi ke Rendah</option>
-                                    <option>Nama A-Z</option>
+                                    <option value="latest">Terbaru</option>
+                                    <option value="price_asc">
+                                        Harga: Rendah ke Tinggi
+                                    </option>
+                                    <option value="price_desc">
+                                        Harga: Tinggi ke Rendah
+                                    </option>
+                                    <option value="name_asc">Nama A-Z</option>
                                 </select>
                             </div>
                         </div>
@@ -417,6 +423,7 @@ let filteredData = reactive({
     selectedPersonalizationId: null,
     selectedPromoId: null,
     selectedCakeCategoryId: [],
+    sortBy: "latest",
 });
 
 const mobileFiltersOpen = ref(false);
@@ -447,6 +454,10 @@ const applyFilters = () => {
 
     if (filteredData.selectedCakeCategoryId.length > 0) {
         params.cake_category_id = filteredData.selectedCakeCategoryId.join(",");
+    }
+
+    if (filteredData.sortBy) {
+        params.sort_by = filteredData.sortBy;
     }
 
     Inertia.get("products", params, {

@@ -21,10 +21,10 @@
                     />
                 </svg>
                 <span
-                    v-if="orderStatus.length > 0"
+                    v-if="totalNotifications > 0"
                     class="badge badge-sm indicator-item bg-gradient-to-r from-primary to-accent text-white border-0 animate-pulse-gentle shadow-lg"
                 >
-                    {{ orderStatus.length }}
+                    {{ totalNotifications }}
                 </span>
             </div>
         </div>
@@ -63,7 +63,7 @@
             <div class="px-6 py-4 border-b border-gray-100/50">
                 <div class="grid grid-cols-3 gap-3">
                     <div
-                        v-for="(status, index) in orderStatus"
+                        v-for="(status, index) in statusCategories"
                         :key="index"
                         class="group cursor-pointer"
                         @click="redirectLinkBasedOnOrderStatus(status.value)"
@@ -72,7 +72,7 @@
                             class="flex flex-col items-center space-y-2 p-3 bg-white/70 rounded-2xl shadow-soft hover:shadow-card transition-all duration-300 group-hover:scale-105 border border-gray-100/50 group-hover:border-primary/20"
                         >
                             <div
-                                class="w-10 h-10 bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl flex items-center justify-center group-hover:from-primary/20 group-hover:to-accent/20 transition-all duration-300"
+                                class="w-10 h-10 bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl flex items-center justify-center group-hover:from-primary/20 group-hover:to-accent/20 transition-all duration-300 relative"
                             >
                                 <i
                                     :class="[
@@ -80,6 +80,12 @@
                                         'text-primary group-hover:text-accent transition-colors duration-300 text-sm',
                                     ]"
                                 ></i>
+                                <span
+                                    v-if="status.count > 0"
+                                    class="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-primary to-accent text-white text-xs rounded-full flex items-center justify-center font-bold"
+                                >
+                                    {{ status.count }}
+                                </span>
                             </div>
                             <span
                                 class="text-xs font-semibold text-gray-700 text-center group-hover:text-primary transition-colors duration-300 leading-tight"
@@ -93,46 +99,93 @@
 
             <!-- Notification Items -->
             <div class="max-h-72 overflow-y-auto aside-scrollbars-light">
-                <div class="px-4 py-3 space-y-3">
+                <div
+                    v-if="notifications.length > 0"
+                    class="px-4 py-3 space-y-3"
+                >
                     <div
                         class="flex items-start gap-4 p-4 bg-white/80 rounded-2xl shadow-soft hover:shadow-card transition-all duration-300 border border-gray-100/50 hover:border-primary/20 group"
-                        v-for="(notification, index) in combinedStatusHistory"
-                        :key="index"
+                        v-for="notification in notifications"
+                        :key="notification.id"
                     >
                         <div class="avatar flex-shrink-0">
                             <div
-                                class="w-14 h-14 rounded-2xl bg-gradient-to-r from-primary/10 to-accent/10 flex items-center justify-center ring-2 ring-gray-100 group-hover:ring-primary/30 transition-all duration-300"
+                                class="w-14 h-14 rounded-2xl bg-gradient-to-r from-primary/10 to-accent/10 flex items-center justify-center ring-2 ring-gray-100 group-hover:ring-primary/30 transition-all duration-300 relative"
                             >
                                 <img
                                     src="/assets/image/pastry.png"
                                     alt="Order notification"
                                     class="w-8 h-8 object-cover rounded-xl"
                                 />
+                                <div
+                                    v-if="notification.is_recent"
+                                    class="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-primary to-accent rounded-full animate-pulse"
+                                ></div>
                             </div>
                         </div>
                         <div class="flex flex-col gap-2 flex-1 min-w-0">
                             <div class="space-y-1">
-                                <p
-                                    class="text-sm font-semibold text-gray-900 leading-relaxed group-hover:text-primary transition-colors duration-300"
-                                >
-                                    {{ notification.status }}
-                                </p>
+                                <div class="flex items-center justify-between">
+                                    <p
+                                        class="text-sm font-semibold text-gray-900 leading-relaxed group-hover:text-primary transition-colors duration-300"
+                                    >
+                                        {{ notification.status }}
+                                    </p>
+                                    <span
+                                        v-if="
+                                            notification.type ===
+                                            'payment_status'
+                                        "
+                                        class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium"
+                                    >
+                                        Pembayaran
+                                    </span>
+                                    <span
+                                        v-else
+                                        class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-medium"
+                                    >
+                                        Pesanan
+                                    </span>
+                                </div>
                                 <p
                                     class="text-xs text-gray-600 leading-relaxed line-clamp-2"
                                 >
                                     {{ notification.description }}
                                 </p>
+                                <p class="text-xs text-gray-500 font-medium">
+                                    Order: {{ notification.order_code }}
+                                </p>
                             </div>
-                            <div class="flex items-center space-x-2 mt-1">
-                                <div
-                                    class="w-1.5 h-1.5 bg-primary/50 rounded-full flex-shrink-0"
-                                ></div>
-                                <p class="text-xs font-medium text-gray-500">
-                                    {{ notification.created_at }}
+                            <div class="flex items-center justify-between mt-1">
+                                <div class="flex items-center space-x-2">
+                                    <div
+                                        class="w-1.5 h-1.5 bg-primary/50 rounded-full flex-shrink-0"
+                                    ></div>
+                                    <p
+                                        class="text-xs font-medium text-gray-500"
+                                    >
+                                        {{ notification.created_at_human }}
+                                    </p>
+                                </div>
+                                <p class="text-xs text-gray-400">
+                                    {{ notification.order_date }}
                                 </p>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div v-else class="px-6 py-8 text-center">
+                    <div
+                        class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
+                    >
+                        <i class="fas fa-bell-slash text-gray-400 text-xl"></i>
+                    </div>
+                    <p class="text-gray-500 font-medium">
+                        Tidak ada notifikasi terbaru
+                    </p>
+                    <p class="text-gray-400 text-sm mt-1">
+                        Notifikasi pesanan akan muncul di sini
+                    </p>
                 </div>
             </div>
 
@@ -177,24 +230,43 @@ const props = defineProps({
     },
 });
 
-const notificationData = ref([]);
-const orderStatus = [
+const notificationData = ref({
+    notifications: [],
+    status_counts: {
+        Berjalan: 0,
+        Sukses: 0,
+        Gagal: 0,
+    },
+    total_notifications: 0,
+});
+
+const notifications = computed(
+    () => notificationData.value.notifications || [],
+);
+const totalNotifications = computed(
+    () => notificationData.value.total_notifications || 0,
+);
+
+const statusCategories = computed(() => [
     {
         icon: "fa-solid fa-spinner fa-lg",
         name: "Order Berjalan",
         value: "Berjalan",
+        count: notificationData.value.status_counts?.Berjalan || 0,
     },
     {
         icon: "fa-solid fa-check-circle fa-lg",
         name: "Order Sukses",
         value: "Sukses",
+        count: notificationData.value.status_counts?.Sukses || 0,
     },
     {
         icon: "fa-solid fa-times-circle fa-lg",
         name: "Order Gagal",
         value: "Gagal",
+        count: notificationData.value.status_counts?.Gagal || 0,
     },
-];
+]);
 
 /**
  * Get the order and payment status history
@@ -205,72 +277,20 @@ const getStatusHistory = async () => {
     try {
         const response = await axios.get(route("notification-order-status"));
         notificationData.value = response.data;
+        console.log("Notification data:", response.data); // Debug log
     } catch (error) {
-        console.error(error);
+        console.error("Error fetching notifications:", error);
+        // Set default values on error
+        notificationData.value = {
+            notifications: [],
+            status_counts: { Berjalan: 0, Sukses: 0, Gagal: 0 },
+            total_notifications: 0,
+        };
     }
-};
-
-/**
- * Parses a relative time string (e.g., "10 jam yang lalu") and converts it to a Date object.
- *
- * @param {string} dateString - The relative time string to parse.
- * @returns {Date} - The Date object representing the parsed time.
- */
-const parsedDate = (dateString) => {
-    const timeUnits = {
-        detik: 1 / 60,
-        menit: 1,
-        jam: 60,
-        hari: 1440, // 24 * 60
-        minggu: 10080, // 7 * 24 * 60
-    };
-
-    const parts = dateString.split(" ");
-    const value = parseInt(parts[0]);
-    const unit = parts[1];
-
-    if (timeUnits[unit]) {
-        const minutesAgo = value * timeUnits[unit];
-        return new Date(Date.now() - minutesAgo * 60 * 1000); // Convert minutes to milliseconds
-    }
-
-    return new Date();
 };
 
 onMounted(async () => {
     await getStatusHistory();
-});
-
-/**
- * Computes the combined status history of orders and payments.
- *
- * @returns {Array} - An array of the top 3 most recent combined statuses.
- */
-const combinedStatusHistory = computed(() => {
-    const orderStatuses = notificationData.value.map((status) =>
-        status.order_statuses.map((orderStatus) => ({
-            ...orderStatus,
-            history_status: "order_status",
-        })),
-    );
-
-    const paymentStatuses = notificationData.value.map((status) => {
-        if (status.payment_statuses) {
-            return status.payment_statuses.map((paymentStatus) => ({
-                ...paymentStatus,
-                history_status: "payment_status",
-            }));
-        }
-
-        return [];
-    });
-
-    return [...paymentStatuses, ...orderStatuses]
-        .flat()
-        .sort((a, b) => {
-            return parsedDate(b.created_at) - parsedDate(a.created_at);
-        })
-        .slice(0, 3);
 });
 
 /**

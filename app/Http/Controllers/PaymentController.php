@@ -307,6 +307,7 @@ class PaymentController extends Controller
         $status = $request->query('status', 'All');
         $month = $request->query('month', '');
         $year = $request->query('year', '');
+        $page = $request->query('page', 1); // Add page parameter
 
         // Map Indonesian months to their respective month numbers
         $indonesianMonths = [
@@ -357,12 +358,17 @@ class PaymentController extends Controller
             if ($month && $year) {
                 $q->whereYear('created_at', $year)->whereMonth('created_at', $month);
             }
-
         });
 
-        // Paginate the results
-        $orderItems = $query->orderBy('created_at', 'desc')->paginate(5);
+        // Paginate the results with current page
+        $orderItems = $query->orderBy('created_at', 'desc')->paginate(5, ['*'], 'page', $page);
 
+        // Append filter parameters to pagination URLs
+        $orderItems->appends([
+            'status' => $status,
+            'month' => $request->query('month', ''), // Keep original month name
+            'year' => $request->query('year', ''),
+        ]);
 
         // Transform the order items
         $orderItems->getCollection()->transform(function ($item) {
@@ -512,8 +518,7 @@ class PaymentController extends Controller
 
 
             foreach ($orderItems as $orderItem) {
-                $request = new StoreShoppingChartRequest();
-                $request->merge($orderItem);
+                $request = new StoreShoppingChartRequest($orderItem);
 
                 $shoppingChartController = new ShoppingChartController();
                 $response = $shoppingChartController->addChartItem($request);
@@ -535,6 +540,4 @@ class PaymentController extends Controller
             ], 500);
         }
     }
-
-
 }

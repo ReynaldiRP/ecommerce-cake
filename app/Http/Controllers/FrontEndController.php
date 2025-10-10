@@ -85,6 +85,22 @@ class FrontEndController extends Controller
             $cakes->where('discount_id', '=', null);
         }
 
+        // Check the sorting option
+        if ($request->has('sort_by')) {
+            $sortBy = $request->input('sort_by');
+            if ($sortBy === 'price_asc') {
+                $cakes->orderBy('base_price', 'asc');
+            } elseif ($sortBy === 'price_desc') {
+                $cakes->orderBy('base_price', 'desc');
+            } elseif ($sortBy === 'name_asc') {
+                $cakes->orderBy('name', 'asc');
+            } elseif ($sortBy === 'name_desc') {
+                $cakes->orderBy('name', 'desc');
+            }
+        } else {
+            $cakes->orderBy('created_at', 'desc');
+        }
+
         $cakes = $cakes->paginate(12);
 
         // transform the cake data to add discounted price
@@ -202,7 +218,6 @@ class FrontEndController extends Controller
                 $cakeQuantities[$cakeId] = $quantities;
                 $cakeNotes[$cakeId] = $notes;
                 $cakePrices[$cakeId] = $prices;
-
             }
 
             // Store cake prices, quantities and notes in the session

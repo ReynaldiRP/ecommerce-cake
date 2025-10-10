@@ -332,10 +332,12 @@
                                             :key="method.id"
                                             class="relative"
                                         >
-                                            <BaseRadio
-                                                v-model="form.method_delivery"
-                                                :label="method.label"
+                                            <input
+                                                type="radio"
                                                 :id="method.id"
+                                                :value="method.label"
+                                                v-model="form.method_delivery"
+                                                name="method_delivery"
                                                 class="peer sr-only"
                                             />
                                             <label
@@ -343,8 +345,16 @@
                                                 class="flex items-center space-x-3 p-4 bg-white border-2 border-gray-200 rounded-2xl cursor-pointer peer-checked:border-primary peer-checked:bg-primary/5 hover:border-primary/50 transition-all duration-200"
                                             >
                                                 <div
-                                                    class="w-4 h-4 border-2 border-gray-300 rounded-full peer-checked:border-primary peer-checked:bg-primary"
-                                                ></div>
+                                                    class="w-4 h-4 border-2 border-gray-300 rounded-full peer-checked:border-primary peer-checked:bg-primary flex items-center justify-center"
+                                                >
+                                                    <div
+                                                        v-if="
+                                                            form.method_delivery ===
+                                                            method.label
+                                                        "
+                                                        class="w-2 h-2 bg-primary rounded-full"
+                                                    ></div>
+                                                </div>
                                                 <span
                                                     class="font-medium text-gray-700"
                                                     >{{ method.label }}</span

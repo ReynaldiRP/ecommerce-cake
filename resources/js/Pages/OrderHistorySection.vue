@@ -158,7 +158,22 @@
                 </div>
 
                 <!-- Transaction History Content -->
-                <div class="space-y-6">
+                <div class="space-y-6 relative">
+                    <!-- Loading Overlay -->
+                    <div
+                        v-if="isLoading"
+                        class="absolute inset-0 bg-white/70 backdrop-blur-sm rounded-3xl flex items-center justify-center z-10"
+                    >
+                        <div class="flex flex-col items-center space-y-4">
+                            <div
+                                class="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"
+                            ></div>
+                            <p class="text-gray-600 font-medium">
+                                Memuat data transaksi...
+                            </p>
+                        </div>
+                    </div>
+
                     <!-- Individual Order Cards -->
                     <div
                         v-for="(order, orderIndex) in originalOrderItems"
@@ -465,17 +480,26 @@
                         :links="pagination.links"
                         :next-page-url="pagination.next_page_url"
                         :previous-page-url="pagination.prev_page_url"
+                        :loading="isLoading"
+                        @paginate="handlePagination"
                     />
-                    <p class="text-sm text-gray-600 order-1 sm:order-2">
-                        Halaman
-                        <span class="font-semibold">{{
-                            pagination.current_page
-                        }}</span>
-                        dari
-                        <span class="font-semibold">{{
-                            pagination.last_page
-                        }}</span>
-                    </p>
+                    <div class="order-1 sm:order-2 text-center sm:text-right">
+                        <p class="text-sm text-gray-600">
+                            Halaman
+                            <span class="font-semibold">{{
+                                pagination.current_page
+                            }}</span>
+                            dari
+                            <span class="font-semibold">{{
+                                pagination.last_page
+                            }}</span>
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Menampilkan {{ pagination.from ?? 0 }} -
+                            {{ pagination.to ?? 0 }} dari
+                            {{ pagination.total }} transaksi
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -510,6 +534,8 @@ const originalOrderItems = ref([]);
 originalOrderItems.value = props.orderItems.data;
 
 const pagination = ref(props.orderItems);
+const isLoading = ref(false);
+
 const modalActiveMap = ref({});
 const transactionFilter = ["Semua", "Berjalan", "Sukses", "Gagal"];
 const orderStatus = ["Menunggu konfirmasi", "Pesanan diproses", "Terkirim"];
@@ -582,16 +608,35 @@ const onChangeYearTransaction = (index) => {
  *
  * @async
  * @function fetchFilteredData
+ * @param {string|null} url - Optional URL for pagination, if not provided uses the base route
  * @returns {Promise<void>} - A promise that resolves when the data is successfully fetched and processed.
  */
-const fetchFilteredData = async () => {
+const fetchFilteredData = async (url = null) => {
     try {
-        const response = await axios.get(route("fetch-transaction-history"), {
-            params: {
-                status: selectedTransactionStatus.value,
-                month: selectedTransactionDate.months,
-                year: selectedTransactionDate.years,
-            },
+        isLoading.value = true;
+
+        let requestUrl = route("fetch-transaction-history");
+        let requestParams = {
+            status: selectedTransactionStatus.value,
+            month: selectedTransactionDate.months,
+            year: selectedTransactionDate.years,
+        };
+
+        // If URL is provided (pagination), extract the page number from it
+        if (url) {
+            try {
+                const urlObj = new URL(url);
+                const pageParam = urlObj.searchParams.get("page");
+                if (pageParam) {
+                    requestParams.page = pageParam;
+                }
+            } catch (e) {
+                console.warn("Could not parse pagination URL:", e);
+            }
+        }
+
+        const response = await axios.get(requestUrl, {
+            params: requestParams,
         });
 
         const results = response.data.orderItems.data;
@@ -603,8 +648,11 @@ const fetchFilteredData = async () => {
         }
 
         pagination.value = response.data.orderItems;
+        console.log(pagination.value);
     } catch (error) {
         console.error("Error fetching filtered data:", error);
+    } finally {
+        isLoading.value = false;
     }
 };
 
@@ -785,6 +833,26 @@ const handleCancelOrder = async (orderId) => {
         modalActiveMap.value[orderId] = false;
     } catch (e) {
         console.error("Error cancel order again:", e);
+    }
+};
+
+/**
+ * Handles pagination by fetching data for the specified page URL.
+ *
+ * @param {string} url - The pagination URL to fetch data from.
+ */
+const handlePagination = (url) => {
+    if (url && !isLoading.value) {
+        // Scroll to top of the content smoothly
+        const contentElement = document.querySelector(".min-h-screen");
+        if (contentElement) {
+            contentElement.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+            });
+        }
+
+        fetchFilteredData(url);
     }
 };
 </script>
