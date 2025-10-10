@@ -145,7 +145,7 @@ class OrderItem extends Model
             ->join('categories', 'cakes.category_id', '=', 'categories.id')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
-            ->where('payments.payment_status', '=', 'pesanan terbayar')
+            ->where('payments.payment_status', '=', 'Pesanan terbayar')
             ->when($pastMonth && $currentMonth, function ($query) use ($pastMonth, $currentMonth) {
                 return $query->whereBetween('order_items.created_at', [$pastMonth, $currentMonth]);
             })

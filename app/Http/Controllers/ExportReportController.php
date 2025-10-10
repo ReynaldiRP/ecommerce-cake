@@ -115,7 +115,12 @@ class ExportReportController extends Controller
             'period' => $this->months[$selectedMonth] . ' ' . $selectedYear,
         ])->setPaper('a4', 'landscape');
 
-        return $pdf->download('product-performance-report.pdf');
+        $fileName = 'product-performance-report-' . $selectedYear . '-' . $selectedMonth . '.pdf';
+
+        return response($pdf->output(), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"')
+            ->header('Content-Length', strlen($pdf->output()));
     }
 
     /**
@@ -178,15 +183,19 @@ class ExportReportController extends Controller
             ->setOption('dpi', 150)
             ->setOption('defaultFont', 'sans-serif')
             ->loadView('pdf.sales_performance', [
-            'salePerformance' => $salePerformance ?? [],
-            'totalRevenue' => $this->formatPrice($totalRevenue->total_revenue ?? 0) ?? '-',
-            'totalTransaction' => $totalTransaction->total_transaction ?? '-',
-            'averageOrderValue' => $this->formatPrice($averageOrderValue ?? 0) ?? '-',
-            'generated_at' => Carbon::now()->translatedFormat('l, d F Y H:i'),
-            'period' => $this->months[$selectedMonth] . ' ' . $selectedYear,
-        ])->setPaper('a4', 'landscape');
+                'salePerformance' => $salePerformance ?? [],
+                'totalRevenue' => $this->formatPrice($totalRevenue->total_revenue ?? 0) ?? '-',
+                'totalTransaction' => $totalTransaction->total_transaction ?? '-',
+                'averageOrderValue' => $this->formatPrice($averageOrderValue ?? 0) ?? '-',
+                'generated_at' => Carbon::now()->translatedFormat('l, d F Y H:i'),
+                'period' => $this->months[$selectedMonth] . ' ' . $selectedYear,
+            ])->setPaper('a4', 'landscape');
 
+        $fileName = 'sales-performance-report-' . $selectedYear . '-' . $selectedMonth . '.pdf';
 
-        return $pdf->download('sales-performance-report.pdf');
+        return response($pdf->output(), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"')
+            ->header('Content-Length', strlen($pdf->output()));
     }
 }

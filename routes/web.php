@@ -55,7 +55,7 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('admin/dashboard')->group(function () {
             // Admin dashboard home
             Route::get('/home', ShowDashboardController::class)->name('dashboard-home');
-            Route::post('/home', [DashboardController::class, 'index'])->name('dashboard-home');
+            Route::post('/home/data', [DashboardController::class, 'index'])->name('dashboard-home-data');
 
             // Resource routes for managing cakes
             Route::resource('/cake', CakeController::class)
@@ -100,10 +100,10 @@ Route::middleware(['auth'])->group(function () {
 
             // Routes for exporting data to PDF
             Route::group(['prefix' => 'export', 'as' => 'export.'], function () {
-               Route::controller(ExportReportController::class)->group(function () {
-                   Route::get('/product-performance', 'exportProductPerformanceToPdf')->name('product-performance-report');
-                   Route::get('/revenue-report', 'exportSalesPerformanceToPdf')->name('sales-performance-report');
-               });
+                Route::controller(ExportReportController::class)->group(function () {
+                    Route::get('/product-performance', 'exportProductPerformanceToPdf')->name('product-performance-report');
+                    Route::get('/revenue-report', 'exportSalesPerformanceToPdf')->name('sales-performance-report');
+                });
             });
 
             // Route for edit and update order status

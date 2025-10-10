@@ -43,7 +43,7 @@ class Payment extends Model
      */
     public function getTotalTransaction(string $pastMonth = null, string $currentMonth = null): int
     {
-        return Payment::query()->where('payment_status', '=', 'pesanan terbayar')
+        return Payment::query()->where('payment_status', '=', 'Pesanan terbayar')
             ->when($pastMonth && $currentMonth, function ($query) use ($pastMonth, $currentMonth) {
                 return $query->whereBetween('payments.created_at', [$pastMonth, $currentMonth]);
             })

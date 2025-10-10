@@ -97,6 +97,8 @@ class DatabaseSeeder extends Seeder
             ->get();
 
         $adminPermissions = Permission::query()->where('name', 'LIKE', '%cake')
+            ->orWhere('name', 'LIKE', '%permission')
+            ->orWhere('name', 'LIKE', '%dashboard')
             ->orWhere('name', 'LIKE', '%category')
             ->orWhere('name', 'LIKE', '%discount')
             ->orWhere('name', 'LIKE', '%flavour')

@@ -28,7 +28,7 @@ class ShowDashboardController extends Controller
         $orderItem = new OrderItem();
 
 
-        $getAllCakeSold = $orderItem->getAllCakeSold('2024');
+        $getAllCakeSold = $orderItem->getAllCakeSold('2025');
         // Get total revenue cake orders from the payment model
         $totalRevenueCakeOrders = $payment->totalRevenueOrder(Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth());
         // Get total cake sold
@@ -46,9 +46,9 @@ class ShowDashboardController extends Controller
         // Get the average revenue for last three months
         $averageRevenueForThreeMonth = $order->getTheAverageRevenueThreeMonth();
         // Show chart data for the total revenue of cake orders per month
-        $chartData = $order->showAllRevenueForEachMonths('2024');
+        $chartData = $order->showAllRevenueForEachMonths('2025');
         // Show total transaction per month for the last 12 months based on selected year
-        $chartDataTotalTransaction = $order->showAllTransactionForEachMonths('2024');
+        $chartDataTotalTransaction = $order->showAllTransactionForEachMonths('2025');
         // Show the current month
         $currentMonth = Carbon::now()->translatedFormat('F Y');
 

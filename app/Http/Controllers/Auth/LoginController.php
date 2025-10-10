@@ -40,13 +40,17 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             // Check if the user is not owner its will not access to home dashboard
-            if (auth()->user()->hasRole('owner')) {
-                return redirect()->route('dashboard-home');
-            } elseif (auth()->user()->hasRole('admin')) {
-                return redirect()->route('category.index');
-            }
+            // if (auth()->user()->hasRole('owner')) {
+            //     return redirect()->route('dashboard-home');
+            // } elseif (auth()->user()->hasRole('admin')) {
+            //     return redirect()->route('category.index');
+            // }
 
-            return redirect()->route('home');
+            if (auth()->user()->hasRole('admin')) {
+                return redirect()->route('dashboard-home');
+            } else {
+                return redirect()->route('home');
+            }
         }
 
         $user = User::where('email', $credential['email'])->first();

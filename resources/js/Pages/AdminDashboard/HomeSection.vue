@@ -320,8 +320,8 @@
                             <option value="2021">2021</option>
                             <option value="2022">2022</option>
                             <option value="2023">2023</option>
-                            <option value="2024" selected>2024</option>
-                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2025" selected>2025</option>
                         </select>
                     </label>
                 </div>
@@ -349,8 +349,8 @@
                             <option value="2021">2021</option>
                             <option value="2022">2022</option>
                             <option value="2023">2023</option>
-                            <option value="2024" selected>2024</option>
-                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2025" selected>2025</option>
                         </select>
                     </label>
                 </div>
@@ -378,8 +378,8 @@
                             <option value="2021">2021</option>
                             <option value="2022">2022</option>
                             <option value="2023">2023</option>
-                            <option value="2024" selected>2024</option>
-                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2025" selected>2025</option>
                         </select>
                     </label>
                 </div>
@@ -472,9 +472,9 @@ const form = reactive({
     selectedReportType: "",
     selectedExportMonth: "",
     selectedExportYear: "",
-    selectedYearTransaction: "2024",
-    selectedYearRevenue: "2024",
-    selectedYearCakeSold: "2024",
+    selectedYearTransaction: "2025",
+    selectedYearRevenue: "2025",
+    selectedYearCakeSold: "2025",
 });
 
 // Growth Revenue Per Month By Percentage
@@ -604,7 +604,7 @@ const onChangeExportMonth = (index) => {
  */
 const fetchDataReportSelectedYear = async () => {
     try {
-        const response = await axios.post(route("dashboard-home"), {
+        const response = await axios.post(route("dashboard-home-data"), {
             selectedTransactionYear: form.selectedYearTransaction,
             selectedRevenueYear: form.selectedYearRevenue,
             selectedCakeSoldYear: form.selectedYearCakeSold,
@@ -616,43 +616,87 @@ const fetchDataReportSelectedYear = async () => {
             chartDataCakeSold,
         } = response.data;
 
-        if (!chartDataTotalTransaction.length) {
-            chartTransactionData.value = {};
-            return;
+        // Update transaction data
+        if (chartDataTotalTransaction && chartDataTotalTransaction.length > 0) {
+            dataTransaction.labels = chartDataTotalTransaction.map(
+                (data) => data.month,
+            );
+            dataTransaction.datasets[0].data = chartDataTotalTransaction.map(
+                (data) => data.total_transaction,
+            );
+            chartTransactionData.value = { ...dataTransaction };
+        } else {
+            chartTransactionData.value = {
+                labels: [],
+                datasets: [
+                    {
+                        label: "Jumlah Transaksi",
+                        data: [],
+                        backgroundColor: [],
+                        borderWidth: 1,
+                    },
+                ],
+            };
         }
 
-        if (!chartDataCakeSold.length) {
-            chartCakeSoldData.value = {};
-            return;
+        // Update revenue data
+        if (chartDataRevenue && chartDataRevenue.length > 0) {
+            dataRevenue.labels = chartDataRevenue.map((data) => data.month);
+            dataRevenue.datasets[0].data = chartDataRevenue.map(
+                (data) => data.total_revenue,
+            );
+            chartRevenueData.value = { ...dataRevenue };
+        } else {
+            chartRevenueData.value = {
+                labels: [],
+                datasets: [
+                    {
+                        label: "Pendapatan",
+                        data: [],
+                        backgroundColor: "rgba(255, 99, 132)",
+                        borderColor: "rgba(255, 99, 132)",
+                        tension: 0.1,
+                    },
+                ],
+            };
         }
 
-        if (!chartDataRevenue.length) {
-            chartRevenueData.value = {};
-            return;
+        // Update cake sold data
+        if (chartDataCakeSold && chartDataCakeSold.length > 0) {
+            const aggregatedData =
+                aggregateChartDataCakeSold(chartDataCakeSold);
+            dataCakeSold.labels = aggregatedData.map((data) => data.cake_name);
+            dataCakeSold.datasets[0].data = aggregatedData.map(
+                (data) => data.sold_quantity,
+            );
+            dataCakeSold.datasets[0].backgroundColor = aggregatedData.map(
+                () => {
+                    const r = Math.floor(Math.random() * 255);
+                    const g = Math.floor(Math.random() * 255);
+                    const b = Math.floor(Math.random() * 255);
+                    return `rgba(${r}, ${g}, ${b})`;
+                },
+            );
+            chartCakeSoldData.value = { ...dataCakeSold };
+        } else {
+            chartCakeSoldData.value = {
+                labels: [],
+                datasets: [
+                    {
+                        label: "Terjual",
+                        data: [],
+                        backgroundColor: [],
+                        hoverOffset: 4,
+                    },
+                ],
+            };
         }
-
-        dataRevenue.labels = chartDataRevenue.map((data) => data.month);
-        dataRevenue.datasets[0].data = chartDataRevenue.map(
-            (data) => data.total_revenue,
-        );
-
-        dataCakeSold.labels = chartDataCakeSold.map((data) => data.cake_name);
-        dataCakeSold.datasets[0].data = aggregateChartDataCakeSold(
-            chartDataCakeSold,
-        ).map((data) => data.sold_quantity);
-
-        dataTransaction.labels = chartDataTotalTransaction.map(
-            (data) => data.month,
-        );
-        dataTransaction.datasets[0].data = chartDataTotalTransaction.map(
-            (data) => data.total_transaction,
-        );
-
-        chartRevenueData.value = { ...dataRevenue };
-        chartCakeSoldData.value = { ...dataCakeSold };
-        chartTransactionData.value = { ...dataTransaction };
     } catch (e) {
-        console.error(e);
+        console.error("Error fetching dashboard data:", e);
+        // Set empty chart data in case of error
+        chartRevenueData.value = { labels: [], datasets: [] };
+        chartCakeSoldData.value = { labels: [], datasets: [] };
+        chartTransactionData.value = { labels: [], datasets: [] };
     }
 };
 
@@ -669,9 +713,58 @@ watch(
 );
 
 const fillChartData = () => {
-    chartRevenueData.value = dataRevenue;
-    chartCakeSoldData.value = dataCakeSold;
-    chartTransactionData.value = dataTransaction;
+    // Ensure data is properly structured
+    if (props.chartData && props.chartData.length > 0) {
+        chartRevenueData.value = { ...dataRevenue };
+    } else {
+        chartRevenueData.value = {
+            labels: [],
+            datasets: [
+                {
+                    label: "Pendapatan",
+                    data: [],
+                    backgroundColor: "rgba(255, 99, 132)",
+                    borderColor: "rgba(255, 99, 132)",
+                    tension: 0.1,
+                },
+            ],
+        };
+    }
+
+    if (props.chartDataCakeSold && props.chartDataCakeSold.length > 0) {
+        chartCakeSoldData.value = { ...dataCakeSold };
+    } else {
+        chartCakeSoldData.value = {
+            labels: [],
+            datasets: [
+                {
+                    label: "Terjual",
+                    data: [],
+                    backgroundColor: [],
+                    hoverOffset: 4,
+                },
+            ],
+        };
+    }
+
+    if (
+        props.chartDataTotalTransaction &&
+        props.chartDataTotalTransaction.length > 0
+    ) {
+        chartTransactionData.value = { ...dataTransaction };
+    } else {
+        chartTransactionData.value = {
+            labels: [],
+            datasets: [
+                {
+                    label: "Jumlah Transaksi",
+                    data: [],
+                    backgroundColor: [],
+                    borderWidth: 1,
+                },
+            ],
+        };
+    }
 };
 
 onMounted(() => {
@@ -698,10 +791,72 @@ const evaluateTrend = (total, minimum) => {
  *
  * @returns {void}
  */
-const exportReport = () => {
-    Inertia.get(route(`export.${form.selectedReportType}`), {
-        year: form.selectedExportYear,
-        month: form.selectedExportMonth,
-    });
+const exportReport = async () => {
+    // Validate that all required fields are selected
+    if (!form.selectedReportType) {
+        alert("Silakan pilih jenis laporan terlebih dahulu.");
+        return;
+    }
+
+    if (!form.selectedExportYear) {
+        alert("Silakan pilih tahun laporan terlebih dahulu.");
+        return;
+    }
+
+    if (!form.selectedExportMonth) {
+        alert("Silakan pilih bulan laporan terlebih dahulu.");
+        return;
+    }
+
+    try {
+        // Create the download URL with parameters
+        const exportUrl = route(`export.${form.selectedReportType}`, {
+            year: form.selectedExportYear,
+            month: form.selectedExportMonth,
+        });
+
+        // Use fetch to download the file
+        const response = await fetch(exportUrl, {
+            method: "GET",
+            headers: {
+                Accept: "application/pdf",
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Get the filename from the Content-Disposition header
+        const contentDisposition = response.headers.get("Content-Disposition");
+        let filename = `laporan-${form.selectedReportType}-${form.selectedExportYear}-${form.selectedExportMonth}.pdf`;
+        if (contentDisposition) {
+            const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(
+                contentDisposition,
+            );
+            if (matches != null && matches[1]) {
+                filename = matches[1].replace(/['"]/g, "");
+            }
+        }
+
+        // Create blob and download
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        link.style.display = "none";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        // Close the modal
+        modalActive.value = false;
+    } catch (error) {
+        console.error("Export error:", error);
+        alert("Terjadi kesalahan saat mengunduh laporan. Silakan coba lagi.");
+    }
 };
 </script>

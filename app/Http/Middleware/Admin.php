@@ -24,11 +24,11 @@ class Admin
             }
 
             // Check if the user is not owner its will not access to home dashboard
-            if (!auth()->user()->hasRole('owner')) {
-                return redirect()->route('category.index');
-            } else {
-                return redirect()->route('dashboard-home');
-            }
+            // if (!auth()->user()->hasRole('owner')) {
+            //     return redirect()->route('category.index');
+            // } else {
+            //     return redirect()->route('dashboard-home');
+            // }
 
         }
 

@@ -10,7 +10,7 @@ export default [
     {
         route: "dashboard-home",
         icon: mdiMonitor,
-        role: "owner",
+        role: "owner|staff administrasi",
         label: "Dashboard",
     },
     {

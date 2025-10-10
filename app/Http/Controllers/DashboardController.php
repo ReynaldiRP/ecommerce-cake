@@ -13,22 +13,18 @@ class DashboardController extends Controller
     public function __construct(
         private readonly Order $order,
         private readonly OrderItem $orderItem,
-    )
-    {}
+    ) {}
 
     public function index(Request $request): JsonResponse
     {
         // request input for date range
-        $selectedYearDataTransaction = $request->input('selectedTransactionYear', 2024);
-        $selectedYearDataRevenue = $request->input('selectedRevenueYear', 2024);
-        $selectedYearDataCakeSold = $request->input('selectedCakeSoldYear', 2024);
-
-
+        $selectedYearDataTransaction = $request->input('selectedTransactionYear', 2025);
+        $selectedYearDataRevenue = $request->input('selectedRevenueYear', 2025);
+        $selectedYearDataCakeSold = $request->input('selectedCakeSoldYear', 2025);
 
         $fetchTransactionData = $this->fetchDataTransactionPerMonth($selectedYearDataTransaction);
         $fetchRevenueData = $this->fetchDataRevenuePerMonth($selectedYearDataRevenue);
         $fetchCakeSoldData = $this->fetchDataCakeSoldPerMonth($selectedYearDataCakeSold);
-
 
         return response()->json([
             'chartDataTotalTransaction' => $fetchTransactionData,
@@ -56,7 +52,7 @@ class DashboardController extends Controller
      * @param int $year
      * @return string[]
      */
-    public function fetchDataRevenuePerMonth (int $year): array
+    public function fetchDataRevenuePerMonth(int $year): array
     {
         $dataRevenue = $this->order->showAllRevenueForEachMonths($year);
 

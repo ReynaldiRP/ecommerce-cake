@@ -38,7 +38,7 @@ class Order extends Model
     {
         $totalRevenuePerMonth = $this->selectRaw('MONTH(orders.created_at) as month, SUM(total_price) as total_revenue')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
-            ->where('payments.payment_status', '=', 'pesanan terbayar')
+            ->where('payments.payment_status', '=', 'Pesanan terbayar')
             ->whereYear('orders.created_at', $year)
             ->groupBy('month')
             ->orderBy('month')
@@ -57,17 +57,17 @@ class Order extends Model
 
     public function getGrowthRevenueRangeThreeMonthByPercentage(): float|int
     {
-       // Get the total revenue for the current month
+        // Get the total revenue for the current month
         $currentMonthTotalRevenue = $this->selectRaw('SUM(total_price) as total_revenue')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
-            ->where('payments.payment_status', '=', 'pesanan terbayar')
+            ->where('payments.payment_status', '=', 'Pesanan terbayar')
             ->whereBetWeen('orders.created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
             ->first();
 
         // Get the last three months total revenue (excluding the current month)
         $lastThreeMonthsRevenue = $this->selectRaw('SUM(total_price) as total_revenue')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
-            ->where('payments.payment_status', '=', 'pesanan terbayar')
+            ->where('payments.payment_status', '=', 'Pesanan terbayar')
             ->whereBetWeen('orders.created_at', [Carbon::now()->subMonths(3)->startOfMonth(), Carbon::now()->subMonths(1)->endOfMonth()])
             ->first();
 
@@ -97,7 +97,7 @@ class Order extends Model
         // Get the average revenue for the last three months
         $averageRevenue = $this->selectRaw('AVG(total_price) as average_revenue')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
-            ->where('payments.payment_status', '=', 'pesanan terbayar')
+            ->where('payments.payment_status', '=', 'Pesanan terbayar')
             ->whereBetWeen('orders.created_at', [Carbon::now()->subMonths(3)->startOfMonth(), Carbon::now()->endOfMonth()])
             ->first();
 
@@ -114,7 +114,7 @@ class Order extends Model
     {
         $totalTransactionPerMonth = $this->selectRaw('MONTH(orders.created_at) as month, COUNT(orders.id) as total_transaction')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
-            ->where('payments.payment_status', '=', 'pesanan terbayar')
+            ->where('payments.payment_status', '=', 'Pesanan terbayar')
             ->whereYear('orders.created_at', $year)
             ->groupBy('month')
             ->orderBy('month')
