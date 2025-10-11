@@ -744,3 +744,155 @@ const submit = () => {
     }, 2000);
 };
 </script>
+
+<style scoped>
+/* Custom input and select styles to match design system */
+:deep(.input) {
+    background-color: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    color: #1f2937;
+    min-height: 3.5rem;
+}
+
+:deep(.input:focus-within) {
+    border-color: #d946ef;
+    box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.1);
+    background-color: #ffffff;
+    outline: none;
+}
+
+:deep(.input input) {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #1f2937;
+}
+
+:deep(.input input::placeholder) {
+    color: #9ca3af;
+}
+
+:deep(.input:hover) {
+    border-color: #cbd5e1;
+}
+
+/* Error state */
+:deep(.input.border-error) {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Focus state for icons */
+:deep(.input:focus-within svg) {
+    color: #d946ef;
+}
+
+/* Select dropdown styling */
+:deep(.select) {
+    background-color: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    color: #1f2937;
+    min-height: 3.5rem;
+}
+
+:deep(.select:focus) {
+    border-color: #d946ef;
+    box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.1);
+    background-color: #ffffff;
+    outline: none;
+}
+
+:deep(.select:hover) {
+    border-color: #cbd5e1;
+}
+
+/* Radio button styling */
+:deep(input[type="radio"]) {
+    accent-color: #d946ef;
+}
+
+:deep(input[type="radio"]:checked) {
+    background-color: #d946ef;
+    border-color: #d946ef;
+}
+
+/* Checkbox styling */
+:deep(input[type="checkbox"]) {
+    accent-color: #d946ef;
+}
+
+:deep(input[type="checkbox"]:checked) {
+    background-color: #d946ef;
+    border-color: #d946ef;
+}
+
+/* Custom form controls */
+:deep(.form-control) {
+    background-color: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+}
+
+:deep(.form-control:focus) {
+    border-color: #d946ef;
+    box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.1);
+    background-color: #ffffff;
+}
+
+/* Date input specific styling */
+:deep(input[type="date"]) {
+    background-color: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    color: #1f2937;
+    min-height: 3.5rem;
+}
+
+:deep(input[type="date"]:focus) {
+    border-color: #d946ef;
+    box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.1);
+    background-color: #ffffff;
+    outline: none;
+}
+
+:deep(input[type="date"]:hover) {
+    border-color: #cbd5e1;
+}
+
+/* Range input styling */
+:deep(input[type="range"]) {
+    accent-color: #d946ef;
+}
+
+:deep(input[type="range"]::-webkit-slider-thumb) {
+    background-color: #d946ef;
+}
+
+:deep(input[type="range"]::-moz-range-thumb) {
+    background-color: #d946ef;
+    border-color: #d946ef;
+}
+
+/* Custom radio buttons for delivery method */
+:deep(.peer:checked ~ label) {
+    border-color: #d946ef;
+    background-color: rgba(217, 70, 239, 0.05);
+}
+
+:deep(.peer:checked ~ label .w-4.h-4) {
+    border-color: #d946ef;
+    background-color: #d946ef;
+}
+</style>

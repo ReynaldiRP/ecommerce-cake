@@ -3,99 +3,215 @@
         <loading
             v-model:active="isLoading"
             :can-cancel="true"
-            color="#EBA9AE"
-            background-color="#B2BEB5"
+            color="#D946EF"
+            background-color="#F8FAFC"
         />
+
+        <!-- Background Section -->
+        <!-- Background Section -->
         <div
-            class="min-h-screen hidden lg:w-[60%] lg:block first-section rounded-e-2xl"
-        ></div>
-        <div
-            class="h-full w-full lg:w-[40%] flex flex-col items-center justify-center bg-base-100"
+            class="min-h-screen hidden lg:flex lg:w-3/5 xl:w-2/3 first-section relative overflow-hidden items-center justify-center"
         >
-            <div class="flex flex-col items-center justify-center gap-12">
-                <div class="avatar">
-                    <div class="w-32 lg:w-24 rounded-full">
+            <div
+                class="absolute inset-0 bg-gradient-to-br from-primary/40 to-accent/40"
+            ></div>
+            <div class="absolute inset-0 bg-black/30"></div>
+            <div
+                class="relative z-10 text-center text-white px-8 xl:px-16 max-w-3xl"
+            >
+                <div class="mb-12">
+                    <div
+                        class="w-28 h-28 xl:w-32 xl:h-32 mx-auto bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center shadow-2xl mb-8"
+                    >
                         <img
                             src="/assets/image/logo-dreamdessert.webp"
-                            alt="ini gambar"
+                            alt="Dream Dessert Logo"
+                            class="w-20 h-20 xl:w-24 xl:h-24 object-contain"
                         />
                     </div>
                 </div>
-                <h1
-                    class="relative bottom-10 text-primary-color font-bold text-3xl"
+                <h2
+                    class="text-4xl xl:text-6xl font-heading font-bold mb-8 leading-tight"
                 >
-                    Selamat Datang Kembali
-                </h1>
-            </div>
-            <form
-                @submit.prevent="submit"
-                class="flex flex-col gap-3"
-                autocomplete="on"
-            >
-                <BaseAlert v-if="errors.email" type="alert-error">{{
-                    errors.email
-                }}</BaseAlert>
-                <BaseAlert v-else-if="errors.password" type="alert-error">{{
-                    errors.password
-                }}</BaseAlert>
-                <div class="flex flex-col gap-2">
-                    <BaseLabel label="Email" :required="true" />
-                    <BaseInput
-                        v-model="form.email"
-                        name="email"
-                        autocomplete="email"
-                        style="width: 450px"
-                        placeholder="user@gmail.com"
-                        input-type="email"
-                        :error="error.email"
-                        :error-message="errorMessage.email"
-                        @change="onChangeEmail"
-                    />
-                </div>
-                <div class="flex flex-col gap-2">
-                    <BaseLabel label="Password" :required="true" />
-                    <BaseInput
-                        v-model="form.password"
-                        name="password"
-                        autocomplete="current-password"
-                        style="width: 450px"
-                        placeholder="Min. 8 Karakter"
-                        :input-type="passwordInputType"
-                        :error="error.password"
-                        :error-message="errorMessage.password"
-                        @change="onChangePassword"
-                        :is-password-show="isPasswordShow"
-                        :show-password-toggle="showPasswordToggle"
-                    />
-                </div>
-                <div class="flex items-center justify-between">
-                    <div class="form-control">
-                        <label class="flex gap-3 label cursor-pointer">
-                            <span class="label-text">Ingat saya</span>
-                            <input
-                                type="checkbox"
-                                checked="checked"
-                                class="checkbox checkbox-md"
-                            />
-                        </label>
-                    </div>
-                    <inertia-link class="text-sm underline"
-                        >Lupa password?</inertia-link
-                    >
-                </div>
-                <button class="btn w-full bg-base-300 font-bold text-lg">
-                    Masuk
-                </button>
-                <p class="text-sm mx-auto">
-                    Tidak punya akun ?
-                    <inertia-link
-                        :href="route('register.index')"
-                        class="text-sm underline"
-                    >
-                        Daftar Sekarang</inertia-link
-                    >
+                    Selamat Datang Kembali!
+                </h2>
+                <p
+                    class="text-lg xl:text-xl text-white/95 leading-relaxed max-w-2xl mx-auto"
+                >
+                    Masuk ke akun Anda untuk melanjutkan pengalaman berbelanja
+                    kue terbaik di Dream Dessert
                 </p>
-            </form>
+            </div>
+        </div>
+
+        <!-- Login Form Section -->
+        <div
+            class="min-h-screen w-full lg:w-2/5 xl:w-1/3 flex flex-col items-center justify-center p-6 lg:p-8 xl:p-12 bg-gradient-soft"
+        >
+            <div class="w-full max-w-lg">
+                <!-- Header -->
+                <div class="text-center mb-10">
+                    <div class="mb-6 lg:hidden">
+                        <div
+                            class="w-20 h-20 mx-auto bg-gradient-to-r from-primary to-accent rounded-3xl flex items-center justify-center shadow-card mb-4"
+                        >
+                            <img
+                                src="/assets/image/logo-dreamdessert.webp"
+                                alt="Dream Dessert Logo"
+                                class="w-12 h-12 object-contain"
+                            />
+                        </div>
+                    </div>
+                    <h1
+                        class="text-3xl lg:text-4xl xl:text-5xl font-heading font-bold text-gray-900 mb-3"
+                    >
+                        Masuk
+                    </h1>
+                    <p class="text-gray-600 text-lg">
+                        Silakan masuk ke akun Anda
+                    </p>
+                </div>
+
+                <!-- Login Form -->
+                <div
+                    class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-card border border-white/20 p-8"
+                >
+                    <form
+                        @submit.prevent="submit"
+                        class="space-y-6"
+                        autocomplete="on"
+                    >
+                        <!-- Error Alerts -->
+                        <BaseAlert v-if="errors.email" type="alert-error">
+                            {{ errors.email }}
+                        </BaseAlert>
+                        <BaseAlert
+                            v-else-if="errors.password"
+                            type="alert-error"
+                        >
+                            {{ errors.password }}
+                        </BaseAlert>
+
+                        <!-- Email Field -->
+                        <div class="space-y-2">
+                            <BaseLabel
+                                label="Email"
+                                :required="true"
+                                class="text-gray-700 font-semibold"
+                            />
+                            <BaseInput
+                                v-model="form.email"
+                                name="email"
+                                autocomplete="email"
+                                class="w-full"
+                                placeholder="user@gmail.com"
+                                input-type="email"
+                                :error="error.email"
+                                :error-message="errorMessage.email"
+                                @change="onChangeEmail"
+                            />
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="space-y-2">
+                            <BaseLabel
+                                label="Password"
+                                :required="true"
+                                class="text-gray-700 font-semibold"
+                            />
+                            <BaseInput
+                                v-model="form.password"
+                                name="password"
+                                autocomplete="current-password"
+                                class="w-full"
+                                placeholder="Min. 8 Karakter"
+                                :input-type="passwordInputType"
+                                :error="error.password"
+                                :error-message="errorMessage.password"
+                                @change="onChangePassword"
+                                :is-password-show="isPasswordShow"
+                                :show-password-toggle="showPasswordToggle"
+                            />
+                        </div>
+
+                        <!-- Remember Me & Forgot Password -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <input
+                                    type="checkbox"
+                                    id="remember"
+                                    class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+                                />
+                                <label
+                                    for="remember"
+                                    class="text-sm text-gray-600 cursor-pointer"
+                                >
+                                    Ingat saya
+                                </label>
+                            </div>
+                            <inertia-link
+                                class="text-sm text-primary hover:text-accent transition-colors duration-200 font-medium"
+                            >
+                                Lupa password?
+                            </inertia-link>
+                        </div>
+
+                        <!-- Login Button -->
+                        <button
+                            type="submit"
+                            class="w-full bg-gradient-to-r from-primary to-accent text-white font-bold text-lg py-4 rounded-2xl shadow-card hover:shadow-soft transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                            :disabled="isLoading"
+                        >
+                            <span v-if="!isLoading">Masuk</span>
+                            <span
+                                v-else
+                                class="flex items-center justify-center space-x-2"
+                            >
+                                <svg
+                                    class="animate-spin h-5 w-5"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle
+                                        class="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        stroke-width="4"
+                                        fill="none"
+                                    ></circle>
+                                    <path
+                                        class="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                    ></path>
+                                </svg>
+                                <span>Memproses...</span>
+                            </span>
+                        </button>
+
+                        <!-- Register Link -->
+                        <div class="text-center pt-4">
+                            <p class="text-gray-600">
+                                Tidak punya akun?
+                                <inertia-link
+                                    :href="route('register.index')"
+                                    class="text-primary hover:text-accent font-semibold transition-colors duration-200 ml-1"
+                                >
+                                    Daftar Sekarang
+                                </inertia-link>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Footer -->
+                <div class="text-center mt-8">
+                    <p class="text-sm text-gray-500">
+                        © 2025 Dream Dessert. Semua hak dilindungi.
+                    </p>
+                </div>
+            </div>
         </div>
     </Auth>
 </template>
@@ -220,10 +336,92 @@ const submit = () => {
 </script>
 
 <style scoped>
+/* Background image with better proportions */
 .first-section {
-    background-image: url(/public/assets/image/login-background.webp);
+    background-image: url(/assets/image/login-background.webp);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    position: relative;
+}
+
+/* Custom input styles to match design system */
+:deep(.input) {
+    background-color: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    color: #1f2937;
+    min-height: 3.5rem;
+}
+
+:deep(.input:focus-within) {
+    border-color: #d946ef;
+    box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.1);
+    background-color: #ffffff;
+    outline: none;
+}
+
+:deep(.input input) {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #1f2937;
+}
+
+:deep(.input input::placeholder) {
+    color: #9ca3af;
+}
+
+:deep(.input:hover) {
+    border-color: #cbd5e1;
+}
+
+/* Error state */
+:deep(.input.border-error) {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Focus state for icons */
+:deep(.input:focus-within svg) {
+    color: #d946ef;
+}
+
+/* Loading animation styles */
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 1024px) {
+    .first-section {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .rounded-3xl {
+        border-radius: 1.5rem;
+    }
+}
+
+/* Background image adjustments for better proportions */
+@media (min-width: 1024px) {
+    .first-section {
+        background-attachment: scroll;
+    }
 }
 </style>
