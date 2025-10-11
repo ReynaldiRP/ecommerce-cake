@@ -46,11 +46,13 @@
 
         <!-- Register Form Section -->
         <div
-            class="min-h-screen w-full lg:w-2/5 xl:w-1/3 flex flex-col items-center justify-center p-6 lg:p-8 xl:p-12 bg-gradient-soft overflow-y-auto"
+            class="min-h-screen w-full lg:w-2/5 xl:w-1/3 flex flex-col p-6 lg:p-8 xl:p-12 bg-gradient-soft"
         >
-            <div class="w-full max-w-lg my-8">
+            <div
+                class="w-full max-w-lg mx-auto flex-1 flex flex-col justify-center py-8"
+            >
                 <!-- Header -->
-                <div class="text-center mb-10">
+                <div class="text-center mb-8 lg:mb-10">
                     <div class="mb-6 lg:hidden">
                         <div
                             class="w-20 h-20 mx-auto bg-gradient-to-r from-primary to-accent rounded-3xl flex items-center justify-center shadow-card mb-4"
@@ -74,9 +76,12 @@
 
                 <!-- Register Form -->
                 <div
-                    class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-card border border-white/20 p-8"
+                    class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-card border border-white/20 p-6 lg:p-8 mb-8"
                 >
-                    <form @submit.prevent="submit" class="space-y-6">
+                    <form
+                        @submit.prevent="submit"
+                        class="space-y-5 lg:space-y-6"
+                    >
                         <!-- Error Alerts -->
                         <BaseAlert v-if="errors.email" type="alert-error">
                             {{ errors.email }}
@@ -183,41 +188,43 @@
                         </div>
 
                         <!-- Register Button -->
-                        <button
-                            type="submit"
-                            class="w-full bg-gradient-to-r from-primary to-accent text-white font-bold text-lg py-4 rounded-2xl shadow-card hover:shadow-soft transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
-                            :disabled="isLoading"
-                        >
-                            <span v-if="!isLoading">Daftar</span>
-                            <span
-                                v-else
-                                class="flex items-center justify-center space-x-2"
+                        <div class="pt-2">
+                            <button
+                                type="submit"
+                                class="w-full bg-gradient-to-r from-primary to-accent text-white font-bold text-lg py-4 rounded-2xl shadow-card hover:shadow-soft transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                                :disabled="isLoading"
                             >
-                                <svg
-                                    class="animate-spin h-5 w-5"
-                                    viewBox="0 0 24 24"
+                                <span v-if="!isLoading">Daftar</span>
+                                <span
+                                    v-else
+                                    class="flex items-center justify-center space-x-2"
                                 >
-                                    <circle
-                                        class="opacity-25"
-                                        cx="12"
-                                        cy="12"
-                                        r="10"
-                                        stroke="currentColor"
-                                        stroke-width="4"
-                                        fill="none"
-                                    ></circle>
-                                    <path
-                                        class="opacity-75"
-                                        fill="currentColor"
-                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                    ></path>
-                                </svg>
-                                <span>Memproses...</span>
-                            </span>
-                        </button>
+                                    <svg
+                                        class="animate-spin h-5 w-5"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <circle
+                                            class="opacity-25"
+                                            cx="12"
+                                            cy="12"
+                                            r="10"
+                                            stroke="currentColor"
+                                            stroke-width="4"
+                                            fill="none"
+                                        ></circle>
+                                        <path
+                                            class="opacity-75"
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                        ></path>
+                                    </svg>
+                                    <span>Memproses...</span>
+                                </span>
+                            </button>
+                        </div>
 
                         <!-- Login Link -->
-                        <div class="text-center pt-4">
+                        <div class="text-center pt-2">
                             <p class="text-gray-600">
                                 Sudah punya akun?
                                 <inertia-link
@@ -232,7 +239,7 @@
                 </div>
 
                 <!-- Footer -->
-                <div class="text-center mt-8">
+                <div class="text-center">
                     <p class="text-sm text-gray-500">
                         © 2025 Dream Dessert. Semua hak dilindungi.
                     </p>
@@ -465,40 +472,102 @@ const submit = () => {
     }
 }
 
+/* Mobile responsive improvements */
 @media (max-width: 640px) {
     .rounded-3xl {
         border-radius: 1.5rem;
     }
 
-    .p-8 {
+    .p-6 {
+        padding: 1rem;
+    }
+
+    .lg\\:p-8 {
         padding: 1.5rem;
     }
 
-    .space-y-6 > * + * {
+    .space-y-5 > * + * {
         margin-top: 1rem;
+    }
+
+    .mb-8 {
+        margin-bottom: 1.5rem;
+    }
+
+    .text-3xl {
+        font-size: 1.875rem;
+        line-height: 2.25rem;
+    }
+
+    .py-4 {
+        padding-top: 0.875rem;
+        padding-bottom: 0.875rem;
     }
 }
 
-/* Better spacing for mobile forms */
-@media (max-height: 800px) and (max-width: 1024px) {
+/* Tablet responsive improvements */
+@media (min-width: 641px) and (max-width: 1023px) {
     .min-h-screen {
-        min-height: auto;
+        min-height: 100vh;
         padding-top: 2rem;
         padding-bottom: 2rem;
     }
 }
 
-/* Enhanced form container sizing */
+/* Enhanced form container sizing for larger screens */
 @media (min-width: 1280px) {
     .max-w-lg {
         max-width: 32rem;
     }
 }
 
-/* Smooth scroll for long forms on mobile */
-@media (max-width: 640px) {
-    .overflow-y-auto {
-        scroll-behavior: smooth;
+/* Improved height management for shorter screens */
+@media (max-height: 700px) {
+    .py-8 {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    .mb-8 {
+        margin-bottom: 1rem;
+    }
+
+    .lg\\:mb-10 {
+        margin-bottom: 1.5rem;
+    }
+
+    .space-y-5 > * + * {
+        margin-top: 0.75rem;
+    }
+}
+
+/* Very short screens */
+@media (max-height: 600px) {
+    .min-h-screen {
+        min-height: auto;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    .py-8 {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .mb-8,
+    .lg\\:mb-10 {
+        margin-bottom: 0.75rem;
+    }
+
+    .space-y-5 > * + * {
+        margin-top: 0.5rem;
+    }
+
+    .text-3xl,
+    .lg\\:text-4xl,
+    .xl\\:text-5xl {
+        font-size: 1.5rem;
+        line-height: 2rem;
     }
 }
 </style>
