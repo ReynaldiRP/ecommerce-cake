@@ -22,4 +22,13 @@ export default defineConfig({
             "ziggy-js": path.resolve("vendor/tightenco/ziggy/dist/vue.es.js"),
         },
     },
+    build: {
+        outDir: "public/build",
+        manifest: true,
+        emptyOutDir: true,
+        rollupOptions: {
+            input: "resources/js/app.js",
+        },
+        assetsDir: "assets",
+    },
 });
