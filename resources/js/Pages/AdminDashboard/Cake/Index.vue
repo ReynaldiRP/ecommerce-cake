@@ -150,6 +150,7 @@
                             :links="props.cakes.links"
                             :next-page-url="props.cakes.next_page_url"
                             :previous-page-url="props.cakes.prev_page_url"
+                            @paginate="handlePagination"
                         />
                         <p>
                             Page <span>{{ props.cakes.current_page }}</span> of
@@ -174,6 +175,7 @@ import VueEasyLightbox from "vue-easy-lightbox";
 import { mdiCheckCircle, mdiPlus } from "@mdi/js";
 import { onMounted, ref } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
+import { Inertia } from "@inertiajs/inertia";
 import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
 
 import Loading from "vue-loading-overlay";
@@ -228,5 +230,20 @@ const descriptionLength = (description) => {
     if (description.length > 30) return description.slice(0, 30) + "...";
 
     return description;
+};
+
+/**
+ * Handle pagination navigation
+ *
+ * @param {string} url
+ * @return void
+ */
+const handlePagination = (url) => {
+    if (url) {
+        Inertia.visit(url, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    }
 };
 </script>

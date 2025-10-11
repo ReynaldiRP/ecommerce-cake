@@ -113,6 +113,7 @@
                             :links="props.discounts.links"
                             :next-page-url="props.discounts.next_page_url"
                             :previous-page-url="props.discounts.prev_page_url"
+                            @paginate="handlePagination"
                         />
                         <p>
                             Page
@@ -173,6 +174,21 @@ const deleteHandler = (id) => {
         }, 2000);
     } catch (e) {
         console.error(e);
+    }
+};
+
+/**
+ * Handle pagination navigation
+ *
+ * @param {string} url
+ * @return void
+ */
+const handlePagination = (url) => {
+    if (url) {
+        Inertia.visit(url, {
+            preserveState: true,
+            preserveScroll: true,
+        });
     }
 };
 </script>

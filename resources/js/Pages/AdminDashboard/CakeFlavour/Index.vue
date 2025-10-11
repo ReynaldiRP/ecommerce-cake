@@ -119,6 +119,7 @@
                             :links="props.flavour.links"
                             :next-page-url="props.flavour.next_page_url"
                             :previous-page-url="props.flavour.prev_page_url"
+                            @paginate="handlePagination"
                         />
                         <p>
                             Page
@@ -144,6 +145,7 @@ import VueEasyLightbox from "vue-easy-lightbox";
 import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
 import { onMounted, ref } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
+import { Inertia } from "@inertiajs/inertia";
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
 import { mdiCheckCircle, mdiPlus } from "@mdi/js";
@@ -185,5 +187,20 @@ const deleteHandler = (flavourId) => {
 
         form.delete(route("flavour.destroy", flavourId));
     }, 3000);
+};
+
+/**
+ * Handle pagination navigation
+ *
+ * @param {string} url
+ * @return void
+ */
+const handlePagination = (url) => {
+    if (url) {
+        Inertia.visit(url, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    }
 };
 </script>

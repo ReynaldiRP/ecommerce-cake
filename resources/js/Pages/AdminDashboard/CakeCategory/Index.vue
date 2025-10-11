@@ -159,6 +159,7 @@
                             :previous-page-url="
                                 props.cakeCategory.prev_page_url
                             "
+                            @paginate="handlePagination"
                         />
                         <p>
                             Page
@@ -190,6 +191,7 @@ import { computed, onMounted, ref } from "vue";
 import FormControl from "@/Components/DashboardAdmin/FormControl.vue";
 import FormField from "@/Components/DashboardAdmin/FormField.vue";
 import { useForm } from "@inertiajs/inertia-vue3";
+import { Inertia } from "@inertiajs/inertia";
 import Pagination from "@/Components/Pagination.vue";
 import axios from "axios";
 import Loading from "vue-loading-overlay";
@@ -327,6 +329,21 @@ const destroy = (category) => {
         });
     } catch (error) {
         console.error(error);
+    }
+};
+
+/**
+ * Handle pagination navigation
+ *
+ * @param {string} url
+ * @return void
+ */
+const handlePagination = (url) => {
+    if (url) {
+        Inertia.visit(url, {
+            preserveState: true,
+            preserveScroll: true,
+        });
     }
 };
 </script>

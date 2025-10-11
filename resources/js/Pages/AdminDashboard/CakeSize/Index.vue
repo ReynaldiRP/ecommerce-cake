@@ -99,6 +99,7 @@
                             :links="props.cakeSize.links"
                             :next-page-url="props.cakeSize.next_page_url"
                             :previous-page-url="props.cakeSize.prev_page_url"
+                            @paginate="handlePagination"
                         />
                         <p>
                             Page
@@ -122,6 +123,7 @@ import NotificationBar from "@/Components/DashboardAdmin/NotificationBar.vue";
 import CardBoxModal from "@/Components/DashboardAdmin/CardBoxModal.vue";
 import { onMounted, ref } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
+import { Inertia } from "@inertiajs/inertia";
 import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
 
 import Loading from "vue-loading-overlay";
@@ -156,5 +158,20 @@ const deleteHandler = (cakeSizeId) => {
 
         form.delete(route("size.destroy", cakeSizeId));
     }, 3000);
+};
+
+/**
+ * Handle pagination navigation
+ *
+ * @param {string} url
+ * @return void
+ */
+const handlePagination = (url) => {
+    if (url) {
+        Inertia.visit(url, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    }
 };
 </script>

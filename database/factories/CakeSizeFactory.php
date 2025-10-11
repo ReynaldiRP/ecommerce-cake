@@ -16,23 +16,22 @@ class CakeSizeFactory extends Factory
      */
     public function definition(): array
     {
-        $cakeSizePrice = [
-            10 => 5000,
-            12 => 10000,
-            15 => 20000,
-            17 => 30000,
-            18 => 40000,
-            20 => 50000,
-            22 => 60000,
-            24 => 70000,
+        // Realistic cake sizes (in cm) with progressive pricing
+        // Sizes are based on common cake pan sizes used in Indonesia
+        $cakeSizes = [
+            12 => 15000,   // Mini size - perfect for 2-4 people
+            15 => 25000,   // Small size - ideal for 4-6 people
+            18 => 40000,   // Medium size - great for 6-10 people
+            20 => 55000,   // Large size - suitable for 10-15 people
+            22 => 70000,   // Extra large - perfect for 15-20 people
+            24 => 90000,   // Party size - ideal for 20+ people
         ];
 
+        $selectedSize = $this->faker->unique()->randomElement(array_keys($cakeSizes));
 
         return [
-            'size' => $this->faker->unique()->randomElement(array_keys($cakeSizePrice)),
-            'price' => function (array $attributes) use ($cakeSizePrice) {
-                return $cakeSizePrice[$attributes['size']];
-            },
+            'size' => $selectedSize,
+            'price' => $cakeSizes[$selectedSize],
         ];
     }
 }

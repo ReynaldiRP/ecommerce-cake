@@ -66,6 +66,7 @@
                             :links="props.payments.links"
                             :next-page-url="props.payments.next_page_url"
                             :previous-page-url="props.payments.prev_page_url"
+                            @paginate="handlePagination"
                         />
                         <p>
                             Page
@@ -85,6 +86,7 @@ import SectionMain from "@/Components/DashboardAdmin/SectionMain.vue";
 import CardBox from "@/Components/DashboardAdmin/CardBox.vue";
 import Pagination from "@/Components/Pagination.vue";
 import { computed } from "vue";
+import { Inertia } from "@inertiajs/inertia";
 
 const props = defineProps({
     payments: Object,
@@ -97,4 +99,19 @@ const changeTransactionStatusColor = computed(() => {
         "Pesanan terbayar": "btn-success",
     };
 });
+
+/**
+ * Handle pagination navigation
+ *
+ * @param {string} url
+ * @return void
+ */
+const handlePagination = (url) => {
+    if (url) {
+        Inertia.visit(url, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    }
+};
 </script>

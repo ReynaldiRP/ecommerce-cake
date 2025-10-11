@@ -66,6 +66,7 @@
                             :links="props.orders.links"
                             :next-page-url="props.orders.next_page_url"
                             :previous-page-url="props.orders.prev_page_url"
+                            @paginate="handlePagination"
                         />
                         <p>
                             Page
@@ -85,6 +86,7 @@ import SectionMain from "@/Components/DashboardAdmin/SectionMain.vue";
 import Pagination from "@/Components/Pagination.vue";
 import CardBox from "@/Components/DashboardAdmin/CardBox.vue";
 import { computed, ref } from "vue";
+import { Inertia } from "@inertiajs/inertia";
 import "vue-loading-overlay/dist/css/index.css";
 import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
 
@@ -106,4 +108,21 @@ const orderStatusStyle = computed(() => {
         "Pesanan kadaluarsa": "btn-error",
     };
 });
+
+/**
+ * Handle pagination navigation
+ *
+ * @param {string} url
+ * @return void
+ */
+const handlePagination = (url) => {
+    console.log(url);
+
+    if (url) {
+        Inertia.visit(url, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    }
+};
 </script>

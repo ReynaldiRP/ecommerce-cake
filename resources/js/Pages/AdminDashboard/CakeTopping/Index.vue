@@ -120,6 +120,7 @@
                             :links="props.topping.links"
                             :next-page-url="props.topping.next_page_url"
                             :previous-page-url="props.topping.prev_page_url"
+                            @paginate="handlePagination"
                         />
                         <p>
                             Page
@@ -145,6 +146,7 @@ import VueEasyLightbox from "vue-easy-lightbox";
 import { useAdminDashboardStore } from "@/Stores/adminDashboard.js";
 import { onMounted, ref } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
+import { Inertia } from "@inertiajs/inertia";
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/css/index.css";
 import { mdiPlus, mdiCheckCircle } from "@mdi/js";
@@ -185,5 +187,20 @@ const deleteHandler = (toppingId) => {
 
         form.delete(route("topping.destroy", toppingId));
     }, 3000);
+};
+
+/**
+ * Handle pagination navigation
+ *
+ * @param {string} url
+ * @return void
+ */
+const handlePagination = (url) => {
+    if (url) {
+        Inertia.visit(url, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    }
 };
 </script>
