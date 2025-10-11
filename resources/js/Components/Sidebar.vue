@@ -129,10 +129,10 @@
                             >
                                 Akun Saya
                             </h3>
-                            <button
+                            <inertia-link
                                 v-for="(menuItem, index) in menuAuthenticated"
                                 :key="index"
-                                @click="handlerClick(menuItem.link)"
+                                :href="menuItem.link"
                                 class="w-full flex items-center gap-3 px-4 py-3 text-gray-700 rounded-2xl hover:bg-gradient-to-r hover:from-primary/10 hover:to-accent/10 hover:text-primary transition-all duration-200 group text-left"
                             >
                                 <div
@@ -141,7 +141,7 @@
                                 <span class="font-medium">{{
                                     menuItem.name
                                 }}</span>
-                            </button>
+                            </inertia-link>
                         </div>
                     </nav>
                 </div>
